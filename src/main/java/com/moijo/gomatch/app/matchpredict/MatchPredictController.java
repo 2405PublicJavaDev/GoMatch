@@ -1,4 +1,4 @@
-package com.moijo.gomatch.app.game;
+package com.moijo.gomatch.app.matchpredict;
 
 import org.springframework.stereotype.Controller;
 

@@ -96,9 +96,16 @@ public class GlobalExceptionControllerHandler {
 
     private boolean isAjax(HttpServletRequest request) {
         String contentTypeHeader = request.getHeader("Content-Type");
-        if(contentTypeHeader.startsWith("multipart/form-data")) {
+
+        // null 체크 추가
+        if (contentTypeHeader == null) {
+            return false; // null인 경우, Ajax 요청이 아님
+        }
+
+        if (contentTypeHeader.startsWith("multipart/form-data")) {
             return true;
         }
         return "application/json".equals(contentTypeHeader);
     }
+
 }
