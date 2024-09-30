@@ -2,7 +2,9 @@ package com.moijo.gomatch.sample.controller;
 
 import com.moijo.gomatch.common.FileUtil;
 import com.moijo.gomatch.common.UploadCategory;
+import com.moijo.gomatch.common.exception.BusinessException;
 import com.moijo.gomatch.common.exception.EmptyResponse;
+import com.moijo.gomatch.common.exception.ErrorCode;
 import com.moijo.gomatch.sample.dto.SampleSearchCondition;
 import com.moijo.gomatch.sample.dto.SampleWriteDTO;
 import com.moijo.gomatch.sample.service.SampleService;
