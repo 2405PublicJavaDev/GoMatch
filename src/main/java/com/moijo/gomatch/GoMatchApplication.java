@@ -8,10 +8,6 @@ public class GoMatchApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GoMatchApplication.class, args);
-        // 커밋
+        // 충돌해결
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> dlcoals
 }
