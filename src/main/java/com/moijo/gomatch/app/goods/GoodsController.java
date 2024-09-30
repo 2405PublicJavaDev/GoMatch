@@ -10,7 +10,7 @@ public class GoodsController {
 
     @GetMapping("/insert")
         public String insertPage() {
-        return "insert1";
+        return "insert";
     }
 
 
