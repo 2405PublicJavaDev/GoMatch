@@ -10,4 +10,6 @@ public class GoMatchApplication {
         SpringApplication.run(GoMatchApplication.class, args);
         // 충돌해결
     }
+
+    // yeeun
 }
