@@ -1,9 +1,10 @@
 package com.moijo.gomatch.app.meeting;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
-@RestController
+
+@Controller
 @RequiredArgsConstructor
-public class MeetingBoardRestController {
+public class MeetingBoardController {
 }
