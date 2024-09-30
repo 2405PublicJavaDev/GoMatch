@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>샘플</title>
+    <link rel="stylesheet" href="/css/admin/main.css">
+</head>
+<body>
+<h1>공지사항 목록</h1>
+<p th:each="sample : ${samples}" th:text="${sample.getContent()}"></p>
+</body>
+</html>
