@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>샘플</title>
+    <link rel="stylesheet" href="/css/admin/main.css">
+</head>
+<body>
+<h1>공지사항 목록</h1>
+<h2>total count: <span th:text="${samples.getTotalCount()}"></span></h2>
+<p th:each="sample : ${samples.getData()}" th:text="${sample.getContent()}"></p>
+</body>
+</html>
