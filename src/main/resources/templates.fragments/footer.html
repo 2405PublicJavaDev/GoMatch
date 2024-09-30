@@ -1,0 +1,29 @@
+<!--resources/templates/fragments/footer.html-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<footer th:fragment="footer">
+    <img id="footer-logo" src="/img/footer_logo.png" alt="footer logo">
+    <span id="footer-copyright">Copyright ⓒ 2024 Gangneung-Yeojido. All Rights Reserved.</span>
+    <div id="footer-important-notice-area">
+        <div id="footer-important-notice-title">
+            <div id="footer-important-notice-title-text">
+                <span>공지사항</span>
+            </div>
+            <div id="footer-important-notice-title-more">
+                <a th:href="@{/notice}" th:text="'더보기 ▶'"></a>
+            </div>
+        </div>
+        <hr>
+        <ul>
+            <li th:each="notice : ${footerImportantNotices}">
+                <!-- 제목이 20자를 초과하면 20자까지만 자르고 "..." 추가 -->
+                <a class="important-title" th:href="@{/notice/{noticeNo}(noticeNo=${notice.noticeNo})}"
+                   th:text="${notice.noticeSubject.length() > 30 ? notice.noticeSubject.substring(0, 30) + '...' : notice.noticeSubject}">
+                </a>
+            </li>
+        </ul>
+    </div>
+</footer>
+</html>
