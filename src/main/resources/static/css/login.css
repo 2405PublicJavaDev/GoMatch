@@ -1,0 +1,93 @@
+
+/* ==================================================== 메인 페이지 ===================================================*/
+.login-container {
+    max-width: 600px;
+    height: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.userid-pw {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+button {
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.login-btn {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    width: 450px;
+    margin-left: 75px;
+}
+.find-member {
+    font-size: 14px;
+    color: #666;
+    text-decoration-line: none;
+    text-align: end;
+    padding: 5px;
+    margin: 5px;
+}
+.find-member:hover {
+    color: black;
+}
+.sns-login {
+    margin-top: 20px;
+    text-align: center;
+}
+.sns-login p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.kakao-btn, .naver-btn {
+    width: 450px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.kakao-btn {
+    background-color: #FEE500;
+    color: #333;
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid #ddd;
+    margin-left: 75px;
+}
+.naver-btn {
+    background-color: #03C75A;
+    color: #333;
+    display: flex;
+    justify-content: space-evenly;
+    border: 1px solid #ddd;
+    margin-left: 75px;
+}
+
+

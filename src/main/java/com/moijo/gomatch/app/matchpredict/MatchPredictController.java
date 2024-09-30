@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class MatchPredictController {
 
-    private final MatchPredictService matchPredictService;
+    /*private final MatchPredictService matchPredictService;
 
     @GetMapping("/matchPredict")
     public String showMatchPredictionListPage(HttpSession session, Model model) {
@@ -36,5 +36,5 @@ public class MatchPredictController {
 
     public void addMatchPrediction(){};
 
-    public void modifyMatchPrediction(){};
+    public void modifyMatchPrediction(){}; */
 }

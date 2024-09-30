@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequiredArgsConstructor
 public class MeetingController {
-    private final MeetingService meetingService;
+//    private final MeetingService meetingService;
 
 //    @GetMapping("/meeting")
 //    public String showMeetings(Model model
