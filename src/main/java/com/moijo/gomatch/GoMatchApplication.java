@@ -10,4 +10,8 @@ public class GoMatchApplication {
         SpringApplication.run(GoMatchApplication.class, args);
         // 커밋
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> dlcoals
 }
