@@ -3,7 +3,7 @@ package com.moijo.gomatch.app.meeting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class MeetingBoardReplyRestController {
     //test
