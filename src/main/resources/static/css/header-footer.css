@@ -1,0 +1,113 @@
+/* ==================================================== 헤더 ===================================================*/
+/* kbo 폰트 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
+header {
+    background-color: #f3f4f8;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+nav {
+    max-width: 1400px;
+    height: 60px;
+
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-style: normal;
+}
+.logo img {
+    height: 80px;
+    width: 85px;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+.nav-links li {
+    margin: 0 40px;
+}
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    letter-spacing: 0.5px;
+}
+.memeber-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+.memeber-links li {
+    margin-left: 15px;
+}
+.memeber-links a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* ==================================================== 팀로고 ===================================================*/
+.team-logos {
+    background-color: #f3f4f8;
+    padding: 20px 0;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 50px;
+}
+.team-logos-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.team-logo {
+    width: 70px;
+    height: 60px;
+}
+
+
+/* ==================================================== 발바닥 ===================================================*/
+
+.footer-page {
+    background-color: #0a1f44;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.footer-logo img {
+    height: 40px;
+}
+.footer-text {
+    margin-left: 330px;
+    font-size: 12px;
+
+}
