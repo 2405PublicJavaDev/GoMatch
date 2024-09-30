@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moijo.gomatch.sample.repository.SampleMapper">
+    <select id="selectAll" resultType="Sample">
+        select *
+        from sample
+    </select>
+    <select id="selectPageAllCount" resultType="_int">
+        select count(*)
+        from sample
+    </select>
+    <select id="selectPageAll" resultType="Sample">
+        select *
+        from sample
+    </select>
+    <select id="selectPageCondition" resultType="Sample">
+        select *
+        from sample
+        <where>
+        <if test="searchCondition.content != null">AND content LIKE '%' || #{searchCondition.content} || '%'</if>
+        </where>
+    </select>
+    <select id="selectPageConditionCount" resultType="_int">
+        select count(*)
+        from sample
+        <where>
+            <if test="searchCondition.content != null">AND content LIKE '%' || #{searchCondition.content} || '%'</if>
+        </where>
+    </select>
+    <insert id="insertSampleFile">
+        insert into SAMPLE_FILE
+        values (SEQ_SAMPLE_FILE.NEXTVAL, #{filePath}, #{fileName}, #{fileRename}, #{sampleNo})
+    </insert>
+    <select id="selectAllSampleFiles" resultType="SampleFile">
+        select * from SAMPLE_FILE WHERE SAMPLE_NO = #{sampleNo}
+    </select>
+    <delete id="deleteSampleFile">
+        delete from SAMPLE_FILE WHERE SAMPLE_NO = #{sampleNo}
+    </delete>
+</mapper>

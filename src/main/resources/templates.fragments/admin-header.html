@@ -1,0 +1,26 @@
+<!--resources/templates/fragments/header.html-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<header th:fragment="header">
+    <div class="header-root">
+        <img id="header-logo" src="/img/main_logo.png" alt="main logo"/>
+        <div class="header-login-area" th:if="${session.memberId != null && session.memberId != ''}">
+            <img id="header-my" src="/img/default_profile.png" alt="profile">
+        </div>
+        <div class="header-my-expand" th:if="${session.memberId != null && session.memberId != ''}">
+            <p th:text="${session.memberId}"></p>
+            <p onclick="logoutBtnClick();">로그아웃</p>
+        </div>
+    </div>
+
+    <ul class="header-nav">
+        <li><a href="/admin/black-list">블랙리스트</a></li>
+        <li><a href="/admin/marker">마커 승인</a></li>
+        <li><a href="/admin/notice">공지사항</a></li>
+        <li><a href="/admin/qna">QnA 문의</a></li>
+        <li><a href="/admin/travel">여행지 관리</a></li>
+    </ul>
+</header>
+</html>

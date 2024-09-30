@@ -1,0 +1,39 @@
+.my-sidebar {
+    flex: 0 0 250px;
+    background-color: #f8f9fa;
+    padding: 30px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.my-sideList h2 {
+    margin-bottom: 20px;
+    font-family: 'BMDOHYEON';
+    text-align: center;
+    font-weight: 500;
+}
+
+.my-sideList ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.my-sideList ul li {
+    margin-bottom: 10px;
+}
+
+.normal-link {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.normal-link:hover {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.withdrawal {
+    text-decoration: none;
+    color: red;
+    font-weight: bold;
+}

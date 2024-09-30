@@ -1,0 +1,75 @@
+.header-root {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+}
+
+#header-logo {
+    margin-left: 100px;
+    height: 100px;
+}
+
+.header-text-button {
+    background: transparent;
+    border: transparent;
+
+}
+
+.header-login-area {
+    margin-left: auto;
+    margin-right: 100px;
+}
+
+#header-my {
+    width: 48px;
+    height: 48px;
+}
+
+.header-my-expand {
+    position: absolute;
+    top: 100%;
+    z-index: 999;
+    left: 100%;
+    transform: translateX(calc(-100% - 100px));
+    width: 200px;
+    background: white;
+    display: none;
+}
+
+.header-my-expand>p {
+    border-bottom: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+.header-nav {
+    width: 100%;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: center;
+}
+.header-nav li {
+    display: inline-block;
+    width: 200px;
+    height: 50px;
+}
+.header-nav li a {
+    height: 100%;
+    display: flex;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 18px;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    color: black;
+    text-decoration: none;
+    width: 100%;
+    font-weight: bold;
+    text-align: center;
+}
+.header-nav li a:hover {
+    color: #007FFF;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 등록</title>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript">
+        function submitClick() {
+            const formTag = document.querySelector("#sample-form");
+            const formData = new FormData(formTag);
+            ajax({
+                    url: '/writePage',
+                    method: 'post',
+                    payload: formData,
+                    isMultipart: true
+                },
+                (response) => {
+                    console.log('response', response);
+                },
+                (error) => {
+                    console.log('error',error)}
+            );
+        }
+    </script>
+</head>
+<body>
+<h1>공지사항 등록</h1>
+<form id="sample-form">
+    내용 <textarea rows="5" cols="40" name="content"></textarea> <br>
+    첨부파일 : <input type="file" name="uploadFile">
+    <input type="file" name="uploadFile">
+    <input type="file" name="uploadFile">
+    <button type="button" onclick="submitClick()">등록</button>
+</form>
+</body>
+</html>
