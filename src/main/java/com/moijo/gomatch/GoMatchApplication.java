@@ -9,10 +9,7 @@ public class GoMatchApplication {
     public static void main(String[] args) {
         SpringApplication.run(GoMatchApplication.class, args);
     }
-<<<<<<< HEAD
 //        dlcoals223423
-=======
 
     // yeeun
->>>>>>> hao
 }
