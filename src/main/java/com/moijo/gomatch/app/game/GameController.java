@@ -1,5 +1,8 @@
 package com.moijo.gomatch.app.game;
 
 public class GameRestController {
-    //하이
+
+    public class GameController {
+        //하이
+    }
 }

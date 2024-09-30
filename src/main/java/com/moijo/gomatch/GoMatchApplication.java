@@ -8,8 +8,8 @@ public class GoMatchApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GoMatchApplication.class, args);
+        // 충돌해결
     }
-//        dlcoals223423
 
     // yeeun
 }
