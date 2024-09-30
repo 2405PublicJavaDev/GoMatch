@@ -24,12 +24,12 @@ import java.util.List;
 public class SampleController {
     private final FileUtil fileUtil;
     private final SampleService sampleService;
-//    @GetMapping("/")
-//    public String sampleAll(Model model) {
-//        model.addAttribute("samples", sampleService.selectAll());
+    @GetMapping("/")
+    public String sampleAll(Model model) {
+        model.addAttribute("samples", sampleService.selectAll());
 //        throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
-//        // return "sample/home";
-//    }
+         return "sample/home";
+    }
     @GetMapping("/page/{currentPage}")
     public String samplePage(@PathVariable int currentPage, Model model) {
         model.addAttribute("samples", sampleService.selectPage(currentPage));
