@@ -1,5 +1,4 @@
 package com.moijo.gomatch.domain.goods.service;
 
-public interface PayService {
-
+public class portone {
 }

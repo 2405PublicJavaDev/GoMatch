@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>상품 목록</title>
+</head>
+<body>
+<h1>상품 목록</h1>
+<table border="1">
+  <thead>
+  <tr>
+    <th>상품 번호</th>
+    <th>팀</th>
+    <th>상품 이름</th>
+    <th>가격</th>
+    <th>상품 코드</th>
+    <th>제조일</th>
+    <th>유효기간</th>
+    <th>작업</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="goods : ${goodsList}">
+    <td th:text="${goods.goodsNo}"></td>
+    <td th:text="${goods.goodsTeam}"></td>
+    <td th:text="${goods.goodsProductName}"></td>
+    <td th:text="${goods.goodsPrice}"></td>
+    <td th:text="${goods.goodsProductCode}"></td>
+    <td th:text="${goods.goodsMakeDate}"></td>
+    <td th:text="${goods.goodsOutDate}"></td>
+    <td>
+      <form th:action="@{/goods/delete}" method="post">
+        <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}" />
+        <button type="submit">삭제</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
