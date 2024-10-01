@@ -37,6 +37,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
     implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
+    implementation 'org.jsoup:jsoup:1.18.1'
+    implementation 'org.json:json:20240303'
 }
 
 tasks.named('test') {
