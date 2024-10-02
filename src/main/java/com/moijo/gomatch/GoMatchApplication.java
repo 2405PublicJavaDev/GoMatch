@@ -2,14 +2,14 @@ package com.moijo.gomatch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableScheduling
 @SpringBootApplication
 public class GoMatchApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GoMatchApplication.class, args);
-        // 충돌해결
-    }
 
-    // yeeun
+    }
 }
