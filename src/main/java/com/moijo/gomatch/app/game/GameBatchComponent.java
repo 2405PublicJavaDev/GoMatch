@@ -1,29 +1,45 @@
 package com.moijo.gomatch.app.game;
 
+import com.moijo.gomatch.domain.game.service.GameService;
 import com.moijo.gomatch.domain.game.vo.GameVO;
-import java.io.IOException;
+
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.sql.Date;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class GameBatchComponent {
 
-    // KBO 리그 일정 가져오기
-    public List<GameVO> scrapeSchedule(String month) {
+    private GameService gameService;
+
+    public GameBatchComponent() {
+    }
+
+    @Autowired
+    public GameBatchComponent(GameService gameService) {
+        this.gameService = gameService;
+    }
+
+    // 야구 경기 리그 일정 가져오기
+    public List<GameVO> scrapeSchedule(String dateParam) {
         List<GameVO> gameList = new ArrayList<>();
         // Selenium WebDriver 설정 (ChromeDriver)
         System.setProperty("webdriver.chrome.driver", "src/main/resources/static/driver/chromedriver.exe");
@@ -34,43 +50,49 @@ public class GameBatchComponent {
         WebDriver driver = new ChromeDriver(options);
 
         try {
-            // 셀레니움으로 KBO 홈페이지 크롤링
-            driver.get("https://www.koreabaseball.com/Schedule/Schedule.aspx");
+            // 셀레니움으로 다음 스포츠 홈페이지 크롤링
+            driver.get("https://sports.daum.net/schedule/kbo?date=" + dateParam);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("scheduleList")));
+            // 셀레니움으로 가져온 HTML을 Jsoup으로 파싱
+            Document doc = Jsoup.parse(driver.getPageSource());
+            Elements baseballSchedule = doc.select("#scheduleList > tr");
 
-            // AJAX 요청을 통해 월별 데이터를 가져오는 코드 작성
-            String requestBody = "leId=1&srIdList=0,9,6&seasonId=2024&gameMonth=" + month + "&teamId=";
+            for (Element Schedule : baseballSchedule) {
+                String day = Schedule.attr("data-date"); // 경기날짜
+                Element time = Schedule.selectFirst("td.td_time");  // 경기시간
+                Element location = Schedule.selectFirst("td.td_area");  // 경기장 위치
+                Element team = Schedule.selectFirst("td.td_team");  // 경기 팀
+                // 날짜 텍스트 추출 (05.01 같은 형식)
+                java.sql.Date sqlDate = null; // 초기화
+                // data-date를 LocalDate로 변환
+                LocalDate localDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                sqlDate = Date.valueOf(localDate); // java.sql.Date로 변환
+                // 시간 텍스트 추출
+                String gameTime = (time != null) ? time.text() : "";
 
-            // POST 요청 보내기
-            // Document doc = Jsoup.parse(driver.getPageSource());
-            String jsonResponse = Jsoup.connect("https://www.koreabaseball.com/ws/Schedule.asmx/GetScheduleList")
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .requestBody(requestBody)
-                    .post()
-                    .body()
-                    .text();  // JSON 응답을 문자열로 변환
+                // 위치 텍스트 추출
+                String gameLocation = (location != null) ? location.text() : "";
 
-            // JSON 응답 파싱
-            JSONObject jsonObject = new JSONObject(jsonResponse);
-            JSONArray rows = jsonObject.getJSONArray("rows");
+                if (team != null) {
+                    // 홈 팀과 원정 팀 이름 추출
+                    String homeTeamName = team.selectFirst("div.info_team.team_home .txt_team").text();
+                    String awayTeamName = team.selectFirst("div.info_team.team_away .txt_team").text();
 
-            // JSON 데이터에서 경기 정보 추출
-            for (int i = 0; i < rows.length(); i++) {
-                JSONObject rowObject = rows.getJSONObject(i);
-                JSONArray row = rowObject.getJSONArray("row");
+                    // 홈 팀과 원정 팀 점수 추출
+                    String homeTeamScore = team.selectFirst("div.info_team.team_home .num_score").text();
+                    String awayTeamScore = team.selectFirst("div.info_team.team_away .num_score").text();
 
-                String gameDate = row.getJSONObject(0).getString("Text");
-                String gameTime = row.getJSONObject(1).getString("Text");
-                String playDetails = row.getJSONObject(2).getString("Text");
-                String gameField = row.getJSONObject(7).getString("Text");
+                    // 점수 문자열이 유효한 숫자인지 확인하는 메서드 호출
+                    int homeScore = parseScore(homeTeamScore);
+                    int awayScore = parseScore(awayTeamScore);
 
-                // 팀 정보 파싱
-                String[] teams = extractTeamsFromPlay(playDetails);
-
-                GameVO game = new GameVO(gameDate, gameTime, teams[0], "vs", teams[1], gameField);
-                gameList.add(game); // 경기 리스트에 추가
+                    GameVO game = new GameVO(sqlDate, gameTime, homeTeamName, awayTeamName, gameLocation, homeScore, awayScore);
+                    gameList.add(game);
+                    }
             }
-
         } catch (Exception e) {
+            System.err.println("크롤링 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         } finally {
             // WebDriver 종료
@@ -79,51 +101,27 @@ public class GameBatchComponent {
         return gameList;
     }
 
-    // 팀 정보를 파싱하는 메소드
-    private String[] extractTeamsFromPlay(String playDetails) {
-        playDetails = playDetails.replaceAll("<[^>]+>", "").trim();  // HTML 태그 제거
-        String[] teams = playDetails.split("vs");
-        return new String[]{teams[0].trim(), teams[1].trim()};
+    // 점수를 int로 파싱
+    private Integer parseScore(String score) {
+        if (score != null && !score.trim().isEmpty() && !score.equals("-")) {
+            try {
+                return Integer.parseInt(score);
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid score format: " + score);
+            }
+        }
+        return null; // 기본값 설정
+    }
+
+     // @Scheduled 어노테이션을 통해 매일 10:00에 실행
+     @Scheduled(cron = "0 0 10 * * ?")
+    public void updateGameSchedule() {
+        String dateParam = "202410";    // 10월의 경기를 스케줄러로 자동 저장
+        List<GameVO> gameList = scrapeSchedule(dateParam);
+        if (!gameList.isEmpty()) { // 경기 정보가 있는 경우에만 저장
+            gameService.saveAllGames(gameList);
+        } else {
+            System.out.println("저장할 경기 정보가 없습니다."); // 로그 출력
+        }
     }
 }
-//            Elements baseballSchedule = doc.select("#tblScheduleList > tbody > tr");
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd(EEE)"); // 날짜 포맷 지정
-//            String currentDay = null;
-//
-//            for (Element Schedule : baseballSchedule) {
-//                Element gameDate = Schedule.selectFirst("td.day");  // 경기날짜
-//                Element gameTime = Schedule.selectFirst("td.time"); // 경기시간
-//                Element team_A = Schedule.selectFirst("td.play > span");    // 팀1
-//                Element vs = Schedule.selectFirst("td.play > em");  // VS
-//                Element team_B = Schedule.selectFirst("td.play > span:nth-child(3)"); // 팀2
-//                Element gameField = Schedule.selectFirst("td:nth-child(8)"); // 경기장소
-//
-//                // 경기장소가 -로 되어있으면 td 의 자식요소 7번째를 받아옴
-//                if ("-".equals(gameField.text())) {
-//                    gameField = Schedule.selectFirst("td:nth-child(7)");
-//                }
-//
-//                // 경기날짜가 null 이 아니면 gameDate의 text를 받아옴
-//                if (gameDate != null) {
-//                    if (currentDay == null || !currentDay.equals(gameDate.text())) {
-//                        currentDay = gameDate.text();
-//                    }
-//                }
-//
-//                // 경기시간이 null 이 아니면 해당 경기 Game 객체 생성
-//                if (gameTime != null) {
-//                    GameVO Game = new GameVO(currentDay, gameTime.text(), team_A.text(), vs.text(), team_B.text(),
-//                            gameField.text());
-//                    gameList.add(Game); // 경기리스트에 추가
-//                }
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            // WebDriver 종료
-//            driver.quit();
-//        }
-//        return gameList;
-//    }
-//}

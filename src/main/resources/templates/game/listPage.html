@@ -27,26 +27,31 @@
     <option value="11">11월</option>
     <option value="12">12월</option>
 </select>
-<table>
+<table border="1">
     <thead>
     <tr>
         <th>날짜</th>
         <th>시간</th>
-        <th>팀 A</th>
+        <th colspan="2">원정팀</th>
         <th>VS</th>
-        <th>팀 B</th>
+        <th colspan="2">홈팀</th>
         <th>장소</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="game : ${games}">
-        <td th:text="${game.gameDate}"></td>
-        <td th:text="${game.gameTime}"></td>
-        <td th:text="${game.team_A}"></td>
-        <td th:text="${game.vs}"></td>
-        <td th:text="${game.team_B}"></td>
-        <td th:text="${game.gameField}"></td>
-    </tr>
+        <tr th:each="game : ${games}">
+            <td th:text="${game.gameDate}"></td>
+            <td th:text="${game.gameTime}"></td>
+            <td th:text="${game.teamA}"></td>
+            <td th:text="${game.scoreA}"></td>
+            <td>vs</td>
+            <td th:text="${game.scoreB}"></td>
+            <td th:text="${game.teamB}"></td>
+            <td th:text="${game.gameField}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(games)}">
+            <td colspan="6">경기 일정이 없습니다.</td>
+        </tr>
     </tbody>
 </table>
 </body>
