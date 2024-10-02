@@ -38,21 +38,23 @@ public class GameBatchComponent {
         this.gameService = gameService;
     }
 
+    // KBO 리그 순위 가져요기
+
+
     // 야구 경기 리그 일정 가져오기
     public List<GameVO> scrapeSchedule(String dateParam) {
         List<GameVO> gameList = new ArrayList<>();
         // Selenium WebDriver 설정 (ChromeDriver)
         System.setProperty("webdriver.chrome.driver", "src/main/resources/static/driver/chromedriver.exe");
 
-        // 브라우저 창 숨기는 옵션 추가하기
+        // 브라우저 창 숨기는 옵션 추가
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        options.addArguments("headless");
         WebDriver driver = new ChromeDriver(options);
-
         try {
             // 셀레니움으로 다음 스포츠 홈페이지 크롤링
             driver.get("https://sports.daum.net/schedule/kbo?date=" + dateParam);
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("scheduleList")));
             // 셀레니움으로 가져온 HTML을 Jsoup으로 파싱
             Document doc = Jsoup.parse(driver.getPageSource());
@@ -102,7 +104,7 @@ public class GameBatchComponent {
     }
 
     // 점수를 int로 파싱
-    private Integer parseScore(String score) {
+    private int parseScore(String score) {
         if (score != null && !score.trim().isEmpty() && !score.equals("-")) {
             try {
                 return Integer.parseInt(score);
@@ -110,11 +112,11 @@ public class GameBatchComponent {
                 System.err.println("Invalid score format: " + score);
             }
         }
-        return null; // 기본값 설정
+        return 0; // 기본값은 0으로 설정
     }
 
      // @Scheduled 어노테이션을 통해 매일 10:00에 실행
-     @Scheduled(cron = "0 0 10 * * ?")
+     @Scheduled(cron = "0 00 10 * * ?")
     public void updateGameSchedule() {
         String dateParam = "202410";    // 10월의 경기를 스케줄러로 자동 저장
         List<GameVO> gameList = scrapeSchedule(dateParam);
