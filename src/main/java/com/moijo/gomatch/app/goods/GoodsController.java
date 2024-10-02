@@ -40,6 +40,27 @@ public class GoodsController {
         return "goods/list"; // Thymeleaf 템플릿 경로 반환
     }
 
+//    @GetMapping("/category/list")
+//    public String getGoodsList(@RequestParam(value = "category", required = false) String category, Model model) {
+//        List<GoodsVO> goodsList;
+//
+//        if (category != null && !category.isEmpty()) {
+//            goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
+//        } else {
+//            goodsList = goodsService.getAllGoods(); // 전체 상품 목록 조회
+//        }
+//
+//        model.addAttribute("goodsList", goodsList); // 모델에 추가
+//        return "goods/list"; // Thymeleaf 템플릿 경로 반환
+//    }
+
+    @GetMapping("/category/list")
+    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
+        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
+        model.addAttribute("goodsList", goodsList); // 모델에 추가
+        return "goods/categorylist"; // 카테고리 리스트를 보여줄 템플릿 경로
+    }
+
     @GetMapping("/detail/{goodsNo}")
     public String getGoodsDetail(@PathVariable Long goodsNo, Model model) {
         GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 조회
@@ -70,4 +91,21 @@ public class GoodsController {
         return "redirect:/goods/list"; // 삭제 후 상품 목록으로 리다이렉트
     }
 
+    @GetMapping("/search")
+    public String searchGoods(@RequestParam("searchValue") String searchValue,
+                              @RequestParam("searchType") String searchType,
+                              Model model) {
+        List<GoodsVO> goodsList;
+
+        if ("all".equals(searchType)) {
+            goodsList = goodsService.searchAllGoods(searchValue);
+        } else if ("name".equals(searchType)) {
+            goodsList = goodsService.searchGoodsByName(searchValue);
+        } else {
+            goodsList = goodsService.searchGoodsByCode(searchValue);
+        }
+
+        model.addAttribute("goodsList", goodsList);
+        return "goods/list"; // 검색 후 상품 목록으로 이동
+    }
 }

@@ -32,6 +32,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<GoodsVO> getGoodsByCategory(String category) {
+        return goodsMapper.selectGoodsByCategory(category); // 카테고리로 상품 조회
+    }
+
+    @Override
     public void updateGoods(GoodsVO goods) {
         goodsMapper.updateGoods(goods); // 상품 수정
     }
@@ -41,4 +46,18 @@ public class GoodsServiceImpl implements GoodsService {
         goodsMapper.deleteGoods(goodsNo); // 상품 삭제
     }
 
+    @Override
+    public List<GoodsVO> searchAllGoods(String searchValue) {
+        return goodsMapper.searchAllGoods(searchValue);
+    }
+
+    @Override
+    public List<GoodsVO> searchGoodsByName(String productName) {
+        return goodsMapper.searchGoodsByName(productName);
+    }
+
+    @Override
+    public List<GoodsVO> searchGoodsByCode(String goodsProductCode) {
+        return goodsMapper.searchGoodsByCode(goodsProductCode);
+    }
 }

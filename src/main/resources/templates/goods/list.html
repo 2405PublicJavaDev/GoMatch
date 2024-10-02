@@ -8,6 +8,16 @@
   <button type="submit">검색</button>
 </form>
 
+<div>
+  <form action="/goods/category/list" method="get"> <!-- 수정된 부분 -->
+    <button type="submit" name="category" value="uniform">유니폼</button>
+    <button type="submit" name="category" value="hat">모자</button>
+    <button type="submit" name="category" value="goods">잡화</button>
+    <button type="submit" name="category" value="cheer">응원용품</button>
+    <button type="submit" name="category" value="baseball">야구용품</button>
+  </form>
+</div>
+
 <table border="1">
   <thead>
   <tr>

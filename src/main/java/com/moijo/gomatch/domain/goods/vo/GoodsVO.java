@@ -21,4 +21,6 @@ public class GoodsVO {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime goodsOutDate; // 유통기한
+
+    private String goodsCategory; // 상품 카테고리 추가
 }

@@ -20,9 +20,18 @@ public interface GoodsMapper {
     @Select("SELECT * FROM GOODS WHERE GOODS_NO = #{goodsNo}")
     GoodsVO selectGoodsById(Long goodsNo); // 상품 조회 메소드 추가
 
+    List<GoodsVO> selectGoodsByCategory(String category); // 카테고리로 상품 조회 메소드 추가
+
     @Update("UPDATE GOODS SET GOODS_TEAM = #{goodsTeam}, GOODS_PRODUCT_NAME = #{goodsProductName}, GOODS_PRICE = #{goodsPrice} WHERE GOODS_NO = #{goodsNo}")
     void updateGoods(GoodsVO goods); // 상품 수정
 
     @Delete("DELETE FROM GOODS WHERE GOODS_NO = #{goodsNo}")
     void deleteGoods(Long goodsNo); // 상품 삭제
+
+    List<GoodsVO> searchAllGoods(String searchValue); // 전체 검색 메소드
+
+    List<GoodsVO> searchGoodsByName(String productName); // 이름으로 검색 메소드
+
+    List<GoodsVO> searchGoodsByCode(String goodsProductCode); // 코드로 검색 메소드
+
 }

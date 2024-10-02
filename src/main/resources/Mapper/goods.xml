@@ -2,23 +2,32 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.goods.mapper.GoodsMapper">
+
     <insert id="insertGoods" parameterType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
-        INSERT INTO GOODS (GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE, GOODS_PRODUCT_CODE, GOODS_FROM, GOODS_MAKE_DATE, GOODS_OUT_DATE)
-        VALUES (SEQ_GOODS_NO.NEXTVAL, #{goodsTeam}, #{goodsProductName}, #{goodsPrice}, #{goodsProductCode}, #{goodsFrom}, #{goodsMakeDate}, #{goodsOutDate})
+        INSERT INTO GOODS (GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE, GOODS_PRODUCT_CODE, GOODS_FROM, GOODS_MAKE_DATE, GOODS_OUT_DATE, GOODS_CATEGORY)
+        VALUES (SEQ_GOODS_NO.NEXTVAL, #{goodsTeam}, #{goodsProductName}, #{goodsPrice}, #{goodsProductCode}, #{goodsFrom}, #{goodsMakeDate}, #{goodsOutDate}, #{goodsCategory})
     </insert>
 
-    <select id="searchGoodsByName" parameterType="String" resultType="GoodsVO">
-        SELECT * FROM GOODS
-        WHERE GOODS_PRODUCT_NAME LIKE '%' || #{productName} || '%'
-    </select>
-
-    <select id="searchGoodsByCode" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
-        SELECT * FROM GOODS
-        WHERE GOODS_PRODUCT_CODE = #{goodsProductCode}
+    <select id="selectGoodsByCategory" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
+        SELECT * FROM GOODS WHERE GOODS_CATEGORY = #{category}
     </select>
 
     <select id="searchAllGoods" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
         SELECT * FROM GOODS
-        WHERE GOODS_PRODUCT_NAME LIKE '%' || #{searchValue} || '%' OR GOODS_PRODUCT_CODE LIKE '%' || #{searchValue} || '%' OR GOODS_TEAM LIKE '%' || #{searchValue} || '%'
+        WHERE GOODS_PRODUCT_NAME LIKE '%' || #{searchValue} || '%'
+           OR GOODS_PRODUCT_CODE LIKE '%' || #{searchValue} || '%'
+           OR GOODS_TEAM LIKE '%' || #{searchValue} || '%'
+           OR GOODS_CATEGORY LIKE '%' || #{searchValue} || '%'
     </select>
+
+    <select id="searchGoodsByName" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
+        SELECT * FROM GOODS
+        WHERE GOODS_PRODUCT_NAME LIKE '%' || #{productName} || '%'
+    </select>
+
+    <select id="searchGoodsByCode" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
+        SELECT * FROM GOODS
+        WHERE GOODS_PRODUCT_CODE = #{goodsProductCode}
+    </select>
+
 </mapper>

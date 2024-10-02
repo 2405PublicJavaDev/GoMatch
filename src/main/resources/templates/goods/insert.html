@@ -28,6 +28,16 @@
   <label for="goodsOutDate">유통기한:</label>
   <input type="datetime-local" id="goodsOutDate" name="goodsOutDate" required><br>
 
+  <label for="goodsCategory">카테고리:</label>
+  <select id="goodsCategory" name="goodsCategory" required>
+    <option value="" disabled selected>카테고리 선택</option> <!-- 기본 선택 안내 -->
+    <option value="유니폼">유니폼</option>
+    <option value="모자">모자</option>
+    <option value="잡화">잡화</option>
+    <option value="응원용품">응원용품</option>
+    <option value="야구용품">야구용품</option>
+  </select><br>
+
   <button type="submit">등록</button>
 </form>
 </body>
