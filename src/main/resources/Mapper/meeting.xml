@@ -6,12 +6,46 @@
     <select id="getGamesByDate" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
             GAME_NO,
-            GAME_DATE,
+            TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
             GAME_TIME,
             TEAM_A,
             TEAM_B,
             GAME_FIELD
         FROM GAME
-        WHERE GAME_DATE = #{date}
+        WHERE TO_CHAR(GAME_DATE, 'YYYY-MM-DD') = #{date}
     </select>
+
+    <insert id="insertMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        INSERT INTO MEETING (
+            MEETING_NO,
+            GAME_NO,
+            MEETING_TITLE,
+            MEETING_TEAM_NAME,
+            MEETING_MAX_PEOPLE,
+            MEETING_TIME,
+            MEETING_PLACE,
+            MEETING_CONTENT,
+            MEMBER_ID,
+            REG_DATE,
+            UPDATE_DATE
+        )
+        VALUES (
+        SEQ_MEETING_NO.NEXTVAL,
+            #{gameNo},
+            #{meetingTitle},
+            #{meetingTeamName},
+            #{meetingMaxPeople},
+            #{meetingTime},
+            #{meetingPlace},
+            #{meetingContent},
+            #{memberId},
+            default, default
+        )
+    </insert>
+
+    <!-- 첨부파일 -->
+    <insert id="insertMeetingFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
+        INSERT INTO MEETING_FILE (MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH, FILE_ORDER, REG_DATE, UPDATE_DATE)
+        VALUES (SEQ_MEETING_FILE_NO.NEXTVAL, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath}, #{webPath}, #{fileOrder}, default, default)
+    </insert>
 </mapper>
