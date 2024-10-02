@@ -1,9 +1,6 @@
 package com.moijo.gomatch.app.matchpredict;
 
-<<<<<<< HEAD
-=======
-//import com.moijo.gomatch.common.MemberUtils;
->>>>>>> 9c5882bf6b837b85ee1111ec6bfe20de086c04c3
+
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import jakarta.servlet.http.HttpSession;
