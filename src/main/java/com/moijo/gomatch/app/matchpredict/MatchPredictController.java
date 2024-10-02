@@ -5,9 +5,11 @@ import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -24,8 +26,7 @@ public class MatchPredictController {
      * @return
      */
     @GetMapping("/matchPredict")
-    public String showMatchPredictionListPage(Model model) {
-
+    public String showMatchPredictionListPage(HttpSession session, Model model) {
         // 승부 예측 목록 조회
         List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
 
