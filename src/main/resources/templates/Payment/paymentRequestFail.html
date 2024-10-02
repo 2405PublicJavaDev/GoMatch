@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>결제 요청 실패</title>
 </head>
 <body>
-$END$
+<h1>결제 요청 실패</h1>
+<p th:text="${error}">결제 요청에 실패했습니다. 다시 시도해 주세요.</p>
+<a href="/payment/form">결제 페이지로 돌아가기</a>
 </body>
 </html>

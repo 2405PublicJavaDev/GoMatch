@@ -5,7 +5,7 @@ import com.moijo.gomatch.domain.goods.vo.PaymentResponseVO;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface PayMapper {
+public interface PaymentMapper {
     void insertPayment(PaymentRequestVO paymentRequestVO);
-    PaymentResponseVO getPaymentById(String impUid);
+    PaymentResponseVO getPaymentById(String impUid); // 필요에 따라 구현 및 사용 검토
 }

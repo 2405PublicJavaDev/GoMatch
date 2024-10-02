@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>굿즈 등록</title>
+</head>
+<body>
+<h1>굿즈 등록</h1>
+<form action="/goods/insert" method="post">
+  <label for="goodsTeam">팀명:</label>
+  <input type="text" id="goodsTeam" name="goodsTeam" required><br>
+
+  <label for="goodsProductName">상품 이름:</label>
+  <input type="text" id="goodsProductName" name="goodsProductName" required><br>
+
+  <label for="goodsPrice">가격:</label>
+  <input type="number" id="goodsPrice" name="goodsPrice" required><br>
+
+  <label for="goodsProductCode">상품 코드:</label>
+  <input type="text" id="goodsProductCode" name="goodsProductCode" required><br>
+
+  <label for="goodsFrom">출처:</label>
+  <input type="text" id="goodsFrom" name="goodsFrom" required><br>
+
+  <label for="goodsMakeDate">제조일:</label>
+  <input type="datetime-local" id="goodsMakeDate" name="goodsMakeDate" required><br>
+
+  <label for="goodsOutDate">유통기한:</label>
+  <input type="datetime-local" id="goodsOutDate" name="goodsOutDate" required><br>
+
+  <button type="submit">등록</button>
+</form>
+</body>
+</html>
