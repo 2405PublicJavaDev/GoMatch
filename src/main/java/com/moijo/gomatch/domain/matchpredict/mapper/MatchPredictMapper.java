@@ -8,7 +8,10 @@ import java.util.List;
 @Mapper
 public interface MatchPredictMapper {
 
-
+    /**
+     * 승부예측 리스트 조회
+     * @return
+     */
     List<MatchPredict> selectAllMatchByMember();
 
     void insertMatchPredict();

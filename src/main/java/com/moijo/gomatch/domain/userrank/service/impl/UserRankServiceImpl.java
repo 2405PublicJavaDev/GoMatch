@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserRankServiceImpl implements UserRankService {
 
-    private final UserRankMapper userRankMapper;
     @Override
     public void getRankList() {
 

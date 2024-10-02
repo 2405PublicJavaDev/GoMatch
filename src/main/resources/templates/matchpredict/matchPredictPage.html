@@ -1,64 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>승부 예측</title>
-    <link rel="stylesheet" href="matchPredictPage.html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>승부예측</title>
+    <link rel="stylesheet" href="/css/MatchPredict.css">
+    <link rel="stylesheet" href="/css/header-footer.css">
 </head>
 <body>
-    <h1>승부 예측</h1>
-    <div class="main-left">
-        <div class="predict-btn">
+<th:block th:replace="fragments/header.html"></th:block>
+<main class="main-content">
+    <section class="prediction-section">
+        <div class="btn-container">
             <div class="match-predict">
-                <span>승부 예측</span>
+            <button class="match-predict-btn" type="button">
+                <h2>승부 예측</h2>
+            </button>
             </div>
-            <div class="my-predict">
-                <span>나의 예측</span>
-            </div>
-        </div>
-        <div class="weekly-predict">
-            <!--날짜로 바꿀거임-->
-            <div class="two days ago">
-                <span>이틀전</span>
-            </div>
-            <div class="yseterday">
-                <span>어제</span>
-            </div>
-            <div class="today">
-                <span>오늘</span>
-            </div>
-            <div class="twomorow">
-                <span>내일</span>
-            </div>
-            <div class="two days later">
-                <span>이툴후</span>
+            <div class="myMatch-predict">
+                <button class="myMatch-predict-btn" type="button">
+                    <h2>나의 예측</h2>
+                </button>
             </div>
         </div>
-        <div class="predict-list">
-            <div class="predict-title">
-                <span><img src="#" alt="홈페이지 로고"></span>
-                GoMatch
-            </div>
-            <div class="team-a">
-                <img src="#" alt="팀 로고">
-            </div>
-            <div class="draw">
-                <span>무승부</span>
-            </div>
-            <div class="team-b">
-                <img src="#" alt="팀 로고">
-            </div>
+        <div class="date-selector">
+            <button class="date active">오늘 1</button>
+            <button class="date">2</button>
+            <button class="date">3</button>
+            <button class="date">4</button>
+            <button class="date">5</button>
+            <button class="date">6</button>
+            <button class="date">7</button>
         </div>
-    </div>
-    <div class="main-right">
+        <ul class="game-list">
+            <li th:each="predict : ${matchPredictions}" class="game-item">
+                <span class="league">
+                    <img src="/img/고매치로고.png">
+                    GoMatch
+                </span>
+                <div class="upcoming-games">
+                    <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
+                    <span class="time-out">후 종료</span>
+                </div>
+                <div class="teams">
+                    <button type="button" class="team-a">
+                        <span>KT</span>
+                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                    </button>
+                    <button type="button" class="draw">
+                        <span class="vs">무승부</span>
+                    </button>
+                    <button type="button" class="team-b">
+                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                        <span>LG</span>
+                    </button>
+                </div>
+            </li>
+            <li class="game-item">
+                <span class="league">
+                    <img src="/img/고매치로고.png">
+                    GoMatch
+                </span>
+                <div class="upcoming-games">
+                    <span class="time">17:00 경기예정</span>
+                    <span class="time-out">후 종료</span>
+                </div>
+                <div class="teams">
+                    <button type="button" class="team-a">
+                        <span>KT</span>
+                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                    </button>
+                    <button type="button" class="draw">
+                        <span class="vs">무승부</span>
+                    </button>
+                    <button type="button" class="team-b">
+                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                        <span>LG</span>
+                    </button>
+                </div>
+            </li>
+            <li class="game-item">
+                <span class="league">
+                    <img src="/img/고매치로고.png">
+                    GoMatch
+                </span>
+                <div class="upcoming-games">
+                    <span class="time">17:00 경기예정</span>
+                    <span class="time-out">후 종료</span>
+                </div>
+                <div class="teams">
+                    <button type="button" class="team-a">
+                        <span>KT</span>
+                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                    </button>
+                    <button type="button" class="draw">
+                        <span class="vs">무승부</span>
+                    </button>
+                    <button type="button" class="team-b">
+                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                        <span>LG</span>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <aside class="calendar-section">
         <div class="member-info">
-            <span class="nick-name" name="memberNickname">님</span>
-            <span>이번 주 현재 순위는 -위 입니다.</span>
+            <div class="member-id" name="member-id">
+                <div>
+                    <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
+                    <span>홍길동님 안녕하세요</span>
+                </div>
+            </div>
+            <div class="exp-point">
+                <span>현재 경험치는 1000 점 입니다.</span>
+            </div>
+            <div class="user-rank">
+                <span>현재 순위는 -위 입니다.</span>
+            </div>
         </div>
-        <div class="userRank-list">
+        <h3 class="calendar-title">2024.10</h3>
+        <div class="calendar-week">
+            <button class="week-date" type="button">10월 1주</button>
+            <button class="week-date" type="button">10월 2주</button>
+            <button class="week-date" type="button">10월 3주</button>
+            <button class="week-date" type="button">10월 4주</button>
+        </div>
+        <div class="user-points">
+            <p>전체 예측에서 <strong>18,076위</strong> 상위 28%입니다.</p>
+            <div class="progress-bar">
 
+            </div>
+        </div>
+        <div class="top-predictors">
+            <ol>
+                <h4>랭킹</h4>
+                <li>
+                    <div class="rank-position">
+                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+                        <span class="rank">1</span>
+                    </div>
+                    <span class="name">김철수</span>
+                    <span class="points">760</span>
+                </li>
+                <li>
+                    <div class="rank-position">
+                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+                        <span class="rank">2</span>
+                    </div>
+                    <span class="name">홍길동</span>
+                    <span class="points">750</span>
+                </li>
+                <li>
+                    <div class="rank-position">
+                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+                        <span class="rank">3</span>
+                    </div>
+                    <span class="name">아무개</span>
+                    <span class="points">740</span>
+                </li>
+                <div class="my-predictors">
+                    <li>
+                        <div class="rank-position">
+                            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+                            <span class="rank">2</span>
+                        </div>
+                        <span class="name">홍길동<span>(나)</span></span>
+                        <span class="points">750</span>
+                    </li>
+                </div>
+            </ol>
+        </div>
+        <div class="select-list">
+            <button>100위 더보기 ></button>
+        </div>
+    </aside>
+</main>
+<footer>
+    <div class="footer-container">
+        <div class="footer-info">
+            <div class="footer-links">
+                <a href="#">공지사항</a>
+                <a href="#">7~8월 K리그 베스트 플레이어 & MY...</a>
+                <a href="#">홈</a>
+                <a href="#">야구</a>
+                <a href="#">해외축구</a>
+                <a href="#">축구</a>
+                <a href="#">농구</a>
+                <a href="#">배구</a>
+                <a href="#">N골프</a>
+                <a href="#">일반-펠리칸</a>
+                <a href="#">e스포츠</a>
+                <a href="#">연재</a>
+            </div>
+        </div>
+        <div class="footer-details">
+            <div class="company-info">
+                <p>대표이사: 최수연</p>
+                <p>전화: 1588-3200 (대표전화/고객센터)</p>
+                <p>사업자등록번호: 220-81-62517</p>
+            </div>
+            <div class="address">
+                <p>주소: 경기도 성남시 분당구 정자동로 95 NAVER 1784, 13561</p>
+                <p>이메일: helpcustomer@naver.com</p>
+                <p>통신판매업자 등록번호: 제2006-경기성남-692호</p>
+            </div>
+            <div class="responsible-person">
+                <p>기사배열 책임자: 김수향</p>
+                <p>청소년 보호 책임자: 이정규</p>
+            </div>
+            <div class="copyright">
+                <p>본 콘텐츠의 저작권은 저작권법 또는 네이버에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적 책임을 질 수 있습니다.</p>
+            </div>
         </div>
     </div>
+</footer>
 
+<th:block th:replace="fragments/footer.html"></th:block>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 승부 예측 버튼에 active 클래스를 추가
+        const matchPredictBtn = document.querySelector(".match-predict-btn");
+        const myMatchPredictBtn = document.querySelector(".myMatch-predict-btn");
+
+        // 기본으로 '승부 예측' 버튼 활성화
+        matchPredictBtn.classList.add("active");
+
+        // 승부 예측 버튼 클릭 시 스타일 전환
+        matchPredictBtn.addEventListener("click", function () {
+            matchPredictBtn.classList.add("active");
+            myMatchPredictBtn.classList.remove("active");
+            // 여기에 승부 예측 리스트를 조회하는 함수 추가 가능
+        });
+
+        // 나의 예측 버튼 클릭 시 스타일 전환
+        myMatchPredictBtn.addEventListener("click", function () {
+            myMatchPredictBtn.classList.add("active");
+            matchPredictBtn.classList.remove("active");
+            // 여기에 나의 예측 리스트를 조회하는 함수 추가 가능
+        });
+
+        // 기본적으로 오늘 날짜 버튼 활성화
+        const todayButton = document.querySelector(".date.active"); // 오늘 날짜 버튼 (기본적으로 "오늘 1"에 active 클래스가 있는 경우)
+        todayButton.classList.add("active");
+
+        // 날짜 버튼들 선택
+        const dateButtons = document.querySelectorAll(".date");
+        dateButtons.forEach(function (dateButton) {
+            dateButton.addEventListener("click", function () {
+                // 모든 날짜 버튼에서 active 클래스 제거
+                dateButtons.forEach(function (btn) {
+                    btn.classList.remove("active");
+                });
+                // 클릭된 날짜 버튼에 active 클래스 추가
+                this.classList.add("active");
+            });
+        });
+        const teamsButtons = document.querySelectorAll(".team-a, .draw, .team-b");
+        teamsButtons.forEach(function (teamButton){
+            teamButton.addEventListener("click",function (){
+                const perentGameItem = this.closest(".game-item");
+                const sublingButtons = perentGameItem.querySelectorAll(".team-a, .draw, .team-b");
+                sublingButtons.forEach(function (btn){
+                    btn.classList.remove("active");
+                });
+                this.classList.add("active");
+            });
+        });
+
+        const weekButtons = document.querySelectorAll(".week-date");
+        weekButtons.forEach(function (weekButton) {
+            weekButton.addEventListener("click", function () {
+                weekButtons.forEach(function (btn) {
+                    btn.classList.remove("active");
+                });
+                this.classList.add("active");
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @ToString
 @AllArgsConstructor
 @Slf4j
-public class MatchPredict {
+public class MyMatchPredict {
     private Long matchPredictNo;
     private String matchPredictDecision;
     private String memberId;

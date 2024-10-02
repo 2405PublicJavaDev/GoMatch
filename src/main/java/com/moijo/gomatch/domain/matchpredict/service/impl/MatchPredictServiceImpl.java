@@ -6,7 +6,6 @@ import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,11 +15,15 @@ import java.util.List;
 public class MatchPredictServiceImpl implements MatchPredictService {
     private final MatchPredictMapper matchPredictMapper;
 
-
+    /**
+     * 승부예측 리스트 조회
+     * @return
+     */
     @Override
     public List<MatchPredict> getAllMatchByMember() {
         return matchPredictMapper.selectAllMatchByMember();
     }
+
 
     @Override
     public void addMatchPredict() {
