@@ -1,0 +1,112 @@
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+    display: flex;
+    justify-content: center;
+}
+.sidebar {
+    width: 200px;
+    background-color: #f0f0f0;
+    height: 200vh;
+    text-align: center;
+}
+.sidebar a {
+    text-decoration-line: none;
+    color: #000;
+}
+.sidebarmember:hover, .sidebarmember2:hover {
+    background-color: #ffffff;
+}
+.sidebarmember, .sidebarmember2 {
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+}
+.sidebarmember {
+    margin-top: 70px;
+}
+.content {
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 1200px;
+    width: 1200px;
+    margin-bottom: 200px;
+}
+.content a {
+    text-decoration-line: none;
+    color: black;
+}
+.content a:hover {
+    color: #666;
+}
+h1 {
+    margin-top: 30px;
+}
+p{
+    font-size: 20px;
+    margin-bottom: 50px;
+
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+.search-bar {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+}
+.search-bar select {
+    padding: 5px;
+    margin-right: 10px;
+}
+.search-bar input {
+    padding: 5px;
+    margin-right: 10px;
+    width: 500px;
+
+}
+.search-bar button, .action-button {
+    padding: 5px 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.action-button {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+.pagination a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.pagination a:hover {
+    background-color: #ddd;
+}

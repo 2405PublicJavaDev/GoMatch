@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 관리</title>
+    <link rel="stylesheet" href="../css/admin-member.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebarmember"><a href="#"><h3>회원 관리</h3></a></div>
+    <div class="sidebarmember2"><a href="#"><h3>상품 관리</h3></a></div>
+</div>
+<div class="content">
+    <a href="admin-mainpage.html"><h1>관리자 페이지</h1></a>
+    <p>관리자 계정으로 로그인 하였습니다.</p>
+
+    <!-- <h1>회원 관리</h1>
+    <div class="search-bar">
+        <input type="text" placeholder="검색어를 입력하세요">
+        <button>검색</button>
+    </div> -->
+    <h1>회원 관리</h1>
+    <div class="search-bar">
+        <select id="searchType">
+            <option value="all">전체</option>
+            <option value="id">아이디</option>
+            <option value="email">이메일</option>
+            <option value="joinDate">가입날짜</option>
+        </select>
+        <input type="text" class="searchInput" placeholder="검색어를 입력하세요">
+        <button onclick="search()">검색</button>
+    </div>
+    <table>
+        <tr>
+            <th>선택</th>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>이메일 주소</th>
+            <th>가입 날짜</th>
+            <th>상세 보기</th>
+        </tr>
+        <tr>
+            <td><input type="checkbox"></td>
+            <td>user01</td>
+            <td>임용자</td>
+            <td>user01@gmail.com</td>
+            <td>2024.08.26</td>
+            <td><button class="action-button">상세 보기</button></td>
+        </tr>
+        <!-- 추가 행들 (총 10개 행) -->
+        <tr>
+            <td><input type="checkbox"></td>
+            <td>user10</td>
+            <td>임용자</td>
+            <td>user01@gmail.com</td>
+            <td>2024.08.26</td>
+            <td><button class="action-button">상세 보기</button></td>
+        </tr>
+    </table>
+    <div class="pagination">
+        <a href="#">&laquo;</a>
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">&raquo;</a>
+    </div>
+</div>
+</body>
+</html>
