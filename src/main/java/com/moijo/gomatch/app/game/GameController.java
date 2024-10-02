@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
-<<<<<<< HEAD
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class GameController {
         // 크롤링 한 데이터로부터 gameList 리스트 생성
         List<GameVO> gameList = gameBatchComponent.scrapeSchedule(month);
         model.addAttribute("games", gameList);  // gameList를 games라는 이름으로 페이지에 저장
-        return "game/listPage";  
+        return "game/listPage";
     }
 
     // 경기 일정 등록하는 메소드 
@@ -31,8 +30,4 @@ public class GameController {
 //    public String getGameList(Model model) {
 //
 //    }
-=======
-public class GameController {
-    // 충돌 해겨어얼
->>>>>>> 9c5882bf6b837b85ee1111ec6bfe20de086c04c3
 }

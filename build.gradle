@@ -36,15 +36,12 @@ dependencies {
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-<<<<<<< HEAD
     implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.json:json:20240303'
-=======
 
     // PortOne SDK 추가
     implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
->>>>>>> 9c5882bf6b837b85ee1111ec6bfe20de086c04c3
 }
 
 tasks.named('test') {
