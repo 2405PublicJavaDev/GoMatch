@@ -1,0 +1,67 @@
+.container {
+    display: flex;
+    background-color: white;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    margin-bottom: 30px;
+}
+.image-container img{
+    width: 550px;
+    height: 500px;
+    margin-right: 40px;
+    background-color: #ddd;
+}
+.form-container {
+    padding: 20px;
+    width: 550px;
+}
+h2 {
+    margin-top: 0;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    margin-top: 10px;
+    font-size: 14px;
+}
+input {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
+}
+.emailbox {
+    width: 300px;
+    display: flex;
+}
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #699ed6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+
+.email-input {
+    display: flex;
+    align-items: center;
+    margin-top: -10px;
+}
+.email-input input {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+.emailbutton{
+    margin-bottom: 15px;
+}
+

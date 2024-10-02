@@ -1,13 +1,30 @@
 
 /* ==================================================== 메인 페이지 ===================================================*/
+.container {
+    display: flex;
+    background-color: rgba(226, 233, 241, 0.3);
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    margin: 50px auto;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    max-width: 1200px;
+
+}
+.image-container img{
+    width: 600px;
+    height: 550px;
+    margin-right: 40px;
+    background-color: #ddd;
+}
 .login-container {
     max-width: 600px;
     height: 500px;
-    margin: 50px auto;
-    padding: 20px;
+    padding: 50px;
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 h2 {
     text-align: center;
@@ -43,7 +60,7 @@ button {
     color: #333;
     border: 1px solid #ddd;
     width: 450px;
-    margin-left: 75px;
+    margin-left: 20px;
 }
 .find-member {
     font-size: 14px;
@@ -79,7 +96,7 @@ button {
     display: flex;
     justify-content: space-evenly;
     border: 1px solid #ddd;
-    margin-left: 75px;
+    margin-left: 20px;
 }
 .naver-btn {
     background-color: #03C75A;
@@ -87,7 +104,7 @@ button {
     display: flex;
     justify-content: space-evenly;
     border: 1px solid #ddd;
-    margin-left: 75px;
+    margin-left: 20px;
 }
 
 

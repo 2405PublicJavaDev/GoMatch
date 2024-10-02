@@ -1,0 +1,56 @@
+.delete-container {
+    max-width: 800px;
+    height: 450px;
+    margin: 100px auto;
+    background-color: #e7e4e4;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    padding: 50px;
+    border-radius: 8px;
+}
+.delete-container h2 {
+    margin-top: 50px;
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: #e7e4e4;
+    /* background-color: #a3a2a2; */
+}
+
+.form-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+.form-inputs {
+    width: 48%;
+    margin-top: 20px;
+}
+.form-message {
+    width: 48%;
+}
+.form-group {
+    margin-bottom: 20px;
+
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+.form-message-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 150px;
+}
+.submit-btn {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 20px;
+    width: 200px;
+    margin-top: 10px;
+    margin: 0, auto;
+    margin-left: 100px;
+}
