@@ -6,12 +6,40 @@
     <select id="getGamesByDate" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
             GAME_NO,
-            GAME_DATE,
-            GAME_TIME,
+            TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
+            TO_CHAR(GAME_TIME, 'HH24:MI:SS') AS GAME_TIME,
             TEAM_A,
             TEAM_B,
             GAME_FIELD
         FROM GAME
-        WHERE GAME_DATE = #{date}
+        WHERE TO_CHAR(GAME_DATE, 'YYYY-MM-DD') = #{date}
     </select>
+
+    <insert id="insertMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        INSERT INTO MEETING (
+            MEETING_NO,
+            GAME_NO,
+            MEETING_TITLE,
+            MEETING_TEAM_NAME,
+            MEETING_MAX_PEOPLE,
+            MEETING_TIME,
+            MEETING_PLACE,
+            MEETING_CONTENT,
+            MEMBER_ID,
+            REG_DATE,
+            UPDATE_DATE
+        )
+        VALUES (
+        SEQ_MEETING_NO.NEXTVAL,  <!-- 시퀀스를 사용하여 고유한 MEETING_NO 생성 -->
+            #{gameNo},
+            #{meetingTitle},
+            #{meetingTeamName},
+            #{meetingMaxPeople},
+            #{meetingTime},
+            #{meetingPlace},
+            #{meetingContent},
+            #{memberId},
+            default, default
+        )
+    </insert>
 </mapper>

@@ -12,7 +12,7 @@ public class MeetingVO {
     private int gameNo;
     private String meetingTitle;
     private String meetingTeamName;
-    private int meetingMemberCount;
+    private int meetingMaxPeople;
     private String meetingTime;
     private String meetingPlace;
     private String meetingContent;
