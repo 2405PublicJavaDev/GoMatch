@@ -28,7 +28,7 @@
 
 <main>
   <h1>소모임 개설하기</h1>
-  <form action="/meeting/register" method="post" onsubmit="combineAddress(); return validateForm()">
+  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="combineAddress(); return validateForm()">
     <input type="hidden" value="{memberId}">
 
     <!-- 경기 날짜 선택 -->
@@ -122,11 +122,12 @@
       <textarea id="meetingContent" name="meetingContent" placeholder="모임의 내용을 입력해주세요" required></textarea>
     </div>
 
-    <!-- 사진 첨부 -->
+    <!-- 파일 업로드 필드 -->
     <div class="form-group">
       <label for="groupImage">사진 첨부</label>
-      <input type="file" id="groupImage" name="groupImage" accept="image/*">
+      <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple>
     </div>
+
 
     <div class="buttons">
       <button type="submit" class="submit">등록</button>

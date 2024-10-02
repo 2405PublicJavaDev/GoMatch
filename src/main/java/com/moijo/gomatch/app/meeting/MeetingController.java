@@ -1,5 +1,6 @@
 package com.moijo.gomatch.app.meeting;
 
+import com.moijo.gomatch.common.FileUtil;
 import com.moijo.gomatch.domain.game.vo.GameVO;
 import com.moijo.gomatch.domain.meeting.service.MeetingService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -19,6 +22,7 @@ import java.util.List;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final FileUtil fileUtil;
 
     /**
      * 담당자 : 김윤경
@@ -76,18 +80,26 @@ public class MeetingController {
 //    }
 
     @PostMapping("/meeting/register")
-    public String addMeeting(MeetingVO meetingVO, HttpSession session) {
-        // 테스트용으로 세션에 임시 사용자 정보 설정
+    public String addMeeting(MeetingVO meetingVO,
+                             @RequestParam("groupImage") List<MultipartFile> groupImages,
+                             HttpSession session) throws IOException {
+
+        // 세션에서 사용자 ID 가져오기
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            // 테스트 중 로그인 구현이 안 되어 있으므로 임의의 사용자 ID를 설정
-            memberId = "user9"; // 임시 회원 ID
+            memberId = "user9"; // 테스트용 ID
             session.setAttribute("memberId", memberId);
         }
-        // 소모임 정보를 등록하는 코드
+        // 소모임 정보 등록
         meetingVO.setMemberId(memberId);
         meetingService.addMeeting(meetingVO);
+
+        // 파일 업로드 처리 (파일이 있으면)
+        if (!groupImages.isEmpty()) {
+            fileUtil.uploadFiles(groupImages, Long.valueOf(meetingVO.getMeetingNo()), "meeting");
+        }
         return "redirect:/meeting/meeting"; // 소모임 목록 페이지로 리다이렉트
     }
+
 
 }

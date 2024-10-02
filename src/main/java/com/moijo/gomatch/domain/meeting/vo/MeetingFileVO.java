@@ -10,9 +10,11 @@ import java.sql.Timestamp;
 public class MeetingFileVO {
     private int meetingFileNo;
     private String fileName;
+    private String fileRename;
     private String filePath;
     private Timestamp regDate;
     private Timestamp updateDate;
+    private String webPath;
     private int fileOrder;
     private int meetingNo;
 }

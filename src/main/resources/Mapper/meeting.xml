@@ -7,7 +7,7 @@
         SELECT
             GAME_NO,
             TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
-            TO_CHAR(GAME_TIME, 'HH24:MI:SS') AS GAME_TIME,
+            GAME_TIME,
             TEAM_A,
             TEAM_B,
             GAME_FIELD
@@ -30,7 +30,7 @@
             UPDATE_DATE
         )
         VALUES (
-        SEQ_MEETING_NO.NEXTVAL,  <!-- 시퀀스를 사용하여 고유한 MEETING_NO 생성 -->
+        SEQ_MEETING_NO.NEXTVAL,
             #{gameNo},
             #{meetingTitle},
             #{meetingTeamName},
@@ -41,5 +41,11 @@
             #{memberId},
             default, default
         )
+    </insert>
+
+    <!-- 첨부파일 -->
+    <insert id="insertMeetingFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
+        INSERT INTO MEETING_FILE (MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH, FILE_ORDER, REG_DATE, UPDATE_DATE)
+        VALUES (SEQ_MEETING_FILE_NO.NEXTVAL, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath}, #{webPath}, #{fileOrder}, default, default)
     </insert>
 </mapper>
