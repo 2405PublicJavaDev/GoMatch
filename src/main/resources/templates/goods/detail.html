@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>상품 상세 조회</title>
+</head>
+<body>
+<h1 th:text="${goods.goodsProductName}"></h1>
+<p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>
+<p>팀: <span th:text="${goods.goodsTeam}"></span></p>
+<p>가격: <span th:text="${goods.goodsPrice}"></span></p>
+<p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>
+<p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>
+<p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
+<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p> <!-- 카테고리 추가 -->
+
+<!-- 수정 버튼 추가 -->
+<a th:href="@{/goods/edit/{goodsNo}(goodsNo=${goods.goodsNo})}"><button>수정</button></a>
+
+<form th:action="@{/goods/delete}" method="post">
+  <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}"/>
+  <button type="submit">삭제</button>
+</form>
+
+<a href="/goods/list">목록으로 돌아가기</a>
+</body>
+</html>

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
+<<<<<<< HEAD
 
 import java.util.List;
 
@@ -30,4 +31,8 @@ public class GameController {
 //    public String getGameList(Model model) {
 //
 //    }
+=======
+public class GameController {
+    // 충돌 해겨어얼
+>>>>>>> 9c5882bf6b837b85ee1111ec6bfe20de086c04c3
 }

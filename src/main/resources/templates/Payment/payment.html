@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 요청</title>
+</head>
+<body>
+<h1>결제 요청</h1>
+<form action="/payment/request" method="post">
+  <label>결제 금액:</label>
+  <input type="text" name="amount" required><br>
+  <label>구매자 이름:</label>
+  <input type="text" name="buyerName" required><br>
+  <label>구매자 이메일:</label>
+  <input type="email" name="buyerEmail" required><br>
+  <label>구매자 전화번호:</label>
+  <input type="text" name="buyerPhone" required><br>
+  <label>상품명:</label>
+  <input type="text" name="productName" required><br>
+  <button type="submit">결제하기</button>
+</form>
+</body>
+</html>
