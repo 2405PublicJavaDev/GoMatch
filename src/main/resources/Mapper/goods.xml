@@ -9,7 +9,9 @@
     </insert>
 
     <select id="selectGoodsByCategory" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
-        SELECT * FROM GOODS WHERE GOODS_CATEGORY = #{category}
+        SELECT GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE
+        FROM GOODS
+        WHERE GOODS_CATEGORY = #{category}
     </select>
 
     <select id="searchAllGoods" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">

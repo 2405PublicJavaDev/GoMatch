@@ -12,13 +12,21 @@
     <p>상품 이름: <input type="text" name="goodsProductName" th:value="${goods.goodsProductName}"/></p>
     <p>가격: <input type="number" name="goodsPrice" th:value="${goods.goodsPrice}"/></p>
     <p>상품 코드: <input type="text" name="goodsProductCode" th:value="${goods.goodsProductCode}"/></p>
-    <p>제조일: <input type="date" name="goodsMakeDate" th:value="${goods.goodsMakeDate}"/></p>
-    <p>출시일: <input type="date" name="goodsOutDate" th:value="${goods.goodsOutDate}"/></p>
-    <p>카테고리: <input type="text" name="goodsCategory" th:value="${goods.goodsCategory}" required/></p> <!-- 카테고리 입력 필드 추가 -->
+
+    <!-- 날짜 포맷 수정 -->
+    <p>제조일: <input type="date" name="goodsMakeDate" th:value="${#temporals.format(goods.goodsMakeDate, 'yyyy-MM-dd')}"/></p>
+    <p>유통기한: <input type="date" name="goodsOutDate" th:value="${#temporals.format(goods.goodsOutDate, 'yyyy-MM-dd')}"/></p>
+
+    <p>카테고리: <select name="goodsCategory" required>
+        <option value="유니폼" th:selected="${goods.goodsCategory == '유니폼'}">유니폼</option>
+        <option value="모자" th:selected="${goods.goodsCategory == '모자'}">모자</option>
+        <option value="잡화" th:selected="${goods.goodsCategory == '잡화'}">잡화</option>
+        <option value="응원용품" th:selected="${goods.goodsCategory == '응원용품'}">응원용품</option>
+        <option value="야구용품" th:selected="${goods.goodsCategory == '야구용품'}">야구용품</option>
+    </select> </p>
 
     <button type="submit">수정하기</button>
+    <button><a href="/goods/list">목록</a></button>
 </form>
-
-<a href="/goods/list">목록으로 돌아가기</a>
 </body>
 </html>
