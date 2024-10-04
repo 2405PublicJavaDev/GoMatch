@@ -35,6 +35,7 @@
     <div class="form-group">
       <label for="gameDate">경기 날짜</label>
       <input type="date" id="gameDate" name="gameDate" required>
+      <input type="hidden" id="meetingDate" name="meetingDate">
     </div>
 
     <!-- 경기 정보 선택 -->
@@ -163,6 +164,12 @@
 
   document.getElementById('gameDate').setAttribute('min', todayStr);
   document.getElementById('gameDate').setAttribute('max', sixMonthsLaterStr);
+
+  // 경기 날짜 선택 시 meetingDate에 자동으로 같은 날짜를 설정
+  document.getElementById('gameDate').addEventListener('change', function() {
+    const selectedDate = this.value;
+    document.getElementById('meetingDate').value = selectedDate;
+  });
 
   // 경기 날짜 선택 시 AJAX로 해당 날짜의 경기 정보 조회
   $('#gameDate').on('change', function() {

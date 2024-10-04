@@ -5,6 +5,7 @@ import com.moijo.gomatch.domain.meeting.mapper.MeetingMapper;
 import com.moijo.gomatch.domain.meeting.service.MeetingService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -27,5 +28,14 @@ public class MeetingServiceImpl implements MeetingService {
         meetingVO.setRegDate(new Timestamp(System.currentTimeMillis()));
         meetingMapper.insertMeeting(meetingVO); // DB에 등록
     }
+    @Override
+    public List<MeetingVO> getMeetingsByDate(String date) {
+        return meetingMapper.getMeetingsByDate(date);
+    }
+    @Override
+    public List<MeetingVO> getMeetingsByDateAndTeam(String date, String team) {
+        return meetingMapper.getMeetingsByDateAndTeam(date, team);
+    }
 
 }
+

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -32,12 +33,6 @@ public class MeetingController {
      * 관련 기능 : [페이지 폼] 소모임 개설하기
      * 설명 : 소모임 개설 페이지 보여주기
      */
-//    @GetMapping("/meeting/register")
-//    public String showAddMeetingPage(HttpSession session, Model model) {
-//        String memberId = (String) session.getAttribute("memberId");
-//        model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
-//        return "meeting/meeting-register";
-//    }
     @GetMapping("/meeting/register")
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
@@ -49,7 +44,6 @@ public class MeetingController {
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
         return "meeting/meeting-register";
     }
-
 
     /**
      * 담당자 : 김윤경
@@ -69,19 +63,6 @@ public class MeetingController {
      * 관련 기능 : [Register] 소모임 개설하기
      * 설명 : 세션에 있는 멤버 아이디 불러와서 소모임 등록하기
      */
-//    @PostMapping("/meeting/register")
-//    public String addMeeting(MeetingVO meetingVO, HttpSession session) {
-//        String memberId = (String) session.getAttribute("memberId");
-//        if (memberId == null) {
-//            return "redirect:/login";
-//        }
-//        // 세션에서 회원 ID를 설정
-//        meetingVO.setMemberId(memberId);
-//        // 소모임 등록 서비스 호출
-//        meetingService.addMeeting(meetingVO);
-//        return "redirect:/meeting/meeting";
-//    }
-
     @PostMapping("/meeting/register")
     public String addMeeting(MeetingVO meetingVO,
                              @RequestParam("groupImage") List<MultipartFile> groupImages,
@@ -100,6 +81,31 @@ public class MeetingController {
             fileUtil.uploadFiles(groupImages, Long.valueOf(meetingVO.getMeetingNo()), "meeting");
         }
         return "redirect:/meeting/meeting"; // 소모임 목록 페이지로 리다이렉트
+    }
+
+    @GetMapping("/meeting/list")
+    public String showMeetingList(Model model) {
+        // 예시 팀 이름 리스트를 모델에 추가
+        model.addAttribute("teams", List.of("KIA 타이거즈", "롯데 자이언츠", "삼성 라이온즈", "두산베어스", "KT 위즈", "SSG랜더스", "NC 다이노스", "한화 이글스", "키움 히어로즈", "LG 트윈스"));
+        // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
+        String today = LocalDate.now().toString();
+        List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
+        model.addAttribute("meetings", meetings);
+        return "meeting/meeting-list";
+    }
+
+    @GetMapping("/meeting/listByDate")
+    @ResponseBody
+    public List<MeetingVO> getMeetingsByDate(@RequestParam("date") String date) {
+        return meetingService.getMeetingsByDate(date);
+
+    }
+
+    @GetMapping("/meeting/listByDateAndTeam")
+    @ResponseBody
+    public List<MeetingVO> getMeetingsByDateAndTeam(@RequestParam("date") String date,
+                                                    @RequestParam("team") String team) {
+        return meetingService.getMeetingsByDateAndTeam(date, team);
     }
 
 }

@@ -1,254 +1,207 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>소모임 리스트</title>
+    <!-- 메인 css -->
+    <link rel="stylesheet" href="/css/meeting-list.css">
+    <!-- 헤더/푸터 CSS-->
+    <link rel="stylesheet" href="/css/header-footer.css">
     <!-- FullCalendar CSS 로드 -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
-    <!-- FullCalendar JS 로드 -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: normal;
-        }
-        .calendar-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        #calendar {
-            width: 100%;
-            max-width: 800px;
-            background-color: white;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .tags {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .tag {
-            padding: 5px 10px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .tag:hover {
-            background-color: #e0e0e0;
-        }
-        .button {
-            display: block;
-            width: 200px;
-            padding: 10px;
-            background-color: #00AEEF;
-            color: white;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 20px auto;
-        }
-        .button:hover {
-            background-color: #0090C5;
-        }
-        .items {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .item {
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: white;
-            display: flex;
-            align-items: center;
-        }
-        .item-image {
-            width: 100px;
-            height: 100px;
-            background-color: #ddd;
-            margin-right: 20px;
-            border-radius: 5px;
-        }
-        .item-content {
-            flex-grow: 1;
-        }
-        .item-content h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .pagination a {
-            padding: 5px 10px;
-            margin: 0 5px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            color: #333;
-        }
-        .pagination a.active {
-            background-color: #666;
-            color: white;
-        }
-        .no-meetings {
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-    </style>
+    <!-- 페이지네이션 CSS-->
+    <link rel="stylesheet" href="/css/pagination.css">
 </head>
 <body>
-<div class="container">
-    <h1>소모임 리스트</h1>
 
-    <div class="calendar-container">
-        <div id="calendar"></div>
+<header>
+    <nav>
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="야구 리그 로고">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="#">승부예측</a></li>
+        </ul>
+        <ul class="member-links">
+            <li><a href="loginpage.html">로그인</a></li>
+            <li><a href="#">회원가입</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h1>소모임 리스트</h1>
+
+        <!-- 달력 및 필터를 같은 행에 배치하기 위한 컨테이너 -->
+        <div class="content-container">
+            <!-- 날짜별 달력 영역 -->
+            <div class="calendar-container">
+                <h3>날짜별</h3>
+                <div id="calendar"></div>
+            </div>
+
+            <!-- 팀별 필터 영역 -->
+            <div class="filter-container">
+                <h3>팀별</h3>
+                <div class="tags">
+                    <div class="tag" onclick="filterByTeam('전체')">전체</div>
+                    <div class="tag" th:each="team : ${teams}" th:text="${team}" onclick="filterByTeam('${team}')"></div>
+                </div>
+            </div>
+        </div>
+
+        <button class="button">소모임 개설하기</button>
+
+        <div style="clear: both;">
+            <span>* Total : <span id="total-count">0</span> 건</span>
+            <span style="float: right;">Page : 1 / 1</span>
+        </div>
+
+        <div id="meeting-list" class="items">
+            <!-- 소모임 리스트 출력 -->
+            <div th:each="meeting : ${meetings}" class="item">
+                <div class="item-image"></div>
+                <div class="item-content">
+                    <h3 th:text="${meeting.meetingTeamName}">팀 이름</h3>
+                    <p th:text="${meeting.meetingTime}">경기 시간</p>
+                    <p th:text="${meeting.meetingTitle}">소모임 제목</p>
+                    <p>인원 현황 : <span th:text="${meeting.meetingMaxPeople}">0</span>명</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-meetings" class="no-meetings" th:if="${#lists.isEmpty(meetings)}">
+            개설된 소모임이 없습니다.
+        </div>
+
     </div>
 
-    <div class="tags">
-        <div class="tag">전체</div>
-        <div class="tag">KIA 타이거즈</div>
-        <div class="tag">롯데 자이언츠</div>
-        <div class="tag">삼성 라이온즈</div>
-        <div class="tag">두산베어스</div>
-        <div class="tag">KT 위즈</div>
-        <div class="tag">SSG랜더스</div>
-        <div class="tag">NC 다이노스</div>
-        <div class="tag">한화 이글스</div>
-        <div class="tag">키움 히어로즈</div>
-        <div class="tag">LG 트윈스</div>
+</main>
+
+
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>개인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 중구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
     </div>
-
-    <button class="button">소모임 개설하기</button>
-
-    <div style="clear: both;">
-        <span>* Total : <span id="total-count">0</span> 건</span>
-        <span style="float: right;">Page : 1 / 1</span>
-    </div>
-
-    <div id="meeting-list" class="items">
-        <!-- Meetings will be displayed here -->
-    </div>
-
-    <div id="no-meetings" class="no-meetings" style="display: none;">
-        개설된 소모임이 없습니다.
-    </div>
-
-    <div class="pagination">
-        <a href="#">&lt;</a>
-        <a href="#" class="active">1</a>
-        <a href="#">&gt;</a>
-        <a href="#">&raquo;</a>
-    </div>
-</div>
-
+</footer>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 소모임 데이터 - 날짜별로 데이터가 저장된 예시입니다.
-        var meetings = {
-            "2024-09-26": [
-                { teamName: "두산베어스", gameSchedule: "2024-09-26 18:00", title: "야구 소모임", currentMembers: 12, maxMembers: 20 },
-                { teamName: "삼성 라이온즈", gameSchedule: "2024-09-26 19:00", title: "경기 응원", currentMembers: 8, maxMembers: 15 }
-            ],
-            "2024-09-27": [
-                { teamName: "LG 트윈스", gameSchedule: "2024-09-27 18:30", title: "팬미팅", currentMembers: 20, maxMembers: 20 }
-            ]
-        };
+        var selectedDate = null;
+        var selectedTeam = '전체';
 
-        // FullCalendar 초기화
+        // FullCalendar 설정
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: '',
-                center: 'title',
-                right: 'prev,next today'
-            },
             locale: 'ko',
-            height: 'auto',
-            fixedWeekCount: false,
+            height: 300,
+            contentHeight: 300,
             dateClick: function(info) {
-                var selectedDate = info.dateStr;
-                updateMeetingList(selectedDate);
+                // 선택된 날짜 색상 변경
+                if (selectedDate) {
+                    document.querySelector(`[data-date='${selectedDate}']`).classList.remove('fc-day-selected');
+                }
+                selectedDate = info.dateStr;
+                document.querySelector(`[data-date='${selectedDate}']`).classList.add('fc-day-selected');
+
+                loadMeetings(); // 날짜 클릭 시 소모임 리스트 불러오기
+            },
+            datesSet: function(info) {
+                // 새로운 달로 이동할 때 선택된 날짜 초기화
+                selectedDate = null;
+                // 날짜 클릭 이벤트가 새로운 달에도 적용되도록 함
+                console.log("달이 변경되었습니다:", info.startStr, "부터", info.endStr);
             }
         });
         calendar.render();
 
-        // 소모임 리스트 업데이트 함수
-        function updateMeetingList(selectedDate) {
-            var meetingList = document.getElementById("meeting-list");
-            var noMeetings = document.getElementById("no-meetings");
-            var totalCount = document.getElementById("total-count");
+        // 팀 필터링 함수
+        function filterByTeam(team) {
+            selectedTeam = team;
+            document.querySelectorAll('.tag').forEach(tag => tag.classList.remove('active'));
+            document.querySelector(`.tag[onclick*="'${team}'"]`).classList.add('active');
 
-            // 기존 소모임 리스트 초기화
-            meetingList.innerHTML = "";
-
-            if (meetings[selectedDate]) {
-                meetings[selectedDate].forEach(function(meeting) {
-                    var item = document.createElement("div");
-                    item.classList.add("item");
-
-                    item.innerHTML = `
-                            <div class="item-image"></div>
-                            <div class="item-content">
-                                <h3>${meeting.teamName}</h3>
-                                <p>${meeting.gameSchedule}</p>
-                                <p>${meeting.title}</p>
-                                <p>인원 현황 : ${meeting.currentMembers}/${meeting.maxMembers}</p>
-                            </div>
-                        `;
-                    meetingList.appendChild(item);
-                });
-
-                totalCount.textContent = meetings[selectedDate].length;
-                meetingList.style.display = "grid";
-                noMeetings.style.display = "none";
-            } else {
-                meetingList.style.display = "none";
-                noMeetings.style.display = "block";
-                totalCount.textContent = "0";
-            }
+            loadMeetings(); // 팀 클릭 시 소모임 리스트 불러오기
         }
 
-        // 페이지가 로드되면 오늘 날짜의 소모임을 표시
-        var today = new Date().toISOString().split('T')[0];
-        updateMeetingList(today);
+        function loadMeetings() {
+            fetch(`/meeting/listByDateAndTeam?date=${selectedDate}&team=${selectedTeam}`)
+                .then(response => response.json())
+                .then(data => {
+                    var meetingList = document.getElementById("meeting-list");
+                    meetingList.innerHTML = ''; // 기존 리스트 초기화
+
+                    if (data.length === 0) {
+                        document.getElementById("no-meetings").style.display = 'block';
+                    } else {
+                        document.getElementById("no-meetings").style.display = 'none';
+
+                        data.forEach(meeting => {
+                            var item = document.createElement("div");
+                            item.classList.add("item");
+
+                            item.innerHTML = `
+                    <div class="item-image"></div>
+                    <div class="item-content">
+                        <h3>${meeting.meetingTeamName}</h3>
+                        <p>${meeting.meetingTime}</p>
+                        <p>${meeting.meetingTitle}</p>
+                        <p>인원 현황 : ${meeting.meetingMaxPeople}명</p>
+                    </div>
+                `;
+                            meetingList.appendChild(item);
+                        });
+                    }
+
+                    document.getElementById("total-count").textContent = data.length;
+                });
+        }
+
+
+        // 팀 이름에 따른 로고 이미지 경로를 반환하는 함수
+        function getTeamLogo(teamName) {
+            switch (teamName) {
+                case 'KT':
+                    return '/img/KT로고.png';
+                case 'LG':
+                    return '/img/LG로고.png';
+                case 'NC':
+                    return '/img/NC로고.png';
+                case 'SSG':
+                    return '/img/SSG로고.png';
+                case '기아':
+                    return '/img/기아로고.png';
+                case '두산':
+                    return '/img/두산로고.png';
+                case '롯데':
+                    return '/img/롯데로고.png';
+                case '삼성':
+                    return '/img/삼성로고.png';
+                case '키움':
+                    return '/img/키움로고.png';
+                case '한화':
+                    return '/img/한화로고.png';
+                default:
+                    return '/img/default-logo.png'; // 기본 로고 이미지 (없을 경우)
+            }
+        }
     });
+
+
+
 </script>
 </body>
 </html>

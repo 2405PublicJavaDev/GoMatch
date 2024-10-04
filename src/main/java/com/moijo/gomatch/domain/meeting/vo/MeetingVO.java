@@ -19,6 +19,7 @@ public class MeetingVO {
     private String meetingPlace;
     private String meetingContent;
     private String memberId;
+    private String meetingDate;
     private Timestamp regDate;
     private Timestamp updateDate;
 }
