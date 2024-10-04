@@ -13,7 +13,7 @@ import java.sql.Date;
 @AllArgsConstructor
 public class GameVO {
     private int gameNo;
-    private String gameDate;
+    private Date gameDate;
     private String gameTime;
     private String teamA;
     private String teamB;
@@ -24,9 +24,8 @@ public class GameVO {
     private int scoreA;
     private int scoreB;
 
-    // SQL Date를 인자로 받는 생성자 구현
     public GameVO(Date sqlDate, String gameTime, String homeTeamName, String awayTeamName, String gameLocation, int homeScore, int awayScore) {
-        this.gameDate = sqlDate.toString(); // SQL Date를 String으로 변환하여 저장
+        this.gameDate = sqlDate;
         this.gameTime = gameTime;
         this.teamA = homeTeamName; // 홈 팀
         this.teamB = awayTeamName; // 원정 팀

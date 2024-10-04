@@ -7,7 +7,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.sql.Date;
-import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,22 +37,64 @@ public class GameBatchComponent {
         this.gameService = gameService;
     }
 
+    // KBO 팀 리그 순위 가져오기
+    public List<String[]> scrapeRank(String yearParam) {
+        List<String[]> teamList = new ArrayList<>();  // String 배열 리스트로 데이터 저장
+        try {
+            Document doc = Jsoup.connect("https://sports.news.naver.com/kbaseball/record/index.nhn?category=kbo&year=" + yearParam)
+                    .userAgent(
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36")
+                    .get();
+            Elements baseballTeams = doc.select("#regularTeamRecordList_table > tr");
+            for (Element baseballTeam : baseballTeams) {
+                Element rank = baseballTeam.selectFirst("th"); // 등 수
+                Element title = baseballTeam.selectFirst("span:nth-child(2)"); // 팀 명
+                Element match = baseballTeam.selectFirst("td:nth-child(3)"); // 경기 수
+                Element victory = baseballTeam.selectFirst("td:nth-child(4)"); // 승
+                Element defeat = baseballTeam.selectFirst("td:nth-child(5)"); // 패
+                Element draw = baseballTeam.selectFirst("td:nth-child(6)"); // 무
+                Element rate = baseballTeam.selectFirst("td:nth-child(7)"); // 승률
+                Element winning = baseballTeam.selectFirst("td:nth-child(9)"); // 연승
+                Element recent = baseballTeam.selectFirst("td:nth-child(12)"); // 최근 10경기
+                Element logo = baseballTeam.selectFirst("td.tm  img"); // 팀 로고
+
+                if (title != null) {
+                    String[] teamData = {
+                            rank.text(), title.text(), match.text(), victory.text(), defeat.text(),
+                            draw.text(), rate.text(), winning.text(), recent.text(), logo != null ? logo.attr("src") : ""
+                    };  // 팀의 정보들을 문자열 배열로 저장한다
+                    teamList.add(teamData);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return teamList;
+    }
+
     // 야구 경기 리그 일정 가져오기
     public List<GameVO> scrapeSchedule(String dateParam) {
         List<GameVO> gameList = new ArrayList<>();
         // Selenium WebDriver 설정 (ChromeDriver)
         System.setProperty("webdriver.chrome.driver", "src/main/resources/static/driver/chromedriver.exe");
 
-        // 브라우저 창 숨기는 옵션 추가하기
+        // 브라우저 창 숨기는 옵션 추가
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        WebDriver driver = new ChromeDriver(options);
+//        options.addArguments("--headless");
+//        options.addArguments("--disable-gpu");
+//        options.addArguments("--window-size=1920,1080");
+//        options.addArguments("--no-sandbox");
+//        options.addArguments("--disable-dev-shm-usage");
+//        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
+        WebDriver driver = new ChromeDriver(options);
         try {
             // 셀레니움으로 다음 스포츠 홈페이지 크롤링
             driver.get("https://sports.daum.net/schedule/kbo?date=" + dateParam);
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("scheduleList")));
+
+
             // 셀레니움으로 가져온 HTML을 Jsoup으로 파싱
             Document doc = Jsoup.parse(driver.getPageSource());
             Elements baseballSchedule = doc.select("#scheduleList > tr");
@@ -102,7 +143,7 @@ public class GameBatchComponent {
     }
 
     // 점수를 int로 파싱
-    private Integer parseScore(String score) {
+    private int parseScore(String score) {
         if (score != null && !score.trim().isEmpty() && !score.equals("-")) {
             try {
                 return Integer.parseInt(score);
@@ -110,16 +151,17 @@ public class GameBatchComponent {
                 System.err.println("Invalid score format: " + score);
             }
         }
-        return null; // 기본값 설정
+        return 0; // 기본값은 0으로 설정
     }
 
      // @Scheduled 어노테이션을 통해 매일 10:00에 실행
-     @Scheduled(cron = "0 0 10 * * ?")
+     @Scheduled(cron = "0 30 09 * * ?")
     public void updateGameSchedule() {
         String dateParam = "202410";    // 10월의 경기를 스케줄러로 자동 저장
         List<GameVO> gameList = scrapeSchedule(dateParam);
         if (!gameList.isEmpty()) { // 경기 정보가 있는 경우에만 저장
             gameService.saveAllGames(gameList);
+            System.out.println("경기 등록은 완료했습니다.");
         } else {
             System.out.println("저장할 경기 정보가 없습니다."); // 로그 출력
         }

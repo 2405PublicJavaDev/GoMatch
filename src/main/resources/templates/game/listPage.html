@@ -1,7 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <title>KBO 경기 일정</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야구 경기 일정</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/header-footer.css">
+</head>
+<body>
+
+<!-- 헤더 부분 -->
+<header>
+    <nav>
+        <div class="logo">
+            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="#">승부예측</a></li>
+        </ul>
+        <ul class="memeber-links">
+            <li><a href="loginpage">로그인</a></li>
+            <li><a href="joinmember">회원가입</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <h1>KBO 리그 경기 일정</h1>
+        <select id="monthSelect" onchange="fetchGames()">
+            <option value="03" th:selected="${selectedMonth == '03'}">3월</option>
+            <option value="04" th:selected="${selectedMonth == '04'}">4월</option>
+            <option value="05" th:selected="${selectedMonth == '05'}">5월</option>
+            <option value="06" th:selected="${selectedMonth == '06'}">6월</option>
+            <option value="07" th:selected="${selectedMonth == '07'}">7월</option>
+            <option value="08" th:selected="${selectedMonth == '08'}">8월</option>
+            <option value="09" th:selected="${selectedMonth == '09'}">9월</option>
+            <option value="10" th:selected="${selectedMonth == '10'}">10월</option>
+            <option value="11" th:selected="${selectedMonth == '11'}">11월</option>
+        </select>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>날짜</th>
+                <th>시간</th>
+                <th colspan="2">원정팀</th>
+                <th>VS</th>
+                <th colspan="2">홈팀</th>
+                <th>장소</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="game : ${games}">
+                <td th:text="${game.gameDate}"></td>
+                <td th:text="${game.gameTime}"></td>
+                <td th:text="${game.teamA}"></td>
+                <td th:text="${game.scoreA}"></td>
+                <td>vs</td>
+                <td th:text="${game.scoreB}"></td>
+                <td th:text="${game.teamB}"></td>
+                <td th:text="${game.gameField}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(games)}">
+                <td colspan="6">경기 일정이 없습니다.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<div class="team-logos">
+    <div class="team-logos-container">
+        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+    </div>
+</div>
+</div>
+    <footer class="footer-page">
+        <div class="footer-content">
+            <div class="logo">
+                <img src="/img/고매치로고.png" alt="GoMatch 로고">
+            </div>
+            <div class="footer-text">
+                <p>게인정보 처리방침</p>
+                <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+                <p>Copyright © GoMatch</p>
+            </div>
+        </div>
+    </footer>
     <script>
         function fetchGames(){
             const month = document.getElementById("monthSelect").value;
@@ -10,49 +105,5 @@
             }
         }
     </script>
-</head>
-<body>
-<h1>KBO 리그 경기 일정</h1>
-<select id="monthSelect" onchange="fetchGames()">
-    <option value="01">1월</option>
-    <option value="02">2월</option>
-    <option value="03">3월</option>
-    <option value="04">4월</option>
-    <option value="05">5월</option>
-    <option value="06">6월</option>
-    <option value="07">7월</option>
-    <option value="08">8월</option>
-    <option value="09">9월</option>
-    <option value="10">10월</option>
-    <option value="11">11월</option>
-    <option value="12">12월</option>
-</select>
-<table border="1">
-    <thead>
-    <tr>
-        <th>날짜</th>
-        <th>시간</th>
-        <th colspan="2">원정팀</th>
-        <th>VS</th>
-        <th colspan="2">홈팀</th>
-        <th>장소</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr th:each="game : ${games}">
-            <td th:text="${game.gameDate}"></td>
-            <td th:text="${game.gameTime}"></td>
-            <td th:text="${game.teamA}"></td>
-            <td th:text="${game.scoreA}"></td>
-            <td>vs</td>
-            <td th:text="${game.scoreB}"></td>
-            <td th:text="${game.teamB}"></td>
-            <td th:text="${game.gameField}"></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(games)}">
-            <td colspan="6">경기 일정이 없습니다.</td>
-        </tr>
-    </tbody>
-</table>
-</body>
+    </body>
 </html>
