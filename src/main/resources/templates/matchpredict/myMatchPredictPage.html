@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>승부예측</title>
+  <link rel="stylesheet" href="/css/MatchPredict.css">
+  <link rel="stylesheet" href="/css/header-footer.css">
+</head>
+<body>
+<th:block th:replace="fragments/header.html"></th:block>
+<main th:each="predict : ${matchPredictions}" class="main-content">
+  <section class="prediction-section">
+    <div class="btn-container">
+      <div class="match-predict">
+        <button class="match-predict-btn" type="button">
+          <h2>승부 예측</h2>
+        </button>
+      </div>
+      <div class="myMatch-predict">
+        <button class="myMatch-predict-btn" type="button">
+          <h2>나의 예측</h2>
+        </button>
+      </div>
+    </div>
+    <div class="date-selector"></div>
+    <ul class="game-list">
+      <li class="game-item">
+                    <span class="league">
+                        <img src="/img/고매치로고.png">
+                        GoMatch
+                    </span>
+        <div class="upcoming-games">
+          <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
+          <span class="time-out">후 종료</span>
+        </div>
+        <form name="add-form" action="/addPredict" method="post">
+          <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
+          <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
+          <input type="hidden" name="matchPredictDecision"/>
+          <div class="teams">
+            <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]])">
+              <span th:text="${predict.teamA}"></span>
+              <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+            </button>
+            <button type="button" class="draw" th:onclick="setPrediction('무')">
+              <span class="vs">무승부</span>
+            </button>
+            <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]])">
+              <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+              <span th:text="${predict.teamB}"></span>
+            </button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </section>
+
+  <aside class="calendar-section">
+    <div class="member-info">
+      <div class="member-id" name="member-id">
+        <div>
+          <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
+          <span th:text="${predict.memberId}">님 안녕하세요</span>
+        </div>
+      </div>
+      <div class="exp-point">
+        <span>현재 경험치는 1000 점 입니다.</span>
+      </div>
+      <div class="user-rank">
+        <span>현재 순위는 -위 입니다.</span>
+      </div>
+    </div>
+    <h3 class="calendar-title">2024.10</h3>
+    <div class="calendar-week">
+      <button class="week-date" type="button">10월 1주</button>
+      <button class="week-date" type="button">10월 2주</button>
+      <button class="week-date" type="button">10월 3주</button>
+      <button class="week-date" type="button">10월 4주</button>
+    </div>
+    <div class="user-points">
+      <p>전체 예측에서 <strong>18,076위</strong> 상위 28%입니다.</p>
+      <div class="progress-bar"></div>
+    </div>
+    <div class="top-predictors">
+      <ol>
+        <h4>랭킹</h4>
+        <li>
+          <div class="rank-position">
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+            <span class="rank">1</span>
+          </div>
+          <span class="name">김철수</span>
+          <span class="points">760</span>
+        </li>
+        <li>
+          <div class="rank-position">
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+            <span class="rank">2</span>
+          </div>
+          <span class="name">홍길동</span>
+          <span class="points">750</span>
+        </li>
+        <li>
+          <div class="rank-position">
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+            <span class="rank">3</span>
+          </div>
+          <span class="name">아무개</span>
+          <span class="points">740</span>
+        </li>
+        <div class="my-predictors">
+          <li>
+            <div class="rank-position">
+              <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+              <span class="rank">2</span>
+            </div>
+            <span class="name">홍길동<span>(나)</span></span>
+            <span class="points">750</span>
+          </li>
+        </div>
+      </ol>
+    </div>
+    <div class="select-list">
+      <button>100위 더보기 ></button>
+    </div>
+  </aside>
+</main>
+<footer>
+  <div class="footer-container">
+    <div class="footer-info">
+      <div class="footer-links">
+        <a href="#">공지사항</a>
+        <a href="#">7~8월 K리그 베스트 플레이어 & MY...</a>
+        <a href="#">홈</a>
+        <a href="#">야구</a>
+        <a href="#">해외축구</a>
+        <a href="#">축구</a>
+        <a href="#">농구</a>
+        <a href="#">배구</a>
+        <a href="#">N골프</a>
+        <a href="#">일반-펠리칸</a>
+        <a href="#">e스포츠</a>
+        <a href="#">연재</a>
+      </div>
+    </div>
+    <div class="footer-details">
+      <div class="company-info">
+        <p>대표이사: 최수연</p>
+        <p>전화: 1588-3200 (대표전화/고객센터)</p>
+        <p>사업자등록번호: 220-81-62517</p>
+      </div>
+      <div class="address">
+        <p>주소: 경기도 성남시 분당구 정자동로 95 NAVER 1784, 13561</p>
+        <p>이메일: helpcustomer@naver.com</p>
+        <p>통신판매업자 등록번호: 제2006-경기성남-692호</p>
+      </div>
+      <div class="responsible-person">
+        <p>기사배열 책임자: 김수향</p>
+        <p>청소년 보호 책임자: 이정규</p>
+      </div>
+      <div class="copyright">
+        <p>본 콘텐츠의 저작권은 저작권법 또는 네이버에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적 책임을 질 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<th:block th:replace="fragments/footer.html"></th:block>
+<script>
+  function setPrediction(decision) {
+    const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
+    if (decisionInput) {
+      decisionInput.value = decision;
+    }
+    const form = document.forms["add-form"];
+    if (form) {
+      form.submit();
+    }
+  }
+
+  function setupButtons(className) {
+    const buttons = document.querySelectorAll(`.${className}`);
+    buttons.forEach(button => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault(); // Prevent default button behavior
+        setPrediction(button.textContent); // Use button text as prediction
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    setupButtons('team-a');
+    setupButtons('team-b');
+    setupButtons('draw');
+  });
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
     /**
      * 승부예측 리스트 조회
+     *
      * @return
      */
     @Override
@@ -24,10 +25,17 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         return matchPredictMapper.selectAllMatchByMember();
     }
 
+//    @Override
+//    public List<MyMatchPredict> getAllMyMatchByMember(String memberId, Long gameNo) {
+//        return matchPredictMapper.selectAllMyMatchByMember(memberId,gameNo);
+//    }
+
 
     @Override
-    public void addMatchPredict() {
-
+    public int addMatchPredict(Long gameNo,String matchPredictDecision) {
+        int result = matchPredictMapper.insertMatchPredict(gameNo,matchPredictDecision);
+        System.out.println(gameNo);
+        return result;
     }
 
     @Override

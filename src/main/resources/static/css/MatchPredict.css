@@ -15,9 +15,6 @@ button {
     font-family: inherit;
 }
 
-main {
-    height: 800px;
-}
 
 /* Main Content */
 .main-content {
@@ -259,6 +256,7 @@ main {
         border-top: 1px solid #e5e5e5;
     }
 }
+
 
 .footer-container {
     color: #000;
