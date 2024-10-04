@@ -3,10 +3,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingMapper">
 
+    <!-- 전체 소모임 수 조회 -->
+    <select id="getTotalMeetingsCount" resultType="int">
+        SELECT COUNT(*) FROM MEETING
+    </select>
+
     <!-- 날짜로 경기 정보를 가져오는 쿼리 -->
     <select id="getGamesByDate" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
-        CAST(GAME_NO AS INT) AS GAME_NO,  <!-- BigDecimal을 int로 변환 -->
+        CAST(GAME_NO AS INT) AS GAME_NO,
         TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
         GAME_TIME,
         TEAM_A,
@@ -23,11 +28,11 @@
         </selectKey>
         INSERT INTO MEETING (
         MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
-        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, REG_DATE, UPDATE_DATE
+        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEETING_DATE,MEMBER_ID, REG_DATE, UPDATE_DATE
         )
         VALUES (
         #{meetingNo}, #{gameNo}, #{meetingTitle}, #{meetingTeamName}, #{meetingMaxPeople},
-        #{meetingTime}, #{meetingPlace}, #{meetingContent}, #{memberId}, SYSDATE, SYSDATE
+        #{meetingTime}, #{meetingPlace}, #{meetingContent}, #{meetingDate},#{memberId}, SYSDATE, SYSDATE
         )
     </insert>
 
@@ -45,5 +50,25 @@
         #{webPath}, #{fileOrder}, SYSDATE, SYSDATE
         )
     </insert>
+
+    <select id="getMeetingsByDate" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        SELECT M.MEETING_NO, M.GAME_NO, M.MEETING_TITLE, M.MEETING_TEAM_NAME, M.MEETING_MAX_PEOPLE,
+               M.MEETING_TIME, M.MEETING_PLACE, M.MEETING_CONTENT, M.MEMBER_ID, M.REG_DATE
+        FROM MEETING M
+                 JOIN GAME G ON M.GAME_NO = G.GAME_NO
+        WHERE G.GAME_DATE = #{date}
+    </select>
+
+
+    <select id="getMeetingsByDateAndTeam" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, MEETING_DATE, REG_DATE
+        FROM MEETING
+        WHERE MEETING_DATE = #{date}  <!-- 소모임 날짜로 조회 -->
+        <if test="team != '전체'">
+            AND MEETING_TEAM_NAME = #{team}
+        </if>
+    </select>
+
 
 </mapper>
