@@ -58,4 +58,79 @@ button {
     margin-right: 10px;
 }
 
-/* ■■■■■■■■■■ 푸터 영역 css ■■■■■■■■■■ */
+/* 파일 업로드 기능 */
+.file-upload {
+    position: relative;
+    margin: 10px;
+    overflow: visible;
+}
+.file-upload input[type=file] {
+    position: absolute;
+    display: none;
+    cursor: pointer;
+}
+.file-upload button {
+    cursor: pointer;
+    border: none;
+    color: white;
+    background-color: #4CAF50;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+}
+.file-upload button:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+#file-thumbnail-root {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+/*
+#file-thumbnail-root 와 정확히 같은 css
+중복코드인 것은 맞으나 호환성을 위해
+두개의 css 코드를 작성함
+*/
+.file-thumbnail-root {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.file-thumbnail-wrapper {
+    height: 150px;
+    width: 150px;
+    border: 1px solid black;
+    position: relative;
+}
+.file-thumbnail-wrapper .thumbnail {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    border-radius: 20px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.file-thumbnail-wrapper .x-btn {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    z-index: 9999;
+}
+.imgDialog {
+    border: transparent;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -6,6 +6,8 @@ import com.moijo.gomatch.domain.meeting.service.MeetingService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MeetingController {
 
     private final MeetingService meetingService;
@@ -39,9 +42,9 @@ public class MeetingController {
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            System.out.println("memberId가 세션에 없음");
+            log.info("memberId가 세션에 없음");
         } else {
-            System.out.println("세션에서 가져온 memberId: " + memberId);
+            log.info("세션에서 가져온 memberId: " + memberId);
         }
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
         return "meeting/meeting-register";
@@ -83,7 +86,6 @@ public class MeetingController {
     public String addMeeting(MeetingVO meetingVO,
                              @RequestParam("groupImage") List<MultipartFile> groupImages,
                              HttpSession session) throws IOException {
-
         // 세션에서 사용자 ID 가져오기
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
@@ -93,13 +95,11 @@ public class MeetingController {
         // 소모임 정보 등록
         meetingVO.setMemberId(memberId);
         meetingService.addMeeting(meetingVO);
-
         // 파일 업로드 처리 (파일이 있으면)
         if (!groupImages.isEmpty()) {
             fileUtil.uploadFiles(groupImages, Long.valueOf(meetingVO.getMeetingNo()), "meeting");
         }
         return "redirect:/meeting/meeting"; // 소모임 목록 페이지로 리다이렉트
     }
-
 
 }

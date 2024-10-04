@@ -2,50 +2,48 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingMapper">
+
     <!-- 날짜로 경기 정보를 가져오는 쿼리 -->
     <select id="getGamesByDate" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
-            GAME_NO,
-            TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
-            GAME_TIME,
-            TEAM_A,
-            TEAM_B,
-            GAME_FIELD
+        CAST(GAME_NO AS INT) AS GAME_NO,  <!-- BigDecimal을 int로 변환 -->
+        TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
+        GAME_TIME,
+        TEAM_A,
+        TEAM_B,
+        GAME_FIELD
         FROM GAME
         WHERE TO_CHAR(GAME_DATE, 'YYYY-MM-DD') = #{date}
     </select>
 
+    <!-- 소모임 등록 -->
     <insert id="insertMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        <selectKey resultType="long" keyProperty="meetingNo" order="BEFORE">
+            SELECT SEQ_MEETING_NO.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO MEETING (
-            MEETING_NO,
-            GAME_NO,
-            MEETING_TITLE,
-            MEETING_TEAM_NAME,
-            MEETING_MAX_PEOPLE,
-            MEETING_TIME,
-            MEETING_PLACE,
-            MEETING_CONTENT,
-            MEMBER_ID,
-            REG_DATE,
-            UPDATE_DATE
+        MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, REG_DATE, UPDATE_DATE
         )
         VALUES (
-        SEQ_MEETING_NO.NEXTVAL,
-            #{gameNo},
-            #{meetingTitle},
-            #{meetingTeamName},
-            #{meetingMaxPeople},
-            #{meetingTime},
-            #{meetingPlace},
-            #{meetingContent},
-            #{memberId},
-            default, default
+        #{meetingNo}, #{gameNo}, #{meetingTitle}, #{meetingTeamName}, #{meetingMaxPeople},
+        #{meetingTime}, #{meetingPlace}, #{meetingContent}, #{memberId}, SYSDATE, SYSDATE
         )
     </insert>
 
     <!-- 첨부파일 -->
     <insert id="insertMeetingFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
-        INSERT INTO MEETING_FILE (MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH, FILE_ORDER, REG_DATE, UPDATE_DATE)
-        VALUES (SEQ_MEETING_FILE_NO.NEXTVAL, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath}, #{webPath}, #{fileOrder}, default, default)
+        <selectKey resultType="long" keyProperty="meetingFileNo" order="BEFORE">
+            SELECT SEQ_MEETING_FILE_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING_FILE (
+        MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH,
+        FILE_ORDER, REG_DATE, UPDATE_DATE
+        )
+        VALUES (
+        #{meetingFileNo}, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath},
+        #{webPath}, #{fileOrder}, SYSDATE, SYSDATE
+        )
     </insert>
+
 </mapper>

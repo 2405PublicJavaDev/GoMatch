@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소모임 리스트</title>
+    <!-- FullCalendar CSS 로드 -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
+    <!-- FullCalendar JS 로드 -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+        .calendar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        #calendar {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .tag {
+            padding: 5px 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .tag:hover {
+            background-color: #e0e0e0;
+        }
+        .button {
+            display: block;
+            width: 200px;
+            padding: 10px;
+            background-color: #00AEEF;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px auto;
+        }
+        .button:hover {
+            background-color: #0090C5;
+        }
+        .items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+        }
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        .item-content {
+            flex-grow: 1;
+        }
+        .item-content h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a.active {
+            background-color: #666;
+            color: white;
+        }
+        .no-meetings {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>소모임 리스트</h1>
+
+    <div class="calendar-container">
+        <div id="calendar"></div>
+    </div>
+
+    <div class="tags">
+        <div class="tag">전체</div>
+        <div class="tag">KIA 타이거즈</div>
+        <div class="tag">롯데 자이언츠</div>
+        <div class="tag">삼성 라이온즈</div>
+        <div class="tag">두산베어스</div>
+        <div class="tag">KT 위즈</div>
+        <div class="tag">SSG랜더스</div>
+        <div class="tag">NC 다이노스</div>
+        <div class="tag">한화 이글스</div>
+        <div class="tag">키움 히어로즈</div>
+        <div class="tag">LG 트윈스</div>
+    </div>
+
+    <button class="button">소모임 개설하기</button>
+
+    <div style="clear: both;">
+        <span>* Total : <span id="total-count">0</span> 건</span>
+        <span style="float: right;">Page : 1 / 1</span>
+    </div>
+
+    <div id="meeting-list" class="items">
+        <!-- Meetings will be displayed here -->
+    </div>
+
+    <div id="no-meetings" class="no-meetings" style="display: none;">
+        개설된 소모임이 없습니다.
+    </div>
+
+    <div class="pagination">
+        <a href="#">&lt;</a>
+        <a href="#" class="active">1</a>
+        <a href="#">&gt;</a>
+        <a href="#">&raquo;</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 소모임 데이터 - 날짜별로 데이터가 저장된 예시입니다.
+        var meetings = {
+            "2024-09-26": [
+                { teamName: "두산베어스", gameSchedule: "2024-09-26 18:00", title: "야구 소모임", currentMembers: 12, maxMembers: 20 },
+                { teamName: "삼성 라이온즈", gameSchedule: "2024-09-26 19:00", title: "경기 응원", currentMembers: 8, maxMembers: 15 }
+            ],
+            "2024-09-27": [
+                { teamName: "LG 트윈스", gameSchedule: "2024-09-27 18:30", title: "팬미팅", currentMembers: 20, maxMembers: 20 }
+            ]
+        };
+
+        // FullCalendar 초기화
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: '',
+                center: 'title',
+                right: 'prev,next today'
+            },
+            locale: 'ko',
+            height: 'auto',
+            fixedWeekCount: false,
+            dateClick: function(info) {
+                var selectedDate = info.dateStr;
+                updateMeetingList(selectedDate);
+            }
+        });
+        calendar.render();
+
+        // 소모임 리스트 업데이트 함수
+        function updateMeetingList(selectedDate) {
+            var meetingList = document.getElementById("meeting-list");
+            var noMeetings = document.getElementById("no-meetings");
+            var totalCount = document.getElementById("total-count");
+
+            // 기존 소모임 리스트 초기화
+            meetingList.innerHTML = "";
+
+            if (meetings[selectedDate]) {
+                meetings[selectedDate].forEach(function(meeting) {
+                    var item = document.createElement("div");
+                    item.classList.add("item");
+
+                    item.innerHTML = `
+                            <div class="item-image"></div>
+                            <div class="item-content">
+                                <h3>${meeting.teamName}</h3>
+                                <p>${meeting.gameSchedule}</p>
+                                <p>${meeting.title}</p>
+                                <p>인원 현황 : ${meeting.currentMembers}/${meeting.maxMembers}</p>
+                            </div>
+                        `;
+                    meetingList.appendChild(item);
+                });
+
+                totalCount.textContent = meetings[selectedDate].length;
+                meetingList.style.display = "grid";
+                noMeetings.style.display = "none";
+            } else {
+                meetingList.style.display = "none";
+                noMeetings.style.display = "block";
+                totalCount.textContent = "0";
+            }
+        }
+
+        // 페이지가 로드되면 오늘 날짜의 소모임을 표시
+        var today = new Date().toISOString().split('T')[0];
+        updateMeetingList(today);
+    });
+</script>
+</body>
+</html>
