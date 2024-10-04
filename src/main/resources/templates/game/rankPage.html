@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>KBO 리그 순위</title>
+</head>
+<body>
+    <h1>KBO 리그 순위</h1>
+    <select id="yearSelect" onchange="fetchRank()">
+        <option value="2024" th:selected="${selectedYear == '2023'}">2024</option>
+        <option value="2023" th:selected="${selectedYear == '2023'}">2023</option>
+        <option value="2022" th:selected="${selectedYear == '2022'}">2022</option>
+        <option value="2021" th:selected="${selectedYear == '2021'}">2021</option>
+        <option value="2020" th:selected="${selectedYear == '2020'}">2020</option>
+        <option value="2019" th:selected="${selectedYear == '2019'}">2019</option>
+        <option value="2018" th:selected="${selectedYear == '2018'}">2018</option>
+        <option value="2017" th:selected="${selectedYear == '2017'}">2017</option>
+        <option value="2016" th:selected="${selectedYear == '2016'}">2016</option>
+        <option value="2015" th:selected="${selectedYear == '2015'}">2015</option>
+        <option value="2014" th:selected="${selectedYear == '2014'}">2014</option>
+        <option value="2013" th:selected="${selectedYear == '2013'}">2013</option>
+    </select>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>순위</th>
+            <th>팀명</th>
+            <th>경기 수</th>
+            <th>승</th>
+            <th>패</th>
+            <th>무</th>
+            <th>승률</th>
+            <th>연승</th>
+            <th>최근 10경기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="team : ${teams}">
+            <td th:text="${team[0]}"></td>
+            <td>
+                <img th:src="${team[9]}" alt="팀 로고" >
+                <span th:text="${team[1]}"></span>
+            </td>
+            <td th:text="${team[2]}"></td>
+            <td th:text="${team[3]}"></td>
+            <td th:text="${team[4]}"></td>
+            <td th:text="${team[5]}"></td>
+            <td th:text="${team[6]}"></td>
+            <td th:text="${team[7]}"></td>
+            <td th:text="${team[8]}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(teams)}">
+            <td colspan="9">순위 정보가 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+<script>
+    function fetchRank(){
+        const year = document.getElementById("yearSelect").value;
+        if(year) {
+            window.location.href = `/game/rank?year=${year}`;
+        }
+    }
+</script>
+</body>
+</html>

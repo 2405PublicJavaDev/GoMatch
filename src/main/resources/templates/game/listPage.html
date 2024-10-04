@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,18 +31,15 @@
     <div class="container">
         <h1>KBO 리그 경기 일정</h1>
         <select id="monthSelect" onchange="fetchGames()">
-            <option value="01">1월</option>
-            <option value="02">2월</option>
-            <option value="03">3월</option>
-            <option value="04">4월</option>
-            <option value="05">5월</option>
-            <option value="06">6월</option>
-            <option value="07">7월</option>
-            <option value="08">8월</option>
-            <option value="09">9월</option>
-            <option value="10">10월</option>
-            <option value="11">11월</option>
-            <option value="12">12월</option>
+            <option value="03" th:selected="${selectedMonth == '03'}">3월</option>
+            <option value="04" th:selected="${selectedMonth == '04'}">4월</option>
+            <option value="05" th:selected="${selectedMonth == '05'}">5월</option>
+            <option value="06" th:selected="${selectedMonth == '06'}">6월</option>
+            <option value="07" th:selected="${selectedMonth == '07'}">7월</option>
+            <option value="08" th:selected="${selectedMonth == '08'}">8월</option>
+            <option value="09" th:selected="${selectedMonth == '09'}">9월</option>
+            <option value="10" th:selected="${selectedMonth == '10'}">10월</option>
+            <option value="11" th:selected="${selectedMonth == '11'}">11월</option>
         </select>
         <table border="1">
             <thead>
