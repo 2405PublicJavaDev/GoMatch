@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface GoodsMapper {
@@ -22,7 +21,7 @@ public interface GoodsMapper {
 
     List<GoodsVO> selectGoodsByCategory(String category); // 카테고리로 상품 조회 메소드 추가
 
-    @Update("UPDATE GOODS SET GOODS_TEAM = #{goodsTeam}, GOODS_PRODUCT_NAME = #{goodsProductName}, GOODS_PRICE = #{goodsPrice} WHERE GOODS_NO = #{goodsNo}")
+    @Update("UPDATE GOODS SET GOODS_TEAM = #{goodsTeam}, GOODS_PRODUCT_NAME = #{goodsProductName}, GOODS_PRICE = #{goodsPrice}, GOODS_CATEGORY = #{goodsCategory} WHERE GOODS_NO = #{goodsNo}")
     void updateGoods(GoodsVO goods); // 상품 수정
 
     @Delete("DELETE FROM GOODS WHERE GOODS_NO = #{goodsNo}")

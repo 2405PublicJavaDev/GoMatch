@@ -41,24 +41,17 @@ public class GoodsController {
     }
 
 //    @GetMapping("/category/list")
-//    public String getGoodsList(@RequestParam(value = "category", required = false) String category, Model model) {
-//        List<GoodsVO> goodsList;
-//
-//        if (category != null && !category.isEmpty()) {
-//            goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
-//        } else {
-//            goodsList = goodsService.getAllGoods(); // 전체 상품 목록 조회
-//        }
-//
+//    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
+//        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
 //        model.addAttribute("goodsList", goodsList); // 모델에 추가
-//        return "goods/list"; // Thymeleaf 템플릿 경로 반환
+//        return "goods/categorylist"; // 카테고리 리스트를 보여줄 템플릿 경로
 //    }
 
     @GetMapping("/category/list")
     public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
-        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
-        model.addAttribute("goodsList", goodsList); // 모델에 추가
-        return "goods/categorylist"; // 카테고리 리스트를 보여줄 템플릿 경로
+        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category);
+        model.addAttribute("goodsList", goodsList);
+        return "goods/categorylist";
     }
 
     @GetMapping("/detail/{goodsNo}")
@@ -82,7 +75,6 @@ public class GoodsController {
         model.addAttribute("message", "상품이 성공적으로 수정되었습니다.");
         return "redirect:/goods/list"; // 수정 후 상품 목록으로 리다이렉트
     }
-
 
     @PostMapping("/delete") // 삭제 요청을 처리하는 메소드
     public String deleteGoods(@RequestParam("goodsNo") Long goodsNo, Model model) {
