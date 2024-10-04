@@ -2,7 +2,6 @@ package com.moijo.gomatch.app.game;
 
 import com.moijo.gomatch.domain.game.vo.GameVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
@@ -17,13 +16,22 @@ public class GameController {
     @Autowired
     private GameBatchComponent gameBatchComponent;
 
-    @GetMapping("/game/rank")
     // 팀 순위 보여주는 메소드
-    public String showRankPage(@RequestParam(value = "year", required = false,  defaultValue = "2024") String year, Model model) {
-        List<String[]> teamList = gameBatchComponent.scrapeRank(year);
+    @GetMapping("/game/teamrank")
+    public String showTeamRankPage(@RequestParam(value = "year", required = false,  defaultValue = "2024") String year, Model model) {
+        List<String[]> teamList = gameBatchComponent.scrapeTeamRank(year);
         model.addAttribute("teams", teamList);
         model.addAttribute("selectedYear", year);
-        return "game/rankPage";
+        return "game/teamRankPage";
+    }
+
+    // 선수 순위 보여주는 메소드
+    @GetMapping("/game/playerrank")
+    public String showPlayerRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model) {
+        List<String[]> pitcherList = gameBatchComponent.scrapePitcherRank(year);
+        model.addAttribute("pitchers", pitcherList);
+        model.addAttribute("selectedYear", year);
+        return "game/playerRankPage";
     }
 
     // 경기 일정 보여주는 메소드

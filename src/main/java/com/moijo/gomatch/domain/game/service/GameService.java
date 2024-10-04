@@ -10,4 +10,11 @@ public interface GameService {
      * @param gameList
      */
     void saveAllGames(List<GameVO> gameList);
+
+    /**
+     * 팀 로고 이미지 저장
+     * @param teamName
+     * @return string
+     */
+    String getLogoUrl(String teamName);
 }

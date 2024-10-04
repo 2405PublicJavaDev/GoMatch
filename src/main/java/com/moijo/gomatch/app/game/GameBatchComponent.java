@@ -38,7 +38,7 @@ public class GameBatchComponent {
     }
 
     // KBO 팀 리그 순위 가져오기
-    public List<String[]> scrapeRank(String yearParam) {
+    public List<String[]> scrapeTeamRank(String yearParam) {
         List<String[]> teamList = new ArrayList<>();  // String 배열 리스트로 데이터 저장
         try {
             Document doc = Jsoup.connect("https://sports.news.naver.com/kbaseball/record/index.nhn?category=kbo&year=" + yearParam)
@@ -56,12 +56,12 @@ public class GameBatchComponent {
                 Element rate = baseballTeam.selectFirst("td:nth-child(7)"); // 승률
                 Element winning = baseballTeam.selectFirst("td:nth-child(9)"); // 연승
                 Element recent = baseballTeam.selectFirst("td:nth-child(12)"); // 최근 10경기
-                Element logo = baseballTeam.selectFirst("td.tm  img"); // 팀 로고
-
+                // Element logo = baseballTeam.selectFirst("td.tm  img"); // 팀 로고
+                String logoUrl = gameService.getLogoUrl(title.text());
                 if (title != null) {
                     String[] teamData = {
                             rank.text(), title.text(), match.text(), victory.text(), defeat.text(),
-                            draw.text(), rate.text(), winning.text(), recent.text(), logo != null ? logo.attr("src") : ""
+                            draw.text(), rate.text(), winning.text(), recent.text(), logoUrl
                     };  // 팀의 정보들을 문자열 배열로 저장한다
                     teamList.add(teamData);
                 }
@@ -72,6 +72,69 @@ public class GameBatchComponent {
         return teamList;
     }
 
+    // 선수 순위 가져오기 - 투수
+    public List<String[]> scrapePitcherRank(String yearParam) {
+        List<String[]> pitcherList = new ArrayList<>();
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/static/driver/chromedriver.exe");
+        System.setProperty("webdriver.chrome.logfile", "chromedriver.log");
+        System.setProperty("webdriver.chrome.verboseLogging", "true");
+
+        // 브라우저 창 숨기는 옵션 추가
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");  // Headless 모드
+        options.addArguments("--disable-gpu");  // GPU 비활성화
+        options.addArguments("--no-sandbox");  // Sandbox 모드 비활성화
+        options.addArguments("--disable-dev-shm-usage");  // 메모리 이슈 방지
+        options.addArguments("--window-size=1920,1080");  // 창 크기 설정
+        options.addArguments("--remote-allow-origins=*"); // 모든 오리진 허용
+
+        WebDriver driver = new ChromeDriver(options);
+        try {
+            driver.get("https://sports.daum.net/record/kbo/pitcher?season=" +yearParam);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("tbl_record")));
+            Document doc = Jsoup.parse(driver.getPageSource());
+            Elements baseballTeams = doc.select(".tbl_record > tbody > tr");
+            for (Element baseballTeam : baseballTeams) {
+                Element rank = baseballTeam.selectFirst("td.td_rank"); // 등 수
+                Element name = baseballTeam.selectFirst(".td_name .txt_name"); // 선수이름
+                Element team = baseballTeam.selectFirst(".td_team a"); // 팀 명
+                Element games = baseballTeam.selectFirst("td[data-field='pitGp']"); // 경기 수
+                Element victory = baseballTeam.selectFirst("td[data-field='pitW']"); // 승
+                Element defeat = baseballTeam.selectFirst("td[data-field='pitL']"); // 패
+                Element save = baseballTeam.selectFirst("td[data-field='pitSv']"); // 세이브
+                Element holds = baseballTeam.selectFirst("td[data-field='pitHld']"); // 홀드
+                Element innings = baseballTeam.selectFirst("td[data-field='pitIp2']"); // 이닝
+                Element pitches = baseballTeam.selectFirst("td[data-field='pitNp']");   // 투구수
+                Element hitsAllowed = baseballTeam.selectFirst("td[data-field='pitH']");  // 피안타
+                Element homeRunsAllowed = baseballTeam.selectFirst("td[data-field='pitHr']"); // 피홈런
+                Element strikeouts = baseballTeam.selectFirst("td[data-field='pitSo']"); // 탈삼진
+                Element walksHitsAllowed = baseballTeam.selectFirst("td[data-field='pitBbhp']"); // 사사구
+                Element loss = baseballTeam.selectFirst("td[data-field='pitR']");  // 실점
+                Element earnedRuns = baseballTeam.selectFirst("td[data-field='pitEr']"); // 자책
+                Element era = baseballTeam.selectFirst("td[data-field='pitEra']"); // 평균자책
+                Element whip = baseballTeam.selectFirst("td[data-field='pitWhip']"); // WHIP
+                Element qs = baseballTeam.selectFirst("td[data-field='pitQs']"); // QS
+
+                if (name != null) {
+                    String[] pitcherData = {
+                            rank.text(), name.text(), team.text(), games.text(), victory.text(), defeat.text(),
+                            save.text(), holds.text(), innings.text(), pitches.text(), hitsAllowed.text(),
+                            homeRunsAllowed.text(), strikeouts.text(), walksHitsAllowed.text(), loss.text(),
+                            earnedRuns.text(), era.text(), whip.text(), qs.text()
+                    };  // 팀의 정보들을 문자열 배열로 저장한다
+                    pitcherList.add(pitcherData);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();  // 크롤링이 끝난 후 브라우저를 닫음
+        }
+        return pitcherList;
+    }
+
+
     // 야구 경기 리그 일정 가져오기
     public List<GameVO> scrapeSchedule(String dateParam) {
         List<GameVO> gameList = new ArrayList<>();
@@ -80,12 +143,12 @@ public class GameBatchComponent {
 
         // 브라우저 창 숨기는 옵션 추가
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");
-//        options.addArguments("--disable-gpu");
-//        options.addArguments("--window-size=1920,1080");
-//        options.addArguments("--no-sandbox");
-//        options.addArguments("--disable-dev-shm-usage");
-//        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+        options.addArguments("--headless");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
         WebDriver driver = new ChromeDriver(options);
         try {

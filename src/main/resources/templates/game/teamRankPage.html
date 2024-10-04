@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야구 경기 일정</title>
+    <link rel="stylesheet" href="/css/game-team-rank.css">
+    <link rel="stylesheet" href="/css/header-footer.css">
+</head>
+<body>
+
+<!-- 헤더 부분 -->
+<header>
+    <nav>
+        <div class="logo">
+            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="#">승부예측</a></li>
+        </ul>
+        <ul class="memeber-links">
+            <li><a href="loginpage">로그인</a></li>
+            <li><a href="joinmember">회원가입</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>일정/결과</span>
+                <hr  class="aside-header">
+                <ul>
+                    <li><a href="/game/list" >경기일정</a></li>
+                    <li><a href="/game/teamrank" class="active">팀 순위</a></li>
+                    <li><a href="/game/playerrank">선수 순위</a></li>
+                    <li><a href="#" >야구장 날씨</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <section class="teamRank-section">
+        <div class="teamRank-container">
+            <h1>KBO 리그 순위</h1>
+        <select id="yearSelect" onchange="fetchRank()">
+            <option value="2024" th:selected="${selectedYear == '2024'}">2024</option>
+            <option value="2023" th:selected="${selectedYear == '2023'}">2023</option>
+            <option value="2022" th:selected="${selectedYear == '2022'}">2022</option>
+            <option value="2021" th:selected="${selectedYear == '2021'}">2021</option>
+            <option value="2020" th:selected="${selectedYear == '2020'}">2020</option>
+            <option value="2019" th:selected="${selectedYear == '2019'}">2019</option>
+            <option value="2018" th:selected="${selectedYear == '2018'}">2018</option>
+            <option value="2017" th:selected="${selectedYear == '2017'}">2017</option>
+            <option value="2016" th:selected="${selectedYear == '2016'}">2016</option>
+            <option value="2015" th:selected="${selectedYear == '2015'}">2015</option>
+            <option value="2014" th:selected="${selectedYear == '2014'}">2014</option>
+            <option value="2013" th:selected="${selectedYear == '2013'}">2013</option>
+        </select>
+        <div class="teamRank-main">
+            <table class="teamRank-table">
+                <thead>
+                <tr>
+                    <th>순위</th>
+                    <th colspan="2">팀명</th>
+                    <th>경기 수</th>
+                    <th>승</th>
+                    <th>패</th>
+                    <th>무</th>
+                    <th>승률</th>
+                    <th>연승</th>
+                    <th>최근 10경기</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="team : ${teams}">
+                    <td th:text="${team[0]}"></td>
+                    <td>
+                        <img th:src="${team[9]}" alt="팀 로고" th:width="50" th:height="50">
+                    </td>
+                    <td th:text="${team[1]}"></td>
+                    <td th:text="${team[2]}"></td>
+                    <td th:text="${team[3]}"></td>
+                    <td th:text="${team[4]}"></td>
+                    <td th:text="${team[5]}"></td>
+                    <td th:text="${team[6]}"></td>
+                    <td th:text="${team[7]}"></td>
+                    <td th:text="${team[8]}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(teams)}">
+                    <td colspan="9">순위 정보가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </section>
+</main>
+<div class="team-logos">
+    <div class="team-logos-container">
+        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+    </div>
+</div>
+</div>
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>게인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+<script>
+    function fetchRank(){
+        const year = document.getElementById("yearSelect").value;
+        if(year) {
+            window.location.href = `/game/teamrank?year=${year}`;
+        }
+    }
+</script>
+</body>
+</html>
