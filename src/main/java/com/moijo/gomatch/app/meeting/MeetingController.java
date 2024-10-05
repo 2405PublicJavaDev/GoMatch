@@ -86,7 +86,7 @@ public class MeetingController {
     @GetMapping("/meeting/list")
     public String showMeetingList(Model model) {
         // 예시 팀 이름 리스트를 모델에 추가
-        model.addAttribute("teams", List.of("KIA 타이거즈", "롯데 자이언츠", "삼성 라이온즈", "두산베어스", "KT 위즈", "SSG랜더스", "NC 다이노스", "한화 이글스", "키움 히어로즈", "LG 트윈스"));
+        model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
         String today = LocalDate.now().toString();
         List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
@@ -94,18 +94,16 @@ public class MeetingController {
         return "meeting/meeting-list";
     }
 
-    @GetMapping("/meeting/listByDate")
-    @ResponseBody
-    public List<MeetingVO> getMeetingsByDate(@RequestParam("date") String date) {
-        return meetingService.getMeetingsByDate(date);
-
-    }
-
     @GetMapping("/meeting/listByDateAndTeam")
     @ResponseBody
-    public List<MeetingVO> getMeetingsByDateAndTeam(@RequestParam("date") String date,
-                                                    @RequestParam("team") String team) {
-        return meetingService.getMeetingsByDateAndTeam(date, team);
+    public List<MeetingVO> getMeetingsByDateAndTeam(@RequestParam(value = "date", required = false) String date,
+                                                    @RequestParam(value = "team", defaultValue = "전체") String team) {
+        // 로그로 전달된 날짜와 팀 정보를 확인
+        log.info("필터 적용 - 날짜: {}, 팀: {}", date, team);
+        // 필터링된 소모임 목록 반환
+        List<MeetingVO> meetings = meetingService.getMeetingsByDateAndTeam(date, team);
+        log.info("필터 적용 후 소모임 수: {}", meetings.size());
+        return meetings;
     }
 
 }

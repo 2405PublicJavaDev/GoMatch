@@ -64,11 +64,13 @@
         SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
         MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, MEETING_DATE, REG_DATE
         FROM MEETING
-        WHERE MEETING_DATE = #{date}  <!-- 소모임 날짜로 조회 -->
+        WHERE MEETING_DATE = #{date}
         <if test="team != '전체'">
             AND MEETING_TEAM_NAME = #{team}
         </if>
     </select>
+
+
 
 
 </mapper>

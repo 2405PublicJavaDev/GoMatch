@@ -1,13 +1,26 @@
-/* ■■■■■■■■■■ 헤더 영역 css ■■■■■■■■■■ */
-
+/* ■■■■■■■■■■ 폰트 css ■■■■■■■■■■ */
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
 /* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
 main {
+
     font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 h1 {
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
     margin-bottom: 20px;
 }
 form {
@@ -19,6 +32,7 @@ form {
     align-items: center;
 }
 label {
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 폰트 적용 */
     font-weight: bold;
     width: 150px;
     flex-shrink: 0;
