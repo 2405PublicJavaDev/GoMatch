@@ -106,4 +106,11 @@ public class MeetingController {
         return meetings;
     }
 
+    @GetMapping("/meeting/gameInfo")
+    @ResponseBody
+    public GameVO getGameInfo(@RequestParam("gameNo") int gameNo) {
+        return meetingService.getGameByNo(gameNo);
+    }
+
+
 }

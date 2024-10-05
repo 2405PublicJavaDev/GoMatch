@@ -5,11 +5,9 @@ import com.moijo.gomatch.domain.meeting.mapper.MeetingMapper;
 import com.moijo.gomatch.domain.meeting.service.MeetingService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -35,6 +33,10 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     public List<MeetingVO> getMeetingsByDateAndTeam(String date, String team) {
         return meetingMapper.getMeetingsByDateAndTeam(date, team);
+    }
+    @Override
+    public GameVO getGameByNo(int gameNo) {
+        return meetingMapper.getGameByNo(gameNo); // Mapper에서 해당 gameNo로 경기 정보를 조회
     }
 
 }

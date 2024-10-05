@@ -23,5 +23,5 @@ public interface MeetingMapper {
     List<MeetingVO> getMeetingsByDate(@Param("date") String date);
 
     List<MeetingVO> getMeetingsByDateAndTeam(@Param("date") String date, @Param("team") String team);
-
+    GameVO getGameByNo(@Param("gameNo") int gameNo); // gameNo로 경기 정보를 조회하는 메서드
 }

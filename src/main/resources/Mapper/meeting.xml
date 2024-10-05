@@ -70,7 +70,17 @@
         </if>
     </select>
 
-
+    <select id="getGameByNo" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
+        SELECT
+            GAME_NO,
+            TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
+            GAME_TIME,
+            TEAM_A,
+            TEAM_B,
+            GAME_FIELD
+        FROM GAME
+        WHERE GAME_NO = #{gameNo}
+    </select>
 
 
 </mapper>

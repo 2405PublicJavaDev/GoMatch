@@ -23,7 +23,7 @@
         <ul class="nav-links">
             <li><a href="#">일정/결과</a></li>
             <li><a href="#">굿즈</a></li>
-            <li><a href="#">소모임</a></li>
+            <li><a href="meeting/list">소모임</a></li>
             <li><a href="#">승부예측</a></li>
         </ul>
         <ul class="member-links">
@@ -37,7 +37,6 @@
     <div class="container">
         <h1>소모임 리스트</h1>
 
-        <!-- 달력 및 필터를 같은 행에 배치하기 위한 컨테이너 -->
         <div class="content-container">
             <!-- 날짜별 달력 영역 -->
             <div class="calendar-container">
@@ -98,13 +97,21 @@
         </div>
         <button class="button">소모임 개설하기</button>
 
-        <div style="clear: both;">
-            <span>* Total : <span id="total-count">0</span> 건</span>
-            <span style="float: right;">Page : 1 / 1</span>
+        <div class="meeting-info">
+            <!-- Total 건수 -->
+            <span class="total-count">* Total : <span id="total-count">0</span> 건</span>
+
+            <!-- 페이지 표시 영역 -->
+            <span class="page-info" style="float: right;">Page : <span id="current-page">1</span> / <span id="total-pages">1</span></span>
         </div>
         <div id="meeting-list" class="items"></div>
         <div id="no-meetings" class="no-meetings" style="display: none;">
             개설된 소모임이 없습니다.
+        </div>
+
+        <!-- 페이지네이션 컨트롤 -->
+        <div id="pagination" class="pagination">
+            <!-- 페이지 번호가 여기에 동적으로 추가됩니다 -->
         </div>
 
     </div>
@@ -125,15 +132,19 @@
 
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
-<script>
+    const itemsPerPage = 10; // 페이지당 10개 항목
+    let currentPage = 1; // 현재 페이지 번호
+    let totalPages = 1; // 전체 페이지 수
+    let data = []; // 데이터를 전역 변수로 설정하여 fetch 후 사용할 수 있게 함
+
     // 전역 변수로 선택된 팀과 날짜를 저장
     var selectedTeam = '전체'; // 기본값 '전체'
-    var selectedDate = new Date().toISOString().split('T')[0];   // 초기값은 오늘 날짜로 설정
+    var selectedDate = new Date().toISOString().split('T')[0]; // 초기값은 오늘 날짜로 설정
 
     // 팀별 필터 함수
     function filterByTeam(team) {
-        selectedTeam = team;  // 선택된 팀 저장
+        selectedTeam = team; // 선택된 팀 저장
+        currentPage = 1; // 팀 필터를 적용할 때 페이지를 1로 리셋
         document.querySelectorAll('.tag').forEach(tag => tag.classList.remove('active'));
         const selectedTag = document.querySelector(`.tag[onclick="filterByTeam('${team}')"]`);
         if (selectedTag) {
@@ -145,46 +156,122 @@
     // 소모임 목록 불러오기 함수 (날짜와 팀 필터를 모두 적용)
     function loadMeetings() {
         console.log(`선택된 팀: ${selectedTeam}, 선택된 날짜: ${selectedDate || ''}`);
-        const encodedTeam = encodeURIComponent(selectedTeam);  // 팀 이름을 인코딩
+        const encodedTeam = encodeURIComponent(selectedTeam); // 팀 이름을 인코딩
         const encodedDate = encodeURIComponent(selectedDate || ""); // 선택된 날짜 없을 시 빈 값으로 인코딩
 
         fetch(`/meeting/listByDateAndTeam?date=${encodedDate}&team=${encodedTeam}`)
             .then(response => response.json())
-            .then(data => {
-                console.log(data); // 데이터 확인용 로그
-                var meetingList = document.getElementById("meeting-list");
-                meetingList.innerHTML = '';  // 기존 리스트 초기화
-
+            .then(fetchedData => {
+                console.log(fetchedData); // 데이터 확인용 로그
                 const today = new Date().toISOString().split('T')[0]; // 오늘 날짜
 
-                const filteredMeetings = data.filter(meeting => meeting.meetingDate >= today); // 오늘 이후 모임만 표시
+                // 데이터를 전역 변수 data에 저장
+                data = fetchedData.filter(meeting => meeting.meetingDate >= today); // 오늘 이후 모임만 표시
 
-                if (filteredMeetings.length === 0) {
-                    document.getElementById("no-meetings").style.display = 'block';
-                } else {
-                    document.getElementById("no-meetings").style.display = 'none';
-                    filteredMeetings.forEach(meeting => {
-                        var item = document.createElement("div");
-                        item.classList.add("item");
-                        item.innerHTML = `
-                            <div class="item-image">
-                                <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                            </div>
-                            <div class="item-content">
-                                <h3>${meeting.meetingTeamName}</h3>
-                                <p>${meeting.meetingTime}</p>
-                                <p>${meeting.meetingTitle}</p>
-                                <p>인원 현황 : ${meeting.meetingMaxPeople}명</p>
-                            </div>
-                        `;
-                        meetingList.appendChild(item);
-                    });
-                }
-                document.getElementById("total-count").textContent = filteredMeetings.length;
+                totalPages = Math.ceil(data.length / itemsPerPage); // 전체 페이지 수 계산
+                renderMeetings(); // 필터된 데이터를 렌더링
+                renderPagination(); // 페이지네이션 버튼 렌더링
+
+                // Total 건수 업데이트
+                document.getElementById("total-count").textContent = data.length;
+
+                // 페이지 정보 업데이트
+                document.getElementById("current-page").textContent = currentPage;
+                document.getElementById("total-pages").textContent = totalPages;
             })
             .catch(error => {
                 console.error('소모임 불러오기 중 오류 발생:', error);
             });
+    }
+
+    // 소모임 목록 렌더링 함수
+    function renderMeetings() {
+        const meetingList = document.getElementById("meeting-list");
+        meetingList.innerHTML = ''; // 기존 리스트 초기화
+
+        const startIndex = (currentPage - 1) * itemsPerPage; // 시작 인덱스
+        const endIndex = Math.min(startIndex + itemsPerPage, data.length); // 종료 인덱스
+
+        if (data.length === 0) {
+            document.getElementById("no-meetings").style.display = 'block';
+        } else {
+            document.getElementById("no-meetings").style.display = 'none';
+            for (let i = startIndex; i < endIndex; i++) {
+                const meeting = data[i];
+                const item = document.createElement("div");
+                item.classList.add("item");
+
+                // 경기 정보를 가져오기 위한 fetch (gameNo 사용)
+                fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
+                    .then(response => response.json())
+                    .then(gameInfo => {
+                        // 모임 제목을 가장 위로, 응원 팀 텍스트를 팀 로고 아래로 이동
+                        item.innerHTML = `
+                    <div class="item-image">
+                        <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                        <div class="meeting-team">
+                            <strong>${meeting.meetingTeamName}</strong>
+                        </div>
+                    </div>
+                    <div class="item-content">
+                        <div class="meeting-title">
+                            <strong>${meeting.meetingTitle}</strong>
+                        </div>
+                        <div class="meeting-game-info">
+                            <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                            <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                        </div>
+                        <div class="meeting-place">
+                            <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                            <span>${meeting.meetingPlace}</span>
+                        </div>
+                        <div class="meeting-time">
+                            <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                            <span>${meeting.meetingTime}</span>
+                        </div>
+                        <div class="meeting-max-people">
+                            <img src="/img/who.png" alt="인원 현황 아이콘" class="icon">
+                            <span>${meeting.meetingMaxPeople}명</span>
+                        </div>
+                    </div>
+                `;
+                        meetingList.appendChild(item);
+                    })
+                    .catch(error => {
+                        console.error('경기 정보 가져오기 중 오류 발생:', error);
+                    });
+            }
+        }
+    }
+
+    // 페이지네이션 버튼을 렌더링하는 함수
+    function renderPagination() {
+        const paginationContainer = document.getElementById("pagination");
+        paginationContainer.innerHTML = ''; // 기존 버튼 초기화
+
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            li.classList.add("pagination-li");
+            if (i === currentPage) {
+                li.classList.add("pagination-li-active");
+            }
+
+            const pageButton = document.createElement("a");
+            pageButton.href = "#";
+            pageButton.textContent = i;
+            pageButton.addEventListener("click", function (e) {
+                e.preventDefault(); // 링크 기본 동작 방지
+                currentPage = i;
+                renderMeetings(); // 페이지 변경 시 데이터 다시 렌더링
+                renderPagination(); // 페이지네이션 갱신
+
+                // 페이지 정보 업데이트
+                document.getElementById("current-page").textContent = currentPage;
+            });
+
+            li.appendChild(pageButton);
+            paginationContainer.appendChild(li);
+        }
     }
 
     // 팀 이름에 따른 로고 이미지 경로를 반환하는 함수
@@ -211,24 +298,30 @@
             case '한화':
                 return '/img/한화로고.png';
             default:
-                return '/img/default-logo.png';  // 기본 로고 이미지
+                return '/img/default-logo.png'; // 기본 로고 이미지
         }
     }
 
     // DOM 로드 후 초기 설정
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+
+        if (!calendarEl) {
+            console.error("캘린더 요소를 찾을 수 없습니다. ID가 'calendar'인지 확인하세요.");
+            return;
+        }
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',  // 초기 뷰는 월간 달력
-            locale: 'ko',  // 한국어 설정
-            height: 'auto',  // 달력 높이를 자동으로 맞춤
-            contentHeight: 'auto',  // 컨텐츠 높이도 자동으로 맞춤
+            initialView: 'dayGridMonth', // 초기 뷰는 월간 달력
+            locale: 'ko', // 한국어 설정
+            height: 'auto', // 달력 높이를 자동으로 맞춤
+            contentHeight: 'auto', // 컨텐츠 높이도 자동으로 맞춤
             dayCellContent: function(e) {
                 // 숫자에서 "일"을 제거
                 e.dayNumberText = e.dayNumberText.replace('일', '');
             },
             validRange: {
-                start: new Date().toISOString().split('T')[0]  // 오늘 이전 날짜 선택 불가
+                start: new Date().toISOString().split('T')[0] // 오늘 이전 날짜 선택 불가
             },
             dateClick: function (info) {
                 // 선택된 날짜에 대한 이전 참조 제거 (null 체크 추가)
@@ -244,7 +337,8 @@
                 if (newSelectedDateElement) {
                     newSelectedDateElement.classList.add('fc-day-selected');
                 }
-                loadMeetings();  // 날짜 선택 시 소모임 목록 불러오기
+                currentPage = 1; // 날짜를 클릭했을 때 페이지를 1로 리셋
+                loadMeetings(); // 날짜 선택 시 소모임 목록 불러오기
             },
             datesSet: function (info) {
                 console.log("달이 변경되었습니다:", info.startStr, "부터", info.endStr);
@@ -253,14 +347,19 @@
                 if (selectedDateElement) {
                     selectedDateElement.classList.add('fc-day-selected');
                 } else {
-                    selectedDate = null;  // 선택된 날짜 초기화
+                    selectedDate = null; // 선택된 날짜 초기화
                 }
             }
         });
+
         calendar.render();
         // 페이지 로드시 오늘 날짜 선택 처리
         selectedDate = new Date().toISOString().split('T')[0];
-        document.querySelector(`[data-date='${selectedDate}']`).classList.add('fc-day-selected');
+        const todayElement = document.querySelector(`[data-date='${selectedDate}']`);
+        if (todayElement) {
+            todayElement.classList.add('fc-day-selected');
+        }
+
         // 페이지 로드시 오늘 날짜의 소모임 리스트를 불러옴
         loadMeetings();
     });

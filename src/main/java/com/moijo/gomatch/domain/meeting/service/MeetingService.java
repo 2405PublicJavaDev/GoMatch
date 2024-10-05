@@ -15,4 +15,5 @@ public interface MeetingService {
     // 날짜별 소모임 리스트 불러오기
     List<MeetingVO> getMeetingsByDate(String date);
     List<MeetingVO> getMeetingsByDateAndTeam(String date, String team);
+    GameVO getGameByNo(int gameNo); // gameNo로 경기 정보를 조회하는 메서드
 }

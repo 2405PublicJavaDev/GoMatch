@@ -102,13 +102,13 @@
       <label for="meetingPlace">모임 위치</label>
       <input type="text" id="meetingPlace" name="meetingPlace" placeholder="주소를 검색하세요" required readonly>
       <input type="text" id="meetingPlaceDetail" name="meetingPlaceDetail" placeholder="상세 주소를 입력하세요">
-      <button type="button" onclick="searchAddress();">검색</button>
+      <button type="button" class="search-btn" onclick="searchAddress();">검색</button>
     </div>
 
     <!-- 최대 참석 인원 -->
     <div class="form-group">
       <label for="meetingMaxPeople">최대 참석 인원</label>
-      <input type="number" id="meetingMaxPeople" name="meetingMaxPeople" min="1" max="20" placeholder="최대 20명까지 입력 가능" required>
+      <input type="number" id="meetingMaxPeople" name="meetingMaxPeople" min="1" max="20" placeholder="최대 20명" required>
     </div>
 
     <!-- 모임 제목 -->
@@ -126,9 +126,12 @@
     <!-- 파일 업로드 필드 -->
     <div class="form-group">
       <label for="groupImage">사진 첨부</label>
-      <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple>
+      <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple onchange="previewImages()" />
+      <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 사진만 선택할 수 있습니다.</p>
     </div>
 
+    <!-- 썸네일이 보여질 영역 -->
+    <div id="thumbnailContainer"></div>
 
     <div class="buttons">
       <button type="submit" class="submit">등록</button>
@@ -238,11 +241,9 @@
   // 시, 분 선택 후 hidden input에 값 저장
   document.getElementById('hourSelect').addEventListener('change', updateMeetingTime);
   document.getElementById('minuteSelect').addEventListener('change', updateMeetingTime);
-
   function updateMeetingTime() {
     const hour = document.getElementById('hourSelect').value;
     const minute = document.getElementById('minuteSelect').value;
-
     if (hour && minute) {
       const meetingTime = hour + ':' + minute;
       document.getElementById('meetingTime').value = meetingTime;
@@ -258,6 +259,55 @@
     }
     return true;
   }
+
+  let selectedFiles = []; // 선택된 파일들을 저장할 배열
+  // 파일 선택 시 최대 5장만 허용하고 썸네일을 가로로 나란히 보여주는 함수
+  function previewImages() {
+    const previewContainer = document.getElementById('thumbnailContainer');
+    const fileLimitMessage = document.getElementById('fileLimitMessage');
+    previewContainer.innerHTML = ''; // 기존 썸네일 제거
+    fileLimitMessage.style.display = 'none'; // 경고 메시지 숨김
+    const files = document.getElementById('groupImage').files;
+    // 선택된 파일 배열 초기화
+    selectedFiles = Array.from(files);
+    // 파일이 5개를 초과할 경우 경고 메시지 표시 및 리턴
+    if (selectedFiles.length > 5) {
+      fileLimitMessage.style.display = 'block';
+      return;
+    }
+    selectedFiles.forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const thumbnailWrapper = document.createElement('div');
+        thumbnailWrapper.classList.add('file-thumbnail-wrapper');
+        const thumbnail = document.createElement('img');
+        thumbnail.classList.add('thumbnail');
+        thumbnail.src = e.target.result;
+        // X 버튼 생성
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'X';
+        removeButton.classList.add('x-btn');
+        removeButton.onclick = function() {
+          removeImage(index); // X 버튼 클릭 시 파일 제거 함수 호출
+        };
+        thumbnailWrapper.appendChild(thumbnail);
+        thumbnailWrapper.appendChild(removeButton);
+        previewContainer.appendChild(thumbnailWrapper);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  // 파일 목록에서 선택된 파일을 제거하는 함수
+  function removeImage(index) {
+    selectedFiles.splice(index, 1); // 배열에서 해당 파일 제거
+    // 선택된 파일 목록을 다시 FileList 형식으로 갱신
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+    document.getElementById('groupImage').files = dataTransfer.files; // 파일 input에 갱신된 FileList 설정
+    previewImages(); // 갱신된 파일 목록으로 썸네일 다시 렌더링
+  }
+
+
 </script>
 </body>
 </html>
