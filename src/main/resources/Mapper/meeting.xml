@@ -100,7 +100,7 @@
 
     <!-- 소모임 번호로 참석자 정보 조회 -->
     <select id="getMeetingAttendeeByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
-        SELECT ATTEND_NO, MEETING_NO, MEMBER_ID, REG_DATE
+        SELECT MEETING_ATTEND_NO, MEETING_NO, MEMBER_ID, REG_DATE
         FROM MEETING_ATTEND
         WHERE MEETING_NO = #{meetingNo}
     </select>

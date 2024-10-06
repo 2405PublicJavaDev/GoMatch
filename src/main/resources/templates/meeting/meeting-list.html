@@ -104,7 +104,32 @@
             <!-- 페이지 표시 영역 -->
             <span class="page-info" style="float: right;">Page : <span id="current-page">1</span> / <span id="total-pages">1</span></span>
         </div>
-        <div id="meeting-list" class="items"></div>
+        <div id="meeting-list" class="items">
+            <!-- 반복문으로 각 소모임 정보 출력 -->
+            <div th:each="meeting : ${meetings}" class="item" th:onclick="'window.location.href=\'/meeting/detail/' + ${meeting.meetingNo} + '\'">
+                <div class="item-image">
+                    <img th:src="@{/img/{teamName}로고.png(teamName=${meeting.meetingTeamName})}" th:alt="${meeting.meetingTeamName}">
+                    <div class="meeting-team">
+                        <strong th:text="${meeting.meetingTeamName}"></strong>
+                    </div>
+                </div>
+                <div class="item-content">
+                    <div class="meeting-title">
+                        <strong th:text="${meeting.meetingTitle}"></strong>
+                    </div>
+                    <div class="meeting-place">
+                        <span th:text="${meeting.meetingPlace}"></span>
+                    </div>
+                    <div class="meeting-time">
+                        <span th:text="${meeting.meetingTime}"></span>
+                    </div>
+                    <div class="meeting-max-people">
+                        <!-- 참석자 현황: 현재 인원 / 최대 인원 -->
+                        <span th:text="${#request.getAttribute('attendeesCount_' + meeting.meetingNo)} + ' / ' + ${meeting.meetingMaxPeople} + '명'">0 / 10명</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="no-meetings" class="no-meetings" style="display: none;">
             개설된 소모임이 없습니다.
         </div>
@@ -193,46 +218,47 @@
         } else {
             document.getElementById("no-meetings").style.display = 'none';
             for (let i = startIndex; i < endIndex; i++) {
-                const meeting = data[i];
+                const meetingData = data[i];
+                const meeting = meetingData.meeting;  // 소모임 정보
+                const currentAttendeesCount = meetingData.currentAttendeesCount;  // 참석자 수
+
                 const item = document.createElement("div");
                 item.classList.add("item");
 
-                // 각 소모임을 클릭하면 해당 meetingNo로 디테일 페이지로 이동
                 item.setAttribute("onclick", `window.location.href='/meeting/detail/${meeting.meetingNo}'`);
 
-                // 경기 정보를 가져오기 위한 fetch (gameNo 사용)
                 fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
                     .then(response => response.json())
                     .then(gameInfo => {
                         item.innerHTML = `
-                            <div class="item-image">
-                                <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                                <div class="meeting-team">
-                                    <strong>${meeting.meetingTeamName}</strong>
-                                </div>
+                        <div class="item-image">
+                            <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                            <div class="meeting-team">
+                                <strong>${meeting.meetingTeamName}</strong>
                             </div>
-                            <div class="item-content">
-                                <div class="meeting-title">
-                                    <strong>${meeting.meetingTitle}</strong>
-                                </div>
-                                <div class="meeting-game-info">
-                                    <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
-                                    <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
-                                </div>
-                                <div class="meeting-place">
-                                    <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
-                                    <span>${meeting.meetingPlace}</span>
-                                </div>
-                                <div class="meeting-time">
-                                    <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
-                                    <span>${meeting.meetingTime}</span>
-                                </div>
-                                <div class="meeting-max-people">
-                                    <img src="/img/who.png" alt="인원 현황 아이콘" class="icon">
-                                    <span>${meeting.meetingMaxPeople}명</span>
-                                </div>
+                        </div>
+                        <div class="item-content">
+                            <div class="meeting-title">
+                                <strong>${meeting.meetingTitle}</strong>
                             </div>
-                        `;
+                            <div class="meeting-game-info">
+                                <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                                <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                            </div>
+                            <div class="meeting-place">
+                                <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                                <span>${meeting.meetingPlace}</span>
+                            </div>
+                            <div class="meeting-time">
+                                <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                                <span>${meeting.meetingTime}</span>
+                            </div>
+                            <div class="meeting-max-people">
+                                <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
+                                <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
+                            </div>
+                        </div>
+                    `;
                         meetingList.appendChild(item);
                     })
                     .catch(error => {

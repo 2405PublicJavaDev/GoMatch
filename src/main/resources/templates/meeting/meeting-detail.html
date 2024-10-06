@@ -75,7 +75,7 @@
       </div>
       <div class="detail-item">
         <label>참석자 현황</label>
-        <span th:text="${meeting.meetingMaxPeople}">10명</span>
+        <span th:text="${currentAttendeesCount} + ' / ' + ${meeting.meetingMaxPeople}">0 / 10</span>
       </div>
     </div>
 

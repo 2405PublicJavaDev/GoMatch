@@ -17,7 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -79,7 +82,7 @@ public class MeetingController {
         if (!groupImages.isEmpty()) {
             fileUtil.uploadFiles(groupImages, Long.valueOf(meetingVO.getMeetingNo()), "meeting");
         }
-        return "redirect:/meeting/meeting"; // 소모임 목록 페이지로 리다이렉트
+        return "redirect:/meeting/detail/" + meetingVO.getMeetingNo(); // 소모임 목록 페이지로 리다이렉트
     }
     /**
      * 담당자 : 김윤경
@@ -103,14 +106,20 @@ public class MeetingController {
      */
     @GetMapping("/meeting/listByDateAndTeam")
     @ResponseBody
-    public List<MeetingVO> getMeetingsByDateAndTeam(@RequestParam(value = "date", required = false) String date,
-                                                    @RequestParam(value = "team", defaultValue = "전체") String team) {
-        // 로그로 전달된 날짜와 팀 정보를 확인
-        log.info("필터 적용 - 날짜: {}, 팀: {}", date, team);
-        // 필터링된 소모임 목록 반환
+    public List<Map<String, Object>> getMeetingsByDateAndTeam(@RequestParam(value = "date", required = false) String date,
+                                                              @RequestParam(value = "team", defaultValue = "전체") String team) {
         List<MeetingVO> meetings = meetingService.getMeetingsByDateAndTeam(date, team);
-        log.info("필터 적용 후 소모임 수: {}", meetings.size());
-        return meetings;
+        List<Map<String, Object>> responseList = new ArrayList<>();
+
+        for (MeetingVO meeting : meetings) {
+            Map<String, Object> meetingData = new HashMap<>();
+            meetingData.put("meeting", meeting);
+            List<MeetingAttendVO> attendees = meetingService.getMeetingAttendeeByMeetingNo(meeting.getMeetingNo());
+            meetingData.put("currentAttendeesCount", attendees.size());  // 참석자 수
+            responseList.add(meetingData);
+        }
+
+        return responseList;
     }
     /**
      * 담당자 : 김윤경
@@ -134,16 +143,16 @@ public class MeetingController {
             memberId = "user9"; // 테스트용 ID
             session.setAttribute("memberId", memberId);
         }
-
         // 소모임 상세 정보, 파일, 참석자 조회
         MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
         List<MeetingFileVO> meetingFile = meetingService.getMeetingFileByMeetingNo(meetingNo);
-//        List<MeetingAttendVO> meetingAttendee = meetingService.getMeetingAttendeeByMeetingNo(meetingNo);
-
+        List<MeetingAttendVO> meetingAttendee = meetingService.getMeetingAttendeeByMeetingNo(meetingNo);
+        // 참석자 수 계산
+        int currentAttendeesCount = meetingAttendee.size();
         model.addAttribute("meeting", meetingDetail); // 소모임 정보
         model.addAttribute("meetingFile", meetingFile); // 파일 정보
-//        model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
-
+        model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
+        model.addAttribute("currentAttendeesCount", currentAttendeesCount); // 현재 참석자 수
         return "meeting/meeting-detail";
     }
     /**
@@ -155,22 +164,17 @@ public class MeetingController {
     @ResponseBody
     public String attendMeeting(@RequestParam("meetingNo") long meetingNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");
-
         if (memberId == null) {
             return "로그인이 필요합니다.";
         }
-
         MeetingAttendVO attendVO = new MeetingAttendVO();
         attendVO.setMeetingNo((int) meetingNo);
         attendVO.setMemberId(memberId);
         attendVO.setMeetingAttendYn("Y");
-
         boolean isAlreadyAttended = meetingService.checkAlreadyAttended(meetingNo, memberId);
-
         if (isAlreadyAttended) {
             return "이미 참석한 소모임입니다.";
         }
-
         meetingService.addAttend(attendVO);
         return "참석이 완료되었습니다.";
     }
