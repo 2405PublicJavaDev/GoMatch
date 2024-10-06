@@ -82,5 +82,45 @@
         WHERE GAME_NO = #{gameNo}
     </select>
 
+    <!-- 소모임 번호로 소모임 정보 조회 -->
+    <select id="getMeetingsByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+               MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEETING_DATE, MEMBER_ID, REG_DATE, UPDATE_DATE
+        FROM MEETING
+        WHERE MEETING_NO = #{meetingNo}
+    </select>
+
+    <!-- 소모임 번호로 첨부파일 정보 조회 -->
+    <select id="getMeetingFileByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
+        SELECT MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH,
+               FILE_ORDER, REG_DATE, UPDATE_DATE
+        FROM MEETING_FILE
+        WHERE MEETING_NO = #{meetingNo}
+    </select>
+
+    <!-- 소모임 번호로 참석자 정보 조회 -->
+    <select id="getMeetingAttendeeByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
+        SELECT ATTEND_NO, MEETING_NO, MEMBER_ID, REG_DATE
+        FROM MEETING_ATTEND
+        WHERE MEETING_NO = #{meetingNo}
+    </select>
+    <!-- 소모임 참석 정보 삽입 -->
+    <insert id="insertMeetingAttend" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
+        <selectKey resultType="long" keyProperty="meetingAttendNo" order="BEFORE">
+            SELECT SEQ_MEETING_ATTEND_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING_ATTEND (
+        MEETING_ATTEND_NO, MEETING_NO, MEMBER_ID, MEETING_ATTEND_YN, REG_DATE, UPDATE_DATE
+        ) VALUES (
+        #{meetingAttendNo}, #{meetingNo}, #{memberId}, #{meetingAttendYn}, default, default
+        )
+    </insert>
+
+    <!-- 소모임 참석 여부 확인 -->
+    <select id="checkMeetingAttend" resultType="int">
+        SELECT COUNT(*)
+        FROM MEETING_ATTEND
+        WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
+    </select>
 
 </mapper>

@@ -54,49 +54,49 @@
                     </div>
                     <!-- 기아 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('기아')">
-                        <img src="/img/기아로고.png" alt="기아"> 기아
+                        <img src="/img/기아로고.png" alt="기아"> 기아 타이거즈
                     </div>
                     <!-- 롯데 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('롯데')">
-                        <img src="/img/롯데로고.png" alt="롯데"> 롯데
+                        <img src="/img/롯데로고.png" alt="롯데"> 롯데 자이언츠
                     </div>
                     <!-- 삼성 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('삼성')">
-                        <img src="/img/삼성로고.png" alt="삼성"> 삼성
+                        <img src="/img/삼성로고.png" alt="삼성"> 삼성 라이온즈
                     </div>
                     <!-- 두산 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('두산')">
-                        <img src="/img/두산로고.png" alt="두산"> 두산
+                        <img src="/img/두산로고.png" alt="두산"> 두산 베어스
                     </div>
                     <!-- KT 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('KT')">
-                        <img src="/img/KT로고.png" alt="KT"> KT
+                        <img src="/img/KT로고.png" alt="KT"> KT 위즈
                     </div>
                     <!-- SSG 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('SSG')">
-                        <img src="/img/SSG로고.png" alt="SSG"> SSG
+                        <img src="/img/SSG로고.png" alt="SSG"> SSG 랜더스
                     </div>
                     <!-- NC 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('NC')">
-                        <img src="/img/NC로고.png" alt="NC"> NC
+                        <img src="/img/NC로고.png" alt="NC"> NC 다이노스
                     </div>
                     <!-- 한화 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('한화')">
-                        <img src="/img/한화로고.png" alt="한화"> 한화
+                        <img src="/img/한화로고.png" alt="한화"> 한화 이글스
                     </div>
                     <!-- 키움 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('키움')">
-                        <img src="/img/키움로고.png" alt="키움"> 키움
+                        <img src="/img/키움로고.png" alt="키움"> 키움 히어로즈
                     </div>
                     <!-- LG 팀 태그 -->
                     <div class="tag" onclick="filterByTeam('LG')">
-                        <img src="/img/LG로고.png" alt="LG"> LG
+                        <img src="/img/LG로고.png" alt="LG"> LG 트윈스
                     </div>
                 </div>
             </div>
         </div>
-        <button class="button">소모임 개설하기</button>
-
+        <!-- 소모임 개설하기 버튼 -->
+        <button class="button" onclick="window.location.href='/meeting/register'">소모임 개설하기</button>
         <div class="meeting-info">
             <!-- Total 건수 -->
             <span class="total-count">* Total : <span id="total-count">0</span> 건</span>
@@ -153,29 +153,25 @@
         loadMeetings(); // 팀 클릭 시 소모임 리스트 불러오기
     }
 
-    // 소모임 목록 불러오기 함수 (날짜와 팀 필터를 모두 적용)
+    // 소모임 목록 불러오기 함수
     function loadMeetings() {
         console.log(`선택된 팀: ${selectedTeam}, 선택된 날짜: ${selectedDate || ''}`);
-        const encodedTeam = encodeURIComponent(selectedTeam); // 팀 이름을 인코딩
-        const encodedDate = encodeURIComponent(selectedDate || ""); // 선택된 날짜 없을 시 빈 값으로 인코딩
+        const encodedTeam = encodeURIComponent(selectedTeam);
+        const encodedDate = encodeURIComponent(selectedDate || "");
 
         fetch(`/meeting/listByDateAndTeam?date=${encodedDate}&team=${encodedTeam}`)
             .then(response => response.json())
             .then(fetchedData => {
-                console.log(fetchedData); // 데이터 확인용 로그
-                const today = new Date().toISOString().split('T')[0]; // 오늘 날짜
+                console.log(fetchedData);
 
                 // 데이터를 전역 변수 data에 저장
-                data = fetchedData.filter(meeting => meeting.meetingDate >= today); // 오늘 이후 모임만 표시
+                data = fetchedData;
 
-                totalPages = Math.ceil(data.length / itemsPerPage); // 전체 페이지 수 계산
-                renderMeetings(); // 필터된 데이터를 렌더링
-                renderPagination(); // 페이지네이션 버튼 렌더링
+                totalPages = Math.ceil(data.length / itemsPerPage);
+                renderMeetings();
+                renderPagination();
 
-                // Total 건수 업데이트
                 document.getElementById("total-count").textContent = data.length;
-
-                // 페이지 정보 업데이트
                 document.getElementById("current-page").textContent = currentPage;
                 document.getElementById("total-pages").textContent = totalPages;
             })
@@ -189,8 +185,8 @@
         const meetingList = document.getElementById("meeting-list");
         meetingList.innerHTML = ''; // 기존 리스트 초기화
 
-        const startIndex = (currentPage - 1) * itemsPerPage; // 시작 인덱스
-        const endIndex = Math.min(startIndex + itemsPerPage, data.length); // 종료 인덱스
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, data.length);
 
         if (data.length === 0) {
             document.getElementById("no-meetings").style.display = 'block';
@@ -201,40 +197,42 @@
                 const item = document.createElement("div");
                 item.classList.add("item");
 
+                // 각 소모임을 클릭하면 해당 meetingNo로 디테일 페이지로 이동
+                item.setAttribute("onclick", `window.location.href='/meeting/detail/${meeting.meetingNo}'`);
+
                 // 경기 정보를 가져오기 위한 fetch (gameNo 사용)
                 fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
                     .then(response => response.json())
                     .then(gameInfo => {
-                        // 모임 제목을 가장 위로, 응원 팀 텍스트를 팀 로고 아래로 이동
                         item.innerHTML = `
-                    <div class="item-image">
-                        <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                        <div class="meeting-team">
-                            <strong>${meeting.meetingTeamName}</strong>
-                        </div>
-                    </div>
-                    <div class="item-content">
-                        <div class="meeting-title">
-                            <strong>${meeting.meetingTitle}</strong>
-                        </div>
-                        <div class="meeting-game-info">
-                            <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
-                            <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
-                        </div>
-                        <div class="meeting-place">
-                            <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
-                            <span>${meeting.meetingPlace}</span>
-                        </div>
-                        <div class="meeting-time">
-                            <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
-                            <span>${meeting.meetingTime}</span>
-                        </div>
-                        <div class="meeting-max-people">
-                            <img src="/img/who.png" alt="인원 현황 아이콘" class="icon">
-                            <span>${meeting.meetingMaxPeople}명</span>
-                        </div>
-                    </div>
-                `;
+                            <div class="item-image">
+                                <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                                <div class="meeting-team">
+                                    <strong>${meeting.meetingTeamName}</strong>
+                                </div>
+                            </div>
+                            <div class="item-content">
+                                <div class="meeting-title">
+                                    <strong>${meeting.meetingTitle}</strong>
+                                </div>
+                                <div class="meeting-game-info">
+                                    <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                                    <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                                </div>
+                                <div class="meeting-place">
+                                    <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                                    <span>${meeting.meetingPlace}</span>
+                                </div>
+                                <div class="meeting-time">
+                                    <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                                    <span>${meeting.meetingTime}</span>
+                                </div>
+                                <div class="meeting-max-people">
+                                    <img src="/img/who.png" alt="인원 현황 아이콘" class="icon">
+                                    <span>${meeting.meetingMaxPeople}명</span>
+                                </div>
+                            </div>
+                        `;
                         meetingList.appendChild(item);
                     })
                     .catch(error => {
@@ -244,7 +242,7 @@
         }
     }
 
-    // 페이지네이션 버튼을 렌더링하는 함수
+    // 페이지네이션 버튼 렌더링
     function renderPagination() {
         const paginationContainer = document.getElementById("pagination");
         paginationContainer.innerHTML = ''; // 기존 버튼 초기화
@@ -260,12 +258,11 @@
             pageButton.href = "#";
             pageButton.textContent = i;
             pageButton.addEventListener("click", function (e) {
-                e.preventDefault(); // 링크 기본 동작 방지
+                e.preventDefault();
                 currentPage = i;
-                renderMeetings(); // 페이지 변경 시 데이터 다시 렌더링
-                renderPagination(); // 페이지네이션 갱신
+                renderMeetings();
+                renderPagination();
 
-                // 페이지 정보 업데이트
                 document.getElementById("current-page").textContent = currentPage;
             });
 
@@ -274,7 +271,7 @@
         }
     }
 
-    // 팀 이름에 따른 로고 이미지 경로를 반환하는 함수
+    // 팀 이름에 따른 로고 이미지 경로 반환
     function getTeamLogo(meetingTeamName) {
         switch (meetingTeamName) {
             case 'KT':
@@ -302,7 +299,7 @@
         }
     }
 
-    // DOM 로드 후 초기 설정
+    // 페이지 로드시 오늘 날짜 소모임 리스트를 불러옴
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
 
@@ -317,53 +314,21 @@
             height: 'auto', // 달력 높이를 자동으로 맞춤
             contentHeight: 'auto', // 컨텐츠 높이도 자동으로 맞춤
             dayCellContent: function(e) {
-                // 숫자에서 "일"을 제거
-                e.dayNumberText = e.dayNumberText.replace('일', '');
+                e.dayNumberText = e.dayNumberText.replace('일', ''); // 숫자에서 "일"을 제거
             },
             validRange: {
                 start: new Date().toISOString().split('T')[0] // 오늘 이전 날짜 선택 불가
             },
             dateClick: function (info) {
-                // 선택된 날짜에 대한 이전 참조 제거 (null 체크 추가)
-                if (selectedDate) {
-                    const prevSelectedDateElement = document.querySelector(`[data-date='${selectedDate}']`);
-                    if (prevSelectedDateElement) {
-                        prevSelectedDateElement.classList.remove('fc-day-selected');
-                    }
-                }
-                // 새로운 날짜 선택 및 스타일 적용
                 selectedDate = info.dateStr;
-                const newSelectedDateElement = document.querySelector(`[data-date='${selectedDate}']`);
-                if (newSelectedDateElement) {
-                    newSelectedDateElement.classList.add('fc-day-selected');
-                }
-                currentPage = 1; // 날짜를 클릭했을 때 페이지를 1로 리셋
-                loadMeetings(); // 날짜 선택 시 소모임 목록 불러오기
-            },
-            datesSet: function (info) {
-                console.log("달이 변경되었습니다:", info.startStr, "부터", info.endStr);
-                // 달이 변경되었을 때 선택된 날짜가 유효한지 확인
-                const selectedDateElement = document.querySelector(`[data-date='${selectedDate}']`);
-                if (selectedDateElement) {
-                    selectedDateElement.classList.add('fc-day-selected');
-                } else {
-                    selectedDate = null; // 선택된 날짜 초기화
-                }
+                currentPage = 1; // 날짜 클릭 시 페이지를 1로 리셋
+                loadMeetings();
             }
         });
 
         calendar.render();
-        // 페이지 로드시 오늘 날짜 선택 처리
-        selectedDate = new Date().toISOString().split('T')[0];
-        const todayElement = document.querySelector(`[data-date='${selectedDate}']`);
-        if (todayElement) {
-            todayElement.classList.add('fc-day-selected');
-        }
-
-        // 페이지 로드시 오늘 날짜의 소모임 리스트를 불러옴
-        loadMeetings();
+        loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
     });
-
 </script>
 
 </body>

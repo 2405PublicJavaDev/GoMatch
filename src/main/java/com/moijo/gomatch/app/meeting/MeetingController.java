@@ -3,6 +3,8 @@ package com.moijo.gomatch.app.meeting;
 import com.moijo.gomatch.common.FileUtil;
 import com.moijo.gomatch.domain.game.vo.GameVO;
 import com.moijo.gomatch.domain.meeting.service.MeetingService;
+import com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO;
+import com.moijo.gomatch.domain.meeting.vo.MeetingFileVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -82,7 +81,11 @@ public class MeetingController {
         }
         return "redirect:/meeting/meeting"; // 소모임 목록 페이지로 리다이렉트
     }
-
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
+     * 설명 : 날짜별 소모임 리스트 출력하기
+     */
     @GetMapping("/meeting/list")
     public String showMeetingList(Model model) {
         // 예시 팀 이름 리스트를 모델에 추가
@@ -93,7 +96,11 @@ public class MeetingController {
         model.addAttribute("meetings", meetings);
         return "meeting/meeting-list";
     }
-
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
+     * 설명 : 날짜별, 팀별 필터 적용
+     */
     @GetMapping("/meeting/listByDateAndTeam")
     @ResponseBody
     public List<MeetingVO> getMeetingsByDateAndTeam(@RequestParam(value = "date", required = false) String date,
@@ -105,12 +112,67 @@ public class MeetingController {
         log.info("필터 적용 후 소모임 수: {}", meetings.size());
         return meetings;
     }
-
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
+     * 설명 : gameNo에 따른 경기 정보 불러오기
+     */
     @GetMapping("/meeting/gameInfo")
     @ResponseBody
     public GameVO getGameInfo(@RequestParam("gameNo") int gameNo) {
         return meetingService.getGameByNo(gameNo);
     }
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Show] 소모임 디테일 페이지
+     * 설명 : 소모임 디테일 페이지 출력
+     */
+    @GetMapping("/meeting/detail/{meetingNo}")
+    public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            memberId = "user9"; // 테스트용 ID
+            session.setAttribute("memberId", memberId);
+        }
 
+        // 소모임 상세 정보, 파일, 참석자 조회
+        MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
+        List<MeetingFileVO> meetingFile = meetingService.getMeetingFileByMeetingNo(meetingNo);
+//        List<MeetingAttendVO> meetingAttendee = meetingService.getMeetingAttendeeByMeetingNo(meetingNo);
+
+        model.addAttribute("meeting", meetingDetail); // 소모임 정보
+        model.addAttribute("meetingFile", meetingFile); // 파일 정보
+//        model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
+
+        return "meeting/meeting-detail";
+    }
+    /**
+     * 담당자: 김윤경
+     * 관련 기능: [Attend] 소모임 참여
+     * 설명: 소모임에 로그인한 사용자를 참석자로 등록
+     */
+    @PostMapping("/meeting/attend")
+    @ResponseBody
+    public String attendMeeting(@RequestParam("meetingNo") long meetingNo, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+
+        if (memberId == null) {
+            return "로그인이 필요합니다.";
+        }
+
+        MeetingAttendVO attendVO = new MeetingAttendVO();
+        attendVO.setMeetingNo((int) meetingNo);
+        attendVO.setMemberId(memberId);
+        attendVO.setMeetingAttendYn("Y");
+
+        boolean isAlreadyAttended = meetingService.checkAlreadyAttended(meetingNo, memberId);
+
+        if (isAlreadyAttended) {
+            return "이미 참석한 소모임입니다.";
+        }
+
+        meetingService.addAttend(attendVO);
+        return "참석이 완료되었습니다.";
+    }
 
 }

@@ -186,7 +186,7 @@
           $('#gameNo').empty(); // 기존 옵션 제거
           if (response.length > 0) {
             response.forEach(function(game) {
-              const optionText = `${game.gameDate} ${game.gameTime} ${game.teamA} vs ${game.teamB} @ ${game.gameField}`;
+              const optionText = `${game.gameDate} (${game.gameTime}) ${game.teamA} vs ${game.teamB} (@${game.gameField})`;
               const option = `<option value="${game.gameNo}">${optionText}</option>`;
               $('#gameNo').append(option);
             });

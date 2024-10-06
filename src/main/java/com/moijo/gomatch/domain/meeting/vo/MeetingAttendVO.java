@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class MeetingAttendVO {
-    private int meetingAttendNo;    // 소모임 참석 번호
+    private long meetingAttendNo;    // 소모임 참석 번호
     private int meetingNo;          // 소모임 번호
     private String memberId;        // 참석한 사용자 ID
     private String meetingAttendYn; // 참석 여부 (Y/N)
