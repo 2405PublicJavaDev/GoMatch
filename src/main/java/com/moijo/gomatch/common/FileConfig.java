@@ -27,7 +27,7 @@ public class FileConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 웹 경로와 실제 파일 경로 매핑
         String webPath = "/uploads/**";  // 웹에서 접근할 URL 경로 패턴
-        String realPath = "file:" + baseFolderPath;  // 실제 파일 경로
+        String realPath = "file:" + baseFolderPath + "/";
         // 웹 경로와 파일 시스템 경로를 매핑
         registry.addResourceHandler(webPath).addResourceLocations(realPath);
     }

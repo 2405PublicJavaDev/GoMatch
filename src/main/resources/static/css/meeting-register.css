@@ -1,14 +1,30 @@
-/* ■■■■■■■■■■ 헤더 영역 css ■■■■■■■■■■ */
-
+/* ■■■■■■■■■■ 폰트 css ■■■■■■■■■■ */
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
 /* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
 main {
+
     font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 h1 {
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    text-align: center;
+    color: #16215F; /* 메인 색상 */
     margin-bottom: 20px;
+    font-weight: normal;
 }
 form {
     display: grid;
@@ -19,9 +35,19 @@ form {
     align-items: center;
 }
 label {
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 폰트 적용 */
     font-weight: bold;
     width: 150px;
     flex-shrink: 0;
+}
+/* 경기 날짜 선택 인풋의 너비를 40%로 줄이고 글꼴 동일하게 설정 */
+#gameDate {
+    width: 500px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif; /* 글꼴 통일 */
 }
 input[type="text"], input[type="date"], select, textarea {
     flex-grow: 1;
@@ -29,8 +55,57 @@ input[type="text"], input[type="date"], select, textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+/* textarea 크기 고정 및 리사이즈 비활성화 */
 textarea {
-    height: 150px;
+    resize: none; /* 사이즈 변경 불가 */
+    width: 100%; /* 기본 넓이 설정 */
+    height: 150px; /* 기본 높이 설정 */
+    padding: 8px; /* 여백 설정 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif; /* 인풋 필드와 같은 글꼴 적용 */
+}
+
+/* 주소 입력 창을 넓게 설정 */
+#meetingPlace {
+    flex-grow: 2; /* 넓이를 더 많이 차지하게 설정 */
+    width: 70%; /* 창 너비를 70%로 설정 */
+    margin-right: 5px;
+}
+
+/* 상세 주소 입력 창을 좁게 설정 */
+#meetingPlaceDetail {
+    flex-grow: 1; /* 기본 크기를 작게 설정 */
+    width: 30%; /* 창 너비를 30%로 설정 */
+}
+
+/* 모임 위치 검색 버튼을 인풋 창과 동일한 높이로 유지 */
+.search-btn {
+    padding: 5px 5px;
+    height: 32px; /* 인풋 창 높이와 동일하게 설정 */
+    width: 70px;
+    margin-left: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: smaller;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+/* 최대 참석 인원 인풋 창 높이를 다른 인풋 및 셀렉트 박스와 동일하게 설정 */
+#meetingMaxPeople {
+    height: 34px;
+    width: 150px;
+    padding: 2px;
+    padding-left: 8px;
+    border: 1px solid #ccc; /* 인풋 박스 테두리 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
 }
 .buttons {
     display: flex;
@@ -58,4 +133,48 @@ button {
     margin-right: 10px;
 }
 
-/* ■■■■■■■■■■ 푸터 영역 css ■■■■■■■■■■ */
+/* 파일 업로드 기능 */
+/* 썸네일 미리보기를 위한 스타일 */
+#thumbnailContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.file-thumbnail-wrapper {
+    height: 150px;
+    width: 150px;
+    position: relative;
+}
+
+.thumbnail {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* X 버튼 스타일 */
+.x-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px; /* 너비와 높이를 동일하게 설정 */
+    height: 24px; /* 너비와 높이를 동일하게 설정 */
+    cursor: pointer;
+    font-size: 14px; /* X 글자의 크기를 적절하게 조정 */
+    line-height: 24px; /* 버튼의 높이와 동일하게 설정하여 글자가 중앙에 위치 */
+    text-align: center;
+    padding: 0;
+}
+
+.x-btn:hover {
+    background-color: darkred;
+}
