@@ -75,9 +75,6 @@ public class GameBatchComponent {
     // 선수 순위 가져오기 - 투수
     public List<String[]> scrapePitcherRank(String yearParam) {
         List<String[]> pitcherList = new ArrayList<>();
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/static/driver/chromedriver.exe");
-        System.setProperty("webdriver.chrome.logfile", "chromedriver.log");
-        System.setProperty("webdriver.chrome.verboseLogging", "true");
 
         // 브라우저 창 숨기는 옵션 추가
         ChromeOptions options = new ChromeOptions();
