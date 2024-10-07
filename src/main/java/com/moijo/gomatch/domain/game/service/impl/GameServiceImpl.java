@@ -11,24 +11,43 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GameServiceImpl implements GameService {
 
+    private static final Logger logger = LoggerFactory.getLogger(GameBatchComponent.class);
+
     private GameMapper gameMapper;
+    private Map<String, String> teamLogoMap;
 
     public GameServiceImpl() {
-
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(GameBatchComponent.class);
 
     @Autowired
     public GameServiceImpl(GameMapper gameMapper) {
         this.gameMapper = gameMapper;
+        this.teamLogoMap = new HashMap<>();
+        this.teamLogoMap.put("KT", "/img/KT로고.png");
+        this.teamLogoMap.put("LG", "/img/LG로고.png");
+        this.teamLogoMap.put("NC", "/img/NC로고.png");
+        this.teamLogoMap.put("SSG", "/img/SSG로고.png");
+        this.teamLogoMap.put("KIA", "/img/기아로고.png");
+        this.teamLogoMap.put("두산", "/img/두산로고.png");
+        this.teamLogoMap.put("롯데", "/img/롯데로고.png");
+        this.teamLogoMap.put("삼성", "/img/삼성로고.png");
+        this.teamLogoMap.put("키움", "/img/키움로고.png");
+        this.teamLogoMap.put("한화", "/img/한화로고.png");
     }
 
+    // 팀 로고 저장
+    public String getLogoUrl(String teamName) {
+        return teamLogoMap.getOrDefault(teamName, "/img/고매치로고.png");
+    }
+
+    // 경기정보 DB에 저장
     @Override
     public void saveAllGames(List<GameVO> gameList) {
         for (GameVO game : gameList) {
