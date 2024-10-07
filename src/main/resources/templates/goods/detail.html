@@ -1,17 +1,23 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>상품 상세 조회</title>
   <style>
-    /* 하트 버튼 스타일 */
-    .heart {
+    /* 공통 버튼 스타일 */
+    .btn {
       cursor: pointer;
-      font-size: 24px; /* 하트 크기 조정 */
-      color: gray; /* 기본 색상 (빈 하트) */
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: gray;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px; /* 버튼 간의 간격 */
     }
-    .heart.active {
-      color: red; /* 찜한 상태 (하트 색상) */
+
+    /* 찜하기 버튼의 추가 스타일 */
+    .wishlist-button.active {
+      background-color: red; /* 찜한 상태일 때 색상 */
     }
   </style>
 </head>
@@ -25,19 +31,31 @@
 <p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
 <p>카테고리: <span th:text="${goods.goodsCategory}"></span></p> <!-- 카테고리 추가 -->
 
-<!-- 찜하기 하트 버튼 추가 (빈 하트로 초기화) -->
-<span id="wishlistButton" class="heart" onclick="toggleWishlist(${goods.goodsNo})">♡</span>
-
-<button><a href="/goods/list">목록</a></button>
+<!-- 찜하기 버튼과 목록 버튼 -->
+<button id="wishlistButton" class="btn wishlist-button" onclick="toggleWishlist(${goods.goodsNo})">찜하기</button>
+<a href="/goods/list" class="btn">목록</a>
 
 <!-- JavaScript 코드 추가 -->
-<script>
-  let isWished = false; // 찜 상태를 나타내는 변수
+<script th:inline="javascript">
+  let isWished = [[${isWishlist}]]; // 서버에서 받아온 isWishlist 값
+  let isLoggedIn = [[${isLoggedIn}]]; // 로그인 상태를 서버에서 받아옴
+  const wishlistButton = document.getElementById('wishlistButton');
+
+  // 초기 상태에 따른 버튼 스타일 설정
+  if (isWished) {
+    wishlistButton.classList.add('active');
+    wishlistButton.textContent = '찜하기 취소'; // 이미 찜한 상태라면 텍스트 변경
+  }
 
   function toggleWishlist(goodsNo) {
-    const heartButton = document.getElementById('wishlistButton');
+    // 로그인 여부 확인
+    if (!isLoggedIn) {
+      alert('로그인이 필요합니다.');
+      window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+      return;
+    }
 
-    // 찜 상태에 따라 하트 색상 및 추가/삭제 로직 처리
+    // 찜 상태에 따라 버튼 색상 및 추가/삭제 로직 처리
     if (isWished) {
       // 이미 찜한 상태에서 찜 해제
       fetch(`/wishlist/remove`, {
@@ -45,14 +63,12 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          goodsNo: goodsNo
-        })
+        body: JSON.stringify({ goodsNo: goodsNo })
       })
               .then(response => {
                 if (response.ok) {
-                  heartButton.classList.remove('active'); // 하트 색상 제거
-                  heartButton.textContent = '♡'; // 빈 하트로 변경
+                  wishlistButton.classList.remove('active'); // 색상 원복
+                  wishlistButton.textContent = '찜하기'; // 텍스트 원복
                   isWished = false; // 찜 상태 업데이트
                   alert('찜하기 목록에서 제거되었습니다.');
                 } else {
@@ -69,14 +85,12 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          goodsNo: goodsNo
-        })
+        body: JSON.stringify({ goodsNo: goodsNo })
       })
               .then(response => {
                 if (response.ok) {
-                  heartButton.classList.add('active'); // 하트 색상 변경
-                  heartButton.textContent = '❤️'; // 채워진 하트로 변경
+                  wishlistButton.classList.add('active'); // 색상 변경
+                  wishlistButton.textContent = '찜하기 취소'; // 텍스트 변경
                   isWished = true; // 찜 상태 업데이트
                   alert('찜하기 목록에 추가되었습니다!');
                 } else {
@@ -91,6 +105,3 @@
 </script>
 </body>
 </html>
-
-
-
