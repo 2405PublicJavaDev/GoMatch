@@ -29,7 +29,7 @@ public class MatchPredictController {
      * @return
      */
     @GetMapping("/matchPredict")
-    public String showMatchPredictionListPage(HttpSession session, Model model,@RequestParam(value = "gameNo", required = false) Long gameNo) {
+    public String showMatchPredictionListPage(Model model) {
         // 승부 예측 목록 조회
         List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
 
@@ -47,27 +47,30 @@ public class MatchPredictController {
      * @param model
      * @return
      */
-//    @GetMapping("/myMatchPredict")
-//    public String showMyMatchPredictionListPage(HttpSession session, Model model
-//    , @RequestParam(value = "gameNo", required = false) Long gameNo) {
-//        String memberId = session.getAttribute("memberId").toString();
-//
-////        List<MyMatchPredict> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId,gameNo);
-//
-//        model.addAttribute("matchPredictions", matchPredictions);
-//        return "matchPredict/myMatchPredictPage";
-//    }
+    @GetMapping("/myMatchPredict")
+    public String showMyMatchPredictionListPage(HttpSession session, Model model) {
+//        memberId = session.getAttribute("memberId").toString();
+        String memberId = "user1";
+
+        List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
+
+        model.addAttribute("matchPredictions", matchPredictions);
+        return "matchpredict/myMatchPredictPage";
+    }
     /**
      * 예측 등록
      * memberId,MATCH_PREDICT_DECISION
      */
     @PostMapping("/addPredict")
     public String addMatchPrediction(HttpSession session, Model model
-    , @RequestParam String gameNo
-    , @RequestParam String matchPredictDecision) {
+    , @RequestParam Long gameNo
+    , @RequestParam String matchPredictDecision
+    , @RequestParam Long matchPredictNo) {
 //        String memberId = (String) session.getAttribute("memberId");
+        String memberId = "user1";
 
-        int result = matchPredictService.addMatchPredict(Long.valueOf(gameNo),matchPredictDecision);
+        int result = matchPredictService.addMatchPredict(gameNo,matchPredictNo,matchPredictDecision,memberId);
+
 
         return "redirect:/matchPredict";
     };
@@ -76,5 +79,16 @@ public class MatchPredictController {
      * 예측 수정(나의 예측리스트에서 가능)
      * memberId,MATCH_PREDICT_DECISION,MATCH_PREDICT_STATUS
      */
-    public void modifyMatchPrediction(){};
+    @PostMapping("/modifyPredict")
+    public String modifyMatchPrediction(HttpSession session, Model model
+            , @RequestParam Long gameNo
+            , @RequestParam String matchPredictDecision){
+        String memberId = "user1";
+
+        int result = matchPredictService.modifyMatchPredict(memberId,gameNo,matchPredictDecision);
+
+        model.addAttribute("matchPredictDecision", matchPredictDecision);
+
+        return "redirect:/myMatchPredict";
+    };
 }

@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.matchpredict.service;
 
 
+import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 
 import java.util.List;
@@ -8,10 +9,10 @@ import java.util.List;
 public interface MatchPredictService {
     List<MatchPredict> getAllMatchByMember();
 
-//    List<MyMatchPredict> getAllMyMatchByMember(String memberId, Long gameNo);
+    List<MyPredictDTO> getAllMyMatchByMember(String memberId);
 
-    int addMatchPredict(Long gameNo, String matchPredictDecision);
+    int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId);
 
-    void modifyMatchPredict();
+    int modifyMatchPredict(String memberId,Long gameNo,String matchPredictDecision);
 
 }

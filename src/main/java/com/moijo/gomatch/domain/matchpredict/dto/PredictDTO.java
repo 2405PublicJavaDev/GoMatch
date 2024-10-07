@@ -15,6 +15,7 @@ import java.sql.Date;
 @Slf4j
 public class PredictDTO {
     private Long gameNo;
+    private Long matchPredictNo;
     private Date gameDate;
     private String gameTime;
     private String teamA;

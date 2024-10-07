@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.matchpredict.service.impl;
 
+import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper;
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
@@ -25,21 +26,40 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         return matchPredictMapper.selectAllMatchByMember();
     }
 
-//    @Override
-//    public List<MyMatchPredict> getAllMyMatchByMember(String memberId, Long gameNo) {
-//        return matchPredictMapper.selectAllMyMatchByMember(memberId,gameNo);
-//    }
-
-
+    /**
+     * 나의 예측 리스트 조회
+     * @param memberId
+     * @return
+     */
     @Override
-    public int addMatchPredict(Long gameNo,String matchPredictDecision) {
-        int result = matchPredictMapper.insertMatchPredict(gameNo,matchPredictDecision);
-        System.out.println(gameNo);
+    public List<MyPredictDTO> getAllMyMatchByMember(String memberId) {
+        return matchPredictMapper.selectAllMyMatchByMember(memberId);
+    }
+
+    /**
+     * 예측 등록
+     *
+     * @param gameNo
+     * @param matchPredictNo
+     * @param matchPredictDecision
+     * @param memberId
+     * @return
+     */
+    @Override
+    public int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId) {
+        int result = matchPredictMapper.insertMatchPredict(gameNo,matchPredictDecision,memberId,matchPredictNo);
         return result;
     }
 
+    /**
+     * 예측 수정
+     *
+     * @param memberId
+     * @return
+     */
     @Override
-    public void modifyMatchPredict() {
-
+    public int modifyMatchPredict(String memberId,Long gameNo,String matchPredictDecision) {
+        int result = matchPredictMapper.updateMatchPredict(memberId,gameNo,matchPredictDecision);
+        return result;
     }
 }

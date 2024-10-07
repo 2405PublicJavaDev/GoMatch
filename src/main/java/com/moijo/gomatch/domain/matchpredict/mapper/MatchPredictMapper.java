@@ -15,10 +15,10 @@ public interface MatchPredictMapper {
      */
     List<MatchPredict> selectAllMatchByMember();
 
-//    List<MyMatchPredict> selectAllMyMatchByMember(String memberId, Long gameNo);
+    List<MyPredictDTO> selectAllMyMatchByMember(String memberId);
 
-    int insertMatchPredict(Long gameNo, String matchPredictDecision);
+    int insertMatchPredict(Long gameNo, String matchPredictDecision,String memberId,Long matchPredictNo);
 
-    void updateMatchPredict();
+    int updateMatchPredict(String memberId,Long gameNo,String matchPredictDecision);
 
 }

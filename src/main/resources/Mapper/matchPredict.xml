@@ -3,16 +3,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper">
     <select id="selectAllMatchByMember" resultType="PredictDTO">
-        SELECT * from game
+        SELECT * from GAME
     </select>
     <select id="selectAllMyMatchByMember" resultType="MyPredictDTO">
-        SELECT *
+        SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,P.MATCH_PREDICT_DECISION,P.MEMBER_ID
         FROM MATCH_PREDICT P
         JOIN GAME G ON P.GAME_NO = G.GAME_NO
-        WHERE MEMBER_ID = 'user1';
+        WHERE P.MEMBER_ID = #{memberId}
     </select>
     <insert id="insertMatchPredict">
-        INSERT INTO MATCH_PREDICT (MATCH_PREDICT_NO, MEMBER_ID, GAME_NO, MATCH_PREDICT_DECISION, REG_DATE)
-        VALUES (SEQ_MATCH_PREDICT.NEXTVAL,'user1', #{gameNo}, #{matchPredictDecision}, SYSDATE)
+        INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
+        VALUES (SEQ_GAME_NO.NEXTVAL,'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
     </insert>
+    <update id="updateMatchPredict">
+        UPDATE MATCH_PREDICT SET
+        MATCH_PREDICT_DECISION = #{matchPredictDecision}
+        WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}
+    </update>
 </mapper>
