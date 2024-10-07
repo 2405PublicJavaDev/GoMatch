@@ -1,17 +1,19 @@
 package com.moijo.gomatch.domain.meeting.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class GameDTO {
-    private int gameNo;      // 경기 번호
-    private String gameDate; // 경기 날짜
-    private String gameTime; // 경기 시간
-    private String teamA;    // A팀
-    private String teamB;    // B팀
-    private String gameField; // 경기 장소
+    private int gameNo;
+    private String gameDate;
+    private String gameTime;
+    private String teamA;
+    private String teamB;
+    private String gameField;
+
+    // 필요에 따라 필드 추가 가능
 }

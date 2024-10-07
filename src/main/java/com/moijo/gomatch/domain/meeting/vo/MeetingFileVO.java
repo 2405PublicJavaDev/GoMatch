@@ -2,13 +2,15 @@ package com.moijo.gomatch.domain.meeting.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
+@ToString
 public class MeetingFileVO {
-    private int meetingFileNo;
+    private long meetingFileNo;
     private String fileName;
     private String fileRename;
     private String filePath;
@@ -16,5 +18,5 @@ public class MeetingFileVO {
     private Timestamp updateDate;
     private String webPath;
     private int fileOrder;
-    private int meetingNo;
+    private long meetingNo;
 }
