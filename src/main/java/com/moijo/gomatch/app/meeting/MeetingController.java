@@ -206,4 +206,7 @@ public class MeetingController {
         meetingService.cancelAttend(meetingNo, memberId);
         return "참석이 취소되었습니다.";
     }
+
+
+
 }
