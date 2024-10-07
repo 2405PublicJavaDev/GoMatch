@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/header-footer.css">
     <link rel="stylesheet" href="/css/joinmember.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
 <!-- 헤더 부분 -->
@@ -36,7 +37,7 @@
             <h2>회원가입</h2>
             <form id="joinForm" th:action="@{/member/joinmember}" th:object="${memberVO}" method="post">
                 <label for="memberId">아이디 입력</label>
-                <input type="text" id="memberId" th:field="*{memberId}" placeholder="아이디를 입력하세요" required>
+                <input type="text" id="memberId" th:field="*{memberId}" placeholder="아이디를 입력하세요" minlength="5" maxlength="20" required>
                 <span id="idCheckResult"></span>
 
                 <label for="memberPw">비밀번호 입력</label>
@@ -89,7 +90,7 @@
                     <option value="없음">없음</option>
                 </select>
 
-<!--                <button type="button" onclick="joinSuccessMsg" class="joinbutton">회원가입</button>-->
+                <!--                <button type="button" onclick="joinSuccessMsg" class="joinbutton">회원가입</button>-->
                 <button type="submit" id="joinButton" disabled>회원가입</button>
             </form>
         </div>
@@ -131,6 +132,7 @@
         let emailVerified = false;
 
         function checkDuplicate(field, value) {
+
             $.ajax({
                 url: '/member/checkDuplicate',
                 type: 'GET',
@@ -236,7 +238,9 @@
                 data: JSON.stringify({ email: email, code: inputCode }),
                 success: function(response) {
                     if(response.verified) {
+                        window.sweetAlert;  // 인증 성공 시 alert 표시
                         window.alert('인증에 성공했습니다!');  // 인증 성공 시 alert 표시
+
                         $('#verificationResult').text('인증이 완료 되었습니다.').css('color', 'green');
                         emailVerified = true;
                     } else {
@@ -273,6 +277,14 @@
                 window.alert('모든 항목을 올바르게 입력하고 이메일 인증을 완료해주세요.');
             }
         });
+        function sweetAlert() {
+            swal({
+                title : "GoMatch!",
+                text : "회원가입 성공!",
+                icon : "success",
+                timer : 1500,
+               })
+        }
     });
 </script>
 </body>

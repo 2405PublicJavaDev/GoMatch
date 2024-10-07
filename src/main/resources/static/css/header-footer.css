@@ -1,11 +1,11 @@
 /* ==================================================== 헤더 ===================================================*/
 /* kbo 폰트 */
-@font-face {
-    font-family: 'KBO Dia Gothic';
-    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
+/*@font-face {*/
+/*    font-family: 'KBO Dia Gothic';*/
+/*    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');*/
+/*    font-weight: normal;*/
+/*    font-style: normal;*/
+/*}*/
 
 body, html {
     margin: 0;
@@ -53,16 +53,16 @@ nav {
     color: #333;
     letter-spacing: 0.5px;
 }
-.memeber-links {
+.member-links {
     list-style: none;
     display: flex;
     margin: 0;
     padding: 0;
 }
-.memeber-links li {
+.member-link{
     margin-left: 15px;
 }
-.memeber-links a {
+.member-link a {
     text-decoration: none;
     color: #333;
 }

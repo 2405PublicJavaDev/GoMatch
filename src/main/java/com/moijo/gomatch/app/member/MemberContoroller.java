@@ -31,22 +31,24 @@ public class MemberContoroller {
     // 로그인 기능
     @PostMapping("member/loginpage")
     public String loginpage(@RequestParam("memberId") String memberId,
-                            @RequestParam("memberPw") String memberPw, HttpSession session) {
+                            @RequestParam("memberPw") String memberPw,
+                            HttpSession session, Model model) {
         MemberVO member = new MemberVO();
-
         member.setMemberId(memberId);
         member.setMemberPw(memberPw);
 
         member = mService.checkLogin(member);
         if (member != null) {
             session.setAttribute("member", member);
-            session.setAttribute("memberId", memberId);
+            session.setAttribute("memberId", member.getMemberId());
             session.setAttribute("memberNickName", member.getMemberNickName());
-            session.setAttribute("matchPredictExp", member.getMatchPredictExp());
-            session.setAttribute("memberEmail", member.getMemberEmail());
-            System.out.println("member" + member);
+            System.out.println("로그인 성공: " + member.getMemberNickName());
+            return "redirect:/";
+        } else {
+            session.setAttribute("loginError", "회원 정보를 잘못 입력하셨습니다.");
+            System.out.println("로그인 실패. 입력된 ID: " + memberId);
+            return "redirect:/member/loginpage";
         }
-        return "redirect:/";
     }
     // 회원가입 폼
     @GetMapping("member/joinmember")
@@ -75,7 +77,6 @@ public class MemberContoroller {
             result.rejectValue("memberNickName", "error.memberNickName", "이미 사용 중인 닉네임입니다.");
             return "member/joinmember";
         }
-
         mService.registerMember(memberVO);
         return "redirect:/";
     }
@@ -99,21 +100,26 @@ public class MemberContoroller {
         response.put("available", isAvailable);
         return ResponseEntity.ok(response);
     }
+    // 로그아웃
+    @GetMapping("member/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+    // 메인페이지로 리다이렉트
+    @GetMapping("/")
+    public String mainPage(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", member.getMemberNickName());
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
+        return "index";
+    }
 
-    // 회원가입 완료 처리
-//    @PostMapping("/joinmember")
-//    public ResponseEntity<?> processJoinForm(@Valid @ModelAttribute MemberVO memberVO, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return ResponseEntity.badRequest().body("입력 데이터가 유효하지 않습니다.");
-//        }
-//
-//        try {
-//            memberService.registerMember(memberVO);
-//            return ResponseEntity.ok().body("회원가입이 완료되었습니다.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생했습니다.");
-//        }
-//    }
+
     }
 
 

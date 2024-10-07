@@ -25,6 +25,9 @@
     <select id="countByMemberNickname" resultType="int">
         SELECT COUNT(*) FROM MEMBER WHERE MEMBER_NICKNAME = #{memberNickname}
     </select>
+    <select id="checkLogin" resultType="com.moijo.gomatch.domain.member.vo.MemberVO">
+        SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </select>
 
     </mapper>
 

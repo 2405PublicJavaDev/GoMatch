@@ -23,7 +23,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberVO checkLogin(MemberVO member) {
         MemberVO result = mapper.checkLogin(member);
-        return result;
+        if (result != null && result.getMemberPw().equals(member.getMemberPw())) {
+            return result;
+        }
+        return null;
     }
 
     @Override

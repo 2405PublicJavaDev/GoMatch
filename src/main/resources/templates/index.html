@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
 <header>
     <nav>
         <div class="logo">
-            <img src="img/고매치로고.png" alt="야구 리그 로고">
+            <a th:href="@{/}"><img src="img/고매치로고.png" alt="야구 리그 로고"></a>
         </div>
         <ul class="nav-links">
             <li><a href="#">일정/결과</a></li>
@@ -20,9 +20,15 @@
             <li><a href="#">소모임</a></li>
             <li><a href="#">승부예측</a></li>
         </ul>
-        <ul class="memeber-links">
-            <li><a href="member/loginpage">로그인</a></li>
-            <li><a href="member/joinmember">회원가입</a></li>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><span th:text="${memberNickName} + ' 님'"></span></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
         </ul>
     </nav>
 </header>
@@ -279,6 +285,7 @@
                 </table>
             </div>
         </div>
+    </div>
 </main>
 <!-- 메인태그 닫고 로고 푸터 시작  -->
 <div class="team-logos">
@@ -361,6 +368,12 @@
     // 현재 날짜로 달력 생성
     const currentDate = new Date();
     generateCalendar(currentDate.getFullYear(), currentDate.getMonth() + 1);
+
+    function confirmLogout() {
+        if (confirm("로그아웃 하시겠습니까?")) {
+            window.location.href = /*[[@{/member/logout}]]*/ '/member/logout';
+        }
+    }
 </script>
 </body>
 </html>
