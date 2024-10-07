@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <link rel="stylesheet" href="/css/header-footer.css">
     <link rel="stylesheet" href="/css/joinmember.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <!-- 헤더 부분 -->
 <header>
     <nav>
         <div class="logo">
-            <a href="/mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+            <a href="/"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
         </div>
         <ul class="nav-links">
             <li><a href="#">일정/결과</a></li>
@@ -33,38 +34,63 @@
         </div> -->
         <div class="form-container">
             <h2>회원가입</h2>
-            <form>
-                <label for="username">아이디 입력</label>
-                <input type="text" id="username" placeholder="아이디를 입력하세요">
+            <form id="joinForm" th:action="@{/member/joinmember}" th:object="${memberVO}" method="post">
+                <label for="memberId">아이디 입력</label>
+                <input type="text" id="memberId" th:field="*{memberId}" placeholder="아이디를 입력하세요" required>
+                <span id="idCheckResult"></span>
 
-                <label for="password">비밀번호 입력</label>
-                <input type="password" id="password" placeholder="비밀번호를 입력하세요">
+                <label for="memberPw">비밀번호 입력</label>
+                <input type="password" id="memberPw" th:field="*{memberPw}" placeholder="비밀번호를 입력하세요" required>
 
                 <label for="password-confirm">비밀번호 확인</label>
-                <input type="password" id="password-confirm" placeholder="비밀번호를 다시 입력하세요">
+                <input type="password" id="password-confirm" placeholder="비밀번호를 다시 입력하세요" required>
+                <span id="passwordMatchResult"></span>
 
-                <label for="name">이름</label>
-                <input type="text" id="nickname" placeholder="이름을 입력하세요">
+                <label for="memberName">이름</label>
+                <input type="text" id="memberName" th:field="*{memberName}" placeholder="이름을 입력하세요" required>
 
-                <label for="nickname">닉네임</label>
-                <input type="text" id="nickname" placeholder="닉네임을 입력하세요">
-
-                <label for="birth">생년월일</label>
-                <input type="date" id="birth">
-
-                <label for="email">이메일</label>
-                <div class="email-input">
-                    <input type="email" class="email" placeholder="이메일을 입력하세요">
-                    <button type="button" class="emailbutton">인증요청</button>
+                <label for="memberNickName" class="memberNickNamelabel">닉네임</label>
+                <div class="nickname-container">
+                    <input type="text" id="memberNickName" th:field="*{memberNickName}" placeholder="닉네임을 입력하세요" required>
+                    <button type="button" id="generateNickname">↺</button>
                 </div>
+                <span id="nicknameCheckResult"></span>
 
-                <label for="email">인증번호</label>
+                <label for="birthDate">생년월일</label>
+                <input type="date" id="birthDate" th:field="*{birthDate}" required>
+
+                <label for="memberEmail">이메일</label>
                 <div class="email-input">
-                    <input type="text" class="email" placeholder="인증번호를 입력하세요">
-                    <button type="button" class="emailbutton">인증확인</button>
+                    <input type="email" id="memberEmail" th:field="*{memberEmail}" placeholder="이메일을 입력하세요" required>
+                    <button type="button" id="sendVerificationCode">인증번호 받기</button>
                 </div>
+                <span id="emailCheckResult"></span>
 
-                <button type="submit">회원가입</button>
+                <label for="email-verification">인증번호</label>
+                <div class="email-input">
+                    <input type="text" id="email-verification" placeholder="인증번호를 입력하세요">
+                    <button type="button" id="verifyCode">인증번호 확인</button>
+                </div>
+                <span id="verificationResult"></span>
+
+                <label for="preferenceClub">선호 구단</label>
+                <select id="preferenceClub" th:field="*{preferenceClub}">
+                    <option value="">응원하는 구단을 선택해보세요!</option>
+                    <option value="LG">LG 트윈스</option>
+                    <option value="KT">KT 위즈</option>
+                    <option value="SSG">SSG 랜더스</option>
+                    <option value="NC">NC 다이노스</option>
+                    <option value="두산">두산 베어스</option>
+                    <option value="기아">KIA 타이거즈</option>
+                    <option value="롯데">롯데 자이언츠</option>
+                    <option value="삼성">삼성 라이온즈</option>
+                    <option value="한화">한화 이글스</option>
+                    <option value="키움">키움 히어로즈</option>
+                    <option value="없음">없음</option>
+                </select>
+
+<!--                <button type="button" onclick="joinSuccessMsg" class="joinbutton">회원가입</button>-->
+                <button type="submit" id="joinButton" disabled>회원가입</button>
             </form>
         </div>
     </div>
@@ -95,5 +121,159 @@
         </div>
     </div>
 </footer>
+<script>
+    // ajax 중복 확인 처리
+    $(document).ready(function() {
+        let idValid = false;
+        let nicknameValid = false;
+        let emailValid = false;
+        let passwordValid = false;
+        let emailVerified = false;
+
+        function checkDuplicate(field, value) {
+            $.ajax({
+                url: '/member/checkDuplicate',
+                type: 'GET',
+                data: { field: field, value: value },
+                success: function(response) {
+                    var resultSpan = $('#' + field + 'CheckResult');
+                    if(response.available) {
+                        resultSpan.text('사용 가능합니다!').css('color', 'green');
+                        if (field === 'id') idValid = true;
+                        if (field === 'nickname') nicknameValid = true;
+                        if (field === 'email') emailValid = true;
+                    } else {
+                        resultSpan.text('이미 사용 중입니다.').css('color', 'red');
+                        if (field === 'id') idValid = false;
+                        if (field === 'nickname') nicknameValid = false;
+                        if (field === 'email') emailValid = false;
+                    }
+                    checkAllValid();
+                },
+                error: function() {
+                    $('#' + field + 'CheckResult').text('확인 중 오류가 발생했습니다.').css('color', 'red');
+                }
+            });
+        }
+
+        function checkPasswordMatch() {
+            var password = $('#memberPw').val();
+            var confirmPassword = $('#password-confirm').val();
+            var $resultSpan = $('#passwordMatchResult');
+
+            if(password === confirmPassword) {
+                $resultSpan.text('비밀번호가 일치합니다.').css('color', 'green');
+                passwordValid = true;
+            } else {
+                $resultSpan.text('비밀번호가 일치하지 않습니다.').css('color', 'red');
+                passwordValid = false;
+            }
+            checkAllValid();
+        }
+
+        function checkAllValid() {
+            if (idValid && nicknameValid && emailValid && passwordValid && emailVerified) {
+                $('#joinButton').prop('disabled', false);
+            } else {
+                $('#joinButton').prop('disabled', true);
+            }
+        }
+
+        $('#memberId, #memberNickName, #memberEmail').on('input', function() {
+            var field = this.id.replace('member', '').toLowerCase();
+            var value = $(this).val();
+            if(value.length > 0) {
+                checkDuplicate(field, value);
+            } else {
+                $('#' + field + 'CheckResult').text('');
+                if (field === 'id') idValid = false;
+                if (field === 'nickname') nicknameValid = false;
+                if (field === 'email') emailValid = false;
+                checkAllValid();
+            }
+        });
+
+        $('#memberPw, #password-confirm').on('input', checkPasswordMatch);
+
+        $('#generateNickname').on('click', function() {
+            var adjectives = ['행복한', '즐거운', '신나는', '배고픈', '집가고싶은'];
+            var middlename = ['KIA', '삼성', 'LG','두산','KT', 'SSG', '롯데', '한화','NC','키움'];
+            var nouns = ['팬', '타자', '투수', '감독'];
+            var adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+            var middlename = middlename[Math.floor(Math.random() * middlename.length)];
+            var noun = nouns[Math.floor(Math.random() * nouns.length)];
+            var number = Math.floor(Math.random() * 1000);
+            var nickname = adjective +' '+ middlename + ' ' +noun + ' ' + number;
+            $('#memberNickName').val(nickname).trigger('input');
+        });
+
+        $('#sendVerificationCode').on('click', function() {
+            var email = $('#memberEmail').val();
+            if(email && emailValid) {
+                $.ajax({
+                    url: '/mail',
+                    type: 'POST',
+                    data: { mail: email },
+                    success: function(response) {
+                        alert('인증번호가 이메일로 전송되었습니다.');
+                    },
+                    error: function() {
+                        alert('인증번호 전송에 실패했습니다. 다시 시도해주세요.');
+                    }
+                });
+            } else {
+                alert('유효한 이메일을 입력해주세요.');
+            }
+        });
+
+        $('#verifyCode').on('click', function() {
+            var email = $('#memberEmail').val();
+            var inputCode = $('#email-verification').val();
+            $.ajax({
+                url: '/member/verifyCode',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email: email, code: inputCode }),
+                success: function(response) {
+                    if(response.verified) {
+                        window.alert('인증에 성공했습니다!');  // 인증 성공 시 alert 표시
+                        $('#verificationResult').text('인증이 완료 되었습니다.').css('color', 'green');
+                        emailVerified = true;
+                    } else {
+                        $('#verificationResult').text('인증번호가 일치하지 않습니다.').css('color', 'red');
+                        emailVerified = false;
+                    }
+                    checkAllValid();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', textStatus, errorThrown);
+                    window.alert('인증 확인에 실패했습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+
+        $('#joinForm').on('submit', function(e) {
+            e.preventDefault(); // 기본 폼 제출 동작 방지
+
+            if (idValid && nicknameValid && emailValid && passwordValid && emailVerified) {
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        window.alert('회원가입이 완료되었습니다.');
+                        window.location.href = '/'; // 메인 페이지로 리다이렉트
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', status, error);
+                        window.alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+                    }
+                });
+            } else {
+                window.alert('모든 항목을 올바르게 입력하고 이메일 인증을 완료해주세요.');
+            }
+        });
+    });
+</script>
 </body>
 </html>

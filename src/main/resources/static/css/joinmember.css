@@ -55,13 +55,32 @@ button:hover {
 .email-input {
     display: flex;
     align-items: center;
-    margin-top: -10px;
 }
 .email-input input {
     flex-grow: 1;
     margin-right: 10px;
 }
-.emailbutton{
-    margin-bottom: 15px;
+#sendVerificationCode{
+    margin-top: 3px;
+}
+#verifyCode{
+    margin-top: 3px;
+}
+.memberNickNamelabel{
+    margin-bottom: -15px;
+}
+.nickname-container input {
+    width: 250px;
+}
+
+#preferenceClub{
+    margin-top: 10px;
+    width: 250px;
+    height: 37px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+.joinbutton{
+    margin-top: 30px;
 }
 
