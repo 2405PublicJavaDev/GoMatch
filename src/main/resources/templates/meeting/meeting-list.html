@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>소모임 리스트</title>
     <!-- 메인 css -->
-    <link rel="stylesheet" href="/css/meeting-list.css">
+    <link rel="stylesheet" href="/css/meeting/meeting-list.css">
     <!-- 헤더/푸터 CSS-->
     <link rel="stylesheet" href="/css/header-footer.css">
     <!-- FullCalendar CSS 로드 -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
-    <!-- 페이지네이션 CSS-->
-    <link rel="stylesheet" href="/css/pagination.css">
 </head>
 <body>
 
@@ -42,6 +40,7 @@
             <div class="calendar-container">
                 <h3>날짜별</h3>
                 <div id="calendar"></div>
+                <p class="calendar-note">지난 날짜는 선택할 수 없습니다.</p>
             </div>
 
             <!-- 팀별 필터 영역 -->
@@ -328,6 +327,7 @@
     // 페이지 로드시 오늘 날짜 소모임 리스트를 불러옴
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        var selectedDateElement = null;
 
         if (!calendarEl) {
             console.error("캘린더 요소를 찾을 수 없습니다. ID가 'calendar'인지 확인하세요.");
@@ -348,10 +348,16 @@
             dateClick: function (info) {
                 selectedDate = info.dateStr;
                 currentPage = 1; // 날짜 클릭 시 페이지를 1로 리셋
+                // 이전에 선택된 날짜에서 클래스를 제거합니다.
+                if (selectedDateElement) {
+                    selectedDateElement.classList.remove('fc-day-selected');
+                }
+                // 현재 선택된 날짜에 클래스를 추가합니다.
+                selectedDateElement = info.dayEl;
+                selectedDateElement.classList.add('fc-day-selected');
                 loadMeetings();
             }
         });
-
         calendar.render();
         loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
     });

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>소모임 상세</title>
   <!-- 메인 css -->
-  <link rel="stylesheet" href="/css/meeting-detail.css">
+  <link rel="stylesheet" href="/css/meeting/meeting-detail.css">
   <!-- 헤더/푸터 CSS-->
   <link rel="stylesheet" href="/css/header-footer.css">
 
@@ -19,7 +19,7 @@
     <ul class="nav-links">
       <li><a href="#">일정/결과</a></li>
       <li><a href="#">굿즈</a></li>
-      <li><a href="meeting/list">소모임</a></li>
+      <li><a href="/meeting/list">소모임</a></li>
       <li><a href="#">승부예측</a></li>
     </ul>
     <ul class="member-links">
@@ -94,19 +94,28 @@
     </div>
 
     <div class="buttons">
-      <button type="button" onclick="attendMeeting()">참여</button>
-      <button type="button" onclick="alert('취소되었습니다.')">취소</button>
+      <button type="button" class="button-join" onclick="attendMeeting()">참여</button>
+      <button type="button" class="button-cancel" onclick="cancelMeeting()">취소</button>
+      <button type="button" class="button-back" onclick="history.back()">이전</button>
     </div>
+
     <!-- 이미지 팝업을 위한 모달 -->
     <div id="popup" class="popup" onclick="closePopup()">
       <img id="popup-img" class="popup-img">
     </div>
 
-    <h2>참석자</h2>
-    <div class="participants">
-      <div class="participant" th:each="attendee : ${meetingAttendees}" th:text="${attendee.memberNickname}">닉네임</div>
+    <hr>
+    <h3>🙌함께해요🙌</h3>
+    <div class="participant-list" th:if="${meetingAttendee.size() > 0}">
+      <div class="participant" th:each="attendee : ${meetingAttendee}">
+        <img th:src="${attendee.memberId == meeting.memberId ? '/img/host.png' : '/img/bat.png'}" alt="아이콘" class="icon">
+        <span th:text="${attendee.memberNickname}">닉네임</span>
+      </div>
     </div>
-  </div>
+    <div class="no-participants" th:if="${meetingAttendee.size() == 0}">
+      아직 참석자가 없습니다.<br>
+      제일 먼저 참여하기를 눌러주세요👍
+    </div>
 </main>
 
 <footer class="footer-page">
@@ -159,25 +168,50 @@
     }
   });
 
-  // 참석 버튼 클릭 시, fetch 요청으로 서버에 참석 정보 전송
+  // 참석 요청 함수
   function attendMeeting() {
-    if (meetingNo) {
-      fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
-        method: 'POST',
-      })
-              .then(response => response.text())
-              .then(message => {
-                alert(message);
-                if (message === "참석이 완료되었습니다.") {
-                  location.reload(); // 참석 완료 후 페이지 새로고침
-                }
-              })
-              .catch(error => {
-                console.error('참석 처리 중 오류 발생:', error);
-                alert('참석 처리 중 오류가 발생했습니다.');
-              });
-    } else {
-      alert('소모임 정보를 찾을 수 없습니다.');
+    if (confirm("참여하시겠습니까?")) {
+      if (meetingNo) {
+        fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
+          method: 'POST',
+        })
+                .then(response => response.text())
+                .then(message => {
+                  alert(message);
+                  if (message === "참석이 완료되었습니다.") {
+                    location.reload(); // 참석 완료 후 페이지 새로고침
+                  }
+                })
+                .catch(error => {
+                  console.error('참석 처리 중 오류 발생:', error);
+                  alert('참석 처리 중 오류가 발생했습니다.');
+                });
+      } else {
+        alert('소모임 정보를 찾을 수 없습니다.');
+      }
+    }
+  }
+  // 참석 취소 요청 함수
+  function cancelMeeting() {
+    if (confirm("😢정말 참석을 취소하시겠습니까?😢")) {
+      if (meetingNo) {
+        fetch(`/meeting/cancel?meetingNo=${meetingNo}`, {
+          method: 'POST',
+        })
+                .then(response => response.text())
+                .then(message => {
+                  alert(message);
+                  if (message === "참석이 취소되었습니다.") {
+                    location.reload(); // 참석 취소 후 페이지 새로고침
+                  }
+                })
+                .catch(error => {
+                  console.error('참석 취소 처리 중 오류 발생:', error);
+                  alert('참석 취소 처리 중 오류가 발생했습니다.');
+                });
+      } else {
+        alert('소모임 정보를 찾을 수 없습니다.');
+      }
     }
   }
 

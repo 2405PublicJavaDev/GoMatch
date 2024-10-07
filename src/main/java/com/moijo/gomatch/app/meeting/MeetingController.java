@@ -72,8 +72,9 @@ public class MeetingController {
         // 세션에서 사용자 ID 가져오기
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            memberId = "user9"; // 테스트용 ID
+            memberId = "user8"; // 테스트용 ID
             session.setAttribute("memberId", memberId);
+            log.info("세션에서 가져온 memberId: {}", memberId);
         }
         // 소모임 정보 등록
         meetingVO.setMemberId(memberId);
@@ -90,7 +91,11 @@ public class MeetingController {
      * 설명 : 날짜별 소모임 리스트 출력하기
      */
     @GetMapping("/meeting/list")
-    public String showMeetingList(Model model) {
+    public String showMeetingList(Model model, HttpSession session) {
+        // 세션에 memberId 설정
+        String memberId = "user9";
+        session.setAttribute("memberId", memberId);
+        log.info("세션에 설정된 memberId: {}", memberId);
         // 예시 팀 이름 리스트를 모델에 추가
         model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
@@ -108,6 +113,7 @@ public class MeetingController {
     @ResponseBody
     public List<Map<String, Object>> getMeetingsByDateAndTeam(@RequestParam(value = "date", required = false) String date,
                                                               @RequestParam(value = "team", defaultValue = "전체") String team) {
+        log.info("필터 적용 - 날짜: {}, 팀: {}", date, team);
         List<MeetingVO> meetings = meetingService.getMeetingsByDateAndTeam(date, team);
         List<Map<String, Object>> responseList = new ArrayList<>();
 
@@ -140,7 +146,7 @@ public class MeetingController {
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            memberId = "user9"; // 테스트용 ID
+            memberId = "user8"; // 테스트용 ID
             session.setAttribute("memberId", memberId);
         }
         // 소모임 상세 정보, 파일, 참석자 조회
@@ -153,6 +159,7 @@ public class MeetingController {
         model.addAttribute("meetingFile", meetingFile); // 파일 정보
         model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
         model.addAttribute("currentAttendeesCount", currentAttendeesCount); // 현재 참석자 수
+
         return "meeting/meeting-detail";
     }
     /**
@@ -178,5 +185,25 @@ public class MeetingController {
         meetingService.addAttend(attendVO);
         return "참석이 완료되었습니다.";
     }
-
+    /**
+     * 담당자: 김윤경
+     * 관련 기능: [Cancel] 소모임 참석 취소
+     * 설명: 소모임에 로그인한 사용자의 참석을 취소
+     */
+    @PostMapping("/meeting/cancel")
+    @ResponseBody
+    public String cancelMeeting(@RequestParam("meetingNo") long meetingNo, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "로그인이 필요합니다.";
+        }
+        // 참석 여부 확인
+        boolean isAttended = meetingService.checkAlreadyAttended(meetingNo, memberId);
+        if (!isAttended) {
+            return "참석하지 않은 모임입니다.";
+        }
+        // 참석 취소 처리
+        meetingService.cancelAttend(meetingNo, memberId);
+        return "참석이 취소되었습니다.";
+    }
 }

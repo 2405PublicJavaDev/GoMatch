@@ -51,7 +51,7 @@ public class GameVO {
     // MyBatis에서 자동으로 매핑할 수 있는 생성자 추가(윤경)
     public GameVO(int gameNo, String gameDate, String gameTime, String teamA, String teamB, String gameField) {
         this.gameNo = gameNo;
-        this.gameDate = gameDate;
+        this.gameDate = Date.valueOf(gameDate);
         this.gameTime = gameTime;
         this.teamA = teamA;
         this.teamB = teamB;

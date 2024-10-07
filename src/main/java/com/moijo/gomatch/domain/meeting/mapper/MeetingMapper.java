@@ -7,7 +7,6 @@ import com.moijo.gomatch.domain.meeting.vo.MeetingFileVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
@@ -34,7 +33,8 @@ public interface MeetingMapper {
     List<MeetingAttendVO> getMeetingAttendeeByMeetingNo(@Param("meetingNo") long meetingNo);
     // 소모임 참석 등록
     int insertMeetingAttend(MeetingAttendVO attendVO);
-
     // 소모임 참석 여부 확인
     int checkMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
+    // 참석 취소 메서드 추가
+    int deleteMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
 }
