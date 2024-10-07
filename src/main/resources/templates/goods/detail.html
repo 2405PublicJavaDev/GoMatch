@@ -1,7 +1,19 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>상품 상세 조회</title>
+  <style>
+    /* 하트 버튼 스타일 */
+    .heart {
+      cursor: pointer;
+      font-size: 24px; /* 하트 크기 조정 */
+      color: gray; /* 기본 색상 (빈 하트) */
+    }
+    .heart.active {
+      color: red; /* 찜한 상태 (하트 색상) */
+    }
+  </style>
 </head>
 <body>
 <h1 th:text="${goods.goodsProductName}"></h1>
@@ -13,14 +25,72 @@
 <p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
 <p>카테고리: <span th:text="${goods.goodsCategory}"></span></p> <!-- 카테고리 추가 -->
 
-<!-- 수정 버튼 추가 -->
-<a th:href="@{/goods/edit/{goodsNo}(goodsNo=${goods.goodsNo})}"><button>수정</button></a>
-
-<form th:action="@{/goods/delete}" method="post">
-  <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}"/>
-  <button type="submit">삭제</button>
-</form>
+<!-- 찜하기 하트 버튼 추가 (빈 하트로 초기화) -->
+<span id="wishlistButton" class="heart" onclick="toggleWishlist(${goods.goodsNo})">♡</span>
 
 <button><a href="/goods/list">목록</a></button>
+
+<!-- JavaScript 코드 추가 -->
+<script>
+  let isWished = false; // 찜 상태를 나타내는 변수
+
+  function toggleWishlist(goodsNo) {
+    const heartButton = document.getElementById('wishlistButton');
+
+    // 찜 상태에 따라 하트 색상 및 추가/삭제 로직 처리
+    if (isWished) {
+      // 이미 찜한 상태에서 찜 해제
+      fetch(`/wishlist/remove`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          goodsNo: goodsNo
+        })
+      })
+              .then(response => {
+                if (response.ok) {
+                  heartButton.classList.remove('active'); // 하트 색상 제거
+                  heartButton.textContent = '♡'; // 빈 하트로 변경
+                  isWished = false; // 찜 상태 업데이트
+                  alert('찜하기 목록에서 제거되었습니다.');
+                } else {
+                  alert('찜하기 목록에서 제거하는 데 실패했습니다.');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+    } else {
+      // 찜하지 않은 상태에서 찜하기
+      fetch(`/wishlist/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          goodsNo: goodsNo
+        })
+      })
+              .then(response => {
+                if (response.ok) {
+                  heartButton.classList.add('active'); // 하트 색상 변경
+                  heartButton.textContent = '❤️'; // 채워진 하트로 변경
+                  isWished = true; // 찜 상태 업데이트
+                  alert('찜하기 목록에 추가되었습니다!');
+                } else {
+                  alert('찜하기 목록에 추가하는 데 실패했습니다.');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+    }
+  }
+</script>
 </body>
 </html>
+
+
+
