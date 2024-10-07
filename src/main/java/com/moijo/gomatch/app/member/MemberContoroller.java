@@ -42,6 +42,7 @@ public class MemberContoroller {
             session.setAttribute("member", member);
             session.setAttribute("memberId", member.getMemberId());
             session.setAttribute("memberNickName", member.getMemberNickName());
+
             System.out.println("로그인 성공: " + member.getMemberNickName());
             return "redirect:/";
         } else {
