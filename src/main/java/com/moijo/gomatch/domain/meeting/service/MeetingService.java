@@ -30,4 +30,6 @@ public interface MeetingService {
     void addAttend(MeetingAttendVO attendVO);
     // 이미 참석했는지 확인하는 메서드
     boolean checkAlreadyAttended(long meetingNo, String memberId);
+    // 참석 취소
+    void cancelAttend(long meetingNo, String memberId);
 }

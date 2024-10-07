@@ -39,7 +39,7 @@ public class MeetingServiceImpl implements MeetingService {
     }
     @Override
     public GameVO getGameByNo(int gameNo) {
-        return meetingMapper.getGameByNo(gameNo); // Mapper에서 해당 gameNo로 경기 정보를 조회
+        return meetingMapper.getGameByNo(gameNo);
     }
 
     @Override
@@ -65,6 +65,9 @@ public class MeetingServiceImpl implements MeetingService {
     public boolean checkAlreadyAttended(long meetingNo, String memberId) {
         return meetingMapper.checkMeetingAttend(meetingNo, memberId) > 0;
     }
-
+    @Override
+    public void cancelAttend(long meetingNo, String memberId) {
+        meetingMapper.deleteMeetingAttend(meetingNo, memberId);
+    }
 }
 
