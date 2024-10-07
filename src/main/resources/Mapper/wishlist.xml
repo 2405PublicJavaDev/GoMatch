@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moijo.gomatch.domain.goods.mapper.WishlistMapper">
+    <insert id="insertWishlist">
+        INSERT INTO GOODS_WISHLIST (MEMBER_ID, GOODS_NO, REG_DATE)
+        VALUES (#{memberId}, #{goodsNo}, SYSDATE)
+    </insert>
+
+    <delete id="deleteWishlist">
+        DELETE FROM GOODS_WISHLIST
+        WHERE MEMBER_ID = #{memberId}
+          AND GOODS_NO = #{goodsNo}
+    </delete>
+
+    <select id="existsByMemberIdAndGoodsNo" resultType="boolean">
+        SELECT COUNT(1) > 0
+        FROM GOODS_WISHLIST
+        WHERE MEMBER_ID = #{memberId}
+          AND GOODS_NO = #{goodsNo}
+    </select>
+</mapper>
