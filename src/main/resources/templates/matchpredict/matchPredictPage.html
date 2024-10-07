@@ -200,6 +200,10 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
+        // 이번주 기본적으로 활성화
+        const weekly = document.querySelector(".week-date")
+        weekly.classList.add("active");
+
         const dateSelector = document.querySelector('.date-selector');
         const today = new Date();
         const options = { month: 'numeric', day: 'numeric' };

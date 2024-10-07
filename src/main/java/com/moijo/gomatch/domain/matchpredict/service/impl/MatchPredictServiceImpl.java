@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.matchpredict.service.impl;
 
+import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper;
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
@@ -34,6 +35,12 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     @Override
     public List<MyPredictDTO> getAllMyMatchByMember(String memberId) {
         return matchPredictMapper.selectAllMyMatchByMember(memberId);
+    }
+
+    @Override
+    public MemberDTO getMemberInfo(String memberId) {
+        MemberDTO memberDTO = (MemberDTO) matchPredictMapper.selectMemberInfo(memberId);
+        return  memberDTO;
     }
 
     /**

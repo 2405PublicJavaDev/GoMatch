@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.matchpredict.mapper;
 
+import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,6 +17,8 @@ public interface MatchPredictMapper {
     List<MatchPredict> selectAllMatchByMember();
 
     List<MyPredictDTO> selectAllMyMatchByMember(String memberId);
+
+    MemberDTO selectMemberInfo(String memberId);
 
     int insertMatchPredict(Long gameNo, String matchPredictDecision,String memberId,Long matchPredictNo);
 

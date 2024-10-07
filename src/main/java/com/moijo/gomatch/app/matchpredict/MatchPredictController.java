@@ -1,6 +1,7 @@
 package com.moijo.gomatch.app.matchpredict;
 
 
+import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
@@ -53,6 +54,9 @@ public class MatchPredictController {
         String memberId = "user1";
 
         List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
+
+        MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
+        model.addAttribute("memberInfo", memberInfo);
 
         model.addAttribute("matchPredictions", matchPredictions);
         return "matchpredict/myMatchPredictPage";

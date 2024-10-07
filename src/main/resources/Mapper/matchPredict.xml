@@ -11,13 +11,20 @@
         JOIN GAME G ON P.GAME_NO = G.GAME_NO
         WHERE P.MEMBER_ID = #{memberId}
     </select>
+    <select id="selectMemberInfo" resultType="MemberDTO">
+        SELECT M.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
+        FROM MEMBER M
+        JOIN USER_RANK U
+        ON M.MEMBER_ID = U.MEMBER_ID
+        WHERE M.MEMBER_ID = #{memberId}
+    </select>
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
         VALUES (SEQ_GAME_NO.NEXTVAL,'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
     </insert>
     <update id="updateMatchPredict">
-        UPDATE MATCH_PREDICT SET
-        MATCH_PREDICT_DECISION = #{matchPredictDecision}
+        UPDATE MATCH_PREDICT
+        SET MATCH_PREDICT_DECISION = #{matchPredictDecision}
         WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}
     </update>
 </mapper>

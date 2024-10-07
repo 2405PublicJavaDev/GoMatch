@@ -67,14 +67,19 @@
       <div class="member-id" name="member-id">
         <div>
           <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
-          <span>홍길동님 안녕하세요</span>
+          <span th:text="${memberInfo.memberNickname}"></span>
+          <span>님 안녕하세요</span>
         </div>
       </div>
       <div class="exp-point">
-        <span>현재 경험치는 1000 점 입니다.</span>
+        <span>현재 경험치는</span>
+        <span th:text="${memberInfo.experiencePoints}"></span>
+        <span>입니다.</span>
       </div>
       <div class="user-rank">
-        <span>현재 순위는 -위 입니다.</span>
+        <span>현재 순위는</span>
+        <span th:text="${memberInfo.rankPosition}">-위 </span>
+        <span>입니다.</span>
       </div>
     </div>
     <h3 class="calendar-title">2024.10</h3>
