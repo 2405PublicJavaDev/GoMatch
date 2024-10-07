@@ -99,11 +99,16 @@
     </select>
 
     <!-- 소모임 번호로 참석자 정보 조회 -->
-    <select id="getMeetingAttendeeByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
-        SELECT MEETING_ATTEND_NO, MEETING_NO, MEMBER_ID, REG_DATE
-        FROM MEETING_ATTEND
-        WHERE MEETING_NO = #{meetingNo}
+    <select id="getMeetingAttendeeByMeetingNo" resultType="MeetingAttendVO">
+        SELECT a.meeting_attend_no, a.meeting_no, a.member_id, a.meeting_attend_yn, a.reg_date, a.update_date,
+               m.member_nickname as memberNickname
+        FROM meeting_attend a
+                 JOIN member m ON a.member_id = m.member_id
+        WHERE a.meeting_no = #{meetingNo}
+        ORDER BY a.reg_date ASC
     </select>
+
+
     <!-- 소모임 참석 정보 삽입 -->
     <insert id="insertMeetingAttend" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
         <selectKey resultType="long" keyProperty="meetingAttendNo" order="BEFORE">
@@ -122,5 +127,13 @@
         FROM MEETING_ATTEND
         WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
     </select>
+
+    <!-- 참석 정보 삭제 쿼리 -->
+    <delete id="deleteMeetingAttend">
+        DELETE FROM MEETING_ATTEND
+        WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
+    </delete>
+
+
 
 </mapper>
