@@ -17,4 +17,5 @@ public interface GameService {
      * @return string
      */
     String getLogoUrl(String teamName);
+
 }
