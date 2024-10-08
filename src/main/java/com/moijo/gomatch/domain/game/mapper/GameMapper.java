@@ -1,9 +1,11 @@
 package com.moijo.gomatch.domain.game.mapper;
 
 import com.moijo.gomatch.domain.game.vo.GameVO;
+import com.moijo.gomatch.domain.game.vo.StadiumVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.Date;
+import java.util.List;
 
 @Mapper
 public interface GameMapper {
@@ -31,4 +33,10 @@ public interface GameMapper {
      * @return Integer
      */
     Integer findGameByDateAndTeams(Date gameDate, String teamA, String teamB);
+
+    /**
+     * 야구장 목록 출력
+     * @return List<StadiumVO>
+     */
+    List<StadiumVO> selectAllStadiums();
 }

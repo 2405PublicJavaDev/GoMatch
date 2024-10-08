@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.game.mapper.GameMapper">
     <insert id="insertGame">
-        INSERT INTO GAME(GAME_NO, GAME_DATE, GAME_TIME, TEAM_A, TEAM_B, REG_DATE, GAME_FIELD, SCORE_A, SCORE_B)
-        VALUES (SEQ_GAME_NO.NEXTVAL, #{gameDate}, #{gameTime}, #{teamA}, #{teamB}, DEFAULT, #{gameField}, #{scoreA}, #{scoreB})
+        INSERT INTO GAME(GAME_NO, GAME_DATE, GAME_TIME, TEAM_A, TEAM_B, REG_DATE, GAME_FIELD, SCORE_A, SCORE_B, GAME_STATUS)
+        VALUES (SEQ_GAME_NO.NEXTVAL, #{gameDate}, #{gameTime}, #{teamA}, #{teamB}, DEFAULT, #{gameField}, #{scoreA}, #{scoreB}, #{gameStatus})
     </insert>
     <update id="updateGame">
         UPDATE GAME SET SCORE_A = #{scoreA}, SCORE_B = #{scoreB}
@@ -16,5 +16,8 @@
         WHERE GAME_DATE = #{gameDate}
           AND TEAM_A = #{teamA}
           AND TEAM_B = #{teamB}
+    </select>
+    <select id="selectAllStadiums" resultType="com.moijo.gomatch.domain.game.vo.StadiumVO">
+        SELECT * FROM STADIUM
     </select>
 </mapper>

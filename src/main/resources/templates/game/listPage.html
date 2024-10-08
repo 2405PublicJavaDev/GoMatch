@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/header-footer.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/ko.js"></script>
 </head>
 <body>
 
@@ -15,17 +16,17 @@
 <header>
     <nav>
         <div class="logo">
-            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+            <a href="index"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
         </div>
         <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
+            <li><a href="/game/list">일정/결과</a></li>
             <li><a href="#">굿즈</a></li>
             <li><a href="#">소모임</a></li>
             <li><a href="#">승부예측</a></li>
         </ul>
         <ul class="memeber-links">
-            <li><a href="loginpage">로그인</a></li>
-            <li><a href="joinmember">회원가입</a></li>
+            <li><a href="/member/loginpage">로그인</a></li>
+            <li><a href="/member/joinmember">회원가입</a></li>
         </ul>
     </nav>
 </header>
@@ -74,6 +75,7 @@
                         <th colspan="3">경기 결과</th>
                         <th>홈팀</th>
                         <th>장소</th>
+                        <th>비고</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -81,14 +83,21 @@
                         <td th:text="${game.gameDate}"></td>
                         <td th:text="${game.gameTime}"></td>
                         <td th:text="${game.teamA}"></td>
-                        <!-- 둘다 0이 아닐 경우 점수가 나오고 둘다 0일 경우 -로 표시                        -->
-                        <td th:if="${game.scoreA != 0 || game.scoreB != 0}" th:text="${game.scoreA}"></td>
+                        <!-- 둘다 0이 아닐 경우 점수가 나오고 둘다 0일 경우 -로 표시
+                             이긴팀이 빨간색, 진팀이 파란색-->
+                        <td th:if="${game.scoreA != 0 || game.scoreB != 0}"
+                            th:class="${game.scoreA > game.scoreB} ? 'text-red' : (${game.scoreA < game.scoreB} ? 'text-blue' : '')"
+                            th:text="${game.scoreA}"></td>
                         <td th:if="${game.scoreA == 0 && game.scoreB == 0}">-</td>
                         <td>vs</td>
-                        <td th:if="${game.scoreB != 0 || game.scoreA != 0}" th:text="${game.scoreB}"></td>
+                        <td th:if="${game.scoreB != 0 || game.scoreA != 0}"
+                            th:class="${game.scoreB > game.scoreA} ? 'text-red' : (${game.scoreB < game.scoreA} ? 'text-blue' : '')"
+                            th:text="${game.scoreB}"></td>
                         <td th:if="${game.scoreB == 0 && game.scoreA == 0}">-</td>
                         <td th:text="${game.teamB}"></td>
                         <td th:text="${game.gameField}"></td>
+                        <td th:if="${game.gameStatus == '경기취소'}" th:text="${game.gameStatus}"></td>
+                        <td th:if="${game.gameStatus != '경기취소'}">-</td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(games)}">
                         <td colspan="6">경기 일정이 없습니다.</td>
@@ -129,8 +138,6 @@
 </footer>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-
-
         const listViewBtn = document.getElementById('listViewBtn');
         const calendarViewBtn = document.getElementById('calendarViewBtn');
         const gameListMain = document.querySelector('.gameList-main');
@@ -142,20 +149,23 @@
         listViewBtn.addEventListener('click', showListView);
         calendarViewBtn.addEventListener('click', showCalendarView);
 
+        // 누르면 리스트를 볼 수 있게 함
         function showListView() {
-            gameListMain.style.display = 'block';
-            calendar.style.display = 'none';
+            gameListMain.style.display = 'block';   // 리스트 O
+            calendar.style.display = 'none';    // 달력 X
         }
 
+        // 누르면 달력형태로 볼 수 있게 함
         function showCalendarView() {
-            gameListMain.style.display = 'none';
-            calendar.style.display = 'block';
+            gameListMain.style.display = 'none';    // 리스트 X
+            calendar.style.display = 'block';   // 달력 O
 
             if (!calendar.fullCalendar) {
                 initializeCalendar();
             }
         }
 
+        // 달력 초기화 (생성)
         function initializeCalendar() {
             const games = /*[[${games}]]*/ [];
 
@@ -171,21 +181,46 @@
                     extendedProps: {
                         teamA: game.teamA,
                         teamB: game.teamB
-                    }
+                    },
+                    backgroundColor : "#F3F4F8",
+                    borderColor : "#F3F4F8",
+                    textColor : "black"
                 };
 
                 // 오늘 이전의 경기일 경우 점수 추가
                 if (game.gameDate < formattedToday) {
-                    event.title = `${game.teamA} ${game.scoreA} vs ${game.scoreB} ${game.teamB}`
+                    if (game.scoreA > game.scoreB) {
+                    event.title = `
+                        <span style="color: black;">${game.teamA}</span>
+                        <span style="color: #a63446;">${game.scoreA}</span>
+                        vs
+                        <span style="color: #16215F;">${game.scoreB}</span>
+                        <span style="color: black;">${game.teamB}</span>
+                    `;
+                    }
+                    else {
+                        event.title = `
+                        <span style="color: black;">${game.teamA}</span>
+                        <span style="color:  #16215F;">${game.scoreA}</span>
+                        vs
+                        <span style="color:  #a63446;">${game.scoreB}</span>
+                        <span style="color: black;">${game.teamB}</span>
+                    `;
+                    }
                 }
 
-                return event; // 이벤트 객체 반환
+                return event;
             });
 
             const calendarEl = document.getElementById('calendar');
             const calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                locale : "ko",
                 events: events,
+                dayCellContent: function(arg) {
+                    // 날짜 숫자만 표시
+                    return arg.date.getDate().toString();
+                },
                 eventContent: function(arg) {
                     const teamAIsPreferred = arg.event.extendedProps.teamA === userPreferredTeam;
                     const teamBIsPreferred = arg.event.extendedProps.teamB === userPreferredTeam;
@@ -198,9 +233,6 @@
                     return {
                         html: `<div class="${classNames.join(' ')}">${arg.event.title}</div>`
                     };
-                },
-                eventClick: function(info) {
-                    alert('경기: ' + info.event.title);
                 }
             });
             calendarInstance.render();

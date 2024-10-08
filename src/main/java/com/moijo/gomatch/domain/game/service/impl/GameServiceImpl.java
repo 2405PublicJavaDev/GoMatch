@@ -4,6 +4,7 @@ import com.moijo.gomatch.app.game.GameBatchComponent;
 import com.moijo.gomatch.domain.game.mapper.GameMapper;
 import com.moijo.gomatch.domain.game.service.GameService;
 import com.moijo.gomatch.domain.game.vo.GameVO;
+import com.moijo.gomatch.domain.game.vo.StadiumVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class GameServiceImpl implements GameService {
     public String getLogoUrl(String teamName) {
         return teamLogoMap.getOrDefault(teamName, "/img/고매치로고.png");
     }
-
+    
     // 경기정보 DB에 저장
     @Override
     public void saveAllGames(List<GameVO> gameList) {
@@ -68,5 +69,12 @@ public class GameServiceImpl implements GameService {
                 }
             }
         }
+    }
+    
+    // 야구장 목록 출력
+    @Override
+    public List<StadiumVO> getAllStadiums() {
+        List<StadiumVO> stadiumList = gameMapper.selectAllStadiums();
+        return stadiumList;
     }
 }
