@@ -100,10 +100,10 @@
     <div class="top-predictors">
       <ol>
         <h4>랭킹</h4>
-        <li th:each="member : ${memberRank}">
+        <li th:each="member : ${memberRank}" class="rank-item">
           <div class="rank-position">
             <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-            <span th:text="${member.rankPosition}" class="rank">1</span>
+            <span th:text="${member.rankPosition}" class="rank"></span>
           </div>
           <span th:text="${member.memberNickname}" class="name"></span>
           <span th:text="${member.experiencePoints}" class="points"></span>
@@ -111,7 +111,7 @@
       </ol>
     </div>
     <div class="select-list">
-      <button>100위 더보기 ></button>
+      <button class="load-more">10위 더보기 ></button>
     </div>
   </aside>
 </main>
@@ -175,8 +175,31 @@
   }
 
 
-
   document.addEventListener("DOMContentLoaded", function () {
+  let loadMoreBtn = document.querySelector(".load-more");
+  const allRankItem = document.querySelectorAll(".rank-item");
+
+  allRankItem.forEach((item,index) => {
+    if(index >= 3) {
+      item.style.display = "none";
+    }
+  })
+    loadMoreBtn.addEventListener("click", function() {
+      // 숨겨진 항목을 10개까지 보여줌
+      let shownCount = 0;
+
+      allRankItem.forEach(item => {
+        if (shownCount < 10 && item.style.display === "none") {
+          item.style.display = "flex"; // flex 또는 원하는 display 스타일로 변경
+          shownCount++;
+        }
+      });
+
+      // 더 이상 보여줄 항목이 없으면 버튼 숨김
+      if (shownCount < 10) {
+        loadMoreBtn.style.display = "none";
+      }
+    });
     // 이번주 기본적으로 활성화
     const weekly = document.querySelector(".week-date")
     weekly.classList.add("active");

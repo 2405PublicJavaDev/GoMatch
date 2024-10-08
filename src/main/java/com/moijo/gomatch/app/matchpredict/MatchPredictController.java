@@ -59,6 +59,8 @@ public class MatchPredictController {
         MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
         double rankPercent = matchPredictService.calculatorRankPercent(memberId);
 
+
+
         model.addAttribute("memberRank", memberRank);
         model.addAttribute("memberInfo", memberInfo);
         model.addAttribute("matchPredictions", matchPredictions);
