@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의예측</title>
+  <link rel="stylesheet" href="/css/MatchPredict.css">
+  <link rel="stylesheet" href="/css/header-footer.css">
+</head>
+<body>
+<th:block th:replace="fragments/header.html"></th:block>
+<main class="main-content">
+  <section class="prediction-section">
+    <div class="btn-container">
+      <form action="matchPredict" method="get">
+        <div class="match-predict">
+          <button class="match-predict-btn" type="submit">
+            <h2>승부 예측</h2>
+          </button>
+        </div>
+      </form>
+      <form action="myMatchPredict" method="get">
+        <div class="myMatch-predict">
+          <button class="myMatch-predict-btn" type="submit">
+            <h2>나의 예측</h2>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="date-selector">
+
+    </div>
+    <ul class="game-list">
+      <li th:each="predict : ${matchPredictions}" class="game-item">
+                <span class="league">
+                    <img src="/img/고매치로고.png">
+                    GoMatch
+                </span>
+        <div class="upcoming-games">
+          <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
+          <span class="time-out">후 종료</span>
+        </div>
+        <form name="modify-form" action="/modifyPredict" method="post">
+          <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
+          <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
+          <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
+          <div class="teams">
+            <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]])">
+              <span th:text="${predict.teamA}"></span>
+              <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+            </button>
+            <button type="button" class="draw" th:onclick="setPrediction('무')">
+              <span class="vs">무승부</span>
+            </button>
+            <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]])">
+              <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+              <span th:text="${predict.teamB}"></span>
+            </button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </section>
+
+  <aside class="calendar-section">
+    <div class="member-info">
+      <div class="member-id" name="member-id">
+        <div>
+          <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
+          <span th:text="${memberInfo.memberNickname}"></span>
+          <span>님 안녕하세요</span>
+        </div>
+      </div>
+      <div class="exp-point">
+        <span>현재 경험치는</span>
+        <span th:text="${memberInfo.experiencePoints}"></span>
+        <span>입니다.</span>
+      </div>
+      <div class="user-rank">
+        <span>현재 순위는</span>
+        <span th:text="${memberInfo.rankPosition}">-위 </span>
+        <span>위 입니다.</span>
+      </div>
+    </div>
+    <h3 class="calendar-title">2024.10</h3>
+    <div class="calendar-week">
+      <button class="week-date" type="button">10월 1주</button>
+      <button class="week-date" type="button">10월 2주</button>
+      <button class="week-date" type="button">10월 3주</button>
+      <button class="week-date" type="button">10월 4주</button>
+    </div>
+    <div class="user-points">
+        <span>전체 예측에서 </span>
+        <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
+        <span th:text="${rankPercent}"></span>% 입니다.
+    <div class="progress-bar">
+
+      </div>
+    </div>
+    <div class="top-predictors">
+      <ol>
+        <h4>랭킹</h4>
+        <li th:each="member : ${memberRank}" class="rank-item">
+          <div class="rank-position">
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+            <span th:text="${member.rankPosition}" class="rank"></span>
+          </div>
+          <span th:text="${member.memberNickname}" class="name"></span>
+          <span th:text="${member.experiencePoints}" class="points"></span>
+        </li>
+      </ol>
+    </div>
+    <div class="select-list">
+      <button class="load-more">10위 더보기 ></button>
+    </div>
+  </aside>
+</main>
+<footer>
+  <div class="footer-container">
+    <div class="footer-info">
+      <div class="footer-links">
+        <a href="#">공지사항</a>
+        <a href="#">7~8월 K리그 베스트 플레이어 & MY...</a>
+        <a href="#">홈</a>
+        <a href="#">야구</a>
+        <a href="#">해외축구</a>
+        <a href="#">축구</a>
+        <a href="#">농구</a>
+        <a href="#">배구</a>
+        <a href="#">N골프</a>
+        <a href="#">일반-펠리칸</a>
+        <a href="#">e스포츠</a>
+        <a href="#">연재</a>
+      </div>
+    </div>
+    <div class="footer-details">
+      <div class="company-info">
+        <p>대표이사: 최수연</p>
+        <p>전화: 1588-3200 (대표전화/고객센터)</p>
+        <p>사업자등록번호: 220-81-62517</p>
+      </div>
+      <div class="address">
+        <p>주소: 경기도 성남시 분당구 정자동로 95 NAVER 1784, 13561</p>
+        <p>이메일: helpcustomer@naver.com</p>
+        <p>통신판매업자 등록번호: 제2006-경기성남-692호</p>
+      </div>
+      <div class="responsible-person">
+        <p>기사배열 책임자: 김수향</p>
+        <p>청소년 보호 책임자: 이정규</p>
+      </div>
+      <div class="copyright">
+        <p>본 콘텐츠의 저작권은 저작권법 또는 네이버에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적 책임을 질 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<th:block th:replace="fragments/footer.html"></th:block>
+<script>
+  function setPrediction(decision) {
+    //matchPredictDecision의 hidden input에 선택한 값을 설정
+    const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
+    if (decisionInput) {
+      decisionInput.value = decision; // decisionInput이 null이 아닐 때만 설정
+    }
+    // const gameNoInput = document.querySelector("#gameNo"); // gameNo의 hidden input
+    // if (gameNoInput) {
+    //     gameNoInput.value = gameNo; // gameNoInput이 null이 아닐 때만 설정
+    // }
+    // 폼 제출
+    const form = document.forms["modify-form"]; // form 요소 찾기
+    if (form) {
+      form.submit(); // form이 null이 아닐 때만 제출
+    }
+  }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  let loadMoreBtn = document.querySelector(".load-more");
+  const allRankItem = document.querySelectorAll(".rank-item");
+
+  allRankItem.forEach((item,index) => {
+    if(index >= 3) {
+      item.style.display = "none";
+    }
+  })
+    loadMoreBtn.addEventListener("click", function() {
+      // 숨겨진 항목을 10개까지 보여줌
+      let shownCount = 0;
+
+      allRankItem.forEach(item => {
+        if (shownCount < 10 && item.style.display === "none") {
+          item.style.display = "flex"; // flex 또는 원하는 display 스타일로 변경
+          shownCount++;
+        }
+      });
+
+      // 더 이상 보여줄 항목이 없으면 버튼 숨김
+      if (shownCount < 10) {
+        loadMoreBtn.style.display = "none";
+      }
+    });
+    // 이번주 기본적으로 활성화
+    const weekly = document.querySelector(".week-date")
+    weekly.classList.add("active");
+
+    const dateSelector = document.querySelector('.date-selector');
+    const today = new Date();
+    const options = { month: 'numeric', day: 'numeric' };
+
+    // 오늘 날짜부터 7일 동안의 날짜 생성
+    for (let i = 0; i < 7; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() + i);
+
+      const button = document.createElement('button');
+      button.classList.add('date');
+      if (i === 0) {
+        button.classList.add('active');
+        // 오늘 날짜인 경우 "오늘" 텍스트를 추가
+        button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
+      } else {
+        // 나머지 날짜는 그냥 날짜만 출력
+        button.innerText = date.toLocaleDateString('ko-KR', options);
+      }
+      // date-selector에 버튼 추가
+      dateSelector.appendChild(button);
+
+      // 날짜 버튼 클릭 시 스타일 전환
+      button.addEventListener('click', function () {
+        const allButtons = document.querySelectorAll('.date');
+        allButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+      });
+    }
+
+    // 승부 예측 버튼에 active 클래스를 추가
+    const matchPredictBtn = document.querySelector(".match-predict-btn");
+    const myMatchPredictBtn = document.querySelector(".myMatch-predict-btn");
+
+    // 기본으로 '승부 예측' 버튼 활성화
+    myMatchPredictBtn.classList.add("active");
+
+    // 승부 예측 버튼 클릭 시 스타일 전환
+    matchPredictBtn.addEventListener("click", function () {
+      matchPredictBtn.classList.remove("active");
+      myMatchPredictBtn.classList.add("active");
+      // 여기에 승부 예측 리스트를 조회하는 함수 추가 가능
+    });
+
+    // 나의 예측 버튼 클릭 시 스타일 전환
+    myMatchPredictBtn.addEventListener("click", function () {
+      myMatchPredictBtn.classList.add("active");
+      matchPredictBtn.classList.remove("active");
+      // 여기에 나의 예측 리스트를 조회하는 함수 추가 가능
+      const memberId = document.querySelector("#memberId");
+      // const gameNo = document.querySelector("#gameNo");
+      if (memberId) { // memberId와 gameNo가 유효한지 확인
+        location.href = "myMatchPredictPage.html?memberId=" + encodeURIComponent(memberId);
+      } else {
+        console.error("유효하지 않은 memberId 입니다.");
+      }
+    });
+
+    // 기본적으로 오늘 날짜 버튼 활성화
+    const todayButton = document.querySelector(".date.active"); // 오늘 날짜 버튼 (기본적으로 "오늘 1"에 active 클래스가 있는 경우)
+    todayButton.classList.add("active");
+
+    // 날짜 버튼들 선택
+    const dateButtons = document.querySelectorAll(".date");
+    dateButtons.forEach(function (dateButton) {
+      dateButton.addEventListener("click", function () {
+        // 모든 날짜 버튼에서 active 클래스 제거
+        dateButtons.forEach(function (btn) {
+          btn.classList.remove("active");
+        });
+        // 클릭된 날짜 버튼에 active 클래스 추가
+        this.classList.add("active");
+      });
+    });
+    const teamsButtons = document.querySelectorAll(".team-a, .draw, .team-b");
+    teamsButtons.forEach(function (teamButton){
+      teamButton.addEventListener("click",function (){
+        const perentGameItem = this.closest(".game-item");
+        const sublingButtons = perentGameItem.querySelectorAll(".team-a, .draw, .team-b");
+        sublingButtons.forEach(function (btn){
+          btn.classList.remove("active");
+        });
+        this.classList.add("active");
+      });
+    });
+
+    const weekButtons = document.querySelectorAll(".week-date");
+    weekButtons.forEach(function (weekButton) {
+      weekButton.addEventListener("click", function () {
+        weekButtons.forEach(function (btn) {
+          btn.classList.remove("active");
+        });
+        this.classList.add("active");
+      });
+    });
+
+  });
+
+</script>
+</body>
+</html>
