@@ -117,7 +117,8 @@
         </div>
         <div id="meeting-list" class="items">
             <!-- 반복문으로 각 소모임 정보 출력 -->
-            <div th:each="meeting : ${meetings}" class="item" th:onclick="'window.location.href=\'/meeting/detail/' + ${meeting.meetingNo} + '\'">
+            <div th:each="meeting : ${meetings}" class="item"
+                 th:onclick="|window.location.href='/meeting/detail/' + '${meeting.meetingNo}'|">
                 <div class="item-image">
                     <img th:src="@{/img/{teamName}로고.png(teamName=${meeting.meetingTeamName})}" th:alt="${meeting.meetingTeamName}">
                     <div class="meeting-team">
@@ -135,8 +136,7 @@
                         <span th:text="${meeting.meetingTime}"></span>
                     </div>
                     <div class="meeting-max-people">
-                        <!-- 참석자 현황: 현재 인원 / 최대 인원 -->
-                        <span th:text="${#request.getAttribute('attendeesCount_' + meeting.meetingNo)} + ' / ' + ${meeting.meetingMaxPeople} + '명'">0 / 10명</span>
+                        <span th:text="${attendeesCountMap[meeting.meetingNo]} + ' / ' + ${meeting.meetingMaxPeople} + '명'">0 / 10명</span>
                     </div>
                 </div>
             </div>

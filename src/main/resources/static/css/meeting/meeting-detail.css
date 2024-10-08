@@ -9,7 +9,7 @@
     src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-}
+}zz
 body {
     background-color: #f0f0f0;
     margin: 0;
@@ -64,11 +64,27 @@ body {
 .top-buttons button {
     padding: 5px 10px;
     margin-left: 10px;
-    background-color: #4a90e2;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+.button-modify {
+    background-color: #16215f;
+    color: white;
+}
+
+.button-delete {
+    background-color: #a63446;
+    color: white;
+}
+
+.button-modify:hover {
+    background-color: #00004f; /* 수정 버튼 호버 시 */
+}
+
+.button-delete:hover {
+    background-color: #8b2637; /* 삭제 버튼 호버 시 */
 }
 .meeting-details {
     display: grid;

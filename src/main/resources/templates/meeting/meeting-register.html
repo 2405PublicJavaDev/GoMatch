@@ -28,7 +28,7 @@
 
 <main>
   <h1>소모임 개설하기</h1>
-  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="combineAddress(); return validateForm()">
+  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="return combineAddress() && validateForm() && confirmSubmission()">
     <input type="hidden" value="{memberId}">
 
     <!-- 경기 날짜 선택 -->
@@ -72,9 +72,7 @@
       <!-- 시, 분 선택 드롭다운 -->
       <select id="hourSelect">
         <option value="">--시--</option>
-        <option value="09">09</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
+
         <option value="12">12</option>
         <option value="13">13</option>
         <option value="14">14</option>
@@ -305,6 +303,16 @@
     selectedFiles.forEach(file => dataTransfer.items.add(file));
     document.getElementById('groupImage').files = dataTransfer.files; // 파일 input에 갱신된 FileList 설정
     previewImages(); // 갱신된 파일 목록으로 썸네일 다시 렌더링
+  }
+  // Form 제출 시 사용자 확인을 요청하는 함수
+  function confirmSubmission() {
+    const confirmationMessage = "소중한 모임 정보를 등록해 주셔서 감사합니다!\n" +
+            "경기 날짜, 경기 정보, 응원 팀명은 이미 등록된 정보로 변경할 수 없습니다.\n" +
+            "내용이 정확한 지 확인 부탁드립니다.\n\n" +
+            "게시글을 등록하겠습니까?";
+
+    // 사용자가 확인을 누르면 true를 반환하여 form이 제출됨
+    return confirm(confirmationMessage);
   }
 
 
