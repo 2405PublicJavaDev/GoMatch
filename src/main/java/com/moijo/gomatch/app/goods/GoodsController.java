@@ -1,7 +1,10 @@
 package com.moijo.gomatch.app.goods;
 
 import com.moijo.gomatch.domain.goods.service.GoodsService;
+import com.moijo.gomatch.domain.goods.service.WishlistService;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
+import com.moijo.gomatch.domain.member.vo.MemberVO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,23 +17,12 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsService goodsService;
+    private final WishlistService wishlistService; // 필드 선언
 
     @Autowired
-    public GoodsController(GoodsService goodsService) {
+    public GoodsController(GoodsService goodsService, WishlistService wishlistService) {
         this.goodsService = goodsService;
-    }
-
-    // 굿즈 등록 폼을 보여주는 메소드
-    @GetMapping("/insert")
-    public String showRegisterForm() {
-        return "goods/insert"; // 등록 폼의 템플릿 경로
-    }
-
-    @PostMapping("/insert")
-    public String registerGoods(GoodsVO goods, Model model) {
-        goodsService.insertGoods(goods); // 굿즈 등록 서비스 호출
-        model.addAttribute("message", "상품이 성공적으로 등록되었습니다.");
-        return "redirect:/goods/list"; // 등록 후 상품 목록으로 리다이렉트
+        this.wishlistService = wishlistService;
     }
 
     @GetMapping("/list")
@@ -40,13 +32,6 @@ public class GoodsController {
         return "goods/list"; // Thymeleaf 템플릿 경로 반환
     }
 
-//    @GetMapping("/category/list")
-//    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
-//        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category); // 카테고리로 상품 조회
-//        model.addAttribute("goodsList", goodsList); // 모델에 추가
-//        return "goods/categorylist"; // 카테고리 리스트를 보여줄 템플릿 경로
-//    }
-
     @GetMapping("/category/list")
     public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
         List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category);
@@ -55,32 +40,22 @@ public class GoodsController {
     }
 
     @GetMapping("/detail/{goodsNo}")
-    public String getGoodsDetail(@PathVariable Long goodsNo, Model model) {
-        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 조회
-        model.addAttribute("goods", goods); // 모델에 추가
-        return "goods/detail"; // 상세 조회 템플릿 경로 반환
-    }
+    public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
+        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
+        model.addAttribute("goods", goods);
 
-    // 수정 폼을 보여주는 메소드 (상세 페이지에서 수정)
-    @GetMapping("/edit/{goodsNo}")
-    public String showEditForm(@PathVariable Long goodsNo, Model model) {
-        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 조회
-        model.addAttribute("goods", goods); // 모델에 추가
-        return "goods/edit"; // 수정 폼 템플릿 경로 반환
-    }
+        // 로그인한 사용자 정보 가져오기
+        MemberVO member = (MemberVO) session.getAttribute("loginUser"); // 세션에서 로그인 정보 가져오기
 
-    @PostMapping("/update")
-    public String updateGoods(@ModelAttribute GoodsVO goods, Model model) {
-        goodsService.updateGoods(goods); // 서비스 메소드를 호출하여 상품 수정
-        model.addAttribute("message", "상품이 성공적으로 수정되었습니다.");
-        return "redirect:/goods/list"; // 수정 후 상품 목록으로 리다이렉트
-    }
+        if (member != null) {
+            // 찜하기 상태 체크
+            boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
+            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+        } else {
+            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
+        }
 
-    @PostMapping("/delete") // 삭제 요청을 처리하는 메소드
-    public String deleteGoods(@RequestParam("goodsNo") Long goodsNo, Model model) {
-        goodsService.deleteGoods(goodsNo); // 서비스 메소드를 호출하여 상품 삭제
-        model.addAttribute("message", "상품이 성공적으로 삭제되었습니다.");
-        return "redirect:/goods/list"; // 삭제 후 상품 목록으로 리다이렉트
+        return "goods/detail"; // 상품 세부 정보 뷰 반환
     }
 
     @GetMapping("/search")

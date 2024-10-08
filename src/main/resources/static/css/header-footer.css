@@ -1,11 +1,11 @@
 /* ==================================================== 헤더 ===================================================*/
-/* kbo 폰트 */
-/*@font-face {*/
-/*    font-family: 'KBO Dia Gothic';*/
-/*    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');*/
-/*    font-weight: normal;*/
-/*    font-style: normal;*/
-/*}*/
+ kbo 폰트
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 body, html {
     margin: 0;

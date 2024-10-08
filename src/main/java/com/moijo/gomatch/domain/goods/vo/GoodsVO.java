@@ -23,4 +23,5 @@ public class GoodsVO {
     private LocalDate goodsOutDate; // 유통기한
 
     private String goodsCategory; // 상품 카테고리 추가
+
 }

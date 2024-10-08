@@ -28,6 +28,21 @@
     <select id="checkLogin" resultType="com.moijo.gomatch.domain.member.vo.MemberVO">
         SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
     </select>
+    <select id="findIdByNameAndBirthDate" resultType="String">
+        SELECT MEMBER_ID
+        FROM MEMBER
+        WHERE MEMBER_NAME = #{name} AND MEMBER_BIRTHDATE = TO_DATE(#{birthDate}, 'YYYY-MM-DD')
+    </select>
+    <select id="findByIdAndEmail" resultType="com.moijo.gomatch.domain.member.vo.MemberVO">
+        SELECT *
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId} AND MEMBER_EMAIL = #{email}
+    </select>
 
+    <update id="updatePassword">
+        UPDATE MEMBER
+        SET MEMBER_PW = #{password}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
     </mapper>
 

@@ -15,10 +15,16 @@ import java.sql.Date;
 @Slf4j
 public class PredictDTO {
     private Long gameNo;
+    private Long matchPredictNo;
     private Date gameDate;
-    private String gameTitle;
+    private String gameTime;
     private String teamA;
     private String teamB;
-    private String gameResult;
-    private String matchPredictDecision;
+    private String gameResult;   // 경기 결과
+    private Integer scoreA;      // 팀1 점수
+    private Integer scoreB;      // 팀2 점수
+    private String matchPredictDecision;  // 예측 결정
+    private String memberId;
+
+    public PredictDTO() {}
 }

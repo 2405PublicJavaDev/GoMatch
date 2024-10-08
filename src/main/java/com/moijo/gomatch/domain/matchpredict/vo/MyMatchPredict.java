@@ -14,10 +14,11 @@ import java.sql.Timestamp;
 @Slf4j
 public class MyMatchPredict {
     private Long matchPredictNo;
+    private Long gameNo;
     private String matchPredictDecision;
     private String memberId;
-    private Long gameNo;
     private String matchPredictStatus;
+    private String gameTime;
     private Timestamp regDate;
     private Timestamp updateDate;
 }

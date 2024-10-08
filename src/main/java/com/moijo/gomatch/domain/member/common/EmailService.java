@@ -63,4 +63,22 @@ public class EmailService {
         }
         return false;
     }
+
+    public void sendTempPassword(String mail, String tempPassword) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        try {
+            message.setFrom(senderEmail);
+            message.setRecipients(MimeMessage.RecipientType.TO, mail);
+            message.setSubject("임시 비밀번호 발급");
+            String body = "";
+            body += "<h3>임시 비밀번호가 발급되었습니다.</h3>";
+            body += "<h1>" + tempPassword + "</h1>";
+            body += "<h3>보안을 위해 로그인 후 비밀번호를 변경해주세요.</h3>";
+            message.setText(body, "UTF-8", "html");
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("임시 비밀번호 메일 전송 중 오류가 발생했습니다.", e);
+        }
+    }
+
 }

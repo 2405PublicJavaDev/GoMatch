@@ -4,7 +4,6 @@ import com.moijo.gomatch.domain.game.vo.GameVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingFileVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
@@ -32,4 +31,7 @@ public interface MeetingService {
     boolean checkAlreadyAttended(long meetingNo, String memberId);
     // 참석 취소
     void cancelAttend(long meetingNo, String memberId);
+    // 소모임 삭제
+    void removeMeeting(long meetingNo);
+
 }

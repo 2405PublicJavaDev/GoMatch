@@ -17,22 +17,18 @@
                 <h2>승부 예측</h2>
             </button>
             </div>
-            <div class="myMatch-predict">
-                <button class="myMatch-predict-btn" type="button">
-                    <h2>나의 예측</h2>
-                </button>
-            </div>
+            <form action="/myMatchPredict" method="get">
+                <div class="myMatch-predict">
+                    <button class="myMatch-predict-btn" type="submit">
+                        <h2>나의 예측</h2>
+                    </button>
+                </div>
+            </form>
         </div>
         <div class="date-selector">
-            <button class="date active">오늘 1</button>
-            <button class="date">2</button>
-            <button class="date">3</button>
-            <button class="date">4</button>
-            <button class="date">5</button>
-            <button class="date">6</button>
-            <button class="date">7</button>
+
         </div>
-        <ul class="game-list">
+        <ul  class="game-list">
             <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
@@ -42,65 +38,25 @@
                     <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
                     <span class="time-out">후 종료</span>
                 </div>
-                <div class="teams">
-                    <button type="button" class="team-a">
-                        <span>KT</span>
-                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                    </button>
-                    <button type="button" class="draw">
-                        <span class="vs">무승부</span>
-                    </button>
-                    <button type="button" class="team-b">
-                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                        <span>LG</span>
-                    </button>
-                </div>
-            </li>
-            <li class="game-item">
-                <span class="league">
-                    <img src="/img/고매치로고.png">
-                    GoMatch
-                </span>
-                <div class="upcoming-games">
-                    <span class="time">17:00 경기예정</span>
-                    <span class="time-out">후 종료</span>
-                </div>
-                <div class="teams">
-                    <button type="button" class="team-a">
-                        <span>KT</span>
-                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                    </button>
-                    <button type="button" class="draw">
-                        <span class="vs">무승부</span>
-                    </button>
-                    <button type="button" class="team-b">
-                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                        <span>LG</span>
-                    </button>
-                </div>
-            </li>
-            <li class="game-item">
-                <span class="league">
-                    <img src="/img/고매치로고.png">
-                    GoMatch
-                </span>
-                <div class="upcoming-games">
-                    <span class="time">17:00 경기예정</span>
-                    <span class="time-out">후 종료</span>
-                </div>
-                <div class="teams">
-                    <button type="button" class="team-a">
-                        <span>KT</span>
-                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                    </button>
-                    <button type="button" class="draw">
-                        <span class="vs">무승부</span>
-                    </button>
-                    <button type="button" class="team-b">
-                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                        <span>LG</span>
-                    </button>
-                </div>
+                <form name="add-form" action="/addPredict" method="post">
+                    <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
+                    <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
+                    <input type="hidden" name="matchPredictNo" th:value="1">
+                    <input type="hidden" name="matchPredictDecision"/>
+                    <div class="teams">
+                        <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]])">
+                            <span th:text="${predict.teamA}"></span>
+                            <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                        </button>
+                        <button type="button" class="draw" th:onclick="setPrediction('무')">
+                            <span class="vs">무승부</span>
+                        </button>
+                        <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]])">
+                            <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                            <span th:text="${predict.teamB}"></span>
+                        </button>
+                    </div>
+                </form>
             </li>
         </ul>
     </section>
@@ -219,7 +175,65 @@
 
 <th:block th:replace="fragments/footer.html"></th:block>
 <script>
+    // function myPredict (memberId,gameNo){
+    //     location.href = "myMatchPredictPage.html?memberId=" + memberId + "&gameNo=" + gameNo;
+    // }
+
+    function setPrediction(decision, gameNo) {
+        //matchPredictDecision의 hidden input에 선택한 값을 설정
+        const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
+        if (decisionInput) {
+            decisionInput.value = decision; // decisionInput이 null이 아닐 때만 설정
+        }
+        const gameNoInput = document.querySelector("#gameNo"); // gameNo의 hidden input
+        if (gameNoInput) {
+            gameNoInput.value = gameNo; // gameNoInput이 null이 아닐 때만 설정
+        }
+        // 폼 제출
+        const form = document.forms["add-form"]; // form 요소 찾기
+        if (form) {
+            form.submit(); // form이 null이 아닐 때만 제출
+        }
+    }
+
+
+
     document.addEventListener("DOMContentLoaded", function () {
+
+        // 이번주 기본적으로 활성화
+        const weekly = document.querySelector(".week-date")
+        weekly.classList.add("active");
+
+        const dateSelector = document.querySelector('.date-selector');
+        const today = new Date();
+        const options = { month: 'numeric', day: 'numeric' };
+
+        // 오늘 날짜부터 7일 동안의 날짜 생성
+        for (let i = 0; i < 7; i++) {
+            const date = new Date();
+            date.setDate(today.getDate() + i);
+
+            const button = document.createElement('button');
+            button.classList.add('date');
+            if (i === 0) {
+                button.classList.add('active');
+                // 오늘 날짜인 경우 "오늘" 텍스트를 추가
+                button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
+            } else {
+                // 나머지 날짜는 그냥 날짜만 출력
+                button.innerText = date.toLocaleDateString('ko-KR', options);
+            }
+            // date-selector에 버튼 추가
+            dateSelector.appendChild(button);
+
+            // 날짜 버튼 클릭 시 스타일 전환
+            button.addEventListener('click', function () {
+                const allButtons = document.querySelectorAll('.date');
+                allButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        }
+
         // 승부 예측 버튼에 active 클래스를 추가
         const matchPredictBtn = document.querySelector(".match-predict-btn");
         const myMatchPredictBtn = document.querySelector(".myMatch-predict-btn");
@@ -239,7 +253,17 @@
             myMatchPredictBtn.classList.add("active");
             matchPredictBtn.classList.remove("active");
             // 여기에 나의 예측 리스트를 조회하는 함수 추가 가능
+            const memberId = document.querySelector("#memberId");
+            // const gameNo = document.querySelector("#gameNo");
+            if (memberId) { // memberId와 gameNo가 유효한지 확인
+                location.href = "myMatchPredictPage.html?memberId=" + encodeURIComponent(memberId);
+            } else {
+                console.error("유효하지 않은 memberId 입니다.");
+            }
         });
+        function myPredict(memberId, gameNo) {
+
+        }
 
         // 기본적으로 오늘 날짜 버튼 활성화
         const todayButton = document.querySelector(".date.active"); // 오늘 날짜 버튼 (기본적으로 "오늘 1"에 active 클래스가 있는 경우)
@@ -279,6 +303,7 @@
             });
         });
     });
+
 </script>
 </body>
 </html>

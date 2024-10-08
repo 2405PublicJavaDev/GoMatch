@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.member.common;
 
+import com.moijo.gomatch.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class EmailController {
 
     private final EmailService emailService;
+    private final MemberService memberService;
 
     @ResponseBody
     @PostMapping("/mail")
@@ -43,4 +45,16 @@ public class EmailController {
 
         return ResponseEntity.ok(response);
     }
+    @PostMapping("/member/findPw")
+    @ResponseBody
+    public ResponseEntity<String> findPassword(@RequestParam String memberId, @RequestParam String email) {
+        boolean isReset = memberService.resetPassword(memberId, email);
+        if (isReset) {
+            return ResponseEntity.ok("임시 비밀번호를 전송하였습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("일치하는 회원 정보를 찾을 수 없습니다.");
+        }
+    }
+
+
 }

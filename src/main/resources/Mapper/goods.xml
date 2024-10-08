@@ -3,11 +3,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.goods.mapper.GoodsMapper">
 
-    <insert id="insertGoods" parameterType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
-        INSERT INTO GOODS (GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE, GOODS_PRODUCT_CODE, GOODS_FROM, GOODS_MAKE_DATE, GOODS_OUT_DATE, GOODS_CATEGORY)
-        VALUES (SEQ_GOODS_NO.NEXTVAL, #{goodsTeam}, #{goodsProductName}, #{goodsPrice}, #{goodsProductCode}, #{goodsFrom}, #{goodsMakeDate}, #{goodsOutDate}, #{goodsCategory})
-    </insert>
-
     <select id="selectGoodsByCategory" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
         SELECT GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE
         FROM GOODS
