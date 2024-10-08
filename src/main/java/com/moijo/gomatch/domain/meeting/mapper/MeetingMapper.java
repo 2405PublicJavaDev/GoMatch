@@ -32,9 +32,12 @@ public interface MeetingMapper {
     // 소모임 번호로 참석자 정보 조회
     List<MeetingAttendVO> getMeetingAttendeeByMeetingNo(@Param("meetingNo") long meetingNo);
     // 소모임 참석 등록
-    int insertMeetingAttend(MeetingAttendVO attendVO);
+    void insertMeetingAttend(MeetingAttendVO attendVO);
     // 소모임 참석 여부 확인
     int checkMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
     // 참석 취소 메서드 추가
-    int deleteMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
+    void deleteMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
+    // 소모임 삭제
+    void deleteMeeting(long meetingNo);
+
 }

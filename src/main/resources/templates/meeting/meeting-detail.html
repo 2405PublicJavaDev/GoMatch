@@ -44,11 +44,17 @@
       <div class="meeting-title">
         <h2 th:text="${meeting.meetingTitle}">글 제목</h2>
         <div class="top-buttons">
-          <button type="button" onclick="alert('수정되었습니다.')">수정</button>
-          <button type="button" onclick="alert('삭제되었습니다.')">삭제</button>
+          <!-- 수정된 부분: 조건부 버튼 표시 -->
+          <button th:if="${session.memberId == meeting.memberId}"
+                  type="button" class="button-modify"
+                  onclick="editMeeting()">수정</button>
+          <button th:if="${session.memberId == meeting.memberId and (currentAttendeesCount == 1 or currentAttendeesCount == 0)}"
+                  type="button" class="button-delete"
+                  onclick="deleteMeeting()">삭제</button>
         </div>
       </div>
     </div>
+
 
     <div class="meeting-details">
       <!-- 경기 일정 출력 -->
@@ -70,8 +76,8 @@
         <span th:text="${#dates.format(meeting.regDate, 'MM/dd HH:mm:ss')}"></span>
       </div>
       <div class="detail-item">
-        <label>모임시간</label>
-        <span th:text="${meeting.meetingTime}">13시 30분</span>
+        <label>모임일시</label>
+        <span th:text="${#dates.format(meeting.meetingDate, 'MM월 dd일')}+'  ('+${meeting.meetingTime}+')'">13시 30분</span>
       </div>
       <div class="detail-item">
         <label>참석자 현황</label>
@@ -214,6 +220,28 @@
       }
     }
   }
+  function deleteMeeting() {
+    if (confirm("정말로 소모임을 삭제하시겠습니까?")) {
+      if (meetingNo) {
+        fetch(`/meeting/delete/${meetingNo}`, {
+          method: 'POST',
+        })
+                .then(() => {
+                  // 삭제가 완료되었음을 알리고, 페이지 이동
+                  alert("삭제가 완료되었습니다.");
+                  window.location.href = "/meeting/list";
+                })
+                .catch(error => {
+                  console.error('삭제 처리 중 오류 발생:', error);
+                  alert('삭제 처리 중 오류가 발생했습니다.');
+                });
+      } else {
+        alert('소모임 정보를 찾을 수 없습니다.');
+      }
+    }
+  }
+
+
 
 </script>
 </body>

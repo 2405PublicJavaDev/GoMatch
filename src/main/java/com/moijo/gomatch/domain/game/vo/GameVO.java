@@ -23,6 +23,7 @@ public class GameVO {
     private String gameResult;
     private int scoreA;
     private int scoreB;
+    private String gameStatus;
 
     public GameVO(Date sqlDate, String gameTime, String homeTeamName, String awayTeamName, String gameLocation, int homeScore, int awayScore) {
         this.gameDate = sqlDate;

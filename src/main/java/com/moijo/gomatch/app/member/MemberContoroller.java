@@ -5,6 +5,7 @@ import com.moijo.gomatch.domain.member.vo.MemberVO;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +46,8 @@ public class MemberContoroller {
             session.setAttribute("member", member);
             session.setAttribute("memberId", member.getMemberId());
             session.setAttribute("memberNickName", member.getMemberNickName());
+            session.setAttribute("preferenceClub", member.getPreferenceClub());
+            session.setAttribute("matchPredictExp", member.getMatchPredictExp());
             System.out.println("로그인 성공: " + member.getMemberNickName());
             return "redirect:/";
         } else {
@@ -118,7 +124,69 @@ public class MemberContoroller {
         }
         return "index";
     }
+    @GetMapping("/member/findid")
+    public String showFindIdForm() {
+        return "member/findid";
+    }
 
+    @PostMapping("/member/findid")
+    public String findId(@RequestParam String name,
+                         @RequestParam String birthDate,
+                         Model model) {
+        try {
+            // 입력받은 생년월일 문자열을 LocalDate로 변환
+            LocalDate parsedBirthDate = LocalDate.parse(birthDate, DateTimeFormatter.ofPattern("yyyyMMdd"));
+            String formattedBirthDate = parsedBirthDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            String foundId = mService.findIdByNameAndBirthDate(name, formattedBirthDate);
+            if (foundId != null) {
+                String maskedId = maskId(foundId);
+                model.addAttribute("foundId", maskedId);
+            } else {
+                model.addAttribute("errorMessage", "일치하는 회원 정보를 찾을 수 없습니다.");
+            }
+        } catch (DateTimeParseException e) {
+            model.addAttribute("errorMessage", "올바른 생년월일 형식이 아닙니다. (예: 19901231)");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "아이디 찾기 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+        return "member/findid";
+    }
+
+    private String maskId(String id) {
+
+        return id;
+    }
+// 비밀번호 찾기 폼
+    @GetMapping("/member/findpw")
+    public String showFindPwdForm() {
+        return "member/findpw";
+    }
+
+// 비밀번호 찾기( 임시비밀번호 전송) 기능
+    @PostMapping("/member/findpw")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestParam String memberId, @RequestParam String email) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isReset = mService.resetPassword(memberId, email);
+        if (isReset) {
+            response.put("success", true);
+            response.put("message", "임시 비밀번호가 이메일로 전송되었습니다.");
+            System.out.println("임시 비밀번호 전송: " + memberId);
+        } else {
+            response.put("success", false);
+            response.put("message", "일치하는 회원 정보를 찾을 수 없습니다.");
+            System.out.println("실패실패실패: " + memberId);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    // 마이페이지 폼
+    @GetMapping("/member/mypage")
+    public String showMyPageForm(){
+        return "member/mypage";
+    }
 
     }
 

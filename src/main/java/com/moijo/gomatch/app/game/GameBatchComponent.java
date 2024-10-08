@@ -188,7 +188,14 @@ public class GameBatchComponent {
                     int homeScore = parseScore(homeTeamScore);
                     int awayScore = parseScore(awayTeamScore);
 
+                    // 게임 상태 추출
+                    String gameStatus = team.selectFirst("span.state_game").text();
+
+                    if(!"경기취소".equals(gameStatus)) {
+                        gameStatus = null;
+                    }
                     GameVO game = new GameVO(sqlDate, gameTime, homeTeamName, awayTeamName, gameLocation, homeScore, awayScore);
+                    game.setGameStatus(gameStatus);
                     gameList.add(game);
                     }
             }

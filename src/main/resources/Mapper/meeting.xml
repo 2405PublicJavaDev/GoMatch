@@ -134,6 +134,10 @@
         WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
     </delete>
 
+    <delete id="deleteMeeting">
+        DELETE FROM MEETING WHERE MEETING_NO = #{meetingNo}
+    </delete>
+
 
 
 </mapper>

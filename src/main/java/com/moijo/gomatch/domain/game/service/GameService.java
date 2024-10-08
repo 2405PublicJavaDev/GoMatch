@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.game.service;
 
 import com.moijo.gomatch.domain.game.vo.GameVO;
+import com.moijo.gomatch.domain.game.vo.StadiumVO;
 
 import java.util.List;
 
@@ -18,4 +19,9 @@ public interface GameService {
      */
     String getLogoUrl(String teamName);
 
+    /**
+     * 야구장 목록 출력
+     * @return List<StaidumVo>
+     */
+    List<StadiumVO> getAllStadiums();
 }

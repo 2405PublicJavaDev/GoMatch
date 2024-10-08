@@ -2,29 +2,49 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper">
-    <select id="selectAllMatchByMember" resultType="MatchPredict">
-        SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,G.GAME_RESULT,P.MATCH_PREDICT_DECISION
+    <select id="selectAllMatchByMember" resultType="PredictDTO">
+        SELECT * from GAME
+    </select>
+
+    <select id="selectAllMemberRank" resultType="MemberRankDTO">
+        SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
+        FROM MEMBER M
+        JOIN USER_RANK U
+        ON M.MEMBER_ID = U.MEMBER_ID
+    </select>
+
+    <select id="selectAllMyMatchByMember" resultType="MyPredictDTO">
+        SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,P.MATCH_PREDICT_DECISION,P.MEMBER_ID
         FROM MATCH_PREDICT P
-        JOIN GAME G
-        ON P.MEMBER_ID = G.MEMBER_ID
+        JOIN GAME G ON P.GAME_NO = G.GAME_NO
+        WHERE P.MEMBER_ID = #{memberId}
     </select>
-    <select id="selectMyMatchPredict" resultType="MyMatchPredict">
-        SELECT
-            M.MEMBER_ID,
-            M.MEMBER_NICKNAME,
-            P.MATCH_PREDICT_NO,
-            P.MATCH_PREDICT_DECISION,
-            P.MATCH_PREDICT_STATUS,
-            G.GAME_DATE,
-            G.TEAM_A,
-            G.TEAM_B
-        FROM
-            MATCH_PREDICT P
-                JOIN
-            MEMBER M ON P.MEMBER_ID = M.MEMBER_ID
-                JOIN
-            GAME G ON P.GAME_NO = G.GAME_NO
-        WHERE
-            M.MEMBER_ID = #{memberId};
+
+    <select id="selectMemberInfo" resultType="MemberDTO">
+        SELECT M.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
+        FROM MEMBER M
+        JOIN USER_RANK U
+        ON M.MEMBER_ID = U.MEMBER_ID
+        WHERE M.MEMBER_ID = #{memberId}
     </select>
+
+    <select id="getTotalMemberCount" resultType="Long">
+        SELECT COUNT(*) FROM MEMBER
+    </select>
+
+    <select id="getOneByMemberRank" resultType="Long">
+        SELECT RANK_POSITION FROM USER_RANK
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+
+    <insert id="insertMatchPredict">
+        INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
+        VALUES (SEQ_GAME_NO.NEXTVAL,'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
+    </insert>
+    <update id="updateMatchPredict">
+        UPDATE MATCH_PREDICT
+        SET MATCH_PREDICT_DECISION = #{matchPredictDecision}
+        WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}
+    </update>
 </mapper>
