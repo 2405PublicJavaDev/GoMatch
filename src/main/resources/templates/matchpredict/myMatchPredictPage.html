@@ -79,7 +79,7 @@
       <div class="user-rank">
         <span>현재 순위는</span>
         <span th:text="${memberInfo.rankPosition}">-위 </span>
-        <span>입니다.</span>
+        <span>위 입니다.</span>
       </div>
     </div>
     <h3 class="calendar-title">2024.10</h3>
@@ -90,8 +90,10 @@
       <button class="week-date" type="button">10월 4주</button>
     </div>
     <div class="user-points">
-      <p>전체 예측에서 <strong>18,076위</strong> 상위 28%입니다.</p>
-      <div class="progress-bar">
+        <span>전체 예측에서 </span>
+        <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
+        <span th:text="${rankPercent}"></span>% 입니다.
+    <div class="progress-bar">
 
       </div>
     </div>

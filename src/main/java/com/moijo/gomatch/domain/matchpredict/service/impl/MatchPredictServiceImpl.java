@@ -69,4 +69,26 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         int result = matchPredictMapper.updateMatchPredict(memberId,gameNo,matchPredictDecision);
         return result;
     }
+
+    @Override
+    public Long getTotalMemberCount() {
+        return matchPredictMapper.getTotalMemberCount();
+    }
+
+    @Override
+    public double calculatorRankPercent(String memberId) {
+        Long totalMember = getTotalMemberCount(); // 전체 회원 정보
+
+        Long memberRank = matchPredictMapper.getOneByMemberRank(memberId);
+
+        if(memberRank != null) {
+            double percent =  (double) memberRank / (double)totalMember * 100;
+
+            String formattedPercent = String.format("%.2f", percent);
+
+            return Double.parseDouble(formattedPercent);
+
+        }
+        return 0.0;
+    }
 }

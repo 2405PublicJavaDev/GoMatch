@@ -18,4 +18,7 @@ public interface MatchPredictService {
 
     int modifyMatchPredict(String memberId,Long gameNo,String matchPredictDecision);
 
+    Long getTotalMemberCount();
+
+    double calculatorRankPercent(String memberId);
 }

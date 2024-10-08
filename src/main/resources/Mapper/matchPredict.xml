@@ -18,6 +18,19 @@
         ON M.MEMBER_ID = U.MEMBER_ID
         WHERE M.MEMBER_ID = #{memberId}
     </select>
+    <select id="getTotalMemberCount" resultType="Long">
+        SELECT COUNT(*) FROM MEMBER
+    </select>
+    <select id="getOneByMemberRank" resultType="Long">
+        SELECT ROWNUM
+        FROM (
+                 SELECT M.MEMBER_ID
+                 FROM MEMBER M
+                          JOIN USER_RANK U ON M.MEMBER_ID = U.MEMBER_ID
+                 ORDER BY U.EXPERIENCE_POINTS DESC
+             )
+        WHERE MEMBER_ID = #{memberId}
+    </select>
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
         VALUES (SEQ_GAME_NO.NEXTVAL,'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)

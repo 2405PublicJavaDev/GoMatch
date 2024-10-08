@@ -43,7 +43,7 @@ public class MatchPredictController {
 
     };
     /**
-     * 나의 예측 리스트 조회(gameNo,memberId)
+     * 나의 예측 리스트 조회(gameNo,memberId),화원 정보 조회
       * @param session
      * @param model
      * @return
@@ -56,9 +56,12 @@ public class MatchPredictController {
         List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
 
         MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
-        model.addAttribute("memberInfo", memberInfo);
+        double rankPercent = matchPredictService.calculatorRankPercent(memberId);
 
+        model.addAttribute("memberInfo", memberInfo);
         model.addAttribute("matchPredictions", matchPredictions);
+        model.addAttribute("rankPercent", rankPercent);
+
         return "matchpredict/myMatchPredictPage";
     }
     /**
