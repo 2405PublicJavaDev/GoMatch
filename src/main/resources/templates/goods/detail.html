@@ -3,7 +3,6 @@
 <head>
   <title>상품 상세 조회</title>
   <style>
-    /* 공통 버튼 스타일 */
     .btn {
       cursor: pointer;
       font-size: 18px;
@@ -12,12 +11,11 @@
       color: white;
       border: none;
       border-radius: 5px;
-      margin-right: 10px; /* 버튼 간의 간격 */
+      margin-right: 10px;
     }
 
-    /* 찜하기 버튼의 추가 스타일 */
     .wishlist-button.active {
-      background-color: red; /* 찜한 상태일 때 색상 */
+      background-color: red; /* 찜하기 버튼 활성화 색상 */
     }
   </style>
 </head>
@@ -29,78 +27,48 @@
 <p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>
 <p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>
 <p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
-<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p> <!-- 카테고리 추가 -->
+<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p>
 
-<!-- 찜하기 버튼과 목록 버튼 -->
-<button id="wishlistButton" class="btn wishlist-button" onclick="toggleWishlist(${goods.goodsNo})">찜하기</button>
 <a href="/goods/list" class="btn">목록</a>
 
-<!-- JavaScript 코드 추가 -->
+<button id="wishlistButton"
+        class="btn wishlist-button"
+        th:classappend="${isWishlisted} ? ' active' : ''"
+        th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">
+  <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
+</button>
+
 <script th:inline="javascript">
-  let isWished = [[${isWishlist}]]; // 서버에서 받아온 isWishlist 값
-  let isLoggedIn = [[${isLoggedIn}]]; // 로그인 상태를 서버에서 받아옴
-  const wishlistButton = document.getElementById('wishlistButton');
-
-  // 초기 상태에 따른 버튼 스타일 설정
-  if (isWished) {
-    wishlistButton.classList.add('active');
-    wishlistButton.textContent = '찜하기 취소'; // 이미 찜한 상태라면 텍스트 변경
-  }
-
   function toggleWishlist(goodsNo) {
-    // 로그인 여부 확인
-    if (!isLoggedIn) {
-      alert('로그인이 필요합니다.');
-      window.location.href = '/login'; // 로그인 페이지로 리다이렉트
-      return;
+    console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그
+
+    // goodsNo가 올바르게 전달되었는지 확인
+    if (typeof goodsNo === 'undefined' || goodsNo === null) {
+      console.error('Invalid goodsNo'); // 오류 로그
+      return; // 잘못된 goodsNo가 전달되면 함수 종료
     }
 
-    // 찜 상태에 따라 버튼 색상 및 추가/삭제 로직 처리
-    if (isWished) {
-      // 이미 찜한 상태에서 찜 해제
-      fetch(`/wishlist/remove`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ goodsNo: goodsNo })
-      })
-              .then(response => {
-                if (response.ok) {
-                  wishlistButton.classList.remove('active'); // 색상 원복
-                  wishlistButton.textContent = '찜하기'; // 텍스트 원복
-                  isWished = false; // 찜 상태 업데이트
-                  alert('찜하기 목록에서 제거되었습니다.');
-                } else {
-                  alert('찜하기 목록에서 제거하는 데 실패했습니다.');
-                }
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-    } else {
-      // 찜하지 않은 상태에서 찜하기
-      fetch(`/wishlist/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ goodsNo: goodsNo })
-      })
-              .then(response => {
-                if (response.ok) {
-                  wishlistButton.classList.add('active'); // 색상 변경
-                  wishlistButton.textContent = '찜하기 취소'; // 텍스트 변경
-                  isWished = true; // 찜 상태 업데이트
-                  alert('찜하기 목록에 추가되었습니다!');
-                } else {
-                  alert('찜하기 목록에 추가하는 데 실패했습니다.');
-                }
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-    }
+    fetch('/wishlist?goodsNo=' + goodsNo, {
+      method: 'POST',
+      credentials: 'include' // 쿠키와 인증정보 포함
+    })
+            .then(response => {
+              if (response.redirected) {
+                // 로그인하지 않은 경우 로그인 페이지로 리디렉션
+                window.location.href = response.url;
+              } else {
+                // 로그인된 경우 버튼 상태 변경
+                return response.json(); // JSON 응답을 받음
+              }
+            })
+            .then(data => {
+              // 버튼 색상 및 텍스트 변경
+              const button = document.getElementById('wishlistButton');
+              const isActive = button.classList.contains('active');
+              button.classList.toggle('active', !isActive); // 클래스 토글
+              button.innerText = isActive ? '찜하기' : '찜하기 취소'; // 버튼 텍스트 변경
+            })
+            .catch(error => console.error('Error:', error));
   }
 </script>
 </body>

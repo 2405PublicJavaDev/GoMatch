@@ -41,32 +41,22 @@ public class GoodsController {
 
     @GetMapping("/detail/{goodsNo}")
     public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
-        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 조회
-        model.addAttribute("goods", goods); // 모델에 추가
+        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
+        model.addAttribute("goods", goods);
 
         // 로그인한 사용자 정보 가져오기
-        MemberVO member = (MemberVO) session.getAttribute("member");
-        boolean isWishlist = false;
-        boolean isLoggedIn = (member != null); // 로그인 상태 확인
+        MemberVO member = (MemberVO) session.getAttribute("loginUser"); // 세션에서 로그인 정보 가져오기
 
-        // 사용자가 로그인한 상태일 때만 위시리스트 상태 확인
-        if (isLoggedIn) {
-            isWishlist = wishlistService.isWishlistItem(member.getMemberId(), goodsNo);
+        if (member != null) {
+            // 찜하기 상태 체크
+            boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
+            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+        } else {
+            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
         }
 
-        model.addAttribute("isWishlist", isWishlist); // 위시리스트 상태 추가
-        model.addAttribute("isLoggedIn", isLoggedIn); // 로그인 상태 추가
-
-        return "goods/detail"; // 상세 조회 템플릿 경로 반환
+        return "goods/detail"; // 상품 세부 정보 뷰 반환
     }
-
-
-//    @GetMapping("/detail/{goodsNo}")
-//    public String getGoodsDetail(@PathVariable Long goodsNo, Model model) {
-//        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 조회
-//        model.addAttribute("goods", goods); // 모델에 추가
-//        return "goods/detail"; // 상세 조회 템플릿 경로 반환
-//    }
 
     @GetMapping("/search")
     public String searchGoods(@RequestParam("searchValue") String searchValue,
