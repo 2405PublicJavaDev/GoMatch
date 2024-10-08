@@ -28,7 +28,7 @@
 
 <main>
   <h1>소모임 개설하기</h1>
-  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="return combineAddress() && validateForm() && confirmSubmission()">
+  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="return handleSubmitForm()">
     <input type="hidden" value="{memberId}">
 
     <!-- 경기 날짜 선택 -->
@@ -307,7 +307,8 @@
   // Form 제출 시 사용자 확인을 요청하는 함수
   function confirmSubmission() {
     const confirmationMessage = "소중한 모임 정보를 등록해 주셔서 감사합니다!\n" +
-            "경기 날짜, 경기 정보, 응원 팀명은 이미 등록된 정보로 변경할 수 없습니다.\n" +
+            "경기 날짜, 경기 정보, 응원 팀명은\n" +
+            "게시글이 등록되면 수정이 불가능합니다.\n" +
             "내용이 정확한 지 확인 부탁드립니다.\n\n" +
             "게시글을 등록하겠습니까?";
 
@@ -315,6 +316,16 @@
     return confirm(confirmationMessage);
   }
 
+  function handleSubmitForm() {
+    // 상세 주소와 시간 검증
+    combineAddress();
+    // validateForm 함수가 false를 반환하면 제출 중단
+    if (!validateForm()) {
+      return false;
+    }
+    // confirmSubmission에서 false를 반환하면 제출 중단
+    return confirmSubmission();
+  }
 
 </script>
 </body>
