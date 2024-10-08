@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>야구 리그 로그인</title>
-    <link rel="stylesheet" href="/css/member/login.css">
+    <title>비밀번호 찾기</title>
+    <link rel="stylesheet" href="/css/member/findpw.css">
     <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+
+    </style>
 </head>
 <body>
-
 <!-- 헤더 부분 -->
 <header>
     <nav>
         <div class="logo">
-            <a href="/"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
         </div>
         <ul class="nav-links">
             <li><a href="#">일정/결과</a></li>
@@ -35,29 +38,21 @@
 </header>
 <main>
     <div class="container">
-        <div class="image-container">
-            <img src="/img/승리예측 홍보.jpg" alt=""></a>
-        </div>
-        <div class="login-container">
-            <h2>로그인</h2>
-            <form action="/member/loginpage" method="post">
-            <label for="memberId">아이디 입력</label>
-            <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요.">
+        <div class="findid">
+            <h2>비밀번호 찾기</h2>
+            <form id="resetPasswordForm">
+                <label for="memberId">아이디</label>
+                <input type="text" id="memberId" name="memberId" placeholder="아이디" required>
 
-            <label for="memberPw">비밀번호 입력</label>
-            <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요.">
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" placeholder="이메일" required>
 
-            <button type="submit" class="login-btn" >로그인</button>
+                <button type="submit">임시 비밀번호 발급받기</button>
             </form>
             <div class="find-member">
-                <p><a href="./findid" class="find-member">아이디 찾기</a>
-                    <a href="./findpw" class="find-member">비밀번호 찾기</a>
-                    <a href="./joinmember" class="find-member">회원가입</a></p>
-            </div>
-            <div class="sns-login">
-                <p>SNS계정으로 간편 로그인</p>
-                <button type="submit" class="kakao-btn">카카오톡</button>
-                <button type="submit" class="naver-btn">네이버</button>
+                <p><a href="findid.html" class="find-member">아이디 찾기</a>
+                    <a href="findpw.html" class="find-member">비밀번호 찾기</a>
+                    <a href="joinmember.html" class="find-member">회원가입</a></p>
             </div>
         </div>
     </div>
@@ -88,7 +83,27 @@
         </div>
     </div>
 </footer>
+<script>
+    document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
+        var formData = new FormData(this);
 
+        fetch('/member/findpw', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+
+            .then(data => {
+                alert('임시 비밀번호가 전송되었습니다.');
+                alert('로그인 페이지로 이동 합니다')
+                window.location.href = '/member/loginpage';
+            })
+            .catch(error => {
+                // console.error('Error:', error);
+                alert('비밀번호 전송 실패');
+            });
+    });
+</script>
 </body>
 </html>

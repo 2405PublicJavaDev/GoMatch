@@ -22,7 +22,7 @@
         </ul>
         <ul class="member-links">
             <th:block th:if="${loggedIn}">
-                <li class="member-link"><span th:text="${memberNickName} + ' 님'"></span></li>
+                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
                 <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
             </th:block>
             <th:block th:unless="${loggedIn}">

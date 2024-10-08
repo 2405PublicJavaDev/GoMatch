@@ -2,6 +2,7 @@ package com.moijo.gomatch.domain.member.mapper;
 
 import com.moijo.gomatch.domain.member.vo.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Mapper
 public interface MemberMapper {
@@ -20,5 +21,16 @@ public interface MemberMapper {
     int countByMemberId(String memberId);
     int countByMemberEmail(String memberEmail);
     int countByMemberNickname(String memberNickname);
+
+    /**
+     * 아이디 찾기 mapper
+     */
+    String findIdByNameAndBirthDate(@RequestParam ("name") String name, @RequestParam("birthDate") String birthDate);
+
+    /**
+     * 비밀번호 찾기(임시비밀번호 발급) mapper
+     */
+    MemberVO findByIdAndEmail(@RequestParam("memberId") String memberId, @RequestParam("email") String email);
+    void updatePassword(@RequestParam("memberId") String memberId, @RequestParam("password") String password);
 
 }

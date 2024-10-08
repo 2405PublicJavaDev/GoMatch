@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <link rel="stylesheet" href="/css/header-footer.css">
-    <link rel="stylesheet" href="/css/joinmember.css">
+    <link rel="stylesheet" href="/css/member/joinmember.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
@@ -22,9 +22,15 @@
             <li><a href="#">소모임</a></li>
             <li><a href="#">승부예측</a></li>
         </ul>
-        <ul class="memeber-links">
-            <li><a href="loginpage">로그인</a></li>
-            <li><a href="joinmember">회원가입</a></li>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
         </ul>
     </nav>
 </header>
@@ -77,7 +83,7 @@
                 <label for="preferenceClub">선호 구단</label>
                 <select id="preferenceClub" th:field="*{preferenceClub}">
                     <option value="">응원하는 구단을 선택해보세요!</option>
-                    <option value="기아">KIA</option>
+                    <option value="KIA">KIA</option>
                     <option value="삼성">삼성</option>
                     <option value="LG">LG</option>
                     <option value="두산">두산</option>

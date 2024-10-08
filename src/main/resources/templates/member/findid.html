@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이디 찾기</title>
+  <link rel="stylesheet" href="/css/header-footer.css">
+  <link rel="stylesheet" href="/css/member/findid.css">
+
+</head>
+<body>
+<!-- 헤더 부분 -->
+<header>
+  <nav>
+    <div class="logo">
+  <a href="/"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">일정/결과</a></li>
+    <li><a href="#">굿즈</a></li>
+    <li><a href="#">소모임</a></li>
+    <li><a href="#">승부예측</a></li>
+  </ul>
+    <ul class="member-links">
+      <th:block th:if="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+        <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+      </th:block>
+      <th:block th:unless="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+        <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+      </th:block>
+    </ul>
+  </nav>
+  </header>
+  <main>
+    <div class="container">
+      <div class="findid">
+        <h2>아이디 찾기</h2>
+        <form th:action="@{/member/findid}" method="post">
+          <label for="name">이름</label>
+          <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+
+          <label for="birthdate">생년월일</label>
+          <input type="text" id="birthDate" name="birthDate" placeholder="생년월일을 입력하세요 (예: 19901231)" required>
+
+          <button type="submit">아이디 찾기</button>
+        </form>
+        <div th:if="${foundId}" class="found-id">
+          <p><span th:text="${membername}"></span> 아이디를 찾은 결과 : <span class="findidview" th:text="${foundId}"></span> 입니다 </p>
+        </div>
+        <div th:if="${errorMessage}" class="error-message">
+          <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="find-member">
+          <p>
+            <a href="findid.html" class="find-member">아이디 찾기</a>
+            <a href="findpw.html" class="find-member">비밀번호 찾기</a>
+            <a href="joinmember.html" class="find-member">회원가입</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div class="team-logos">
+    <div class="team-logos-container">
+      <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+      <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+      <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+      <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+      <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+      <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+      <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+      <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+      <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+      <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+    </div>
+  </div>
+  <footer class="footer-page">
+    <div class="footer-content">
+      <div class="logo">
+        <img src="/img/고매치로고.png" alt="GoMatch 로고">
+      </div>
+      <div class="footer-text">
+        <p>게인정보 처리방침</p>
+        <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+        <p>Copyright © GoMatch</p>
+      </div>
+    </div>
+  </footer>
+
+  </body>
+</html>

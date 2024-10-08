@@ -1,0 +1,82 @@
+
+.container {
+    background-color: white;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    display: flex;
+
+}
+.findid {
+    width: 600px;
+    height: 450px;
+    padding: 50px;
+    margin-top: 75px;
+    margin-bottom: 75px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: rgba(226, 233, 241, 0.3);
+    border-radius: 8px;
+}
+h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    font-size: 24px;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+input {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #699ed6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.findouder {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+.findouder a {
+    color: #666;
+    text-decoration: none;
+    display: flex;
+}
+.findouder a:hover {
+    color: black;
+}
+
+.find-member {
+    font-size: 14px;
+    color: #666;
+    text-decoration-line: none;
+    text-align: end;
+    padding: 5px;
+    margin: 5px;
+}
+.find-member:hover {
+    color: black;
+}
