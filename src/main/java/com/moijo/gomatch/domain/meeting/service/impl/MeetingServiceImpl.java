@@ -69,5 +69,11 @@ public class MeetingServiceImpl implements MeetingService {
     public void cancelAttend(long meetingNo, String memberId) {
         meetingMapper.deleteMeetingAttend(meetingNo, memberId);
     }
+
+    @Override
+    public void removeMeeting(long meetingNo) {
+        meetingMapper.deleteMeeting(meetingNo);
+    }
+
 }
 

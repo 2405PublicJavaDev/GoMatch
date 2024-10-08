@@ -39,8 +39,8 @@ public class MeetingController {
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            log.info("memberId가 세션에 없음");
-        } else {
+            return "로그인이 필요합니다.";
+        }else {
             log.info("세션에서 가져온 memberId: " + memberId);
         }
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
@@ -69,12 +69,11 @@ public class MeetingController {
     public String addMeeting(MeetingVO meetingVO,
                              @RequestParam("groupImage") List<MultipartFile> groupImages,
                              HttpSession session) throws IOException {
-        // 세션에서 사용자 ID 가져오기
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            memberId = "user8"; // 테스트용 ID
-            session.setAttribute("memberId", memberId);
-            log.info("세션에서 가져온 memberId: {}", memberId);
+            return "로그인이 필요합니다.";
+        }else {
+            log.info("세션에서 가져온 memberId: " + memberId);
         }
         // 소모임 정보 등록
         meetingVO.setMemberId(memberId);
@@ -92,18 +91,22 @@ public class MeetingController {
      */
     @GetMapping("/meeting/list")
     public String showMeetingList(Model model, HttpSession session) {
-        // 세션에 memberId 설정
-        String memberId = "user9";
-        session.setAttribute("memberId", memberId);
-        log.info("세션에 설정된 memberId: {}", memberId);
         // 예시 팀 이름 리스트를 모델에 추가
         model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
         String today = LocalDate.now().toString();
         List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
+        // 참석자 수를 계산하여 모델에 추가
+        Map<Long, Integer> attendeesCountMap = new HashMap<>();
+        for (MeetingVO meeting : meetings) {
+            List<MeetingAttendVO> attendees = meetingService.getMeetingAttendeeByMeetingNo(meeting.getMeetingNo());
+            attendeesCountMap.put(meeting.getMeetingNo(), attendees.size());
+        }
         model.addAttribute("meetings", meetings);
+        model.addAttribute("attendeesCountMap", attendeesCountMap);
         return "meeting/meeting-list";
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
@@ -116,7 +119,6 @@ public class MeetingController {
         log.info("필터 적용 - 날짜: {}, 팀: {}", date, team);
         List<MeetingVO> meetings = meetingService.getMeetingsByDateAndTeam(date, team);
         List<Map<String, Object>> responseList = new ArrayList<>();
-
         for (MeetingVO meeting : meetings) {
             Map<String, Object> meetingData = new HashMap<>();
             meetingData.put("meeting", meeting);
@@ -124,7 +126,6 @@ public class MeetingController {
             meetingData.put("currentAttendeesCount", attendees.size());  // 참석자 수
             responseList.add(meetingData);
         }
-
         return responseList;
     }
     /**
@@ -146,8 +147,9 @@ public class MeetingController {
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            memberId = "user8"; // 테스트용 ID
-            session.setAttribute("memberId", memberId);
+            return "로그인이 필요합니다.";
+        }else {
+            log.info("세션에서 가져온 memberId: " + memberId);
         }
         // 소모임 상세 정보, 파일, 참석자 조회
         MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
@@ -159,9 +161,27 @@ public class MeetingController {
         model.addAttribute("meetingFile", meetingFile); // 파일 정보
         model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
         model.addAttribute("currentAttendeesCount", currentAttendeesCount); // 현재 참석자 수
-
         return "meeting/meeting-detail";
     }
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Delete] 소모임 삭제
+     * 설명 : 소모임 삭제 기능 추가
+     */
+    @PostMapping("/meeting/delete/{meetingNo}")
+    public String deleteMeeting(@PathVariable("meetingNo") long meetingNo, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "로그인이 필요합니다.";
+        }
+        MeetingVO meeting = meetingService.getMeetingsByMeetingNo(meetingNo);
+        if (!memberId.equals(meeting.getMemberId())) {
+            return "소모임 삭제 권한이 없습니다.";
+        }
+        meetingService.removeMeeting(meetingNo);
+        return "redirect:/meeting/list";
+    }
+
     /**
      * 담당자: 김윤경
      * 관련 기능: [Attend] 소모임 참여

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소모임 상세</title>
+  <!-- 메인 css -->
+  <link rel="stylesheet" href="/css/meeting/meeting-detail.css">
+  <!-- 헤더/푸터 CSS-->
+  <link rel="stylesheet" href="/css/header-footer.css">
+
+</head>
+<body>
+<header>
+  <nav>
+    <div class="logo">
+      <img src="/img/고매치로고.png" alt="야구 리그 로고">
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">일정/결과</a></li>
+      <li><a href="#">굿즈</a></li>
+      <li><a href="/meeting/list">소모임</a></li>
+      <li><a href="#">승부예측</a></li>
+    </ul>
+    <ul class="member-links">
+      <li><a href="loginpage.html">로그인</a></li>
+      <li><a href="#">회원가입</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <main>
+    <h1>소모임 수정하기</h1>
+    <form action="/meeting/update" method="post" enctype="multipart/form-data" onsubmit="return handleSubmitForm()">
+      <input type="hidden" name="meetingNo" value="${meeting.meetingNo}">
+
+      <!-- 경기 날짜 (수정 불가능) -->
+      <div class="form-group">
+        <label for="gameDate">경기 날짜</label>
+        <span id="gameDate">${meeting.meetingDate}</span>
+      </div>
+
+      <!-- 경기 정보 (수정 불가능) -->
+      <div class="form-group">
+        <label for="gameInfo">경기 정보</label>
+        <span id="gameInfo">${meeting.gameNo}</span>
+      </div>
+
+      <!-- 응원하는 팀 (수정 불가능) -->
+      <div class="form-group">
+        <label for="meetingTeamName">응원하는 팀명</label>
+        <span id="meetingTeamName">${meeting.meetingTeamName}</span>
+      </div>
+
+      <!-- 모임 시간 -->
+      <div class="form-group">
+        <label for="meetingTime">모임 시간</label>
+        <select id="hourSelect" name="meetingHour">
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <!-- 시간 옵션 추가 -->
+        </select>
+        <select id="minuteSelect" name="meetingMinute">
+          <option value="00">00</option>
+          <option value="30">30</option>
+          <!-- 분 옵션 추가 -->
+        </select>
+        <input type="hidden" id="meetingTime" name="meetingTime" value="${meeting.meetingTime}">
+      </div>
+
+      <!-- 모임 위치 -->
+      <div class="form-group">
+        <label for="meetingPlace">모임 위치</label>
+        <input type="text" id="meetingPlace" name="meetingPlace" value="${meeting.meetingPlace}" required>
+        <input type="text" id="meetingPlaceDetail" name="meetingPlaceDetail" placeholder="상세 주소를 입력하세요">
+      </div>
+
+      <!-- 모임 제목 -->
+      <div class="form-group">
+        <label for="meetingTitle">모임 제목</label>
+        <input type="text" id="meetingTitle" name="meetingTitle" value="${meeting.meetingTitle}" required>
+      </div>
+
+      <!-- 모임 내용 -->
+      <div class="form-group">
+        <label for="meetingContent">모임 내용</label>
+        <textarea id="meetingContent" name="meetingContent" required>${meeting.meetingContent}</textarea>
+      </div>
+
+      <!-- 기존 첨부파일 표시 및 추가 -->
+      <div class="form-group">
+        <label>기존 첨부 파일</label>
+        <div id="existingFiles">
+          <div th:each="file : ${meetingFile}">
+            <img th:src="${file.webPath}" class="thumbnail" alt="첨부파일 이미지">
+            <button type="button" onclick="removeExistingFile(${file.meetingFileNo})">X</button>
+          </div>
+        </div>
+        <input type="file" id="newFiles" name="newFiles" accept="image/*" multiple onchange="previewNewFiles()">
+        <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 파일만 추가할 수 있습니다.</p>
+        <div id="newFileThumbnails"></div>
+      </div>
+
+      <div class="buttons">
+        <button type="submit">수정</button>
+        <button type="button" onclick="history.back()">취소</button>
+      </div>
+    </form>
+  </main>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="logo">
+      <img src="img/고매치로고.png" alt="GoMatch 로고">
+    </div>
+    <div class="footer-text">
+      <p>개인정보 처리방침</p>
+      <p>(사)GoMatch｜서울 중구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+      <p>Copyright © GoMatch</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 파일 미리보기 및 선택 스크립트
+  const selectedFiles = [];
+
+  function removeExistingFile(fileId) {
+    document.getElementById(`file-${fileId}`).style.display = 'none';
+    document.getElementById(`file-delete-${fileId}`).value = fileId;
+  }
+
+  function previewNewFiles() {
+    const fileInput = document.getElementById('newFiles');
+    const fileLimitMessage = document.getElementById('fileLimitMessage');
+    const newFileThumbnails = document.getElementById('newFileThumbnails');
+
+    newFileThumbnails.innerHTML = '';
+    fileLimitMessage.style.display = 'none';
+
+    if (fileInput.files.length + selectedFiles.length > 5) {
+      fileLimitMessage.style.display = 'block';
+      return;
+    }
+
+    Array.from(fileInput.files).forEach((file) => {
+      selectedFiles.push(file);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.className = 'thumbnail';
+        img.src = e.target.result;
+
+        const btn = document.createElement('button');
+        btn.textContent = 'X';
+        btn.onclick = function () {
+          selectedFiles.splice(selectedFiles.indexOf(file), 1);
+          newFileThumbnails.removeChild(img);
+          newFileThumbnails.removeChild(btn);
+        };
+
+        newFileThumbnails.appendChild(img);
+        newFileThumbnails.appendChild(btn);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+</script>
+</body>
+</html>
