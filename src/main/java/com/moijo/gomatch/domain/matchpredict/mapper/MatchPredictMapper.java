@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.matchpredict.mapper;
 
 import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
+import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,6 +16,12 @@ public interface MatchPredictMapper {
      * @return
      */
     List<MatchPredict> selectAllMatchByMember();
+
+    /**
+     * 회원 순윌 리스트 조회
+     * @return
+     */
+    List<MemberRankDTO> selectAllMemberRank();
 
     /**
      * 나의 예측 리스트 조회

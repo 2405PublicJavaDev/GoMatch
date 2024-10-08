@@ -100,40 +100,14 @@
     <div class="top-predictors">
       <ol>
         <h4>랭킹</h4>
-        <li>
+        <li th:each="member : ${memberRank}">
           <div class="rank-position">
             <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-            <span class="rank">1</span>
+            <span th:text="${member.rankPosition}" class="rank">1</span>
           </div>
-          <span class="name">김철수</span>
-          <span class="points">760</span>
+          <span th:text="${member.memberNickname}" class="name"></span>
+          <span th:text="${member.experiencePoints}" class="points"></span>
         </li>
-        <li>
-          <div class="rank-position">
-            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-            <span class="rank">2</span>
-          </div>
-          <span class="name">홍길동</span>
-          <span class="points">750</span>
-        </li>
-        <li>
-          <div class="rank-position">
-            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-            <span class="rank">3</span>
-          </div>
-          <span class="name">아무개</span>
-          <span class="points">740</span>
-        </li>
-        <div class="my-predictors">
-          <li>
-            <div class="rank-position">
-              <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-              <span class="rank">2</span>
-            </div>
-            <span class="name">홍길동<span>(나)</span></span>
-            <span class="points">750</span>
-          </li>
-        </div>
       </ol>
     </div>
     <div class="select-list">

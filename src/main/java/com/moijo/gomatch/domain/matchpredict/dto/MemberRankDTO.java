@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class MemberRankDTO {
-    private Long memberId;
+    private String memberId;
     private String memberName;
     private String memberNickname;
     private Long experiencePoints;

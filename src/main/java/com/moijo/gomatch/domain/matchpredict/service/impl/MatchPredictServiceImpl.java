@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.matchpredict.service.impl;
 
 import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
+import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper;
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
@@ -28,6 +29,15 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     /**
+     * 회원 순위 리스트 조회
+     * @return
+     */
+    @Override
+    public List<MemberRankDTO> getAllMemberRank() {
+        return matchPredictMapper.selectAllMemberRank();
+    }
+
+    /**
      * 나의 예측 리스트 조회
      * @param memberId
      * @return
@@ -36,6 +46,7 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     public List<MyPredictDTO> getAllMyMatchByMember(String memberId) {
         return matchPredictMapper.selectAllMyMatchByMember(memberId);
     }
+
 
     @Override
     public MemberDTO getMemberInfo(String memberId) {

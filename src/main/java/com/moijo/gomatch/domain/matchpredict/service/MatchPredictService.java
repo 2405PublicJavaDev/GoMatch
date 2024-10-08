@@ -2,6 +2,7 @@ package com.moijo.gomatch.domain.matchpredict.service;
 
 
 import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
+import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 
@@ -12,6 +13,8 @@ public interface MatchPredictService {
 
     List<MyPredictDTO> getAllMyMatchByMember(String memberId);
 
+    List<MemberRankDTO> getAllMemberRank();
+
     MemberDTO getMemberInfo(String memberId);
 
     int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId);
@@ -21,4 +24,5 @@ public interface MatchPredictService {
     Long getTotalMemberCount();
 
     double calculatorRankPercent(String memberId);
+
 }

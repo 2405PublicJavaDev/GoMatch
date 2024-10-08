@@ -5,12 +5,21 @@
     <select id="selectAllMatchByMember" resultType="PredictDTO">
         SELECT * from GAME
     </select>
+
+    <select id="selectAllMemberRank" resultType="MemberRankDTO">
+        SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
+        FROM MEMBER M
+        JOIN USER_RANK U
+        ON M.MEMBER_ID = U.MEMBER_ID
+    </select>
+
     <select id="selectAllMyMatchByMember" resultType="MyPredictDTO">
         SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,P.MATCH_PREDICT_DECISION,P.MEMBER_ID
         FROM MATCH_PREDICT P
         JOIN GAME G ON P.GAME_NO = G.GAME_NO
         WHERE P.MEMBER_ID = #{memberId}
     </select>
+
     <select id="selectMemberInfo" resultType="MemberDTO">
         SELECT M.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
         FROM MEMBER M
@@ -18,6 +27,7 @@
         ON M.MEMBER_ID = U.MEMBER_ID
         WHERE M.MEMBER_ID = #{memberId}
     </select>
+
     <select id="getTotalMemberCount" resultType="Long">
         SELECT COUNT(*) FROM MEMBER
     </select>
