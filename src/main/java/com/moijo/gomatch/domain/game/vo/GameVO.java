@@ -13,7 +13,7 @@ import java.sql.Date;
 @AllArgsConstructor
 public class GameVO {
     private int gameNo;
-    private String gameDate;
+    private Date gameDate;
     private String gameTime;
     private String teamA;
     private String teamB;
@@ -24,9 +24,8 @@ public class GameVO {
     private int scoreA;
     private int scoreB;
 
-    // SQL Date를 인자로 받는 생성자 구현
     public GameVO(Date sqlDate, String gameTime, String homeTeamName, String awayTeamName, String gameLocation, int homeScore, int awayScore) {
-        this.gameDate = sqlDate.toString(); // SQL Date를 String으로 변환하여 저장
+        this.gameDate = sqlDate;
         this.gameTime = gameTime;
         this.teamA = homeTeamName; // 홈 팀
         this.teamB = awayTeamName; // 원정 팀
@@ -47,4 +46,17 @@ public class GameVO {
                 ", awayScore=" + scoreB +
                 '}';
     }
+
+
+    // MyBatis에서 자동으로 매핑할 수 있는 생성자 추가(윤경)
+    public GameVO(int gameNo, String gameDate, String gameTime, String teamA, String teamB, String gameField) {
+        this.gameNo = gameNo;
+        this.gameDate = Date.valueOf(gameDate);
+        this.gameTime = gameTime;
+        this.teamA = teamA;
+        this.teamB = teamB;
+        this.gameField = gameField;
+    }
+
+
 }

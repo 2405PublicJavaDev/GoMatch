@@ -5,4 +5,16 @@
         INSERT INTO GAME(GAME_NO, GAME_DATE, GAME_TIME, TEAM_A, TEAM_B, REG_DATE, GAME_FIELD, SCORE_A, SCORE_B)
         VALUES (SEQ_GAME_NO.NEXTVAL, #{gameDate}, #{gameTime}, #{teamA}, #{teamB}, DEFAULT, #{gameField}, #{scoreA}, #{scoreB})
     </insert>
+    <update id="updateGame">
+        UPDATE GAME SET SCORE_A = #{scoreA}, SCORE_B = #{scoreB}
+        WHERE GAME_DATE = #{gameDate}
+    </update>
+
+    <select id="findGameByDateAndTeams" resultType="Integer">
+        SELECT GAME_NO
+        FROM GAME
+        WHERE GAME_DATE = #{gameDate}
+          AND TEAM_A = #{teamA}
+          AND TEAM_B = #{teamB}
+    </select>
 </mapper>

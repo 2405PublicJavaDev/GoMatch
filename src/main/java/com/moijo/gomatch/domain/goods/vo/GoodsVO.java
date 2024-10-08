@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -16,11 +16,12 @@ public class GoodsVO {
     private String goodsProductCode; // 상품 코드
     private String goodsFrom; // 상품 출처
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime goodsMakeDate; // 제조일
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate goodsMakeDate; // 제조일
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime goodsOutDate; // 유통기한
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate goodsOutDate; // 유통기한
 
     private String goodsCategory; // 상품 카테고리 추가
+
 }

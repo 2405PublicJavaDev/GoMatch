@@ -1,0 +1,247 @@
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+}
+.background-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+.background-image img {
+    width: 100%;
+    height: auto;
+}
+.meeting-header {
+    position: relative;
+    padding: 20px;
+    background-color: white;
+    margin-top: 10px;
+}
+.team-logo {
+    position: absolute;
+    top: -40px;
+    left: 45%;
+    background-color: white;
+    border-radius: 50%;
+    padding: 10px;
+    overflow: hidden;
+    margin: 0 auto; /* 중앙 배치 */
+}
+.team-logo img {
+    width: 71px;
+    height: auto;
+}
+
+.meeting-title h2 {
+    margin-top: 40px; /* 간격 줄이기 */
+    margin-bottom : -10px;
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    text-align: center;
+}
+.top-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.top-buttons button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.meeting-details {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 첫 번째 열을 더 넓게 설정 */
+    gap: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+.detail-item {
+    display: flex;
+    align-items: center;
+}
+.detail-item label {
+    font-weight: bold;
+    margin-right: 10px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.detail-item label img {
+    margin-right: 5px;
+    width: 16px; /* 아이콘 크기 조정 */
+    height: auto;
+}
+.meeting-content {
+    padding: 15px;
+}
+.formatted-text {
+    white-space: pre-line;
+    padding: 20px; /* 좌우 여백 추가 */
+    line-height: 1.6; /* 줄간격 확대 */
+    font-family: Arial, sans-serif; /* 기본 글꼴 적용 */
+    font-size: 16px; /* 글씨 크기 확대 */
+}
+/* 첨부파일 썸네일 미리보기를 위한 스타일 */
+.file-thumbnails {
+    display: flex;
+    justify-content: center;  /* 가로 중앙 정렬 */
+    align-items: center;  /* 세로 정렬 */
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.file-thumbnail-wrapper {
+    height: 150px;
+    width: 150px;
+    position: relative;
+}
+
+.thumbnail {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer; /* 클릭 가능하도록 커서 변경 */
+}
+
+/* 팝업을 위한 스타일 */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+.buttons {
+    width: 250px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    margin: 0 auto; /* 중앙 배치 */
+    font-weight: bold;
+}
+.buttons button {
+    flex: 1; /* 모든 버튼의 크기를 동일하게 맞춤 */
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+.button-join {
+    background-color: #16215f;
+    color: white;
+}
+
+.button-cancel {
+    background-color: #a63446;
+    color: white;
+}
+
+.button-back {
+    background-color: #eeeeee; /* 회색 계열 색상 */
+    color: #000;
+}
+
+.button-join:hover {
+    background-color: #00004f; /* 호버 시 약간 어둡게 */
+}
+
+.button-cancel:hover {
+    background-color: #8b2637; /* 호버 시 약간 어둡게 */
+}
+
+.button-back:hover {
+    background-color: #e0e0e0; /* 호버 시 약간 어둡게 */
+}
+
+.participants {
+    padding: 20px;
+}
+.participants h2 {
+    font-family: 'KBO Dia Gothic Bold', sans-serif;
+}
+
+.participant-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 참가자 간의 간격 */
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 텍스트와 아이콘을 가운데 정렬 */
+    background-color: #9fa2a9;
+    color: white;
+    padding: 10px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: calc(18% - 10px); /* 5명씩 한 줄에 표시되도록 설정 */
+    box-sizing: border-box; /* padding 포함 계산 */
+    text-align: center;
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
+
+}
+
+.participant img.icon {
+    height: 16px;
+    width: auto;
+    margin-right: 5px;
+    filter: brightness(0) invert(1); /* 아이콘을 흰색으로 */
+}
+.participant span {
+    color: white; /* 닉네임을 흰색으로 */
+}
+.no-participants {
+    text-align: center;
+    width : 500px;
+    margin : 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 폰트 적용 */
+    margin-top: 10px;
+    margin-bottom: 20px;
+}

@@ -1,58 +1,220 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <title>KBO 경기 일정</title>
-    <script>
-        function fetchGames(){
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야구 경기 일정</title>
+    <link rel="stylesheet" href="/css/game/game-list.css">
+    <link rel="stylesheet" href="/css/header-footer.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+</head>
+<body>
+
+<!-- 헤더 부분 -->
+<header>
+    <nav>
+        <div class="logo">
+            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="#">승부예측</a></li>
+        </ul>
+        <ul class="memeber-links">
+            <li><a href="loginpage">로그인</a></li>
+            <li><a href="joinmember">회원가입</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>일정/결과</span>
+                <hr  class="aside-header">
+                <ul>
+                    <li><a href="/game/list" class="active">경기일정</a></li>
+                    <li><a href="/game/teamrank">팀 순위</a></li>
+                    <li><a href="/game/playerrank">선수 순위</a></li>
+                    <li><a href="#" >야구장 날씨</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <section class="gameList-section">
+        <div class="gameList-container">
+            <h1>KBO 리그 경기 일정</h1>
+            <div class="view-buttons">
+                <div id="listViewBtn">리스트</div>
+                <div id="calendarViewBtn">달력</div>
+            </div>
+            <div class="select-div">
+            <select id="monthSelect" onchange="fetchGames()">
+                <option value="03" th:selected="${selectedMonth == '03'}">3월</option>
+                <option value="04" th:selected="${selectedMonth == '04'}">4월</option>
+                <option value="05" th:selected="${selectedMonth == '05'}">5월</option>
+                <option value="06" th:selected="${selectedMonth == '06'}">6월</option>
+                <option value="07" th:selected="${selectedMonth == '07'}">7월</option>
+                <option value="08" th:selected="${selectedMonth == '08'}">8월</option>
+                <option value="09" th:selected="${selectedMonth == '09'}">9월</option>
+                <option value="10" th:selected="${selectedMonth == '10'}">10월</option>
+                <option value="11" th:selected="${selectedMonth == '11'}">11월</option>
+            </select>
+            </div>
+            <div class="gameList-main">
+                <table class="gameList-table">
+                    <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>시간</th>
+                        <th>원정팀</th>
+                        <th colspan="3">경기 결과</th>
+                        <th>홈팀</th>
+                        <th>장소</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="game : ${games}">
+                        <td th:text="${game.gameDate}"></td>
+                        <td th:text="${game.gameTime}"></td>
+                        <td th:text="${game.teamA}"></td>
+                        <!-- 둘다 0이 아닐 경우 점수가 나오고 둘다 0일 경우 -로 표시                        -->
+                        <td th:if="${game.scoreA != 0 || game.scoreB != 0}" th:text="${game.scoreA}"></td>
+                        <td th:if="${game.scoreA == 0 && game.scoreB == 0}">-</td>
+                        <td>vs</td>
+                        <td th:if="${game.scoreB != 0 || game.scoreA != 0}" th:text="${game.scoreB}"></td>
+                        <td th:if="${game.scoreB == 0 && game.scoreA == 0}">-</td>
+                        <td th:text="${game.teamB}"></td>
+                        <td th:text="${game.gameField}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(games)}">
+                        <td colspan="6">경기 일정이 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="calendar" style="display: none;"></div>
+        </div>
+    </section>
+</main>
+<div class="team-logos">
+    <div class="team-logos-container">
+        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+    </div>
+</div>
+</div>
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>게인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+
+
+        const listViewBtn = document.getElementById('listViewBtn');
+        const calendarViewBtn = document.getElementById('calendarViewBtn');
+        const gameListMain = document.querySelector('.gameList-main');
+        const calendar = document.getElementById('calendar');
+
+        // 사용자의 선호 팀 정보
+        const userPreferredTeam = /*[[${userPreferredTeam}]]*/ null;
+
+        listViewBtn.addEventListener('click', showListView);
+        calendarViewBtn.addEventListener('click', showCalendarView);
+
+        function showListView() {
+            gameListMain.style.display = 'block';
+            calendar.style.display = 'none';
+        }
+
+        function showCalendarView() {
+            gameListMain.style.display = 'none';
+            calendar.style.display = 'block';
+
+            if (!calendar.fullCalendar) {
+                initializeCalendar();
+            }
+        }
+
+        function initializeCalendar() {
+            const games = /*[[${games}]]*/ [];
+
+            const today = new Date(); // 현재날짜
+            const formattedToday = today.toISOString().split('T')[0];
+
+            const events = games.map(game => {
+                // 기본 이벤트 객체 생성
+                const event = {
+                    title: `${game.teamA} vs ${game.teamB}`,
+                    start: game.gameDate,
+                    allDay: true,
+                    extendedProps: {
+                        teamA: game.teamA,
+                        teamB: game.teamB
+                    }
+                };
+
+                // 오늘 이전의 경기일 경우 점수 추가
+                if (game.gameDate < formattedToday) {
+                    event.title = `${game.teamA} ${game.scoreA} vs ${game.scoreB} ${game.teamB}`
+                }
+
+                return event; // 이벤트 객체 반환
+            });
+
+            const calendarEl = document.getElementById('calendar');
+            const calendarInstance = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: events,
+                eventContent: function(arg) {
+                    const teamAIsPreferred = arg.event.extendedProps.teamA === userPreferredTeam;
+                    const teamBIsPreferred = arg.event.extendedProps.teamB === userPreferredTeam;
+
+                    let classNames = [];
+                    if (teamAIsPreferred || teamBIsPreferred) {
+                        classNames.push('highlight-team');
+                    }
+
+                    return {
+                        html: `<div class="${classNames.join(' ')}">${arg.event.title}</div>`
+                    };
+                },
+                eventClick: function(info) {
+                    alert('경기: ' + info.event.title);
+                }
+            });
+            calendarInstance.render();
+            calendar.fullCalendar = calendarInstance;
+        }
+
+        // 기존의 fetchGames 함수
+        window.fetchGames = function() {
             const month = document.getElementById("monthSelect").value;
             if(month) {
                 window.location.href = `/game/list?month=${month}`;
             }
         }
-    </script>
-</head>
-<body>
-<h1>KBO 리그 경기 일정</h1>
-<select id="monthSelect" onchange="fetchGames()">
-    <option value="01">1월</option>
-    <option value="02">2월</option>
-    <option value="03">3월</option>
-    <option value="04">4월</option>
-    <option value="05">5월</option>
-    <option value="06">6월</option>
-    <option value="07">7월</option>
-    <option value="08">8월</option>
-    <option value="09">9월</option>
-    <option value="10">10월</option>
-    <option value="11">11월</option>
-    <option value="12">12월</option>
-</select>
-<table border="1">
-    <thead>
-    <tr>
-        <th>날짜</th>
-        <th>시간</th>
-        <th colspan="2">원정팀</th>
-        <th>VS</th>
-        <th colspan="2">홈팀</th>
-        <th>장소</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr th:each="game : ${games}">
-            <td th:text="${game.gameDate}"></td>
-            <td th:text="${game.gameTime}"></td>
-            <td th:text="${game.teamA}"></td>
-            <td th:text="${game.scoreA}"></td>
-            <td>vs</td>
-            <td th:text="${game.scoreB}"></td>
-            <td th:text="${game.teamB}"></td>
-            <td th:text="${game.gameField}"></td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(games)}">
-            <td colspan="6">경기 일정이 없습니다.</td>
-        </tr>
-    </tbody>
-</table>
+    });
+</script>
 </body>
 </html>

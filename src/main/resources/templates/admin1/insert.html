@@ -6,7 +6,12 @@
 </head>
 <body>
 <h1>굿즈 등록</h1>
-<form action="/goods/insert" method="post">
+
+<form action="/admin1/insert" method="post" enctype="multipart/form-data">
+
+  <label for="goodsImage">상품 이미지 업로드:</label>
+  <input type="file" id="goodsImage" name="goodsImage" accept="image/*" required><br> <!-- 이미지 업로드 필드 추가 -->
+
   <label for="goodsTeam">팀명:</label>
   <input type="text" id="goodsTeam" name="goodsTeam" required><br>
 
@@ -23,10 +28,10 @@
   <input type="text" id="goodsFrom" name="goodsFrom" required><br>
 
   <label for="goodsMakeDate">제조일:</label>
-  <input type="datetime-local" id="goodsMakeDate" name="goodsMakeDate" required><br>
+  <input type="date" id="goodsMakeDate" name="goodsMakeDate" required><br>
 
   <label for="goodsOutDate">유통기한:</label>
-  <input type="datetime-local" id="goodsOutDate" name="goodsOutDate" required><br>
+  <input type="date" id="goodsOutDate" name="goodsOutDate" required><br>
 
   <label for="goodsCategory">카테고리:</label>
   <select id="goodsCategory" name="goodsCategory" required>
