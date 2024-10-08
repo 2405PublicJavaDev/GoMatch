@@ -1,4 +1,15 @@
-
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 .gameList-section {
     display: flex;
     background-color: rgba(226, 233, 241, 0.3);
@@ -11,6 +22,7 @@
     max-width: 1200px;
     width: 70%;
     text-align: center;
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
 }
 
 .gameList-container {
@@ -47,8 +59,16 @@
     display: flex;
 }
 
+.text-red {
+    color: #a63446;
+}
+
+.text-blue {
+    color: #16215F;
+}
 
 #monthSelect {
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
     width: 150px;
     border: 1px solid #C4C4C4;
     box-sizing: border-box;
@@ -66,6 +86,44 @@
 #calendar {
     max-width: 900px;
     margin: 40px auto;
+    text-align: center;
+}
+
+
+/* 달력 헤더 스타일 */
+.fc-toolbar {
+    display: flex; /* Flexbox 사용 */
+    justify-content: space-between; /* 양 끝으로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 10px 0; /* 위 아래 패딩 */
+}
+
+.fc-toolbar-title {
+    font-size: 1.5em; /* 큰 제목 폰트 크기 */
+    font-weight: bold; /* 두껍게 */
+}
+
+/* 날짜 셀 스타일 */
+.fc-day {
+    background-color: #fff; /* 흰색 배경 */
+    border: 1px solid #ddd; /* 연한 회색 테두리 */
+    height: 80px; /* 높이 설정 */
+    position: relative; /* 자식 요소 위치 설정을 위한 상대 위치 */
+}
+
+.fc-day-sun a {
+    color: red;
+    text-decoration: none;
+}
+
+/* 토요일 날짜 파란색 */
+.fc-day-sat a {
+    color: blue;
+    text-decoration: none;
+}
+
+.fc-day.fc-today  {
+    background-color: #699ed6 !important;
 }
 
 .highlight-team {
