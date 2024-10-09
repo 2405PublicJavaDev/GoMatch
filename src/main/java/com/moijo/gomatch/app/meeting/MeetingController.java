@@ -39,7 +39,7 @@ public class MeetingController {
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
-            return "로그인이 필요합니다.";
+            return "common/oops";
         }else {
             log.info("세션에서 가져온 memberId: " + memberId);
         }
@@ -146,11 +146,6 @@ public class MeetingController {
     @GetMapping("/meeting/detail/{meetingNo}")
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
-        if (memberId == null) {
-            return "로그인이 필요합니다.";
-        }else {
-            log.info("세션에서 가져온 memberId: " + memberId);
-        }
         // 소모임 상세 정보, 파일, 참석자 조회
         MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
         List<MeetingFileVO> meetingFile = meetingService.getMeetingFileByMeetingNo(meetingNo);
@@ -182,6 +177,9 @@ public class MeetingController {
         return "redirect:/meeting/list";
     }
 
+
+
+    // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 소모임 참석/취소 (MeetingAttend) ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ //
     /**
      * 담당자: 김윤경
      * 관련 기능: [Attend] 소모임 참여
@@ -205,6 +203,7 @@ public class MeetingController {
         meetingService.addAttend(attendVO);
         return "참석이 완료되었습니다.";
     }
+    
     /**
      * 담당자: 김윤경
      * 관련 기능: [Cancel] 소모임 참석 취소

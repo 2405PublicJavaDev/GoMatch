@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'KBO Dia Gothic Bold';
     src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
-    font-weight: bold;
+    font-weight: normal;
     font-style: normal;
 }
 @font-face {
@@ -27,7 +27,7 @@ body {
 }
 .background-image img {
     width: 100%;
-    height: auto;
+    height: 250px;
 }
 .meeting-header {
     position: relative;

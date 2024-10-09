@@ -19,14 +19,20 @@
             <img src="/img/고매치로고.png" alt="야구 리그 로고">
         </div>
         <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
-            <li><a href="#">굿즈</a></li>
-            <li><a href="meeting/list">소모임</a></li>
-            <li><a href="#">승부예측</a></li>
+            <li><a href="/game/list">일정/결과</a></li>
+            <li><a href="/goods/list">굿즈</a></li>
+            <li><a href="/meeting/list">소모임</a></li>
+            <li><a href="/matchPredict">승부예측</a></li>
         </ul>
         <ul class="member-links">
-            <li><a href="loginpage.html">로그인</a></li>
-            <li><a href="#">회원가입</a></li>
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
         </ul>
     </nav>
 </header>
@@ -107,7 +113,7 @@
             </div>
         </div>
         <!-- 소모임 개설하기 버튼 -->
-        <button class="button" onclick="window.location.href='/meeting/register'">소모임 개설하기</button>
+        <button class="button" onclick="registerMeeting()">소모임 개설하기</button>
         <div class="meeting-info">
             <!-- Total 건수 -->
             <span class="total-count">* Total : <span id="total-count">0</span> 건</span>
@@ -156,11 +162,11 @@
 <footer class="footer-page">
     <div class="footer-content">
         <div class="logo">
-            <img src="img/고매치로고.png" alt="GoMatch 로고">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
         </div>
         <div class="footer-text">
-            <p>개인정보 처리방침</p>
-            <p>(사)GoMatch｜서울 중구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>게인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
             <p>Copyright © GoMatch</p>
         </div>
     </div>
@@ -335,7 +341,15 @@
                 return '/img/default-logo.png'; // 기본 로고 이미지
         }
     }
-
+    function registerMeeting() {
+        // 로그인 상태 확인
+        if (!loggedIn) {
+            if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
+                window.location.href = '/member/loginpage';
+            }
+            return; // 로그인하지 않은 경우, 이 함수의 나머지 부분을 실행하지 않음
+        }
+    }
     // 페이지 로드시 오늘 날짜 소모임 리스트를 불러옴
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
@@ -372,6 +386,27 @@
         });
         calendar.render();
         loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const openMeetingButton = document.querySelector('.button');
+
+        if (openMeetingButton) {
+            openMeetingButton.addEventListener('click', function () {
+                // 로그인 여부를 Thymeleaf에서 전달받은 값으로 체크
+                const loggedIn = /*[[${loggedIn}]]*/ false; // 서버에서 로그인 여부를 전달
+
+                if (!loggedIn) {
+                    // 로그인이 되어 있지 않은 경우
+                    if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
+                        window.location.href = "/member/loginpage"; // 로그인 페이지로 이동
+                    }
+                    // "취소"를 누르면 아무 동작도 하지 않기 때문에 else는 필요하지 않음
+                } else {
+                    // 로그인이 되어 있는 경우 소모임 개설 페이지로 이동
+                    window.location.href = "/meeting/register";
+                }
+            });
+        }
     });
 </script>
 

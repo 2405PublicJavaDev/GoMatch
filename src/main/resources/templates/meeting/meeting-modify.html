@@ -17,14 +17,20 @@
       <img src="/img/고매치로고.png" alt="야구 리그 로고">
     </div>
     <ul class="nav-links">
-      <li><a href="#">일정/결과</a></li>
-      <li><a href="#">굿즈</a></li>
+      <li><a href="/game/list">일정/결과</a></li>
+      <li><a href="/goods/list">굿즈</a></li>
       <li><a href="/meeting/list">소모임</a></li>
-      <li><a href="#">승부예측</a></li>
+      <li><a href="/matchPredict">승부예측</a></li>
     </ul>
     <ul class="member-links">
-      <li><a href="loginpage.html">로그인</a></li>
-      <li><a href="#">회원가입</a></li>
+      <th:block th:if="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+        <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+      </th:block>
+      <th:block th:unless="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+        <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+      </th:block>
     </ul>
   </nav>
 </header>
@@ -108,14 +114,14 @@
     </form>
   </main>
 </main>
-<footer>
+<footer class="footer-page">
   <div class="footer-content">
     <div class="logo">
-      <img src="img/고매치로고.png" alt="GoMatch 로고">
+      <img src="/img/고매치로고.png" alt="GoMatch 로고">
     </div>
     <div class="footer-text">
-      <p>개인정보 처리방침</p>
-      <p>(사)GoMatch｜서울 중구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+      <p>게인정보 처리방침</p>
+      <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
       <p>Copyright © GoMatch</p>
     </div>
   </div>
