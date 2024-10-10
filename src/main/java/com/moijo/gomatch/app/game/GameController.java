@@ -55,7 +55,6 @@ public class GameController {
         return "game/listPage";
     }
 
-<<<<<<< HEAD
     // 야구장 날씨 보여주는 메소드
     @GetMapping("/game/weather")
     public String getStadiums(Model model) {
@@ -63,11 +62,4 @@ public class GameController {
         model.addAttribute("stadiums", stadiumList);
         return "game/weatherPage";
     }
-=======
-    // 경기 일정 등록하는 메소드 
-//    @PostMapping("/game/list")
-//    public String getGameList(Model model) {
-//
-//    }
->>>>>>> 06ddacec862630fa6635f0831f16971826d2f167
 }

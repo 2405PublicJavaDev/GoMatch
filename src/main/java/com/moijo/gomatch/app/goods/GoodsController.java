@@ -45,7 +45,7 @@ public class GoodsController {
         model.addAttribute("goods", goods);
 
         // 로그인한 사용자 정보 가져오기
-        MemberVO member = (MemberVO) session.getAttribute("loginUser"); // 세션에서 로그인 정보 가져오기
+        MemberVO member = (MemberVO) session.getAttribute("member"); // 세션에서 로그인 정보 가져오기
 
         if (member != null) {
             // 찜하기 상태 체크

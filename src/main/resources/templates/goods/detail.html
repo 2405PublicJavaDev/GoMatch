@@ -38,7 +38,7 @@
   <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
 </button>
 
-<script th:inline="javascript">
+<script>
   function toggleWishlist(goodsNo) {
     console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그
 
@@ -48,25 +48,22 @@
       return; // 잘못된 goodsNo가 전달되면 함수 종료
     }
 
-    fetch('/wishlist?goodsNo=' + goodsNo, {
+    fetch('/wishlist/toggle?goodsNo=' + goodsNo, {
       method: 'POST',
       credentials: 'include' // 쿠키와 인증정보 포함
     })
             .then(response => {
-              if (response.redirected) {
-                // 로그인하지 않은 경우 로그인 페이지로 리디렉션
-                window.location.href = response.url;
+              if (response.status === 401) {
+                // 로그인 페이지로 리디렉션
+                window.location.href = '/member/loginpage';
+              } else if (response.ok) {
+                // 로그인 상태에서 버튼 색상 및 텍스트 변경
+                const button = document.getElementById('wishlistButton');
+                button.classList.toggle('active'); // 클래스 토글
+                button.innerText = button.classList.contains('active') ? '찜하기 취소' : '찜하기'; // 버튼 텍스트 변경
               } else {
-                // 로그인된 경우 버튼 상태 변경
-                return response.json(); // JSON 응답을 받음
+                console.error('Error:', response.statusText);
               }
-            })
-            .then(data => {
-              // 버튼 색상 및 텍스트 변경
-              const button = document.getElementById('wishlistButton');
-              const isActive = button.classList.contains('active');
-              button.classList.toggle('active', !isActive); // 클래스 토글
-              button.innerText = isActive ? '찜하기' : '찜하기 취소'; // 버튼 텍스트 변경
             })
             .catch(error => console.error('Error:', error));
   }
