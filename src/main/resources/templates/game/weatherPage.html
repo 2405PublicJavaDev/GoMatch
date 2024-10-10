@@ -6,7 +6,9 @@
   <title>야구 경기 일정</title>
   <link rel="stylesheet" href="/css/game/weather.css">
   <link rel="stylesheet" href="/css/header-footer.css">
-  <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
+  <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3226jlqzjr"></script>
+  <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3226jlqzjr&submodules=geocoder"></script>
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
 </head>
 <body>
 
@@ -22,9 +24,15 @@
       <li><a href="#">소모임</a></li>
       <li><a href="#">승부예측</a></li>
     </ul>
-    <ul class="memeber-links">
-      <li><a href="loginpage">로그인</a></li>
-      <li><a href="joinmember">회원가입</a></li>
+    <ul class="member-links">
+      <th:block th:if="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+        <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+      </th:block>
+      <th:block th:unless="${loggedIn}">
+        <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+        <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+      </th:block>
     </ul>
   </nav>
 </header>
@@ -46,25 +54,8 @@
   <section class="weather-section">
     <div class="weather-container">
       <h1>야구장 날씨</h1>
-      <div id="map" style="width:100%;height:400px;"></div>
-      <table>
-        <thead>
-        <tr>
-          <th>야구장 이름</th>
-          <th>위도</th>
-          <th>경도</th>
-          <th>주소</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="stadium : ${stadiums}">
-          <td th:text="${stadium.stadiumName}">야구장 이름</td>
-          <td th:text="${stadium.latitude}">위도</td>
-          <td th:text="${stadium.longitude}">경도</td>
-          <td th:text="${stadium.stadiumAddress}">주소</td>
-        </tr>
-        </tbody>
-      </table>
+      <div id="map" style="width:60%;height:400px;float:left"></div>
+      <div id="stadium-info">해당 야구장의 정보를 확인하세요</div>
     </div>
   </section>
 </main>
@@ -95,13 +86,168 @@
     </div>
   </div>
 </footer>
-<script>
-  var mapOptions = {
-    center: new naver.maps.LatLng(37.3595704, 127.105399),
-    zoom: 10
-  };
+<script th:inline="javascript">
+    // Thymeleaf에서 stadiums 데이터를 JSON 형식으로 변환하여 자바스크립트에 전달
+    var stadiums = /*[[${stadiums}]]*/ [];
 
-  var map = new naver.maps.Map('map', mapOptions);
+    if (stadiums.length > 0) {
+    // 지도 초기 설정 (대전을 기준으로 설정)
+    var mapOptions = {
+      center: new naver.maps.LatLng(stadiums[8].latitude, stadiums[8].longitude),
+      zoom: 7
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+
+      // 마커 생성
+      stadiums.forEach(function(stadium) {
+        var marker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(stadium.latitude, stadium.longitude),
+          map: map
+        });
+
+        naver.maps.Event.addListener(marker, 'click', function() {
+          // OpenWeather API 호출
+          var apiKey = 'e90b72ad9d462011650e263fbac6f426'; // OpenWeather API 키
+          var lang = 'kr';
+          var weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${stadium.latitude}&lon=${stadium.longitude}&appid=${apiKey}&lang=${lang}&units=metric`;
+          var airQualityUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${stadium.latitude}&lon=${stadium.longitude}&appid=${apiKey}`; // 미세먼지 api
+
+          fetch(weatherUrl)
+                  .then(response => response.json())
+                  .then(data => {
+                    var weatherDescription = data.weather[0].description;
+                    var icon = data.weather[0].icon;
+                    var iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`; // 아이콘 URL
+                    var temperature = data.main.temp;
+                    var humidity = data.main.humidity;
+                    var rain =  data.rain ? data.rain['1h'] || 0 : 0;;
+                    var windSpeed = data.wind.speed;
+
+                    return fetch(airQualityUrl)
+                            .then(response => response.json())
+                            .then(airQualityData => {
+                              var pm10 = airQualityData.list[0].components.pm10; // 미세먼지
+                              var pm2_5 = airQualityData.list[0].components.pm2_5; // 초미세먼지
+
+                              // 미세먼지 이미지와 표시 변수 설정
+                              var pm10Level = getDust10(pm10);
+                              var pm10Image = getDust10Image(pm10Level);
+                              // 초미세먼지 등급 결정
+                              var pm2_5Level = getDust2_5(pm2_5);
+                              var pm2_5Image = getDust2_5Image(pm2_5Level);
+                              console.log(pm10);
+                              console.log(pm2_5);
+                              document.getElementById('stadium-info').innerHTML =
+                              `<strong style="color: #a63446; font-size: 35px; margin-bottom: 50px;">${stadium.stadiumName}</strong><br><br>` +
+                              `<span style="font-size: smaller; color: #6c757d;">${stadium.stadiumAddress}</span><br>` +
+                              `<img src="${iconUrl}" alt="${weatherDescription}" style="width: 150px; height: 150px;"><br>` + // 날씨 아이콘
+                              `${weatherDescription}<br>` +
+                              `<span style="font-size: 35px; color: #00004f;"> ${temperature}℃</span><br>` +
+                              `<div class="weather-info">
+                                       <img src="/img/rain.png" class="weather-image" style="width: 40px; height: 40px;"><br>` +
+                                      `<div class="weather-text">
+                                            <span class="weather-title" style="font-size: smaller; color: #6c757d;">강수량 </span>
+                                            <span class="weather-amount">${rain} mm</span></div></div>` + // 강수량
+                              `<div class="weather-info">
+                                       <img src="/img/humidity.png" class="weather-image" style="width: 40px; height: 40px;"><br>` +
+                                      `<div class="weather-text">
+                                            <span class="weather-title" style="font-size: smaller; color: #6c757d;">습도 </span>
+                                            <span class="weather-amount">${humidity}%</span>
+                                       </div>
+                              </div>` +
+                              `<div class="weather-info">
+                                       <img src="/img/wind.png" class="weather-image" style="width: 40px; height: 40px;"><br>` +
+                                      `<div class="weather-text">
+                                            <span class="weather-title" style="font-size: smaller; color: #6c757d;">풍속 </span>
+                                            <span class="weather-amount">${windSpeed}m/s</span>
+                                       </div>
+                              </div><br>` +
+                              `<div class="dust-info">
+                                       <img src="${pm10Image}" class="dust-image" style="width: 30px; height: 30px;">` +
+                                      `<div class="dust-text">
+                                            <span class="dust-title" style="font-size: smaller; color: #6c757d;">미세먼지</span>
+                                            <span class="dust-level">(${pm10Level})</span></div></div>` +
+                              `<div class="dust-info">
+                                        <img src="${pm2_5Image}" class="dust-image" style="width: 30px; height: 30px;">`+
+                                        `<div class="dust-text">
+                                            <span class="dust-title" style="font-size: smaller; color: #6c757d;">초미세먼지</span>
+                                            <span class="dust-level">(${pm2_5Level})</span></div></div>`;
+                          })
+                  })
+                  .catch(error => {
+                    console.error('날씨 정보를 가져오는 데 오류가 발생했습니다:', error);
+                    document.getElementById('stadium-info').innerHTML =
+                            `<strong>${stadium.stadiumName}</strong><br>` +
+                            `주소: ${stadium.stadiumAddress}<br>` +
+                            `날씨 정보를 가져오는 데 오류가 발생했습니다.`;
+                  });
+        });
+      });
+    } else {
+      console.error('stadiums 데이터가 비어 있습니다.');
+    }
+    // 미세먼지 등급 결정 함수
+    function getDust10(value) {
+      if (value >= 0 && value <= 30) {
+        return '좋음';
+      } else if (value >= 31 && value <= 50) {
+        return '보통';
+      } else if (value >= 51 && value <= 100) {
+        return '나쁨';
+      } else if (value >= 101) {
+        return '매우 나쁨';
+      } else {
+        return '정보 없음'; // 예외 처리
+      }
+    }
+
+    // 초미세먼지 등급 결정 함수
+    function getDust2_5(value) {
+      if (value >= 0 && value <= 15) {
+        return '좋음';
+      } else if (value >= 16 && value <= 25) {
+        return '보통';
+      } else if (value >= 26 && value <= 50) {
+        return '나쁨';
+      } else if (value >= 51) {
+        return '매우 나쁨';
+      } else {
+        return '정보 없음'; // 예외 처리
+      }
+    }
+
+    // 미세먼지 등급에 따른 이미지 결정 함수
+    function getDust10Image(level) {
+      switch(level) {
+        case '좋음':
+          return '/img/laugh.png'; // 좋음 이미지 경로
+        case '보통':
+          return '/img/meh.png'; // 보통 이미지 경로
+        case '나쁨':
+          return '/img/frown.png'; // 나쁨 이미지 경로
+        case '매우 나쁨':
+          return '/img/crying.png'; // 매우 나쁨 이미지 경로
+        default:
+          return '/img/laugh.png'; // 정보 없음
+      }
+    }
+
+    // 미세먼지 등급에 따른 이미지 결정 함수
+    function getDust2_5Image(level) {
+      switch(level) {
+        case '좋음':
+          return '/img/laugh.png'; // 좋음 이미지 경로
+        case '보통':
+          return '/img/meh.png'; // 보통 이미지 경로
+        case '나쁨':
+          return '/img/frown.png'; // 나쁨 이미지 경로
+        case '매우 나쁨':
+          return '/img/crying.png'; // 매우 나쁨 이미지 경로
+        default:
+          return '/img/laugh.png'; // 정보 없음
+      }
+    }
 </script>
 </body>
 </html>

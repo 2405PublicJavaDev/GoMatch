@@ -4,10 +4,17 @@
     font-weight: bold;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'KBO Dia Gothic Medium';
     src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
     font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Light';
+    src: url('/font/KBO Dia Gothic_light.ttf') format('truetype');
+    font-weight: 300;
     font-style: normal;
 }
 .gameList-section {

@@ -1,4 +1,22 @@
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
 
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Light';
+    src: url('/font/KBO Dia Gothic_light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
 .weather-section {
     display: flex;
     background-color: rgba(226, 233, 241, 0.3);
@@ -11,11 +29,55 @@
     max-width: 1200px;
     width: 70%;
     text-align: center;
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
 }
 
 .weather-container {
     width: 100%;
 }
+
+#stadium-info {
+    top: 20px;
+    float: left;
+    background-color: #ffffff;
+    width: 365px;
+    padding: 30px;
+    border-radius: 8px;
+    margin-left: 50px;
+}
+
+.weather-info {
+    display: inline-flex;  /* 인라인 플렉스로 변경 */
+    align-items: center;
+}
+
+.weather-info img {
+    margin: 10px;
+}
+
+.weather-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.dust-info {
+    display: inline-flex;  /* 인라인 플렉스로 변경 */
+    align-items: center;
+    margin-right: 20px;    /* 오른쪽 마진 추가 */
+    margin-bottom: 10px;
+}
+
+.dust-info img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.dust-text {
+    display: flex;
+    flex-direction: column;
+}
+
 
 /*
     aside css
