@@ -87,5 +87,9 @@ public class MeetingServiceImpl implements MeetingService {
             meetingMapper.deleteMeetingFiles(fileDeleteIds);
         }
     }
+    @Override
+    public List<String> getAllGameDates() {
+        return meetingMapper.getAllGameDates();
+    }
 }
 

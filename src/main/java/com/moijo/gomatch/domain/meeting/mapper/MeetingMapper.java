@@ -41,4 +41,5 @@ public interface MeetingMapper {
     void deleteMeeting(long meetingNo);
     void updateMeeting(MeetingVO meetingVO);
     void deleteMeetingFiles(@Param("fileDeleteIds") List<Long> fileDeleteIds);
+    List<String> getAllGameDates();
 }

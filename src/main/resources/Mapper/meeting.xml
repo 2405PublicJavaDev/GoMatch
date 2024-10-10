@@ -83,6 +83,12 @@
         WHERE GAME_NO = #{gameNo}
     </select>
 
+    <!-- 모든 경기 날짜를 가져오는 쿼리 -->
+    <select id="getAllGameDates" resultType="string">
+        SELECT DISTINCT TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE
+        FROM GAME
+    </select>
+
     <!-- 소모임 번호로 소모임 정보 조회 -->
     <select id="getMeetingsByMeetingNo" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
         SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,

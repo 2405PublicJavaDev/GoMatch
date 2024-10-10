@@ -103,7 +103,11 @@ public class MeetingController {
         model.addAttribute("attendeesCountMap", attendeesCountMap);
         return "meeting/meeting-list";
     }
-
+    @GetMapping("/meeting/gameDates")
+    @ResponseBody
+    public List<String> getAllGameDates() {
+        return meetingService.getAllGameDates();
+    }
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
@@ -125,6 +129,7 @@ public class MeetingController {
         }
         return responseList;
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 날짜별 소모임 리스트 출력

@@ -230,7 +230,6 @@
             })
             .catch(error => {
                 console.error('소모임 불러오기 중 오류 발생:', error);
-                Swal.fire('오류 발생', '소모임 정보를 불러오는 중 오류가 발생했습니다.', 'error');
             });
     }
 
@@ -260,39 +259,38 @@
                     .then(response => response.json())
                     .then(gameInfo => {
                         item.innerHTML = `
-                    <div class="item-image">
-                        <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                        <div class="meeting-team">
-                            <strong>${meeting.meetingTeamName}</strong>
+                        <div class="item-image">
+                            <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                            <div class="meeting-team">
+                                <strong>${meeting.meetingTeamName}</strong>
+                            </div>
                         </div>
-                    </div>
-                    <div class="item-content">
-                        <div class="meeting-title">
-                            <strong>${meeting.meetingTitle}</strong>
+                        <div class="item-content">
+                            <div class="meeting-title">
+                                <strong>${meeting.meetingTitle}</strong>
+                            </div>
+                            <div class="meeting-game-info">
+                                <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                                <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                            </div>
+                            <div class="meeting-place">
+                                <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                                <span>${meeting.meetingPlace}</span>
+                            </div>
+                            <div class="meeting-time">
+                                <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                                <span>${meeting.meetingTime}</span>
+                            </div>
+                            <div class="meeting-max-people">
+                                <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
+                                <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
+                            </div>
                         </div>
-                        <div class="meeting-game-info">
-                            <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
-                            <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
-                        </div>
-                        <div class="meeting-place">
-                            <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
-                            <span>${meeting.meetingPlace}</span>
-                        </div>
-                        <div class="meeting-time">
-                            <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
-                            <span>${meeting.meetingTime}</span>
-                        </div>
-                        <div class="meeting-max-people">
-                            <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
-                            <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
-                        </div>
-                    </div>
-                `;
+                    `;
                         meetingList.appendChild(item);
                     })
                     .catch(error => {
                         console.error('경기 정보 가져오기 중 오류 발생:', error);
-                        Swal.fire('오류 발생', '경기 정보를 불러오는 중 오류가 발생했습니다.', 'error');
                     });
             }
         }
@@ -338,7 +336,7 @@
                 return '/img/NC로고.png';
             case 'SSG':
                 return '/img/SSG로고.png';
-            case '기아':
+            case 'KIA':
                 return '/img/기아로고.png';
             case '두산':
                 return '/img/두산로고.png';
@@ -354,8 +352,6 @@
                 return '/img/default-logo.png'; // 기본 로고 이미지
         }
     }
-
-    // 소모임 개설 버튼 클릭 시 SweetAlert2를 사용한 로그인 확인
     function registerMeeting() {
         fetch('/meeting/checkLogin')
             .then(response => response.json())
@@ -363,62 +359,143 @@
                 if (data.loggedIn) {
                     window.location.href = '/meeting/register';
                 } else {
-                    Swal.fire({
-                        title: '로그인이 필요한 서비스입니다.',
-                        text: '로그인을 하시겠습니까?',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: '로그인',
-                        cancelButtonText: '취소'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/member/loginpage';
-                        }
-                    });
+                    // 로그인되지 않은 경우 확인창을 띄움
+                    const proceedToLogin = confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?");
+                    if (proceedToLogin) {
+                        window.location.href = '/member/loginpage';
+                    }
                 }
             })
             .catch(error => {
                 console.error('로그인 상태 확인 중 오류 발생:', error);
-                Swal.fire('오류 발생', '로그인 상태 확인 중 오류가 발생했습니다.', 'error');
             });
     }
 
-    // 페이지 로드시 오늘 날짜 소모임 리스트를 불러옴
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var selectedDateElement = null;
+        var gameDates = []; // 경기 날짜를 저장할 배열
 
         if (!calendarEl) {
             console.error("캘린더 요소를 찾을 수 없습니다. ID가 'calendar'인지 확인하세요.");
             return;
         }
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', // 초기 뷰는 월간 달력
-            locale: 'ko', // 한국어 설정
-            height: 'auto', // 달력 높이를 자동으로 맞춤
-            contentHeight: 'auto', // 컨텐츠 높이도 자동으로 맞춤
-            dayCellContent: function(e) {
-                e.dayNumberText = e.dayNumberText.replace('일', ''); // 숫자에서 "일"을 제거
-            },
-            validRange: {
-                start: new Date().toISOString().split('T')[0] // 오늘 이전 날짜 선택 불가
-            },
-            dateClick: function (info) {
-                selectedDate = info.dateStr;
-                currentPage = 1; // 날짜 클릭 시 페이지를 1로 리셋
-                // 이전에 선택된 날짜에서 클래스를 제거합니다.
-                if (selectedDateElement) {
-                    selectedDateElement.classList.remove('fc-day-selected');
+        // 서버에서 경기 날짜 가져오기
+        fetch('/meeting/gameDates')
+            .then(response => response.json())
+            .then(dates => {
+                // 받아온 경기 날짜를 'YYYY-MM-DD' 형식으로 변환하여 저장
+                gameDates = dates.map(date => {
+                    return new Date(date).toISOString().split('T')[0];
+                });
+                renderCalendar();
+            })
+            .catch(error => {
+                console.error('경기 날짜 불러오기 중 오류 발생:', error);
+                renderCalendar(); // 오류 발생 시에도 기본 달력 렌더링
+            });
+
+        function renderCalendar() {
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 초기 뷰는 월간 달력
+                locale: 'ko', // 한국어 설정
+                height: 'auto', // 달력 높이를 자동으로 맞춤
+                contentHeight: 'auto', // 컨텐츠 높이도 자동으로 맞춤
+                timeZone: 'Asia/Seoul', // 시간대를 한국 시간으로 설정
+                dayCellContent: function(e) {
+                    e.dayNumberText = e.dayNumberText.replace('일', ''); // 숫자에서 "일"을 제거
+                },
+                validRange: {
+                    start: new Date().toISOString().split('T')[0] // 오늘 이전 날짜 선택 불가
+                },
+                dateClick: function (info) {
+                    selectedDate = info.dateStr;
+                    currentPage = 1; // 날짜 클릭 시 페이지를 1로 리셋
+                    // 이전에 선택된 날짜에서 클래스를 제거합니다.
+                    if (selectedDateElement) {
+                        selectedDateElement.classList.remove('fc-day-selected');
+                    }
+                    // 현재 선택된 날짜에 클래스를 추가합니다.
+                    selectedDateElement = info.dayEl;
+                    selectedDateElement.classList.add('fc-day-selected');
+                    loadMeetings();
+                },
+                dayCellDidMount: function(info) {
+                    // 날짜가 gameDates에 포함되어 있으면 game-date 클래스를 추가
+                    const dateStr = info.date.toISOString().split('T')[0];
+                    if (gameDates.includes(dateStr)) {
+                        info.el.classList.add('game-date');
+                    }
+                },
+                datesSet: function() {
+                    // 달력이 바뀔 때마다 호출되어 다시 gameDates를 적용
+                    applyGameDates();
                 }
-                // 현재 선택된 날짜에 클래스를 추가합니다.
-                selectedDateElement = info.dayEl;
-                selectedDateElement.classList.add('fc-day-selected');
-                loadMeetings();
-            }
-        });
-        calendar.render();
-        loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
+            });
+            calendar.render();
+            loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
+        }
+
+        function applyGameDates() {
+            // 달력의 모든 날짜 셀에 대해 gameDates를 적용
+            document.querySelectorAll('.fc-daygrid-day').forEach(dayCell => {
+                const dateStr = dayCell.getAttribute('data-date');
+                if (gameDates.includes(dateStr)) {
+                    dayCell.classList.add('game-date');
+                } else {
+                    dayCell.classList.remove('game-date');
+                }
+            });
+        }
+
+        // 소모임 목록 불러오기 함수
+        function loadMeetings() {
+            console.log(`선택된 팀: ${selectedTeam}, 선택된 날짜: ${selectedDate || ''}`);
+            const encodedTeam = encodeURIComponent(selectedTeam);
+            const encodedDate = encodeURIComponent(selectedDate || "");
+
+            fetch(`/meeting/listByDateAndTeam?date=${encodedDate}&team=${encodedTeam}`)
+                .then(response => response.json())
+                .then(fetchedData => {
+                    console.log(fetchedData);
+
+                    // 데이터를 전역 변수 data에 저장
+                    data = fetchedData;
+
+                    totalPages = Math.ceil(data.length / itemsPerPage);
+                    renderMeetings();
+                    renderPagination();
+
+                    document.getElementById("total-count").textContent = data.length;
+                    document.getElementById("current-page").textContent = currentPage;
+                    document.getElementById("total-pages").textContent = totalPages;
+                })
+                .catch(error => {
+                    console.error('소모임 불러오기 중 오류 발생:', error);
+                });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const openMeetingButton = document.querySelector('.button');
+
+        if (openMeetingButton) {
+            openMeetingButton.addEventListener('click', function () {
+                // 로그인 여부를 Thymeleaf에서 전달받은 값으로 체크
+                const loggedIn = /*[[${loggedIn}]]*/ true; // 서버에서 로그인 여부를 전달
+
+                if (!loggedIn) {
+                    // 로그인이 되어 있지 않은 경우
+                    if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
+                        window.location.href = "/member/loginpage"; // 로그인 페이지로 이동
+                    }
+                } else {
+                    // 로그인이 되어 있는 경우 소모임 개설 페이지로 이동
+                    window.location.href = "/meeting/register";
+                }
+            });
+        }
     });
 </script>
 

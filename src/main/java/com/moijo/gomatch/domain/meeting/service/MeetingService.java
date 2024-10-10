@@ -35,4 +35,5 @@ public interface MeetingService {
     void removeMeeting(long meetingNo);
     void updateMeeting(MeetingVO meetingVO);
     void deleteMeetingFiles(List<Long> fileDeleteIds);
+    List<String> getAllGameDates();
 }

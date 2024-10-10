@@ -121,6 +121,10 @@ h1 {
     font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 테마 폰트 적용 */
 }
 
+.fc-daygrid-day.game-date {
+    position: relative;
+}
+
 
 /* 필터 스타일 */
 .filter-container {
@@ -303,13 +307,34 @@ h1 {
     margin-top: 20px;
 }
 
-.fc-daygrid-day-frame {
-    height: 35px !important; /* 일별 높이를 조정 */
-}
-/* 선택된 날짜 스타일 */
+
+/* 선택된 날짜의 스타일 */
 .fc-daygrid-day.fc-day-selected {
-    background-color: #00AEEF !important; /* 선택된 날짜의 강조색 적용 */
-    color: white;
+    background-color: #00AEEF !important; /* 선택된 날짜의 배경색 */
+    color: white !important; /* 선택된 날짜의 텍스트 색상 */
+    border: 2px solid #0056b3 !important; /* 선택된 날짜의 경계선 */
+}
+
+
+/* 일별 셀 높이 조정 */
+.fc-daygrid-day-frame {
+    height: 35px !important; /* 일별 높이 */
+}
+/* 경기 날짜의 스타일 */
+.fc-daygrid-day.game-date {
+    position: relative;
+}
+
+.fc-daygrid-day.game-date::after {
+    content: '⚾';
+    color: #FF5733; /* 아이콘 색상 */
+    font-size: 25px; /* 아이콘 크기 */
+    position: absolute;
+    top: 50%; /* 수직 중앙 정렬 */
+    left: 20%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 중앙 정렬 */
+    font-weight: bold;
+    z-index: 10; /* 아이콘이 다른 요소 위에 위치하도록 */
 }
 .pagination {
     width: 100%;
