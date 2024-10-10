@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="/css/header-footer.css">
     <!-- FullCalendar CSS 로드 -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -226,6 +230,7 @@
             })
             .catch(error => {
                 console.error('소모임 불러오기 중 오류 발생:', error);
+                Swal.fire('오류 발생', '소모임 정보를 불러오는 중 오류가 발생했습니다.', 'error');
             });
     }
 
@@ -255,38 +260,39 @@
                     .then(response => response.json())
                     .then(gameInfo => {
                         item.innerHTML = `
-                        <div class="item-image">
-                            <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                            <div class="meeting-team">
-                                <strong>${meeting.meetingTeamName}</strong>
-                            </div>
+                    <div class="item-image">
+                        <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                        <div class="meeting-team">
+                            <strong>${meeting.meetingTeamName}</strong>
                         </div>
-                        <div class="item-content">
-                            <div class="meeting-title">
-                                <strong>${meeting.meetingTitle}</strong>
-                            </div>
-                            <div class="meeting-game-info">
-                                <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
-                                <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
-                            </div>
-                            <div class="meeting-place">
-                                <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
-                                <span>${meeting.meetingPlace}</span>
-                            </div>
-                            <div class="meeting-time">
-                                <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
-                                <span>${meeting.meetingTime}</span>
-                            </div>
-                            <div class="meeting-max-people">
-                                <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
-                                <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
-                            </div>
+                    </div>
+                    <div class="item-content">
+                        <div class="meeting-title">
+                            <strong>${meeting.meetingTitle}</strong>
                         </div>
-                    `;
+                        <div class="meeting-game-info">
+                            <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                            <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                        </div>
+                        <div class="meeting-place">
+                            <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                            <span>${meeting.meetingPlace}</span>
+                        </div>
+                        <div class="meeting-time">
+                            <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                            <span>${meeting.meetingTime}</span>
+                        </div>
+                        <div class="meeting-max-people">
+                            <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
+                            <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
+                        </div>
+                    </div>
+                `;
                         meetingList.appendChild(item);
                     })
                     .catch(error => {
                         console.error('경기 정보 가져오기 중 오류 발생:', error);
+                        Swal.fire('오류 발생', '경기 정보를 불러오는 중 오류가 발생했습니다.', 'error');
                     });
             }
         }
@@ -348,6 +354,8 @@
                 return '/img/default-logo.png'; // 기본 로고 이미지
         }
     }
+
+    // 소모임 개설 버튼 클릭 시 SweetAlert2를 사용한 로그인 확인
     function registerMeeting() {
         fetch('/meeting/checkLogin')
             .then(response => response.json())
@@ -355,15 +363,23 @@
                 if (data.loggedIn) {
                     window.location.href = '/meeting/register';
                 } else {
-                    // 로그인되지 않은 경우 확인창을 띄움
-                    const proceedToLogin = confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?");
-                    if (proceedToLogin) {
-                        window.location.href = '/member/loginpage';
-                    }
+                    Swal.fire({
+                        title: '로그인이 필요한 서비스입니다.',
+                        text: '로그인을 하시겠습니까?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: '로그인',
+                        cancelButtonText: '취소'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/member/loginpage';
+                        }
+                    });
                 }
             })
             .catch(error => {
                 console.error('로그인 상태 확인 중 오류 발생:', error);
+                Swal.fire('오류 발생', '로그인 상태 확인 중 오류가 발생했습니다.', 'error');
             });
     }
 
@@ -403,26 +419,6 @@
         });
         calendar.render();
         loadMeetings(); // 페이지 로드시 소모임 리스트 불러오기
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-        const openMeetingButton = document.querySelector('.button');
-
-        if (openMeetingButton) {
-            openMeetingButton.addEventListener('click', function () {
-                // 로그인 여부를 Thymeleaf에서 전달받은 값으로 체크
-                const loggedIn = /*[[${loggedIn}]]*/ true; // 서버에서 로그인 여부를 전달
-
-                if (!loggedIn) {
-                    // 로그인이 되어 있지 않은 경우
-                    if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
-                        window.location.href = "/member/loginpage"; // 로그인 페이지로 이동
-                    }
-                } else {
-                    // 로그인이 되어 있는 경우 소모임 개설 페이지로 이동
-                    window.location.href = "/meeting/register";
-                }
-            });
-        }
     });
 </script>
 

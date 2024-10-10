@@ -8,7 +8,10 @@
   <link rel="stylesheet" href="/css/meeting/meeting-detail.css">
   <!-- 헤더/푸터 CSS-->
   <link rel="stylesheet" href="/css/header-footer.css">
-
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <!-- SweetAlert2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <header>
@@ -155,7 +158,6 @@
   var loggedIn =true; // 서버에서 로그인 여부를 전달
 </script>
 <script>
-
   // 이미지 팝업 열기
   function openPopup(src) {
     const popup = document.getElementById('popup');
@@ -187,99 +189,137 @@
   });
 
   function attendMeeting() {
-    // 로그인된 경우에만 참석 요청 처리
-    if (confirm("참여하시겠습니까?")) {
-      if (meetingNo) {
-        fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-                .then(response => {
-                  // 상태 코드가 401인 경우 로그인 필요 안내
-                  if (response.status === 401) {
-                    return response.json().then(data => {
-                      if (confirm(data.message)) {
-                        window.location.href = '/member/loginpage';
-                      }
-                    });
-                  }
-                  return response.json();
-                })
-                .then(data => {
-                  if (data && data.message) {
-                    alert(data.message);
-                    if (data.message === "참석이 완료되었습니다.") {
-                      location.reload(); // 참석 완료 후 페이지 새로고침
+    Swal.fire({
+      title: '참여하시겠습니까?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '참여',
+      cancelButtonText: '취소'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (meetingNo) {
+          fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+                  .then(response => {
+                    if (response.status === 401) {
+                      return response.json().then(data => {
+                        Swal.fire({
+                          title: data.message,
+                          icon: 'info',
+                          showCancelButton: true,
+                          confirmButtonText: '로그인',
+                          cancelButtonText: '취소'
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            window.location.href = '/member/loginpage';
+                          }
+                        });
+                      });
                     }
-                  }
-                })
-                .catch(error => {
-                  console.error('참석 처리 중 오류 발생:', error);
-                  alert('참석 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
+                    return response.json();
+                  })
+                  .then(data => {
+                    if (data && data.message) {
+                      Swal.fire({
+                        title: data.message,
+                        icon: data.message === "참석이 완료되었습니다." ? 'success' : 'info'
+                      }).then(() => {
+                        if (data.message === "참석이 완료되었습니다.") {
+                          location.reload(); // 참석 완료 후 페이지 새로고침
+                        }
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    console.error('참석 처리 중 오류 발생:', error);
+                    Swal.fire('참석 처리 중 오류가 발생했습니다.', '', 'error');
+                  });
+        } else {
+          Swal.fire('소모임 정보를 찾을 수 없습니다.', '', 'error');
+        }
       }
-    }
+    });
   }
 
   function modifyMeeting() {
     if (meetingNo) {
       window.location.href = `/meeting/modify/${meetingNo}`;
     } else {
-      alert('소모임 정보를 찾을 수 없습니다.');
+      Swal.fire('소모임 정보를 찾을 수 없습니다.', '', 'error');
     }
   }
 
-  // 참석 취소 요청 함수
   function cancelMeeting() {
-    if (confirm("😢정말 참석을 취소하시겠습니까?😢")) {
-      if (meetingNo) {
-        fetch(`/meeting/cancel?meetingNo=${meetingNo}`, {
-          method: 'POST',
-        })
-                .then(response => response.text())
-                .then(message => {
-                  alert(message);
-                  if (message === "참석이 취소되었습니다.") {
-                    location.reload(); // 참석 취소 후 페이지 새로고침
-                  }
-                })
-                .catch(error => {
-                  console.error('참석 취소 처리 중 오류 발생:', error);
-                  alert('참석 취소 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
+    Swal.fire({
+      title: '정말 참석을 취소하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '네',
+      cancelButtonText: '아니오'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (meetingNo) {
+          fetch(`/meeting/cancel?meetingNo=${meetingNo}`, {
+            method: 'POST',
+          })
+                  .then(response => response.text())
+                  .then(message => {
+                    Swal.fire({
+                      title: message,
+                      icon: message === "참석이 취소되었습니다." ? 'success' : 'info'
+                    }).then(() => {
+                      if (message === "참석이 취소되었습니다.") {
+                        location.reload(); // 참석 취소 후 페이지 새로고침
+                      }
+                    });
+                  })
+                  .catch(error => {
+                    console.error('참석 취소 처리 중 오류 발생:', error);
+                    Swal.fire('참석 취소 처리 중 오류가 발생했습니다.', '', 'error');
+                  });
+        } else {
+          Swal.fire('소모임 정보를 찾을 수 없습니다.', '', 'error');
+        }
       }
-    }
+    });
   }
 
   function deleteMeeting() {
-    if (confirm("정말로 소모임을 삭제하시겠습니까?")) {
-      if (meetingNo) {
-        fetch(`/meeting/delete/${meetingNo}`, {
-          method: 'POST',
-        })
-                .then(() => {
-                  // 삭제가 완료되었음을 알리고, 페이지 이동
-                  alert("삭제가 완료되었습니다.");
-                  window.location.href = "/meeting/list";
-                })
-                .catch(error => {
-                  console.error('삭제 처리 중 오류 발생:', error);
-                  alert('삭제 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
+    Swal.fire({
+      title: '정말로 소모임을 삭제하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: '삭제',
+      cancelButtonText: '취소'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (meetingNo) {
+          fetch(`/meeting/delete/${meetingNo}`, {
+            method: 'POST',
+          })
+                  .then(() => {
+                    Swal.fire({
+                      title: '삭제가 완료되었습니다.',
+                      icon: 'success'
+                    }).then(() => {
+                      window.location.href = "/meeting/list";
+                    });
+                  })
+                  .catch(error => {
+                    console.error('삭제 처리 중 오류 발생:', error);
+                    Swal.fire('삭제 처리 중 오류가 발생했습니다.', '', 'error');
+                  });
+        } else {
+          Swal.fire('소모임 정보를 찾을 수 없습니다.', '', 'error');
+        }
       }
-    }
+    });
   }
-
-
-
 </script>
+
 </body>
 </html>

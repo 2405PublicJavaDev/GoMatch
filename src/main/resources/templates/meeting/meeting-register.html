@@ -6,6 +6,11 @@
   <title>GoMatch</title>
   <link rel="stylesheet" href="/css/meeting/meeting-register.css">
   <link rel="stylesheet" href="/css/header-footer.css">
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- SweetAlert2 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <header>
@@ -207,6 +212,7 @@
         },
         error: function(xhr, status, error) {
           console.error('AJAX 에러:', error);
+          Swal.fire('에러 발생', '경기 정보를 불러오는 중 오류가 발생했습니다.', 'error');
         }
       });
     }
@@ -249,6 +255,7 @@
     // 기본 주소와 상세 주소를 합침
     document.querySelector("#meetingPlace").value = basicAddress + ' ' + detailAddress;
   }
+
   // 시, 분 선택 후 hidden input에 값 저장
   document.getElementById('hourSelect').addEventListener('change', updateMeetingTime);
   document.getElementById('minuteSelect').addEventListener('change', updateMeetingTime);
@@ -261,11 +268,12 @@
       console.log('선택한 시간:', meetingTime);  // 선택한 시간 로그 출력
     }
   }
+
   // 경기 날짜 유효성 검사 함수
   function validateForm() {
     const gameDate = document.getElementById('gameDate').value;
     if (gameDate < todayStr) {
-      alert("지난 날짜는 선택할 수 없습니다.");
+      Swal.fire('유효하지 않은 날짜', '지난 날짜는 선택할 수 없습니다.', 'error');
       return false; // 제출 중지
     }
     return true;
@@ -283,7 +291,7 @@
     selectedFiles = Array.from(files);
     // 파일이 5개를 초과할 경우 경고 메시지 표시 및 리턴
     if (selectedFiles.length > 5) {
-      fileLimitMessage.style.display = 'block';
+      Swal.fire('파일 초과', '최대 5개 파일만 업로드할 수 있습니다.', 'warning');
       return;
     }
     selectedFiles.forEach((file, index) => {
@@ -308,6 +316,7 @@
       reader.readAsDataURL(file);
     });
   }
+
   // 파일 목록에서 선택된 파일을 제거하는 함수
   function removeImage(index) {
     selectedFiles.splice(index, 1); // 배열에서 해당 파일 제거
@@ -317,29 +326,44 @@
     document.getElementById('groupImage').files = dataTransfer.files; // 파일 input에 갱신된 FileList 설정
     previewImages(); // 갱신된 파일 목록으로 썸네일 다시 렌더링
   }
+
   // Form 제출 시 사용자 확인을 요청하는 함수
   function confirmSubmission() {
-    const confirmationMessage = "소중한 모임 정보를 등록해 주셔서 감사합니다!\n" +
-            "경기 날짜, 경기 정보, 응원 팀명은\n" +
-            "게시글이 등록되면 수정이 불가능합니다.\n" +
-            "내용이 정확한 지 확인 부탁드립니다.\n\n" +
-            "게시글을 등록하겠습니까?";
-
-    // 사용자가 확인을 누르면 true를 반환하여 form이 제출됨
-    return confirm(confirmationMessage);
+    return Swal.fire({
+      title: '모임 정보를 등록하시겠습니까?',
+      text: "경기 날짜, 경기 정보, 응원 팀명은 등록 후 수정이 불가능합니다.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '등록',
+      cancelButtonText: '취소'
+    }).then((result) => {
+      return result.isConfirmed; // 확인 버튼이 눌렸을 때만 true 반환
+    });
   }
 
-  function handleSubmitForm() {
+  // Form 제출을 제어하는 함수
+  async function handleSubmitForm(event) {
+    event.preventDefault(); // 기본 form 제출 동작 중지
+
     // 상세 주소와 시간 검증
     combineAddress();
+
     // validateForm 함수가 false를 반환하면 제출 중단
     if (!validateForm()) {
-      return false;
+      return;
     }
-    // confirmSubmission에서 false를 반환하면 제출 중단
-    return confirmSubmission();
+
+    // confirmSubmission에서 true가 반환되면 form을 제출
+    const isConfirmed = await confirmSubmission();
+    if (isConfirmed) {
+      event.target.submit(); // 사용자가 확인 버튼을 눌렀을 때만 form을 제출합니다.
+    }
   }
 
+  // form 요소에 submit 이벤트 연결
+  document.querySelector("form").addEventListener("submit", handleSubmitForm);
+
 </script>
+
 </body>
 </html>
