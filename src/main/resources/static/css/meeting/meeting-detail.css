@@ -9,7 +9,7 @@
     src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-}zz
+}
 body {
     background-color: #f0f0f0;
     margin: 0;
@@ -56,6 +56,12 @@ body {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
     text-align: center;
 }
+.past-meeting-notice{
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    text-align: center;
+    color : #ff002e;
+}
+
 .top-buttons {
     position: absolute;
     top: 20px;

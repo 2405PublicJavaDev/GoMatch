@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,18 +151,38 @@ public class MeetingController {
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
         log.info("세션에서 가져온 memberId: " + memberId);
+
         // 소모임 상세 정보, 파일, 참석자 조회
         MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
         List<MeetingFileVO> meetingFile = meetingService.getMeetingFileByMeetingNo(meetingNo);
         List<MeetingAttendVO> meetingAttendee = meetingService.getMeetingAttendeeByMeetingNo(meetingNo);
+
         // 참석자 수 계산
         int currentAttendeesCount = meetingAttendee.size();
-        model.addAttribute("meeting", meetingDetail); // 소모임 정보
-        model.addAttribute("meetingFile", meetingFile); // 파일 정보
-        model.addAttribute("meetingAttendee", meetingAttendee); // 참석자 정보
-        model.addAttribute("currentAttendeesCount", currentAttendeesCount); // 현재 참석자 수
+
+        // 현재 날짜와 모임 날짜를 비교하여 지난 모임인지 확인
+        LocalDate today = LocalDate.now();
+        LocalDate meetingDate;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(meetingDetail.getMeetingDate(), formatter);
+            meetingDate = dateTime.toLocalDate();
+        } catch (Exception e) {
+            log.error("날짜 파싱 중 오류 발생: " + e.getMessage());
+            return "common/oops";
+        }
+
+        boolean isPastMeeting = meetingDate.isBefore(today);
+
+        model.addAttribute("meeting", meetingDetail);
+        model.addAttribute("isPastMeeting", isPastMeeting);
+        model.addAttribute("meetingFile", meetingFile);
+        model.addAttribute("meetingAttendee", meetingAttendee);
+        model.addAttribute("currentAttendeesCount", currentAttendeesCount);
+
         return "meeting/meeting-detail";
     }
+
     @GetMapping("/meeting/checkLogin")
     @ResponseBody
     public Map<String, Boolean> checkLogin(HttpSession session) {
