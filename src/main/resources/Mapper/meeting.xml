@@ -51,6 +51,7 @@
         )
     </insert>
 
+    <!--날짜별 개설된 소모임 확인-->
     <select id="getMeetingsByDate" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
         SELECT M.MEETING_NO, M.GAME_NO, M.MEETING_TITLE, M.MEETING_TEAM_NAME, M.MEETING_MAX_PEOPLE,
                M.MEETING_TIME, M.MEETING_PLACE, M.MEETING_CONTENT, M.MEMBER_ID, M.REG_DATE
@@ -59,7 +60,7 @@
         WHERE G.GAME_DATE = #{date}
     </select>
 
-
+    <!--(필터) 날짜별/팀별 개설된 소모임 확인-->
     <select id="getMeetingsByDateAndTeam" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
         SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
         MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, MEETING_DATE, REG_DATE
@@ -100,8 +101,8 @@
 
     <!-- 소모임 번호로 참석자 정보 조회 -->
     <select id="getMeetingAttendeeByMeetingNo" resultType="MeetingAttendVO">
-        SELECT a.meeting_attend_no, a.meeting_no, a.member_id, a.meeting_attend_yn, a.reg_date, a.update_date,
-               m.member_nickname as memberNickname
+        SELECT a.MEETING_ATTEND_NO, a.MEETING_NO, a.MEMBER_ID, a.MEETING_ATTEND_YN, a.REG_DATE, a.UPDATE_DATE,
+               m.MEMBER_NICKNAME as memberNickname
         FROM meeting_attend a
                  JOIN member m ON a.member_id = m.member_id
         WHERE a.meeting_no = #{meetingNo}
@@ -134,10 +135,28 @@
         WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
     </delete>
 
+
     <delete id="deleteMeeting">
         DELETE FROM MEETING WHERE MEETING_NO = #{meetingNo}
     </delete>
 
+    <update id="updateMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        UPDATE MEETING
+        SET MEETING_TITLE = #{meetingTitle},
+            MEETING_TIME = #{meetingTime},
+            MEETING_PLACE = #{meetingPlace},
+            MEETING_CONTENT = #{meetingContent},
+            UPDATE_DATE = default
+        WHERE MEETING_NO = #{meetingNo}
+    </update>
 
+    <!-- 파일 삭제 쿼리 -->
+    <delete id="deleteMeetingFiles">
+        DELETE FROM MEETING_FILE
+        WHERE MEETING_FILE_NO IN
+        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </delete>
 
 </mapper>

@@ -53,7 +53,7 @@
           <!-- 수정된 부분: 조건부 버튼 표시 -->
           <button th:if="${session.memberId == meeting.memberId}"
                   type="button" class="button-modify"
-                  onclick="editMeeting()">수정</button>
+                  onclick="modifyMeeting()">수정</button>
           <button th:if="${session.memberId == meeting.memberId and (currentAttendeesCount == 1 or currentAttendeesCount == 0)}"
                   type="button" class="button-delete"
                   onclick="deleteMeeting()">삭제</button>
@@ -145,7 +145,7 @@
 <script th:inline="javascript">
   var gameNo = /*[[${meeting.gameNo}]]*/ '';  // 서버에서 전달된 gameNo
   var meetingNo = /*[[${meeting.meetingNo}]]*/ '';  // 서버에서 전달된 meetingNo
-  var loggedIn = /*[[${loggedIn}]]*/ false;  // 로그인 여부 확인
+  var loggedIn =true; // 서버에서 로그인 여부를 전달
 </script>
 <script>
 
@@ -180,25 +180,32 @@
   });
 
   function attendMeeting() {
-    // 로그인 상태 확인
-    if (!loggedIn) {
-      if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
-        window.location.href = '/member/loginpage';
-      }
-      return; // 로그인하지 않은 경우, 이 함수의 나머지 부분을 실행하지 않음
-    }
-
     // 로그인된 경우에만 참석 요청 처리
     if (confirm("참여하시겠습니까?")) {
       if (meetingNo) {
         fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
         })
-                .then(response => response.text())
-                .then(message => {
-                  alert(message);
-                  if (message === "참석이 완료되었습니다.") {
-                    location.reload(); // 참석 완료 후 페이지 새로고침
+                .then(response => {
+                  // 상태 코드가 401인 경우 로그인 필요 안내
+                  if (response.status === 401) {
+                    return response.json().then(data => {
+                      if (confirm(data.message)) {
+                        window.location.href = '/member/loginpage';
+                      }
+                    });
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  if (data && data.message) {
+                    alert(data.message);
+                    if (data.message === "참석이 완료되었습니다.") {
+                      location.reload(); // 참석 완료 후 페이지 새로고침
+                    }
                   }
                 })
                 .catch(error => {
@@ -210,6 +217,15 @@
       }
     }
   }
+
+  function modifyMeeting() {
+    if (meetingNo) {
+      window.location.href = `/meeting/modify/${meetingNo}`;
+    } else {
+      alert('소모임 정보를 찾을 수 없습니다.');
+    }
+  }
+
   // 참석 취소 요청 함수
   function cancelMeeting() {
     if (confirm("😢정말 참석을 취소하시겠습니까?😢")) {
@@ -233,6 +249,7 @@
       }
     }
   }
+
   function deleteMeeting() {
     if (confirm("정말로 소모임을 삭제하시겠습니까?")) {
       if (meetingNo) {

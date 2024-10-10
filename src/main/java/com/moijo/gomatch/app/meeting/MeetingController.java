@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +40,8 @@ public class MeetingController {
     @GetMapping("/meeting/register")
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
-        if (memberId == null) {
-            return "common/oops";
-        }else {
-            log.info("세션에서 가져온 memberId: " + memberId);
-        }
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
-        return "meeting/meeting-register";
+        return memberId != null ? "meeting/meeting-register" : "meeting/meeting-list";
     }
 
     /**
@@ -146,6 +143,7 @@ public class MeetingController {
     @GetMapping("/meeting/detail/{meetingNo}")
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
+        log.info("세션에서 가져온 memberId: " + memberId);
         // 소모임 상세 정보, 파일, 참석자 조회
         MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
         List<MeetingFileVO> meetingFile = meetingService.getMeetingFileByMeetingNo(meetingNo);
@@ -158,6 +156,79 @@ public class MeetingController {
         model.addAttribute("currentAttendeesCount", currentAttendeesCount); // 현재 참석자 수
         return "meeting/meeting-detail";
     }
+    @GetMapping("/meeting/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Modify] 소모임 수정하기
+     * 설명 : 소모임 수정 페이지 보여주기
+     */
+    @GetMapping("/meeting/modify/{meetingNo}")
+    public String showModifyMeetingPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "common/oops";
+        }
+        MeetingVO meetingDetail = meetingService.getMeetingsByMeetingNo(meetingNo);
+        if (!memberId.equals(meetingDetail.getMemberId())) {
+            return "common/oops";
+        }
+        List<MeetingFileVO> meetingFiles = meetingService.getMeetingFileByMeetingNo(meetingNo);
+        model.addAttribute("meeting", meetingDetail);
+        model.addAttribute("meetingFile", meetingFiles);
+        // 경기 번호를 통해 경기 정보를 조회하고 모델에 추가
+        GameVO gameInfo = meetingService.getGameByNo(meetingDetail.getGameNo());
+        model.addAttribute("gameInfo", gameInfo);
+        return "meeting/meeting-modify";
+    }
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Modify] 소모임 수정 처리
+     * 설명 : 소모임 정보와 첨부파일을 수정하기
+     */
+    @PostMapping("/meeting/modify")
+    public String modifyMeeting(MeetingVO meetingVO,
+                                @RequestParam(value = "newFiles", required = false) List<MultipartFile> newFiles,
+                                @RequestParam(value = "fileDeleteIds", required = false) List<Long> fileDeleteIds,
+                                HttpSession session) throws IOException {
+        log.info("modifyMeeting 메서드 호출됨. 삭제할 파일 ID 목록: {}", fileDeleteIds);
+
+        String memberId = (String) session.getAttribute("memberId");
+        if (memberId == null) {
+            return "common/oops";
+        }
+
+        MeetingVO existingMeeting = meetingService.getMeetingsByMeetingNo(meetingVO.getMeetingNo());
+        if (!memberId.equals(existingMeeting.getMemberId())) {
+            return "common/oops";
+        }
+
+        meetingVO.setMemberId(memberId);
+        meetingService.updateMeeting(meetingVO);
+
+        // 삭제할 파일 확인
+        if (fileDeleteIds != null && !fileDeleteIds.isEmpty()) {
+            log.info("삭제할 파일 ID 목록: " + fileDeleteIds);
+            meetingService.deleteMeetingFiles(fileDeleteIds);
+        }
+
+        if (newFiles != null && !newFiles.isEmpty()) {
+            fileUtil.uploadFiles(newFiles, meetingVO.getMeetingNo(), "meeting");
+        }
+
+        return "redirect:/meeting/detail/" + meetingVO.getMeetingNo();
+    }
+
+
+
+
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Delete] 소모임 삭제
@@ -187,23 +258,31 @@ public class MeetingController {
      */
     @PostMapping("/meeting/attend")
     @ResponseBody
-    public String attendMeeting(@RequestParam("meetingNo") long meetingNo, HttpSession session) {
+    public ResponseEntity<Map<String, String>> attendMeeting(@RequestParam("meetingNo") long meetingNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");
+        Map<String, String> response = new HashMap<>();
+
         if (memberId == null) {
-            return "로그인이 필요합니다.";
+            response.put("message", "로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+
         MeetingAttendVO attendVO = new MeetingAttendVO();
         attendVO.setMeetingNo((int) meetingNo);
         attendVO.setMemberId(memberId);
         attendVO.setMeetingAttendYn("Y");
+
         boolean isAlreadyAttended = meetingService.checkAlreadyAttended(meetingNo, memberId);
         if (isAlreadyAttended) {
-            return "이미 참석한 소모임입니다.";
+            response.put("message", "이미 참석한 소모임입니다.");
+            return ResponseEntity.ok(response);
         }
+
         meetingService.addAttend(attendVO);
-        return "참석이 완료되었습니다.";
+        response.put("message", "참석이 완료되었습니다.");
+        return ResponseEntity.ok(response);
     }
-    
+
     /**
      * 담당자: 김윤경
      * 관련 기능: [Cancel] 소모임 참석 취소

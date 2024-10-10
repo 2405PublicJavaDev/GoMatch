@@ -39,5 +39,6 @@ public interface MeetingMapper {
     void deleteMeetingAttend(@Param("meetingNo") long meetingNo, @Param("memberId") String memberId);
     // 소모임 삭제
     void deleteMeeting(long meetingNo);
-
+    void updateMeeting(MeetingVO meetingVO);
+    void deleteMeetingFiles(@Param("fileDeleteIds") List<Long> fileDeleteIds);
 }

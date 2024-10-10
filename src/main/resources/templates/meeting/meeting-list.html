@@ -342,14 +342,24 @@
         }
     }
     function registerMeeting() {
-        // 로그인 상태 확인
-        if (!loggedIn) {
-            if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
-                window.location.href = '/member/loginpage';
-            }
-            return; // 로그인하지 않은 경우, 이 함수의 나머지 부분을 실행하지 않음
-        }
+        fetch('/meeting/checkLogin')
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    window.location.href = '/meeting/register';
+                } else {
+                    // 로그인되지 않은 경우 확인창을 띄움
+                    const proceedToLogin = confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?");
+                    if (proceedToLogin) {
+                        window.location.href = '/member/loginpage';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('로그인 상태 확인 중 오류 발생:', error);
+            });
     }
+
     // 페이지 로드시 오늘 날짜 소모임 리스트를 불러옴
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
@@ -393,14 +403,13 @@
         if (openMeetingButton) {
             openMeetingButton.addEventListener('click', function () {
                 // 로그인 여부를 Thymeleaf에서 전달받은 값으로 체크
-                const loggedIn = /*[[${loggedIn}]]*/ false; // 서버에서 로그인 여부를 전달
+                const loggedIn = /*[[${loggedIn}]]*/ true; // 서버에서 로그인 여부를 전달
 
                 if (!loggedIn) {
                     // 로그인이 되어 있지 않은 경우
                     if (confirm("로그인이 필요한 서비스입니다. 로그인을 하시겠습니까?")) {
                         window.location.href = "/member/loginpage"; // 로그인 페이지로 이동
                     }
-                    // "취소"를 누르면 아무 동작도 하지 않기 때문에 else는 필요하지 않음
                 } else {
                     // 로그인이 되어 있는 경우 소모임 개설 페이지로 이동
                     window.location.href = "/meeting/register";
