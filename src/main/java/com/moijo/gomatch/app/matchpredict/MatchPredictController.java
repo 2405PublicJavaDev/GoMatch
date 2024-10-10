@@ -31,12 +31,24 @@ public class MatchPredictController {
      * @return
      */
     @GetMapping("/matchPredict")
-    public String showMatchPredictionListPage(Model model) {
+    public String showMatchPredictionListPage(HttpSession session,Model model) {
         // 승부 예측 목록 조회
-        List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
+        String memberId = (String)session.getAttribute("memberId");
 
         // 모델에 승부 예측 목록 추가
+        List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
+        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank();
         model.addAttribute("matchPredictions", matchPredictions);
+        model.addAttribute("memberRank", memberRank);
+
+        if(memberId != null) {
+            MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
+            double rankPercent = matchPredictService.calculatorRankPercent(memberId);
+
+            model.addAttribute("memberInfo", memberInfo);
+            model.addAttribute("rankPercent", rankPercent);
+        }
+
 
 
         // 뷰 이름 반환 (HTML 템플릿 파일)
@@ -45,14 +57,16 @@ public class MatchPredictController {
     };
     /**
      * 나의 예측 리스트 조회(gameNo,memberId),화원 정보 조회
-      * @param session
+     * @param session
      * @param model
      * @return
      */
     @GetMapping("/myMatchPredict")
     public String showMyMatchPredictionListPage(HttpSession session, Model model) {
-//        memberId = session.getAttribute("memberId").toString();
-        String memberId = "user1";
+        String memberId = (String)session.getAttribute("memberId");
+        if(memberId == null) {
+            return "redirect:/member/loginpage";
+        }
 
         List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
         List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank();
@@ -62,9 +76,11 @@ public class MatchPredictController {
 
 
         model.addAttribute("memberRank", memberRank);
-        model.addAttribute("memberInfo", memberInfo);
         model.addAttribute("matchPredictions", matchPredictions);
+        model.addAttribute("memberInfo", memberInfo);
         model.addAttribute("rankPercent", rankPercent);
+
+
 
         return "matchpredict/myMatchPredictPage";
     }
@@ -74,9 +90,9 @@ public class MatchPredictController {
      */
     @PostMapping("/addPredict")
     public String addMatchPrediction(HttpSession session, Model model
-    , @RequestParam Long gameNo
-    , @RequestParam String matchPredictDecision
-    , @RequestParam Long matchPredictNo) {
+            , @RequestParam Long gameNo
+            , @RequestParam String matchPredictDecision
+            , @RequestParam Long matchPredictNo) {
 //        String memberId = (String) session.getAttribute("memberId");
         String memberId = "user1";
 

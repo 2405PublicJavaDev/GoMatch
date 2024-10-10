@@ -44,7 +44,12 @@ public class MatchPredictServiceImpl implements MatchPredictService {
      */
     @Override
     public List<MyPredictDTO> getAllMyMatchByMember(String memberId) {
-        return matchPredictMapper.selectAllMyMatchByMember(memberId);
+        List<MyPredictDTO> myPredictDTO = matchPredictMapper.selectAllMyMatchByMember(memberId);
+
+        if (myPredictDTO != null) {
+            return myPredictDTO;
+        }
+        return null;
     }
 
 

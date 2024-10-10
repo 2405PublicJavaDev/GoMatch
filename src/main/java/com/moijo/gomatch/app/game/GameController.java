@@ -23,7 +23,7 @@ public class GameController {
 
     // 팀 순위 보여주는 메소드
     @GetMapping("/game/teamrank")
-    public String showTeamRankPage(@RequestParam(value = "year", required = false,  defaultValue = "2024") String year, Model model) {
+    public String showTeamRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model) {
         List<String[]> teamList = gameBatchComponent.scrapeTeamRank(year);
         model.addAttribute("teams", teamList);
         model.addAttribute("selectedYear", year);
@@ -55,7 +55,6 @@ public class GameController {
         return "game/listPage";
     }
 
-<<<<<<< HEAD
     // 야구장 날씨 보여주는 메소드
     @GetMapping("/game/weather")
     public String getStadiums(Model model) {
@@ -63,11 +62,4 @@ public class GameController {
         model.addAttribute("stadiums", stadiumList);
         return "game/weatherPage";
     }
-=======
-    // 경기 일정 등록하는 메소드 
-//    @PostMapping("/game/list")
-//    public String getGameList(Model model) {
-//
-//    }
->>>>>>> 06ddacec862630fa6635f0831f16971826d2f167
 }

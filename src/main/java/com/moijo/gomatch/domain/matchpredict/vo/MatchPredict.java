@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 @Getter
 @Setter
@@ -17,8 +18,8 @@ public class MatchPredict {
     private Long gameNo;
     private String matchPredictDecision;
     private String memberId;
-    private String matchPredictStatus;
+    private String teamA;
+    private String teamB;
     private String gameTime;
     private Timestamp regDate;
-    private Timestamp updateDate;
 }

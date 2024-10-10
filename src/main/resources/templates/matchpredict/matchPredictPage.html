@@ -40,18 +40,18 @@
                 </div>
                 <form name="add-form" action="/addPredict" method="post">
                     <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
-                    <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
+                    <input type="text" name="gameNo" th:value="${predict.gameNo}"/>
                     <input type="hidden" name="matchPredictNo" th:value="1">
-                    <input type="hidden" name="matchPredictDecision"/>
+                    <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
                     <div class="teams">
-                        <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]])">
+                        <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]],[[${predict.gameNo}]])">
                             <span th:text="${predict.teamA}"></span>
                             <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
                         </button>
-                        <button type="button" class="draw" th:onclick="setPrediction('무')">
+                        <button type="button" class="draw" th:onclick="setPrediction('무',[[${predict.gameNo}]]))">
                             <span class="vs">무승부</span>
                         </button>
-                        <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]])">
+                        <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]],[[${predict.gameNo}]])">
                             <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
                             <span th:text="${predict.teamB}"></span>
                         </button>
@@ -62,18 +62,34 @@
     </section>
 
     <aside class="calendar-section">
-        <div class="member-info">
+        <div class="member-info" th:if="${memberInfo != null}">
             <div class="member-id" name="member-id">
                 <div>
                     <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
-                    <span>홍길동님 안녕하세요</span>
+                    <span th:text="${memberInfo.memberNickname}"></span>
+                    <span>님 안녕하세요</span>
                 </div>
             </div>
             <div class="exp-point">
-                <span>현재 경험치는 1000 점 입니다.</span>
+                <span>현재 경험치는</span>
+                <span th:text="${memberInfo.experiencePoints}"></span>
+                <span>입니다.</span>
             </div>
             <div class="user-rank">
-                <span>현재 순위는 -위 입니다.</span>
+                <span>현재 순위는</span>
+                <span th:text="${memberInfo.rankPosition}">-위 </span>
+                <span>위 입니다.</span>
+            </div>
+            <div class="user-points">
+                <span>전체 예측에서 </span>
+                <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
+                <span th:text="${rankPercent}"></span>% 입니다.
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+        <div class="member-info" th:if="${memberInfo == null}">
+            <div class="member-id" name="member-id">
+                <butto type="button">로그인 하기</butto>
             </div>
         </div>
         <h3 class="calendar-title">2024.10</h3>
@@ -83,53 +99,22 @@
             <button class="week-date" type="button">10월 3주</button>
             <button class="week-date" type="button">10월 4주</button>
         </div>
-        <div class="user-points">
-            <p>전체 예측에서 <strong>18,076위</strong> 상위 28%입니다.</p>
-            <div class="progress-bar">
 
-            </div>
-        </div>
         <div class="top-predictors">
             <ol>
                 <h4>랭킹</h4>
-                <li>
+                <li th:each="member : ${memberRank}" class="rank-item">
                     <div class="rank-position">
                         <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-                        <span class="rank">1</span>
+                        <span th:text="${member.rankPosition}" class="rank"></span>
                     </div>
-                    <span class="name">김철수</span>
-                    <span class="points">760</span>
+                    <span th:text="${member.memberNickname}" class="name"></span>
+                    <span th:text="${member.experiencePoints}" class="points"></span>
                 </li>
-                <li>
-                    <div class="rank-position">
-                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-                        <span class="rank">2</span>
-                    </div>
-                    <span class="name">홍길동</span>
-                    <span class="points">750</span>
-                </li>
-                <li>
-                    <div class="rank-position">
-                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-                        <span class="rank">3</span>
-                    </div>
-                    <span class="name">아무개</span>
-                    <span class="points">740</span>
-                </li>
-                <div class="my-predictors">
-                    <li>
-                        <div class="rank-position">
-                            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
-                            <span class="rank">2</span>
-                        </div>
-                        <span class="name">홍길동<span>(나)</span></span>
-                        <span class="points">750</span>
-                    </li>
-                </div>
             </ol>
         </div>
         <div class="select-list">
-            <button>100위 더보기 ></button>
+            <button class="load-more">10위 더보기 ></button>
         </div>
     </aside>
 </main>
@@ -175,30 +160,55 @@
 
 <th:block th:replace="fragments/footer.html"></th:block>
 <script>
-    // function myPredict (memberId,gameNo){
-    //     location.href = "myMatchPredictPage.html?memberId=" + memberId + "&gameNo=" + gameNo;
-    // }
-
     function setPrediction(decision, gameNo) {
+
         //matchPredictDecision의 hidden input에 선택한 값을 설정
-        const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
+        const decisionInput = document.querySelector("input[name='matchPredictDecision']");
         if (decisionInput) {
             decisionInput.value = decision; // decisionInput이 null이 아닐 때만 설정
         }
-        const gameNoInput = document.querySelector("#gameNo"); // gameNo의 hidden input
+        const gameNoInput = document.querySelector("input[name='gameNo']"); // gameNo의 hidden input
         if (gameNoInput) {
             gameNoInput.value = gameNo; // gameNoInput이 null이 아닐 때만 설정
         }
+        console.log("Decision:", decision);
+        console.log("Game No:", gameNo);
         // 폼 제출
         const form = document.forms["add-form"]; // form 요소 찾기
         if (form) {
             form.submit(); // form이 null이 아닐 때만 제출
+
         }
     }
 
 
 
     document.addEventListener("DOMContentLoaded", function () {
+
+        let loadMoreBtn = document.querySelector(".load-more");
+        const allRankItem = document.querySelectorAll(".rank-item");
+
+        allRankItem.forEach((item,index) => {
+            if(index >= 3) {
+                item.style.display = "none";
+            }
+        })
+        loadMoreBtn.addEventListener("click", function() {
+            // 숨겨진 항목을 10개까지 보여줌
+            let shownCount = 0;
+
+            allRankItem.forEach(item => {
+                if (shownCount < 10 && item.style.display === "none") {
+                    item.style.display = "flex"; // flex 또는 원하는 display 스타일로 변경
+                    shownCount++;
+                }
+            });
+
+            // 더 이상 보여줄 항목이 없으면 버튼 숨김
+            if (shownCount < 10) {
+                loadMoreBtn.style.display = "none";
+            }
+        });
 
         // 이번주 기본적으로 활성화
         const weekly = document.querySelector(".week-date")

@@ -2,9 +2,13 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper">
-    <select id="selectAllMatchByMember" resultType="PredictDTO">
-        SELECT * from GAME
+    <select id="selectAllMatchByMember" resultType="MatchPredict">
+        SELECT P.MATCH_PREDICT_NO,G.GAME_NO,P.MATCH_PREDICT_DECISION,P.MEMBER_ID,G.TEAM_A,G.TEAM_B,G.GAME_TIME,G.REG_DATE
+        FROM GAME G
+        LEFT JOIN MATCH_PREDICT P
+        ON G.GAME_NO = P.GAME_NO
     </select>
+
 
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
         SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
@@ -40,7 +44,7 @@
 
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
-        VALUES (SEQ_GAME_NO.NEXTVAL,'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
+        VALUES (#{gameNo},'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
     </insert>
     <update id="updateMatchPredict">
         UPDATE MATCH_PREDICT

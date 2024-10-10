@@ -9,6 +9,7 @@
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
+
 <main class="main-content">
   <section class="prediction-section">
     <div class="btn-container">
@@ -63,7 +64,7 @@
   </section>
 
   <aside class="calendar-section">
-    <div class="member-info">
+    <div class="member-info" th:if="${memberInfo != null}">
       <div class="member-id" name="member-id">
         <div>
           <img class="profile-img" src="/img/LG로고.png" alt="프로필 이미지"/>
@@ -81,6 +82,17 @@
         <span th:text="${memberInfo.rankPosition}">-위 </span>
         <span>위 입니다.</span>
       </div>
+      <div class="user-points">
+        <span>전체 예측에서 </span>
+        <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
+        <span th:text="${rankPercent}"></span>% 입니다.
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+    <div class="member-info" th:if="${memberInfo == null}">
+      <div class="member-id" name="member-id">
+        <butto type="button">로그인 하기</butto>
+      </div>
     </div>
     <h3 class="calendar-title">2024.10</h3>
     <div class="calendar-week">
@@ -88,14 +100,6 @@
       <button class="week-date" type="button">10월 2주</button>
       <button class="week-date" type="button">10월 3주</button>
       <button class="week-date" type="button">10월 4주</button>
-    </div>
-    <div class="user-points">
-        <span>전체 예측에서 </span>
-        <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
-        <span th:text="${rankPercent}"></span>% 입니다.
-    <div class="progress-bar">
-
-      </div>
     </div>
     <div class="top-predictors">
       <ol>
