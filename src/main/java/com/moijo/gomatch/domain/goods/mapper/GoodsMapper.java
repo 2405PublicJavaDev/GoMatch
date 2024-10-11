@@ -1,10 +1,8 @@
 package com.moijo.gomatch.domain.goods.mapper;
 
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 

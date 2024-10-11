@@ -2,15 +2,25 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.admin.mapper.AdminMapper1">
-    <insert id="insertGoods" parameterType="com.moijo.gomatch.domain.admin.vo.AdminVO1">
+<!--    <insert id="insertGoods" parameterType="com.moijo.gomatch.domain.admin.vo.AdminVO1">-->
+<!--        INSERT INTO GOODS (GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE, GOODS_PRODUCT_CODE, GOODS_FROM, GOODS_MAKE_DATE, GOODS_OUT_DATE, GOODS_CATEGORY)-->
+<!--        VALUES (SEQ_GOODS_NO.NEXTVAL, #{goodsTeam}, #{goodsProductName}, #{goodsPrice}, #{goodsProductCode}, #{goodsFrom}, #{goodsMakeDate}, #{goodsOutDate}, #{goodsCategory})-->
+<!--    </insert>-->
+
+    <insert id="insertGoods" parameterType="com.moijo.gomatch.domain.admin.vo.AdminVO1" useGeneratedKeys="true" keyProperty="goodsNo" keyColumn="GOODS_NO">
         INSERT INTO GOODS (GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE, GOODS_PRODUCT_CODE, GOODS_FROM, GOODS_MAKE_DATE, GOODS_OUT_DATE, GOODS_CATEGORY)
         VALUES (SEQ_GOODS_NO.NEXTVAL, #{goodsTeam}, #{goodsProductName}, #{goodsPrice}, #{goodsProductCode}, #{goodsFrom}, #{goodsMakeDate}, #{goodsOutDate}, #{goodsCategory})
     </insert>
 
     <insert id="insertGoodsImage" parameterType="com.moijo.gomatch.domain.admin.vo.GoodsImageVO">
-        INSERT INTO GOODS_IMAGE
-        (GOODS_IMAGE_NO, GOODS_IMAGE_REP_YN, GOODS_IMAGE_REAL_PATH, GOODS_IMAGE_WEB_PATH, GOODS_IMAGE_ORDER, GOODS_NO, REG_DATE, UPDATE_DATE)
-        VALUES
-            (SEQ_GOODS_IMAGE_NO.NEXTVAL, #{goodsImageRepYn}, #{goodsImageRealPath}, #{goodsImageWebPath}, #{goodsImageOrder}, #{goodsNo}, SYSDATE, SYSDATE)
+        INSERT INTO GOODS_IMAGE (
+            GOODS_IMAGE_NO, GOODS_IMAGE_TYPE, GOODS_IMAGE_REP_YN, GOODS_IMAGE_REAL_PATH,
+            GOODS_IMAGE_WEB_PATH, GOODS_IMAGE_ORDER, GOODS_NO, REG_DATE, UPDATE_DATE
+        )
+        VALUES (
+                   SEQ_GOODS_IMAGE_NO.NEXTVAL, #{goodsImageType}, #{goodsImageRepYn},
+                   #{goodsImageRealPath}, #{goodsImageWebPath}, #{goodsImageOrder}, #{goodsNo},
+                   SYSDATE, SYSDATE
+               )
     </insert>
 </mapper>

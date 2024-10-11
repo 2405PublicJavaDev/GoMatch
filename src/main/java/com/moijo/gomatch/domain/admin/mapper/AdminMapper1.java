@@ -27,4 +27,6 @@ public interface AdminMapper1 {
     @Delete("DELETE FROM GOODS WHERE GOODS_NO = #{goodsNo}")
     void deleteGoods(Long goodsNo); // 상품 삭제
 
+    void insertGoodsImage(GoodsImageVO goodsImage); // 이미지 정보를 추가하는 메소드
+
 }

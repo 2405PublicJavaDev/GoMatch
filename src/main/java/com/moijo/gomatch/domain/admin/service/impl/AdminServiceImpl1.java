@@ -3,9 +3,9 @@ package com.moijo.gomatch.domain.admin.service.impl;
 import com.moijo.gomatch.domain.admin.mapper.AdminMapper1;
 import com.moijo.gomatch.domain.admin.service.AdminService1;
 import com.moijo.gomatch.domain.admin.vo.AdminVO1;
+import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -39,5 +39,10 @@ public class AdminServiceImpl1 implements AdminService1 {
     @Override
     public void deleteGoods(Long goodsNo) {
         adminMapper1.deleteGoods(goodsNo); // 상품 삭제
+    }
+
+    @Override
+    public void insertGoodsImage(GoodsImageVO goodsImage) {
+        adminMapper1.insertGoodsImage(goodsImage); // 이미지 등록
     }
 }

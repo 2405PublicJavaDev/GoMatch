@@ -9,8 +9,11 @@
 
 <form action="/admin1/insert" method="post" enctype="multipart/form-data">
 
-  <label for="goodsImage">상품 이미지 업로드:</label>
-  <input type="file" id="goodsImage" name="goodsImage" accept="image/*" required><br> <!-- 이미지 업로드 필드 추가 -->
+  <label for="goodsImage">대표 이미지 업로드:</label>
+  <input type="file" id="goodsImage" name="goodsImage" accept="image/*" required><br>
+
+  <label for="detailImages">상세 이미지 업로드:</label>
+  <input type="file" id="detailImages" name="detailImages" accept="image/*" multiple><br> <!-- 여러 개 파일 업로드 필드 추가 -->
 
   <label for="goodsTeam">팀명:</label>
   <input type="text" id="goodsTeam" name="goodsTeam" required><br>

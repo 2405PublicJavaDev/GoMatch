@@ -1,40 +1,49 @@
-<form action="/goods/search" method="get">
-    <select name="searchType">
-        <option value="all" selected>전체</option>
-        <option value="name">상품 이름</option>
-        <option value="code">상품 코드</option>
-    </select>
-    <input type="text" name="searchValue" placeholder="검색어를 입력하세요">
-    <button type="submit">검색</button>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>굿즈 수정</title>
+</head>
+<body>
+<h1>굿즈 수정</h1>
+
+<form action="/admin1/edit" method="post">
+
+    <!-- 상품 번호는 숨겨진 필드로 전달 -->
+    <input type="hidden" th:value="${goods.goodsNo}" name="goodsNo">
+
+    <label for="goodsTeam">팀명:</label>
+    <input type="text" id="goodsTeam" name="goodsTeam" th:value="${goods.goodsTeam}" required><br>
+
+    <label for="goodsProductName">상품 이름:</label>
+    <input type="text" id="goodsProductName" name="goodsProductName" th:value="${goods.goodsProductName}" required><br>
+
+    <label for="goodsPrice">가격:</label>
+    <input type="number" id="goodsPrice" name="goodsPrice" th:value="${goods.goodsPrice}" required><br>
+
+    <label for="goodsProductCode">상품 코드:</label>
+    <input type="text" id="goodsProductCode" name="goodsProductCode" th:value="${goods.goodsProductCode}" required><br>
+
+    <label for="goodsFrom">출처:</label>
+    <input type="text" id="goodsFrom" name="goodsFrom" th:value="${goods.goodsFrom}" required><br>
+
+    <label for="goodsMakeDate">제조일:</label>
+    <input type="date" id="goodsMakeDate" name="goodsMakeDate" th:value="${goods.goodsMakeDate}" required><br>
+
+    <label for="goodsOutDate">유통기한:</label>
+    <input type="date" id="goodsOutDate" name="goodsOutDate" th:value="${goods.goodsOutDate}" required><br>
+
+    <label for="goodsCategory">카테고리:</label>
+    <select id="goodsCategory" name="goodsCategory" th:value="${goods.goodsCategory}" required>
+        <option value="" disabled>카테고리 선택</option>
+        <option value="유니폼" th:selected="${goods.goodsCategory == '유니폼'}">유니폼</option>
+        <option value="모자" th:selected="${goods.goodsCategory == '모자'}">모자</option>
+        <option value="잡화" th:selected="${goods.goodsCategory == '잡화'}">잡화</option>
+        <option value="응원용품" th:selected="${goods.goodsCategory == '응원용품'}">응원용품</option>
+        <option value="야구용품" th:selected="${goods.goodsCategory == '야구용품'}">야구용품</option>
+    </select><br>
+
+    <button type="submit">수정</button>
 </form>
-
-<div>
-    <form action="/goods/category/list" method="get"> <!-- 수정된 부분 -->
-        <button type="submit" name="category" value="유니폼">유니폼</button>
-        <button type="submit" name="category" value="모자">모자</button>
-        <button type="submit" name="category" value="잡화">잡화</button>
-        <button type="submit" name="category" value="응원용품">응원용품</button>
-        <button type="submit" name="category" value="야구용품">야구용품</button>
-    </form>
-</div>
-
-<table border="1">
-    <thead>
-    <tr>
-        <th>상품 번호</th>
-        <th>팀</th>
-        <th>상품 이름</th>
-        <th>가격</th>
-        <th>상세 보기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="goods : ${goodsList}">
-        <td th:text="${goods.goodsNo}"></td>
-        <td th:text="${goods.goodsTeam}"></td>
-        <td th:text="${goods.goodsProductName}"></td>
-        <td th:text="${goods.goodsPrice}"></td>
-        <td><a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>
-    </tr>
-    </tbody>
-</table>
+</body>
+</html>
