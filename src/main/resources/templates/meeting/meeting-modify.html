@@ -43,6 +43,20 @@
 </header>
 
   <main>
+    <aside>
+      <div id="aside-main">
+        <div id="aside-content">
+          <span>소모임</span>
+          <hr  class="aside-header">
+          <ul>
+            <li><a href="/meeting/list" >소모임</a></li>
+            <li><a href="/board/list">게시판</a></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+    <div class="main-container">
+
     <h1>소모임 수정하기</h1>
     <form action="/meeting/modify" method="post" enctype="multipart/form-data">
       <input type="hidden" name="meetingNo" th:value="${meeting.meetingNo}">
@@ -104,6 +118,7 @@
         <button type="button" class="cancel" onclick="history.back()">취소</button>
       </div>
     </form>
+    </div>
   </main>
   <footer class="footer-page">
     <div class="footer-content">

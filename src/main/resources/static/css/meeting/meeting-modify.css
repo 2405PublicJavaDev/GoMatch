@@ -11,14 +11,70 @@
     font-weight: normal;
     font-style: normal;
 }
+/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
+}
 
-/* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
-main {
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin : 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    --color: black;
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+
+/* 기본 컨테이너 설정 */
+.main-container {
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
 }
+/* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
+
 h1 {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif;
     text-align: center;

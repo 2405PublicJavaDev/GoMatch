@@ -11,14 +11,69 @@
     font-weight: normal;
     font-style: normal;
 }
-/* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
-main {
+/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
+}
 
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin : 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    --color: black;
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+
+/* 기본 컨테이너 설정 */
+.main-container {
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
 }
+
 h1 {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
     text-align: center;
@@ -42,7 +97,7 @@ label {
 }
 /* 경기 날짜 선택 인풋의 너비를 40%로 줄이고 글꼴 동일하게 설정 */
 #gameDate {
-    width: 500px;
+    width: 30% !important;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -59,7 +114,7 @@ input[type="text"], input[type="date"], select, textarea {
 textarea {
     resize: none; /* 사이즈 변경 불가 */
     width: 100%; /* 기본 넓이 설정 */
-    height: 150px; /* 기본 높이 설정 */
+    height: 200px; /* 기본 높이 설정 */
     padding: 8px; /* 여백 설정 */
     border: 1px solid #ccc;
     border-radius: 4px;

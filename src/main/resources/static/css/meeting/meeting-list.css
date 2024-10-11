@@ -11,14 +11,14 @@
     font-weight: normal;
     font-style: normal;
 }
-/* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
-/* aside css */
+/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
 aside {
     --width: 15%;
     float: left;
 }
 
 #aside-main {
+    margin-top: 50px;
     margin-left: 150px;
     background-color: #16215F;
     border-radius: 30px;
@@ -65,7 +65,6 @@ aside {
 .aside-header {
     margin-top: 50px;
 }
-
 /* 기본 컨테이너 설정 */
 .container {
     font-family: Arial, sans-serif;
@@ -147,7 +146,7 @@ h1 {
 }
 /* 달력 안내 문구 스타일 */
 .calendar-note {
-    font-size: 12px;
+    /*font-size: 12px;*/
     color: #a63446; /* 안내 문구 색상 */
     text-align: center;
     margin-top: 5px; /* 위쪽 여백 */

@@ -2,11 +2,13 @@ package com.moijo.gomatch.domain.meeting.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
 @Getter
 @Setter
+@ToString
 public class MeetingBoardReplyVO {
     private int meetingReplyNo;
     private String meetingReplyContent;

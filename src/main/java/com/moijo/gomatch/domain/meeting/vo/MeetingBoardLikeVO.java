@@ -2,10 +2,12 @@ package com.moijo.gomatch.domain.meeting.vo;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 @Getter
 @Setter
+@ToString
 public class MeetingBoardLikeVO {
     private int meetingFileNo;
     private String fileName;

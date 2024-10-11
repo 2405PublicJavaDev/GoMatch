@@ -42,8 +42,15 @@ public class MeetingController {
     @GetMapping("/meeting/register")
     public String showAddMeetingPage(HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
+        String memberNickName = (String) session.getAttribute("memberNickName");
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
-        return memberId != null ? "meeting/meeting-register" : "meeting/meeting-list";
+        if(memberId == null) {
+            return "meeting/meeting-list";
+        }else {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", memberNickName);
+        }
+        return "meeting/meeting-register";
     }
 
     /**
@@ -90,8 +97,11 @@ public class MeetingController {
      */
     @GetMapping("/meeting/list")
     public String showMeetingList(Model model, HttpSession session) {
+        model.addAttribute("loggedIn", true);
+        String memberNickName = (String) session.getAttribute("memberNickName");
+        model.addAttribute("memberNickName", memberNickName);
         // 예시 팀 이름 리스트를 모델에 추가
-        model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
+        model.addAttribute("teams", List.of("KIA", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
         String today = LocalDate.now().toString();
         List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
@@ -105,6 +115,8 @@ public class MeetingController {
         model.addAttribute("attendeesCountMap", attendeesCountMap);
         return "meeting/meeting-list";
     }
+
+
     @GetMapping("/meeting/gameDates")
     @ResponseBody
     public List<String> getAllGameDates() {
@@ -150,6 +162,9 @@ public class MeetingController {
     @GetMapping("/meeting/detail/{meetingNo}")
     public String showMeetingDetailPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
+        model.addAttribute("loggedIn", true);
+        String memberNickName = (String) session.getAttribute("memberNickName");
+        model.addAttribute("memberNickName", memberNickName);
         log.info("세션에서 가져온 memberId: " + memberId);
 
         // 소모임 상세 정보, 파일, 참석자 조회
@@ -199,6 +214,9 @@ public class MeetingController {
     @GetMapping("/meeting/modify/{meetingNo}")
     public String showModifyMeetingPage(@PathVariable("meetingNo") long meetingNo, HttpSession session, Model model) {
         String memberId = (String) session.getAttribute("memberId");
+        model.addAttribute("loggedIn", true);
+        String memberNickName = (String) session.getAttribute("memberNickName");
+        model.addAttribute("memberNickName", memberNickName);
         if (memberId == null) {
             return "common/oops";
         }
