@@ -3,31 +3,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.matchpredict.mapper.MatchPredictMapper">
     <select id="selectAllMatchByMember" resultType="MatchPredict">
-        SELECT P.MATCH_PREDICT_NO,G.GAME_NO,P.MATCH_PREDICT_DECISION,P.MEMBER_ID,G.TEAM_A,G.TEAM_B,G.GAME_TIME,G.REG_DATE
+        SELECT P.MATCH_PREDICT_NO,G.GAME_NO,P.MATCH_PREDICT_DECISION,M.MEMBER_ID,G.TEAM_A,G.TEAM_B,G.GAME_TIME,G.GAME_DATE,G.REG_DATE
         FROM GAME G
         LEFT JOIN MATCH_PREDICT P
         ON G.GAME_NO = P.GAME_NO
+        LEFT JOIN MEMBER M
+        ON P.MEMBER_ID = M.MEMBER_ID
     </select>
-
 
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
         SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
         FROM MEMBER M
-        JOIN USER_RANK U
+        LEFT JOIN USER_RANK U
         ON M.MEMBER_ID = U.MEMBER_ID
     </select>
 
     <select id="selectAllMyMatchByMember" resultType="MyPredictDTO">
-        SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,P.MATCH_PREDICT_DECISION,P.MEMBER_ID
+        SELECT G.GAME_NO,G.GAME_DATE,G.GAME_TIME,G.TEAM_A,G.TEAM_B,P.MATCH_PREDICT_DECISION,M.MEMBER_ID
         FROM MATCH_PREDICT P
-        JOIN GAME G ON P.GAME_NO = G.GAME_NO
+        LEFT JOIN GAME G
+        ON P.GAME_NO = G.GAME_NO
+        JOIN MEMBER M
+        ON P.MEMBER_ID = M.MEMBER_ID
         WHERE P.MEMBER_ID = #{memberId}
     </select>
 
     <select id="selectMemberInfo" resultType="MemberDTO">
-        SELECT M.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
+        SELECT U.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
         FROM MEMBER M
-        JOIN USER_RANK U
+        LEFT JOIN USER_RANK U
         ON M.MEMBER_ID = U.MEMBER_ID
         WHERE M.MEMBER_ID = #{memberId}
     </select>
@@ -41,10 +45,21 @@
         WHERE MEMBER_ID = #{memberId}
     </select>
 
+    <select id="selectPredictByToday" resultType="MatchPredict">
+        SELECT *
+        FROM GAME
+        WHERE GAME_DATE = CURDATE()
+    </select>
+
+    <select id="selectPredictByDate" resultType="MatchPredict">
+        SELECT *
+        FROM MATCH_PREDICT
+        WHERE GAME_DATE = #{gameDate}
+    </select>
 
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
-        VALUES (#{gameNo},'user1', SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
+        VALUES (#{gameNo},#{memberId}, SEQ_MATCH_PREDICT.NEXTVAL, #{matchPredictDecision}, SYSDATE)
     </insert>
     <update id="updateMatchPredict">
         UPDATE MATCH_PREDICT

@@ -6,6 +6,8 @@ import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper
@@ -16,6 +18,14 @@ public interface MatchPredictMapper {
      * @return
      */
     List<MatchPredict> selectAllMatchByMember();
+
+    /**
+     * 날짜 별 승부예측 리스트
+     * @param selectedDate
+     * @return
+     */
+    List<MatchPredict> selectPredictByDate(String selectedDate);
+    
 
     /**
      * 회원 순윌 리스트 조회
@@ -67,5 +77,6 @@ public interface MatchPredictMapper {
      * @return
      */
     int updateMatchPredict(String memberId,Long gameNo,String matchPredictDecision);
+
 
 }

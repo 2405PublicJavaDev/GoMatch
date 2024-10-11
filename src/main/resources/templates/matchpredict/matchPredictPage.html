@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>승부예측</title>
-    <link rel="stylesheet" href="/css/MatchPredict.css">
+    <link rel="stylesheet" href="/css/matchPredict.css">
     <link rel="stylesheet" href="/css/header-footer.css">
 </head>
 <body>
@@ -35,12 +35,13 @@
                     GoMatch
                 </span>
                 <div class="upcoming-games">
-                    <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
+                    <span th:text="${predict.gameTime}" class="time"></span>
+                    <p>경기 예정</p>
                     <span class="time-out">후 종료</span>
                 </div>
                 <form name="add-form" action="/addPredict" method="post">
                     <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
-                    <input type="text" name="gameNo" th:value="${predict.gameNo}"/>
+                    <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
                     <input type="hidden" name="matchPredictNo" th:value="1">
                     <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
                     <div class="teams">
@@ -89,7 +90,7 @@
         </div>
         <div class="member-info" th:if="${memberInfo == null}">
             <div class="member-id" name="member-id">
-                <butto type="button">로그인 하기</butto>
+                <button type="button">로그인 하기</button>
             </div>
         </div>
         <h3 class="calendar-title">2024.10</h3>
@@ -105,12 +106,22 @@
                 <h4>랭킹</h4>
                 <li th:each="member : ${memberRank}" class="rank-item">
                     <div class="rank-position">
-                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
                         <span th:text="${member.rankPosition}" class="rank"></span>
                     </div>
                     <span th:text="${member.memberNickname}" class="name"></span>
                     <span th:text="${member.experiencePoints}" class="points"></span>
                 </li>
+                <div th:if="${member != null}">
+                    <li class="rank-item">
+                        <div class="rank-position">
+                            <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
+                            <span th:text="${memberInfo.rankPosition}" class="rank"/>
+                        </div>
+                        <span th:text="${memberInfo.memberNickname}" class="name"></span>
+                        <span th:text="${memberInfo.experiencePoints}" class="points"></span>
+                    </li>
+                </div>
             </ol>
         </div>
         <div class="select-list">
@@ -171,8 +182,6 @@
         if (gameNoInput) {
             gameNoInput.value = gameNo; // gameNoInput이 null이 아닐 때만 설정
         }
-        console.log("Decision:", decision);
-        console.log("Game No:", gameNo);
         // 폼 제출
         const form = document.forms["add-form"]; // form 요소 찾기
         if (form) {
@@ -180,8 +189,19 @@
 
         }
     }
+    // 날짜 배열 생성 함수
+    function createDateArray(startDate, numberOfDays) {
+        const dateArray = [];
+        const currentDate = new Date(startDate);
 
+        for (let i = 0; i < numberOfDays; i++) {
+            const date = new Date(currentDate);
+            dateArray.push(date.toISOString().split('T')[0]);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
 
+        return dateArray;
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -216,9 +236,9 @@
 
         const dateSelector = document.querySelector('.date-selector');
         const today = new Date();
-        const options = { month: 'numeric', day: 'numeric' };
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-        // 오늘 날짜부터 7일 동안의 날짜 생성
+        // 7일 간의 날짜 버튼 생성
         for (let i = 0; i < 7; i++) {
             const date = new Date();
             date.setDate(today.getDate() + i);
@@ -236,13 +256,69 @@
             // date-selector에 버튼 추가
             dateSelector.appendChild(button);
 
-            // 날짜 버튼 클릭 시 스타일 전환
+            // 날짜 버튼 클릭 시 스타일 전환 및 데이터 조회
             button.addEventListener('click', function () {
                 const allButtons = document.querySelectorAll('.date');
                 allButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
+
+                // 선택한 날짜를 포맷하여 문자열로 변환
+                const selectedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식
+
+                // 승부 예측 리스트를 조회하는 함수 호출
+                fetchPredictionsByDate(selectedDate);
             });
         }
+
+        // 날짜에 따라 승부 예측 리스트를 조회하는 함수
+        function fetchPredictionsByDate(date) {
+            fetch(`/matchPredict/list?gameDate=${date}`) // 해당 날짜에 대한 예측 리스트 API
+                .then(response => response.json())
+                .then(data => {
+                    const gameList = document.querySelector('.game-list');
+                    gameList.innerHTML = ''; // 기존 리스트 초기화
+
+                    // 서버에서 받은 데이터를 화면에 표시
+                    data.forEach(predict => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'game-item';
+                        listItem.innerHTML = `
+                    <span class="league">
+                        <img src="/img/고매치로고.png">
+                        GoMatch
+                    </span>
+                    <div class="upcoming-games">
+                        <span class="time">${predict.gameTime}</span>
+                        <p>경기 예정</p>
+                        <span class="time-out">후 종료</span>
+                    </div>
+                    <form name="add-form" action="/addPredict" method="post">
+                        <input type="hidden" name="memberId" value="${predict.memberId}"/>
+                        <input type="hidden" name="gameNo" value="${predict.gameNo}"/>
+                        <input type="hidden" name="matchPredictNo" value="1">
+                        <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
+                        <div class="teams">
+                            <button type="button" class="team-a" onclick="setPrediction('${predict.teamA}', '${predict.gameNo}')">
+                                <span>${predict.teamA}</span>
+                                <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                            </button>
+                            <button type="button" class="draw" onclick="setPrediction('무', '${predict.gameNo}')">
+                                <span class="vs">무승부</span>
+                            </button>
+                            <button type="button" class="team-b" onclick="setPrediction('${predict.teamB}', '${predict.gameNo}')">
+                                <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                                <span>${predict.teamB}</span>
+                            </button>
+                        </div>
+                    </form>
+                `;
+                        gameList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching predictions by date:', error));
+        }
+
+
 
         // 승부 예측 버튼에 active 클래스를 추가
         const matchPredictBtn = document.querySelector(".match-predict-btn");

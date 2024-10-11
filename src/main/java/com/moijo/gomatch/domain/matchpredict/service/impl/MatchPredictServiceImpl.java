@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -26,6 +28,16 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     @Override
     public List<MatchPredict> getAllMatchByMember() {
         return matchPredictMapper.selectAllMatchByMember();
+    }
+
+    /**
+     *
+     * @param selectedDate
+     * @return
+     */
+    @Override
+    public List<MatchPredict> getPredictionsByDate(String selectedDate) {
+        return matchPredictMapper.selectPredictByDate(selectedDate);
     }
 
     /**
@@ -53,6 +65,11 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
 
+    /**
+     * 회원 정보
+     * @param memberId
+     * @return
+     */
     @Override
     public MemberDTO getMemberInfo(String memberId) {
         MemberDTO memberDTO = (MemberDTO) matchPredictMapper.selectMemberInfo(memberId);
@@ -86,11 +103,20 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         return result;
     }
 
+    /**
+     * 전체 회원
+     * @return
+     */
     @Override
     public Long getTotalMemberCount() {
         return matchPredictMapper.getTotalMemberCount();
     }
 
+    /**
+     * 순위 퍼센트
+     * @param memberId
+     * @return
+     */
     @Override
     public double calculatorRankPercent(String memberId) {
         Long totalMember = getTotalMemberCount(); // 전체 회원 정보
@@ -107,4 +133,7 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         }
         return 0.0;
     }
+
+
+
 }
