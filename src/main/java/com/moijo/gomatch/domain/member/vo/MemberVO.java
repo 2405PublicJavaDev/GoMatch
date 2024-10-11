@@ -45,9 +45,9 @@ public class MemberVO {
     private String memberStatus;
     private Timestamp regDate;
     private Timestamp updateDate;
-    private String kakaoProfile;
     private String preferenceClub;
-    private MemberFile memberFile;
+    private String kakaoProfile;
+    private String profileImageUrl;
 
 //    private boolean emailVerified = false;
 //    private String emailVerificationCode;

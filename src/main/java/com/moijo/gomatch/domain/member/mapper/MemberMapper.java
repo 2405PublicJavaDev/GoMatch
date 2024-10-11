@@ -33,4 +33,13 @@ public interface MemberMapper {
     MemberVO findByIdAndEmail(@RequestParam("memberId") String memberId, @RequestParam("email") String email);
     void updatePassword(@RequestParam("memberId") String memberId, @RequestParam("password") String password);
 
+    /**
+     * 회원정보 수정 mapper
+     */
+    int updateMember(MemberVO memberVO);
+    MemberVO getMemberById(String memberId);
+
+    int modifyMember(MemberVO memberVO);
+
+    void deleteMember(String memberId);
 }

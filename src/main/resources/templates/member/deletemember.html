@@ -1,31 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 탈퇴</title>
-    <link rel="stylesheet" href="../css/deletemember.css">
-    <link rel="stylesheet" href="../css/header_footer.css">
+    <link rel="stylesheet" href="../css/member/deletemember.css">
+    <link rel="stylesheet" href="../css/header-footer.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <!-- 헤더 부분 -->
-<header>
-    <nav>
-        <div class="logo">
-            <a href="./mainpage.html"><img src="../images/고매치로고.png" alt="야구 리그 로고"></a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
-            <li><a href="#">굿즈</a></li>
-            <li><a href="#">소모임</a></li>
-            <li><a href="#">승부예측</a></li>
-        </ul>
-        <ul class="memeber-links">
-            <li><a href="loginpage.html">로그인</a></li>
-            <li><a href="joinmember.html">회원가입</a></li>
-        </ul>
-    </nav>
-</header>
+<th:block th:replace="fragments/header.html"></th:block>
 
 <main>
     <div class="delete-container">
@@ -33,53 +18,50 @@
         <div class="form-content">
             <div class="form-inputs">
                 <div class="form-group">
-                    <label for="user-id">아이디 입력</label>
-                    <input type="text" id="user-id" name="user-id" placeholder="아이디를 입력해주세요">
-                </div>
-                <div class="form-group">
                     <label for="password">비밀번호 입력</label>
-                    <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요">
+                    <input type="password" id="password" name="password" required>
                 </div>
-                <button class="submit-btn">회원 탈퇴</button>
+                <button type="button" id="deleteButton" class="submit-btn">회원 탈퇴</button>
             </div>
             <div class="form-message">
                 <h3>꼭! 아래 내용을 확인해주세요</h3>
                 <div class="form-message-box">
-                    <p>회원 탈퇴 시 모든 개인 정보와 활동 내역이 삭제됩니다. <br>
-                        이 작업은 되돌릴 수 없으므로 신중하게 결정해 주시기 바랍니다.</p>
+                    회원 탈퇴 시 모든 개인 정보와 활동 내역이 삭제됩니다.<br>
+                    이 작업은 되돌릴 수 없으므로 신중하게 결정해 주시기 바랍니다.
                 </div>
             </div>
         </div>
     </div>
 </main>
-
 <!-- 메인태그 닫고 로고 푸터 시작  -->
-<div class="team-logos">
-    <div class="team-logos-container">
-        <a href="#"><img src="../images/LG로고.png" alt="Twins" class="team-logo"></a>
-        <a href="#"><img src="../images/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-        <a href="#"><img src="../images/SSG로고.png" alt="Landers" class="team-logo"></a>
-        <a href="#"><img src="../images/NC로고.png" alt="Dinos" class="team-logo"></a>
-        <a href="#"><img src="../images/두산로고.png" alt="Bears" class="team-logo"></a>
-        <a href="#"><img src="../images/기아로고.png" alt="Tigers" class="team-logo"></a>
-        <a href="#"><img src="../images/롯데로고.png" alt="Giants" class="team-logo"></a>
-        <a href="#"><img src="../images/삼성로고.png" alt="Lions" class="team-logo"></a>
-        <a href="#"><img src="../images/한화로고.png" alt="Wiz" class="team-logo"></a>
-        <a href="#"><img src="../images/키움로고.png" alt="Heroes" class="team-logo"></a>
-    </div>
-</div>
-</div>
-<footer class="footer-page">
-    <div class="footer-content">
-        <div class="logo">
-            <img src="../images/고매치로고.png" alt="GoMatch 로고">
-        </div>
-        <div class="footer-text">
-            <p>게인정보 처리방침</p>
-            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-            <p>Copyright © GoMatch</p>
-        </div>
-    </div>
-</footer>
+<th:block th:replace="fragments/footer.html"></th:block>
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('#deleteButton').click(function() {
+            var password = $('#password').val();
+            if (!password) {
+                alert('비밀번호를 입력해주세요.');
+                return;
+            }
+
+            if (confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                $.ajax({
+                    url: /*[[@{/member/delete}]]*/ '/member/delete',
+                    type: 'POST',
+                    data: { password: password },
+                    success: function(response) {
+                        alert('회원 탈퇴가 완료되었습니다.');
+                        window.location.href = /*[[@{/}]]*/ '/';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('회원 탈퇴 처리 중 오류가 발생했습니다: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
 </body>
+
 </html>

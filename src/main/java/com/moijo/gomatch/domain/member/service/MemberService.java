@@ -1,7 +1,9 @@
 package com.moijo.gomatch.domain.member.service;
 
 import com.moijo.gomatch.domain.member.vo.MemberVO;
-import org.springframework.stereotype.Service;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {
 
@@ -34,5 +36,13 @@ public interface MemberService {
      * @param email
      */
     boolean resetPassword(String memberId, String email);
+
+    boolean checkPassword(String memberId, String password);
+    String uploadProfileImage(MultipartFile file);
+    MemberVO getMemberById(String memberId);
+    boolean modifyMember(MemberVO memberVO);
+
+
+    boolean deleteMember(String memberId, String password);
 
 }
