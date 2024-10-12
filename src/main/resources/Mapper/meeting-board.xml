@@ -3,4 +3,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingBoardMapper">
 
+    <!-- 게시글 등록 -->
+    <insert id="insertBoard" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
+        <selectKey resultType="long" keyProperty="meetingBoardNo" order="BEFORE">
+            SELECT SEQ_MEETING_BOARD_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING_BOARD (
+        MEETING_BOARD_NO,
+        MEETING_BOARD_TITLE,
+        MEETING_BOARD_CONTENT,
+        MEETING_BOARD_CATEGORY,
+        MEMBER_ID,
+        REG_DATE,
+        UPDATE_DATE
+        ) VALUES (
+        #{meetingBoardNo},
+        #{meetingBoardTitle},
+        #{meetingBoardContent},
+        #{meetingBoardCategory},
+        #{memberId},
+        SYSDATE,
+        SYSDATE
+        )
+    </insert>
+
+    <!-- 첨부파일 등록 -->
+    <insert id="insertBoardFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO">
+        <selectKey resultType="long" keyProperty="meetingBoardFileNo" order="BEFORE">
+            SELECT SEQ_MEETING_BOARD_FILE_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING_BOARD_FILE (
+        MEETING_BOARD_FILE_NO,
+        MEETING_BOARD_NO,
+        FILE_NAME,
+        FILE_RENAME,
+        FILE_PATH,
+        WEB_PATH,
+        FILE_ORDER,
+        REG_DATE,
+        UPDATE_DATE
+        ) VALUES (
+        #{meetingBoardFileNo},
+        #{meetingBoardNo},
+        #{fileName},
+        #{fileRename},
+        #{filePath},
+        #{webPath},
+        #{fileOrder},
+        SYSDATE,
+        SYSDATE
+        )
+    </insert>
 </mapper>

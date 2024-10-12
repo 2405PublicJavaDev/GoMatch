@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 등록 - Go Match</title>
+    <!-- 메인 css -->
+    <link rel="stylesheet" href="/css/board/board-register.css">
+    <!-- 헤더/푸터 CSS-->
+    <link rel="stylesheet" href="/css/header-footer.css">
+    <!-- Toast UI Editor & Color Syntax Plugin CSS -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <a th:href="@{/}"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/game/list">일정/결과</a></li>
+            <li><a href="/goods/list">굿즈</a></li>
+            <li><a href="/meeting/list">소모임</a></li>
+            <li><a href="/matchPredict">승부예측</a></li>
+        </ul>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"><span th:text="${memberNickName + ' 님'}"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
+        </ul>
+    </nav>
+    <script>
+        function confirmLogout() {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                window.location.href = "/member/logout";
+            }
+        }
+    </script>
+</header>
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>게시판</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div class="main-container">
+        <h1>게시글 등록</h1>
+        <form action="/board/register" method="post" enctype="multipart/form-data" onsubmit="syncEditorContent()">
+            <!-- 게시글 카테고리 -->
+            <div class="form-group">
+                <label for="meetingBoardCategory">카테고리</label>
+                <select id="meetingBoardCategory" name="meetingBoardCategory" required>
+                    <option value="">카테고리를 선택하세요</option>
+                    <option value="moijo">모임후기</option>
+                    <option value="freeboard">자유게시판</option>
+                </select>
+            </div>
+            <!-- 게시글 제목 -->
+            <div class="form-group">
+                <label for="meetingBoardTitle">제목</label>
+                <input type="text" id="meetingBoardTitle" name="meetingBoardTitle" placeholder="제목을 입력하세요" required>
+            </div>
+            <!-- 게시글 내용 -->
+            <div class="form-group">
+                <label for="meetingBoardContent">내용</label>
+                <div id="editor"></div>
+                <input type="hidden" id="meetingBoardContent" name="meetingBoardContent">
+            </div>
+            <!-- 파일 업로드 필드 -->
+            <div class="form-group">
+                <label for="groupImage">첨부 파일</label>
+                <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple onchange="previewFiles()" />
+            </div>
+            <!-- 썸네일이 보여질 영역 -->
+            <div id="thumbnailContainer"></div>
+            <div class="buttons">
+                <button type="submit" class="submit">등록</button>
+                <button type="button" class="cancel" onclick="history.back()">취소</button>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>개인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Script 부분 -->
+<script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js"></script>
+<script>
+    const { Editor } = toastui;
+    const { colorSyntax } = Editor.plugin;
+
+    const editor = new Editor({
+        el: document.querySelector('#editor'),
+        height: '500px',
+        initialEditType: 'wysiwyg', // WYSIWYG 모드로 설정하여 HTML 형식의 이미지가 바로 표시되도록 합니다.
+        previewStyle: 'vertical',
+        placeholder: '📌욕설이나 비방, 모욕, 선정성이 존재하는 사진이나 게시글은 업로드하지 말아주세요📌',
+        plugins: [colorSyntax],
+        toolbarItems: [
+            ['bold', 'italic', 'strike'],
+            ['hr'],
+            ['ul', 'ol', 'task', 'indent', 'outdent'],
+            ['table', 'image', 'link'],
+            ['code', 'codeblock']
+        ],
+        hooks: {
+            addImageBlobHook: async (blob, callback) => {
+                const formData = new FormData();
+                formData.append('file', blob);
+
+                try {
+                    const response = await fetch('/upload/image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    const imageUrl = result.url;
+
+                    // callback을 사용하여 WYSIWYG 및 마크다운 모드에서 이미지가 삽입되도록 합니다.
+                    callback(imageUrl, '이미지 설명');
+                } catch (error) {
+                    console.error('이미지 업로드 실패:', error);
+                }
+            }
+        }
+    });
+
+    function syncEditorContent() {
+        document.getElementById('meetingBoardContent').value = editor.getMarkdown();
+    }
+
+    function previewFiles() {
+        const previewContainer = document.getElementById('thumbnailContainer');
+        const files = document.getElementById('groupImage').files;
+        previewContainer.innerHTML = '';
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('thumbnail');
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+
+
+</body>
+</html>

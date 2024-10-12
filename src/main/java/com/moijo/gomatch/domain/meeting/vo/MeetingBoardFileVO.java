@@ -10,11 +10,13 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 public class MeetingBoardFileVO {
-    private int meetingFileNo;
+    private Long meetingBoardFileNo;
     private String fileName;
+    private String fileRename;
     private String filePath;
+    private int fileOrder;
+    private int meetingBoardNo;
+    private String webPath;
     private Timestamp regDate;
     private Timestamp updateDate;
-    private int fileOrder;
-    private int meetingNo;
 }

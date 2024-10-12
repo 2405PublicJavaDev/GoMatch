@@ -4,18 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 public class MeetingBoardVO {
-    private int meetingBoardNo;
+    private Long meetingBoardNo;
     private String meetingBoardTitle;
     private String meetingBoardContent;
     private String meetingBoardCategory;
     private String memberId;
-    private Timestamp regDate;
-    private Timestamp updateDate;
+    private LocalDateTime regDate;
+    private LocalDateTime updateDate;
 
 }

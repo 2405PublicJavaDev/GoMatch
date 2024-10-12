@@ -101,7 +101,7 @@ public class MeetingController {
         String memberNickName = (String) session.getAttribute("memberNickName");
         model.addAttribute("memberNickName", memberNickName);
         // 예시 팀 이름 리스트를 모델에 추가
-        model.addAttribute("teams", List.of("KIA", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
+        model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
         String today = LocalDate.now().toString();
         List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
@@ -248,31 +248,22 @@ public class MeetingController {
         if (memberId == null) {
             return "common/oops";
         }
-
         MeetingVO existingMeeting = meetingService.getMeetingsByMeetingNo(meetingVO.getMeetingNo());
         if (!memberId.equals(existingMeeting.getMemberId())) {
             return "common/oops";
         }
-
         meetingVO.setMemberId(memberId);
         meetingService.updateMeeting(meetingVO);
-
         // 삭제할 파일 확인
         if (fileDeleteIds != null && !fileDeleteIds.isEmpty()) {
             log.info("삭제할 파일 ID 목록: " + fileDeleteIds);
             meetingService.deleteMeetingFiles(fileDeleteIds);
         }
-
         if (newFiles != null && !newFiles.isEmpty()) {
             fileUtil.uploadFiles(newFiles, meetingVO.getMeetingNo(), "meeting");
         }
-
         return "redirect:/meeting/detail/" + meetingVO.getMeetingNo();
     }
-
-
-
-
 
     /**
      * 담당자 : 김윤경
@@ -292,8 +283,6 @@ public class MeetingController {
         meetingService.removeMeeting(meetingNo);
         return "redirect:/meeting/list";
     }
-
-
 
     // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 소모임 참석/취소 (MeetingAttend) ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ //
     /**

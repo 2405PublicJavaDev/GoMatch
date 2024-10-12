@@ -186,83 +186,30 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const itemsPerPage = 10; // 페이지당 10개 항목
-        let currentPage = 1; // 현재 페이지 번호
-        let totalPages = 1; // 전체 페이지 수
-        let data = []; // 데이터를 전역 변수로 설정하여 fetch 후 사용할 수 있게 함
-        var selectedTeam = '전체'; // 기본값 '전체'
-        var selectedDate = new Date().toISOString().split('T')[0]; // 초기값은 오늘 날짜로 설정
-        var calendarEl = document.getElementById('calendar');
-        var selectedDateElement = null;
-        var gameDates = []; // 경기 날짜를 저장할 배열
+        const itemsPerPage = 10;
+        let currentPage = 1;
+        let totalPages = 1;
+        let data = [];
+        let selectedTeam = '전체';
+        let selectedDate = new Date().toISOString().split('T')[0];
+        const calendarEl = document.getElementById('calendar');
+        let selectedDateElement = null;
+        let gameDates = [];
 
-        if (!calendarEl) {
-            console.error("캘린더 요소를 찾을 수 없습니다. ID가 'calendar'인지 확인하세요.");
-            return;
-        }
-
-        // 서버에서 경기 날짜 가져오기
-        fetch('/meeting/gameDates')
-            .then(response => response.json())
-            .then(dates => {
-                gameDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
-                renderCalendar();  // fetch 완료 후 달력을 렌더링
-            })
-            .catch(error => {
-                console.error('경기 날짜 불러오기 중 오류 발생:', error);
-                renderCalendar(); // 오류 발생 시에도 기본 달력 렌더링
-            });
-
-        // 달력 렌더링 함수
-        function renderCalendar() {
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'ko',
-                height: 'auto',
-                contentHeight: 'auto',
-                dayCellContent: function (e) {
-                    e.dayNumberText = e.dayNumberText.replace('일', '');
-                },
-                validRange: {
-                    start: new Date().toISOString().split('T')[0]
-                },
-                dateClick: function (info) {
-                    selectedDate = info.dateStr;
-                    currentPage = 1; // 날짜 클릭 시 페이지를 1로 리셋
-                    if (selectedDateElement) {
-                        selectedDateElement.classList.remove('fc-day-selected');
-                    }
-                    selectedDateElement = info.dayEl;
-                    selectedDateElement.classList.add('fc-day-selected');
-                    loadMeetings();
-                },
-                dayCellDidMount: function (info) {
-                    const dateStr = info.date.toISOString().split('T')[0];
-                    if (gameDates.includes(dateStr)) {
-                        info.el.classList.add('game-date');
-                    }
-                },
-                datesSet: function () {
-                    applyGameDates();
-                }
-            });
-            calendar.render();
+        // 팀 필터 함수
+        window.filterByTeam = function(team) {
+            selectedTeam = team;
+            currentPage = 1;
+            document.querySelectorAll('.tag').forEach(tag => tag.classList.remove('active'));
+            const selectedTag = document.querySelector(`.tag[onclick="filterByTeam('${team}')"]`);
+            if (selectedTag) {
+                selectedTag.classList.add('active');
+            }
             loadMeetings();
         }
 
-        function applyGameDates() {
-            document.querySelectorAll('.fc-daygrid-day').forEach(dayCell => {
-                const dateStr = dayCell.getAttribute('data-date');
-                if (gameDates.includes(dateStr)) {
-                    dayCell.classList.add('game-date');
-                } else {
-                    dayCell.classList.remove('game-date');
-                }
-            });
-        }
-
-        // SweetAlert2를 사용하여 로그인 확인 팝업
-        function registerMeeting() {
+        // 소모임 개설하기 버튼 함수
+        window.registerMeeting = function() {
             fetch('/meeting/checkLogin')
                 .then(response => response.json())
                 .then(data => {
@@ -289,6 +236,65 @@
                 });
         }
 
+        // 서버에서 경기 날짜 가져오기
+        fetch('/meeting/gameDates')
+            .then(response => response.json())
+            .then(dates => {
+                gameDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
+                renderCalendar();
+            })
+            .catch(error => {
+                console.error('경기 날짜 불러오기 중 오류 발생:', error);
+                renderCalendar();
+            });
+
+        // 달력 렌더링 함수
+        function renderCalendar() {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ko',
+                height: 'auto',
+                contentHeight: 'auto',
+                dayCellContent: function(e) {
+                    e.dayNumberText = e.dayNumberText.replace('일', '');
+                },
+                validRange: {
+                    start: new Date().toISOString().split('T')[0]
+                },
+                dateClick: function(info) {
+                    selectedDate = info.dateStr;
+                    currentPage = 1;
+                    if (selectedDateElement) {
+                        selectedDateElement.classList.remove('fc-day-selected');
+                    }
+                    selectedDateElement = info.dayEl;
+                    selectedDateElement.classList.add('fc-day-selected');
+                    loadMeetings();
+                },
+                dayCellDidMount: function(info) {
+                    const dateStr = info.date.toISOString().split('T')[0];
+                    if (gameDates.includes(dateStr)) {
+                        info.el.classList.add('game-date');
+                    }
+                },
+                datesSet: applyGameDates
+            });
+            calendar.render();
+            loadMeetings();
+        }
+
+        // 달력의 경기 날짜에 스타일 적용
+        function applyGameDates() {
+            document.querySelectorAll('.fc-daygrid-day').forEach(dayCell => {
+                const dateStr = dayCell.getAttribute('data-date');
+                if (gameDates.includes(dateStr)) {
+                    dayCell.classList.add('game-date');
+                } else {
+                    dayCell.classList.remove('game-date');
+                }
+            });
+        }
+
         // 소모임 목록 불러오기 함수
         function loadMeetings() {
             const encodedTeam = encodeURIComponent(selectedTeam);
@@ -313,7 +319,7 @@
         // 소모임 목록 렌더링 함수
         function renderMeetings() {
             const meetingList = document.getElementById("meeting-list");
-            meetingList.innerHTML = '';
+            meetingList.innerHTML = ''; // 기존 리스트 초기화
 
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = Math.min(startIndex + itemsPerPage, data.length);
@@ -324,45 +330,46 @@
                 document.getElementById("no-meetings").style.display = 'none';
                 for (let i = startIndex; i < endIndex; i++) {
                     const meetingData = data[i];
-                    const meeting = meetingData.meeting;
-                    const currentAttendeesCount = meetingData.currentAttendeesCount;
+                    const meeting = meetingData.meeting;  // 소모임 정보
+                    const currentAttendeesCount = meetingData.currentAttendeesCount;  // 참석자 수
 
                     const item = document.createElement("div");
                     item.classList.add("item");
+
                     item.setAttribute("onclick", `window.location.href='/meeting/detail/${meeting.meetingNo}'`);
 
                     fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
                         .then(response => response.json())
                         .then(gameInfo => {
                             item.innerHTML = `
-                            <div class="item-image">
-                                <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
-                                <div class="meeting-team">
-                                    <strong>${meeting.meetingTeamName}</strong>
-                                </div>
+                        <div class="item-image">
+                            <img src="${getTeamLogo(meeting.meetingTeamName)}" alt="${meeting.meetingTeamName}">
+                            <div class="meeting-team">
+                                <strong>${meeting.meetingTeamName}</strong>
                             </div>
-                            <div class="item-content">
-                                <div class="meeting-title">
-                                    <strong>${meeting.meetingTitle}</strong>
-                                </div>
-                                <div class="meeting-game-info">
-                                    <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
-                                    <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
-                                </div>
-                                <div class="meeting-place">
-                                    <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
-                                    <span>${meeting.meetingPlace}</span>
-                                </div>
-                                <div class="meeting-time">
-                                    <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
-                                    <span>${meeting.meetingTime}</span>
-                                </div>
-                                <div class="meeting-max-people">
-                                    <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
-                                    <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
-                                </div>
+                        </div>
+                        <div class="item-content">
+                            <div class="meeting-title">
+                                <strong>${meeting.meetingTitle}</strong>
                             </div>
-                        `;
+                            <div class="meeting-game-info">
+                                <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                                <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                            </div>
+                            <div class="meeting-place">
+                                <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                                <span>${meeting.meetingPlace}</span>
+                            </div>
+                            <div class="meeting-time">
+                                <img src="/img/when.png" alt="모임 시간 아이콘" class="icon">
+                                <span>${meeting.meetingTime}</span>
+                            </div>
+                            <div class="meeting-max-people">
+                                <img src="/img/who.png" alt="참석자정보 아이콘" class="icon">
+                                <span>${currentAttendeesCount} / ${meeting.meetingMaxPeople}명</span>
+                            </div>
+                        </div>
+                    `;
                             meetingList.appendChild(item);
                         })
                         .catch(error => {
@@ -372,7 +379,7 @@
             }
         }
 
-        // 페이지네이션 버튼 렌더링
+        // 페이지네이션 렌더링
         function renderPagination() {
             const paginationContainer = document.getElementById("pagination");
             paginationContainer.innerHTML = '';
@@ -387,7 +394,7 @@
                 const pageButton = document.createElement("a");
                 pageButton.href = "#";
                 pageButton.textContent = i;
-                pageButton.addEventListener("click", function (e) {
+                pageButton.addEventListener("click", function(e) {
                     e.preventDefault();
                     currentPage = i;
                     renderMeetings();
@@ -400,6 +407,7 @@
             }
         }
 
+        // 팀별 로고 이미지 반환
         function getTeamLogo(meetingTeamName) {
             switch (meetingTeamName) {
                 case 'KT': return '/img/KT로고.png';
@@ -415,14 +423,10 @@
                 default: return '/img/default-logo.png';
             }
         }
-
-        const openMeetingButton = document.querySelector('.button');
-        if (openMeetingButton) {
-            openMeetingButton.addEventListener('click', registerMeeting);
-        }
     });
-
 </script>
+
+
 
 </body>
 </html>
