@@ -19,5 +19,5 @@ public class MeetingBoardVO {
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private int meetingBoardViewCount;
-
+    private int likeCount;
 }

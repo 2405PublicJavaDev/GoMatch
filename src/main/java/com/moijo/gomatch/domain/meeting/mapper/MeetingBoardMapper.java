@@ -15,6 +15,7 @@ public interface MeetingBoardMapper {
     void insertBoard(MeetingBoardVO meetingBoardVO);
     // 파일 저장 메서드
     int insertBoardFile(MeetingBoardFileVO meetingBoardFileVO);
+    void deleteBoard(long meetingBoardNo);
     int selectBoardCount(@Param("searchType") String searchType, @Param("keyword") String keyword);
     List<MeetingBoardVO> selectBoardList(@Param("offset") int offset, @Param("pageSize") int pageSize,
                                          @Param("searchType") String searchType, @Param("keyword") String keyword);
@@ -24,7 +25,8 @@ public interface MeetingBoardMapper {
     List<MeetingBoardReplyVO> selectRepliesByBoardId(long meetingBoardNo);
 
 
-    int insertReply(@Param("boardNo") long meetingBoardNo, @Param("memberId") String memberId, @Param("content") String content);
+    int insertReply(@Param("boardNo") long meetingBoardNo, @Param("memberId") String memberId, @Param("meetingReplyContent") String meetingReplyContent);
+
     Long selectPreviousPostId(long meetingBoardNo);
     Long selectNextPostId(long meetingBoardNo);
     List<MeetingBoardFileVO> getFilesByMeetingBoardNo(long meetingBoardNo);

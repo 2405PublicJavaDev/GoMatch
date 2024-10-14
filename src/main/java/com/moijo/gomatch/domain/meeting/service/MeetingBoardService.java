@@ -13,13 +13,13 @@ public interface MeetingBoardService {
 
 
     void addBoard(MeetingBoardVO meetingBoardVO);
-
+    void removeBoard(long meetingBoardNo);
     MeetingBoardVO getBoardDetail(long meetingBoardNo);
 
-    List<MeetingBoardReplyVO> getRepliesByBoardId(long meetingBoardNo); // getCommentsByBoardId -> getRepliesByBoardId로 수정
-
+    List<MeetingBoardReplyVO> getRepliesByBoardId(long meetingBoardNo);
+    // 검색 조건에 맞는 게시글 수 조회
     int getBoardCount(String searchType, String keyword);
-
+    // 검색 조건에 맞는 게시글 조회
     List<MeetingBoardVO> getBoardList(int page, int pageSize, String searchType, String keyword);
 
     List<MeetingBoardVO> getAllBoards();
@@ -30,7 +30,7 @@ public interface MeetingBoardService {
     int getLikeCount(long meetingBoardNo);
 
 
-    boolean addReply(long meetingBoardNo, String memberId, String content); // addComment -> addReply로 수정
+    boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent); //
 
     Long getPreviousPostId(long meetingBoardNo);
 
@@ -44,6 +44,7 @@ public interface MeetingBoardService {
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return renderer.render(document);
     }
-    void increaseViewCount(long meetingBoardNo); // 조회수 증가 메서드 추가
+    // 조회수 증가
+    void increaseViewCount(long meetingBoardNo);
 
 }

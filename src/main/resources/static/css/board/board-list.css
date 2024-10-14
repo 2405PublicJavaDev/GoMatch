@@ -112,6 +112,9 @@ th {
     background-color: #f8f8f8;
     font-weight: bold;
 }
+tbody tr:hover {
+    background-color: #f0f8ff; /* 행을 선택했을 때 배경색 변경 */
+}
 .new-tag {
     background-color: #e74c3c;
     color: white;
@@ -183,3 +186,4 @@ th {
 .common-pagination-li-active a {
     color: white;
 }
+

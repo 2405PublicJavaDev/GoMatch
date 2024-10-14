@@ -78,32 +78,39 @@
                 <th>작성자</th>
                 <th>등록일</th>
                 <th>조회수</th>
+                <th>좋아요</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="board : ${boardList}">
+            <tr th:each="board : ${boardList}" th:onclick="|window.location.href='/board/detail/' + ${board.meetingBoardNo}|"
+                style="cursor: pointer;">
                 <td th:text="${board.meetingBoardNo}"></td>
                 <td th:text="${board.meetingBoardCategory}"></td>
-                <td><a th:href="@{'/board/detail/' + ${board.meetingBoardNo}}" th:text="${board.meetingBoardTitle}"></a></td>
+                <td th:text="${board.meetingBoardTitle}"></td>
                 <td th:text="${board.memberId}"></td>
                 <td th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${board.meetingBoardViewCount}"></td>
+                <td th:text="${board.likeCount}"></td> <!-- 좋아요 수 표시 -->
+            </tr>
+            <tr th:if="${#lists.isEmpty(boardList)}">
+                <td colspan="7" style="text-align: center; padding: 20px; color: #78797B;">검색 결과가 없습니다.</td>
             </tr>
             </tbody>
+
         </table>
 
         <!-- 페이지네이션 컨트롤 -->
         <div id="pagination" class="pagination">
             <ul th:if="${totalPages > 0}" class="common-pagination">
                 <li class="common-pagination-li-end">
-                    <a th:href="@{/board/list(page=${currentPage - 1})}" th:if="${currentPage > 1}">이전</a>
+                    <a th:href="@{/board/list(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${currentPage > 1}">이전</a>
                 </li>
                 <li th:each="i : ${#numbers.sequence(1, totalPages)}"
                     th:classappend="${i == currentPage} ? 'common-pagination-li common-pagination-li-active' : 'common-pagination-li'">
-                    <a th:href="@{/board/list(page=${i})}" th:text="${i}"></a>
+                    <a th:href="@{/board/list(page=${i}, searchType=${searchType}, keyword=${keyword})}" th:text="${i}"></a>
                 </li>
                 <li class="common-pagination-li-end">
-                    <a th:href="@{/board/list(page=${currentPage + 1})}" th:if="${currentPage < totalPages}">다음</a>
+                    <a th:href="@{/board/list(page=${currentPage + 1}, searchType=${searchType}, keyword=${keyword})}" th:if="${currentPage < totalPages}">다음</a>
                 </li>
             </ul>
         </div>

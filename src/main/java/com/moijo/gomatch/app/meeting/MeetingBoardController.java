@@ -114,13 +114,20 @@ public class MeetingBoardController {
 
         String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
-        model.addAttribute("loggedIn", true);
+        model.addAttribute("loggedIn", memberId != null);
         model.addAttribute("memberNickName", memberNickName);
+
         int pageSize = 10;
         int totalBoardCount = mBoardService.getBoardCount(searchType, keyword);
         int totalPages = (int) Math.ceil((double) totalBoardCount / pageSize);
 
         List<MeetingBoardVO> boardList = mBoardService.getBoardList(page, pageSize, searchType, keyword);
+
+        // 각 게시글의 좋아요 수를 설정
+        for (MeetingBoardVO board : boardList) {
+            int likeCount = mBoardService.getLikeCount(board.getMeetingBoardNo());
+            board.setLikeCount(likeCount);
+        }
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
@@ -130,6 +137,7 @@ public class MeetingBoardController {
 
         return "board/board-list";
     }
+
 
     // 모든 게시글을 반환하는 API
     @GetMapping("/boards")
@@ -173,7 +181,7 @@ public class MeetingBoardController {
         // 모델에 값 설정
         model.addAttribute("board", board);
         model.addAttribute("formattedRegDate", formattedRegDate);
-        model.addAttribute("replies", replies);
+        model.addAttribute("replies", replies); // 댓글 목록에 닉네임 포함
         model.addAttribute("previousPostId", previousPostId);
         model.addAttribute("nextPostId", nextPostId);
         model.addAttribute("meetingBoardFile", meetingBoardFiles);
@@ -181,6 +189,20 @@ public class MeetingBoardController {
         model.addAttribute("likeCount", likeCount);
 
         return "board/board-detail";
+    }
+
+    @PostMapping("/board/delete/{meetingBoardNo}")
+    public String deleteBoard(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        if(memberId == null) {
+            return "로그인이 필요합니다.";
+        }
+        MeetingBoardVO board = mBoardService.getBoardDetail(meetingBoardNo);
+        if(!memberId.equals(board.getMemberId())) {
+            return "게시글 삭제 권한이 없습니다.";
+        }
+        mBoardService.removeBoard(meetingBoardNo);
+        return "redirect:/board/list";
     }
 
     // ■■■■■■■■■■■■■■■■■■■■■■■■■■ 게시글 좋아요/좋아요 취소 (MeetingBoardLike) ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ //
@@ -237,14 +259,13 @@ public class MeetingBoardController {
 
     // 댓글 등록 메서드
     @PostMapping("/board/reply")
-    public ResponseEntity<Map<String, Object>> addReply(@RequestParam String content, @RequestParam long boardId, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> addReply(@RequestParam String meetingReplyContent, @RequestParam long meetingBoardNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        boolean success = mBoardService.addReply(boardId, memberId, content);
-
+        boolean success = mBoardService.addReply(meetingBoardNo, memberId, meetingReplyContent);
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
 

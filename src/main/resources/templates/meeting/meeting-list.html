@@ -69,7 +69,7 @@
             <div class="calendar-container">
                 <h3>날짜별</h3>
                 <div id="calendar"></div>
-                <p class="calendar-note">⚾표시가 된 날은 경기가 있습니다.⚾</p>
+                <p class="calendar-note">⚾ 표시가 된 날은 경기가 있습니다. ⚾</p>
             </div>
 
             <!-- 팀별 필터 영역 -->
@@ -126,12 +126,16 @@
         <!-- 소모임 개설하기 버튼 -->
         <button class="button" onclick="registerMeeting()">소모임 개설하기</button>
         <div class="meeting-info">
-            <!-- Total 건수 -->
+            <!-- 필터 정보 왼쪽 정렬 -->
+            <span id="filter-info" class="filter-info">선택된 필터 : </span>
+
+            <!-- Total 건수 가운데 정렬 -->
             <span class="total-count">* Total : <span id="total-count">0</span> 건</span>
 
-            <!-- 페이지 표시 영역 -->
-            <span class="page-info" style="float: right;">Page : <span id="current-page">1</span> / <span id="total-pages">1</span></span>
+            <!-- 페이지 표시 영역 오른쪽 정렬 -->
+            <span class="page-info">Page : <span id="current-page">1</span> / <span id="total-pages">1</span></span>
         </div>
+
         <div id="meeting-list" class="items">
             <!-- 반복문으로 각 소모임 정보 출력 -->
             <div th:each="meeting : ${meetings}" class="item"
@@ -258,9 +262,10 @@
                 dayCellContent: function(e) {
                     e.dayNumberText = e.dayNumberText.replace('일', '');
                 },
-                validRange: {
-                    start: new Date().toISOString().split('T')[0]
-                },
+                // 지난 소모임 보여지지 않도록 하는 조건
+                // validRange: {
+                //     start: new Date().toISOString().split('T')[0]
+                // },
                 dateClick: function(info) {
                     selectedDate = info.dateStr;
                     currentPage = 1;
@@ -273,6 +278,13 @@
                 },
                 dayCellDidMount: function(info) {
                     const dateStr = info.date.toISOString().split('T')[0];
+                    const today = new Date().toISOString().split('T')[0];
+                    // 지난 날짜는 필터 태그와 동일한 색상(#f0f0f0)으로 설정
+                    if (dateStr < today) {
+                        info.el.style.backgroundColor = '#f8f9fa';
+                    }
+
+                    // 경기 날짜 표시
                     if (gameDates.includes(dateStr)) {
                         info.el.classList.add('game-date');
                     }
@@ -307,6 +319,8 @@
                     totalPages = Math.ceil(data.length / itemsPerPage);
                     renderMeetings();
                     renderPagination();
+                    updateFilterInfo(); // 필터 정보 업데이트
+
                     document.getElementById("total-count").textContent = data.length;
                     document.getElementById("current-page").textContent = currentPage;
                     document.getElementById("total-pages").textContent = totalPages;
@@ -314,6 +328,12 @@
                 .catch(error => {
                     console.error('소모임 불러오기 중 오류 발생:', error);
                 });
+        }
+
+        // 필터 정보 업데이트 함수
+        function updateFilterInfo() {
+            const filterInfo = `선택된 [날짜] ${selectedDate} [팀] ${selectedTeam}`;
+            document.getElementById("filter-info").textContent = filterInfo;
         }
 
         // 소모임 목록 렌더링 함수

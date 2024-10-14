@@ -254,46 +254,59 @@ h1 {
 /* 댓글 섹션 */
 .comment-section {
     margin-top: 20px;
-    padding: 15px;
+    padding-left: 15px;
     background-color: #f8f8f8;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
+/* 댓글 입력 창 수정 */
 .comment-input {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 10px;
+    width: 100%;
 }
 
 .comment-input textarea {
-    width: 100%;
+    font-family: Arial, sans-serif; /* 기본 폰트로 설정 */
+    flex: 1;
+    height: 50px; /* 높이 고정 */
     border-radius: 5px;
     padding: 10px;
     border: 1px solid #ddd;
-    resize: vertical;
+    resize: none; /* 크기 조절 불가 */
 }
 
 .button-submit {
-    align-self: flex-end;
+    margin-right:10px;
     padding: 8px 16px;
-    background-color: #4CAF50;
+    height: 68px;
+    width: 68px;
+    background-color: #16215f;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size : 16px;
 }
 
 .button-submit:hover {
-    background-color: #45a049;
+    background-color: #00004f;
 }
+
 
 /* 댓글 리스트 */
 .comment-list .comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 좌우 끝 정렬 */
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
-
+.comment-content {
+    flex: 1; /* 전체 너비 사용 */
+}
 .comment-list .comment:last-child {
     border-bottom: none;
 }
@@ -306,7 +319,28 @@ h1 {
     text-align: center;
     color: #999;
 }
+.reply-nickname{
+    font-weight: bold;
+}
+.reply-reg{
+    margin-left:10px;
+    color: #6c757d;
+    font-size:12px;
+}
+/* 댓글 삭제 버튼 */
+.button-delete-comment {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #a63446;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
 
+.button-delete-comment:hover {
+    background-color: #8b2637;
+}
 /* 이전글/다음글 버튼 */
 .pagination-buttons {
     display: flex;

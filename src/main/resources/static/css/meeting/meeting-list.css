@@ -163,7 +163,7 @@ h1 {
 .tag {
     display: flex;               /* 아이콘과 텍스트를 나란히 배치 */
     align-items: center;          /* 이미지와 텍스트를 수직 정렬 */
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
@@ -213,11 +213,27 @@ h1 {
 }
 /* Total 건수 및 페이지 표시 영역 폰트 적용 */
 .meeting-info {
+    display: flex;
+    justify-content: space-between; /* 왼쪽, 가운데, 오른쪽 배치 */
+    align-items: center; /* 세로 가운데 정렬 */
     font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
     font-size: 14px;
     margin-top: 20px;
 }
+.meeting-info .filter-info {
+    flex-grow: 1;
+    text-align: left; /* 왼쪽 정렬 */
+}
 
+.meeting-info .total-count {
+    flex-grow: 1;
+    text-align: center; /* 가운데 정렬 */
+}
+
+.meeting-info .page-info {
+    flex-grow: 1;
+    text-align: right; /* 오른쪽 정렬 */
+}
 /* 소모임 리스트 스타일 */
 .items {
     display: grid;

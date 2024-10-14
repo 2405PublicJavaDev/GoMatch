@@ -33,6 +33,7 @@ public class MeetingController {
 
     private final MeetingService meetingService;
     private final MeetingFileUtil fileUtil;
+
     @GetMapping("/meeting/checkLogin")
     @ResponseBody
     public Map<String, Boolean> checkLogin(HttpSession session) {

@@ -20,6 +20,12 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     public void addBoard(MeetingBoardVO meetingBoardVO) {
         meetingBoardMapper.insertBoard(meetingBoardVO);
     }
+
+    @Override
+    public void removeBoard(long meetingBoardNo) {
+        meetingBoardMapper.deleteBoard(meetingBoardNo);
+    }
+
     @Override
     public int getBoardCount(String searchType, String keyword) {
         return meetingBoardMapper.selectBoardCount(searchType, keyword);
@@ -34,6 +40,7 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     public List<MeetingBoardVO> getAllBoards() {
         return meetingBoardMapper.selectAllBoards();
     }
+
     @Override
     public MeetingBoardVO getBoardDetail(long meetingBoardNo) {
         return meetingBoardMapper.selectBoardDetail(meetingBoardNo);
@@ -56,8 +63,8 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     }
 
     @Override
-    public boolean addReply(long meetingBoardNo, String memberId, String content) {
-        return meetingBoardMapper.insertReply(meetingBoardNo, memberId, content) > 0;
+    public boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent) {
+        return meetingBoardMapper.insertReply(meetingBoardNo, memberId, meetingReplyContent) > 0;
     }
 
     @Override
