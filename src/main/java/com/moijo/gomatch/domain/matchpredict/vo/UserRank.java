@@ -1,4 +1,4 @@
-package com.moijo.gomatch.domain.userrank.vo;
+package com.moijo.gomatch.domain.matchpredict.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -32,12 +30,12 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
     /**
      *
-     * @param selectedDate
+     * @param gameDate
      * @return
      */
     @Override
-    public List<MatchPredict> getPredictionsByDate(String selectedDate) {
-        return matchPredictMapper.selectPredictByDate(selectedDate);
+    public List<MatchPredict> getPredictionsByDate(String gameDate) {
+        return matchPredictMapper.selectPredictByDate(gameDate);
     }
 
     /**
@@ -67,12 +65,14 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
     /**
      * 회원 정보
+     *
      * @param memberId
+     * @param gameNo
      * @return
      */
     @Override
-    public MemberDTO getMemberInfo(String memberId) {
-        MemberDTO memberDTO = (MemberDTO) matchPredictMapper.selectMemberInfo(memberId);
+    public MemberDTO getMemberInfo(String memberId, Long gameNo) {
+        MemberDTO memberDTO = matchPredictMapper.selectMemberInfo(memberId,gameNo);
         return  memberDTO;
     }
 
@@ -90,6 +90,44 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         int result = matchPredictMapper.insertMatchPredict(gameNo,matchPredictDecision,memberId,matchPredictNo);
         return result;
     }
+
+    /**
+     * 예측 결과가 맞으면 checkPredictionResult true 틀리면 checkPredictionResult false
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
+    @Override
+    public int increaseExperience(String memberId,Long gameNo){
+        boolean isCorrect = matchPredictMapper.checkPredictionResult(memberId, gameNo);
+
+        if(isCorrect) {
+            return matchPredictMapper.addExperience(memberId, 50); // 50 경험치 증가
+        }
+        return 0;
+    }
+
+    @Override
+    public String updateUserRank(String memberId) {
+        // 회원의 경험치 조회
+        int experience = matchPredictMapper.getUserExperience(memberId);
+
+        // 랭크 결정 로직
+        String newRank;
+        if (experience >= 1000) {
+            newRank = "Gold";
+        } else if (experience >= 500) {
+            newRank = "Silver";
+        } else {
+            newRank = "Bronze";
+        }
+
+        // 데이터베이스에 랭크 업데이트
+        matchPredictMapper.updateMemberRank(memberId, newRank);
+
+        return newRank; // 업데이트된 랭크 반환
+    }
+
 
     /**
      * 예측 수정
@@ -133,7 +171,5 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         }
         return 0.0;
     }
-
-
 
 }

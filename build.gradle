@@ -44,6 +44,8 @@ dependencies {
     implementation 'org.json:json:20240303'
 
 
+
+
     // PortOne SDK 추가
     implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
 }

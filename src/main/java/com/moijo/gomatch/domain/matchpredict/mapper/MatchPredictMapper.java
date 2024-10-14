@@ -6,8 +6,6 @@ import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Mapper
@@ -21,10 +19,10 @@ public interface MatchPredictMapper {
 
     /**
      * 날짜 별 승부예측 리스트
-     * @param selectedDate
+     * @param gameDate
      * @return
      */
-    List<MatchPredict> selectPredictByDate(String selectedDate);
+    List<MatchPredict> selectPredictByDate(String gameDate);
     
 
     /**
@@ -42,10 +40,12 @@ public interface MatchPredictMapper {
 
     /**
      * 회원 정보 조회
+     *
      * @param memberId
+     * @param gameNo
      * @return
      */
-    MemberDTO selectMemberInfo(String memberId);
+    MemberDTO selectMemberInfo(String memberId, Long gameNo);
 
     /**
      * 전체 회원 조회
@@ -69,6 +69,7 @@ public interface MatchPredictMapper {
      */
     int insertMatchPredict(Long gameNo, String matchPredictDecision,String memberId,Long matchPredictNo);
 
+
     /**
      * 예측 수정
      * @param memberId
@@ -78,5 +79,34 @@ public interface MatchPredictMapper {
      */
     int updateMatchPredict(String memberId,Long gameNo,String matchPredictDecision);
 
+    /**
+     * 예측 결과 확인 맞으면 true 틀리면 false
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
+    boolean checkPredictionResult(String memberId, Long gameNo);
 
+    /**
+     * 경험치 증가
+     * @param memberId
+     * @param experience
+     * @return
+     */
+    int addExperience(String memberId, int experience);
+
+
+    /**
+     * 사용자의 경험치 조회
+     * @param memberId
+     * @return 경험치
+     */
+    int getUserExperience(String memberId);
+
+    /**
+     * 회원의 랭크 업데이트
+     * @param memberId
+     * @param newRank
+     */
+    void updateMemberRank(String memberId, String newRank);
 }

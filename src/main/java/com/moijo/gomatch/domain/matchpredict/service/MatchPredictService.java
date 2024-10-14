@@ -6,8 +6,6 @@ import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public interface MatchPredictService {
@@ -19,10 +17,10 @@ public interface MatchPredictService {
 
     /**
      * 날짜 별 승부예측 리스트
-     * @param selectedDate
+     * @param gameDate
      * @return
      */
-    List<MatchPredict> getPredictionsByDate(String selectedDate);
+    List<MatchPredict> getPredictionsByDate(String gameDate);
 
     /**
      * 나의 예측 리스트
@@ -39,10 +37,12 @@ public interface MatchPredictService {
 
     /**
      * 회원 정보
+     *
      * @param memberId
+     * @param gameNo
      * @return
      */
-    MemberDTO getMemberInfo(String memberId);
+    MemberDTO getMemberInfo(String memberId, Long gameNo);
 
     /**
      * 예측 등록
@@ -53,6 +53,8 @@ public interface MatchPredictService {
      * @return
      */
     int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId);
+
+
 
     /**
      * 예측 수정
@@ -77,5 +79,18 @@ public interface MatchPredictService {
     double calculatorRankPercent(String memberId);
 
 
+    /**
+     * 경험치 추가
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
+    int increaseExperience(String memberId, Long gameNo);
 
+    /**
+     * 사용자 랭크 업데이트
+     * @param memberId
+     * @return 업데이트된 랭크
+     */
+    String updateUserRank(String memberId);
 }

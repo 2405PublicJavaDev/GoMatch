@@ -6,16 +6,16 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @Slf4j
-public class MemberDTO {
+public class UserRankDTO {
+    private Long rankNo;
     private String memberId;
-    private String memberNickname;
-    private String memberName;
-    private Long experiencePoints;
-    private Long rankPosition;
-    private Long gameNo;
+    private String experiencePoints;
+    private Timestamp regDate;
+    private Timestamp updateDate;
 }

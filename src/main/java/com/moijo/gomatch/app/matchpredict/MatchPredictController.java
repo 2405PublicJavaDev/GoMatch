@@ -5,6 +5,7 @@ import com.moijo.gomatch.domain.matchpredict.dto.MemberDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.service.MatchPredictService;
+import com.moijo.gomatch.domain.matchpredict.service.UserRankService;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import com.moijo.gomatch.domain.member.vo.MemberVO;
 import jakarta.servlet.http.HttpSession;
@@ -15,18 +16,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class MatchPredictController<Prediction> {
+public class MatchPredictController {
 
     private final MatchPredictService matchPredictService;
+    private final UserRankService useRankrService;
 
     /**
      * 승부 예측 리스트 조회
@@ -35,7 +34,8 @@ public class MatchPredictController<Prediction> {
      * @return
      */
     @GetMapping("/matchPredict")
-    public String showMatchPredictionListPage(HttpSession session,Model model) {
+    public String showMatchPredictionListPage(HttpSession session,Model model
+    ,@RequestParam(value = "gameNo", required = false) Long gameNo) {
         // 승부 예측 목록 조회
         String memberId = (String)session.getAttribute("memberId");
         Timestamp gameDate = (Timestamp)session.getAttribute("gameDate");
@@ -49,7 +49,7 @@ public class MatchPredictController<Prediction> {
         model.addAttribute("memberRank", memberRank);
 
         if(memberId != null) {
-            MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
+            MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId,gameNo);
             double rankPercent = matchPredictService.calculatorRankPercent(memberId);
 
             model.addAttribute("memberInfo", memberInfo);
@@ -59,11 +59,12 @@ public class MatchPredictController<Prediction> {
         // 뷰 이름 반환 (HTML 템플릿 파일)
         return "matchPredict/matchPredictPage";
 
-    };
-    @GetMapping("/matchPredict/list={selectedDate}")
+    }
+
+    @GetMapping("/matchPredict/list/{gameDate}")
     @ResponseBody
-    public ResponseEntity<List<MatchPredict>> getMatchPredictions(@PathVariable String selectedDate) {
-        List<MatchPredict> predictions = matchPredictService.getPredictionsByDate(selectedDate);
+    public ResponseEntity<List<MatchPredict>> getMatchPredictions(@PathVariable String gameDate) {
+        List<MatchPredict> predictions = matchPredictService.getPredictionsByDate(gameDate);
         return ResponseEntity.ok(predictions); // JSON으로 반환
     }
 
@@ -75,23 +76,23 @@ public class MatchPredictController<Prediction> {
      * @return
      */
     @GetMapping("/myMatchPredict")
-    public String showMyMatchPredictionListPage(HttpSession session, Model model) {
+    public String showMyMatchPredictionListPage(HttpSession session, Model model
+    ,@RequestParam(required = false) Long gameNo) {
         String memberId = (String)session.getAttribute("memberId");
+        log.info("Session memberId: {}", memberId);
         if(memberId == null) {
             return "redirect:/member/loginpage";
         }
 
         List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
         List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank();
-        MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
+        MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId,gameNo);
         double rankPercent = matchPredictService.calculatorRankPercent(memberId);
 
         model.addAttribute("memberRank", memberRank);
         model.addAttribute("matchPredictions", matchPredictions);
         model.addAttribute("memberInfo", memberInfo);
         model.addAttribute("rankPercent", rankPercent);
-
-
 
         return "matchpredict/myMatchPredictPage";
     }
@@ -108,9 +109,16 @@ public class MatchPredictController<Prediction> {
 
         int result = matchPredictService.addMatchPredict(gameNo,matchPredictNo,matchPredictDecision,memberId);
 
-
         return "redirect:/matchPredict";
     };
+
+    @PostMapping("/matchPedict")
+    public int increaseExperience(HttpSession session, Model model
+    , @RequestParam Long gameNo){
+        String memberId = (String) session.getAttribute("memberId");
+        int result = matchPredictService.increaseExperience(memberId,gameNo);
+        return result;
+    }
 
     /**
      * 예측 수정(나의 예측리스트에서 가능)
@@ -119,15 +127,19 @@ public class MatchPredictController<Prediction> {
     @PostMapping("/modifyPredict")
     public String modifyMatchPrediction(HttpSession session, Model model
             , @RequestParam Long gameNo
-            , @RequestParam String matchPredictDecision){
+            , @RequestParam String matchPredictDecision) {
         String memberId = (String) session.getAttribute("memberId");
 
-        int result = matchPredictService.modifyMatchPredict(memberId,gameNo,matchPredictDecision);
+        int result = matchPredictService.modifyMatchPredict(memberId, gameNo, matchPredictDecision);
+
+        // 예측 수정 후 gameResult를 통해 예측이 맞았는지 확인
+        matchPredictService.increaseExperience(memberId, gameNo); // 경험치 증가 호출
 
         model.addAttribute("matchPredictDecision", matchPredictDecision);
 
         return "redirect:/myMatchPredict";
-    };
+    }
+
 
     @GetMapping("/matchPredictions/date")
     @ResponseBody

@@ -11,6 +11,28 @@
         ON P.MEMBER_ID = M.MEMBER_ID
     </select>
 
+    <select id="selectPredictByDate" resultType="MatchPredict">
+        SELECT
+            P.MATCH_PREDICT_NO,
+            G.GAME_NO,
+            P.MATCH_PREDICT_DECISION,
+            M.MEMBER_ID,
+            G.TEAM_A,
+            G.TEAM_B,
+            G.GAME_TIME,
+            G.GAME_DATE,
+            G.REG_DATE
+        FROM
+            GAME G
+                LEFT JOIN
+            MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
+                LEFT JOIN
+            MEMBER M ON P.MEMBER_ID = M.MEMBER_ID
+        WHERE
+            G.GAME_DATE = #{gameDate}
+    </select>
+
+
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
         SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
         FROM MEMBER M
@@ -29,11 +51,15 @@
     </select>
 
     <select id="selectMemberInfo" resultType="MemberDTO">
-        SELECT U.MEMBER_ID,M.MEMBER_NICKNAME,M.MEMBER_NAME,U.RANK_POSITION,U.EXPERIENCE_POINTS
+        SELECT U.MEMBER_ID, M.MEMBER_NICKNAME, M.MEMBER_NAME, U.RANK_POSITION, U.EXPERIENCE_POINTS, G.GAME_NO
         FROM MEMBER M
-        LEFT JOIN USER_RANK U
-        ON M.MEMBER_ID = U.MEMBER_ID
-        WHERE M.MEMBER_ID = #{memberId}
+                 LEFT JOIN USER_RANK U
+                     ON M.MEMBER_ID = U.MEMBER_ID
+                 JOIN MATCH_PREDICT P
+                     ON P.MEMBER_ID = M.MEMBER_ID
+                 JOIN GAME G
+                     ON G.GAME_NO = P.GAME_NO
+        WHERE U.MEMBER_ID = #{memberId} AND G.GAME_NO = #{gameNo}
     </select>
 
     <select id="getTotalMemberCount" resultType="Long">
@@ -45,17 +71,18 @@
         WHERE MEMBER_ID = #{memberId}
     </select>
 
-    <select id="selectPredictByToday" resultType="MatchPredict">
-        SELECT *
+    <select id="checkPredictionResult" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM MATCH_PREDICT
+        WHERE MEMBER_ID = #{memberId}
+        AND GAME_NO = #{gameNo}
+        AND MATCH_PREDICT_DECISION = (
+        SELECT GAME_RESULT
         FROM GAME
-        WHERE GAME_DATE = CURDATE()
+        WHERE GAME_NO = #{gameNo}
+        )
     </select>
 
-    <select id="selectPredictByDate" resultType="MatchPredict">
-        SELECT *
-        FROM MATCH_PREDICT
-        WHERE GAME_DATE = #{gameDate}
-    </select>
 
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (GAME_NO,MEMBER_ID,MATCH_PREDICT_NO, MATCH_PREDICT_DECISION, REG_DATE)
@@ -65,5 +92,20 @@
         UPDATE MATCH_PREDICT
         SET MATCH_PREDICT_DECISION = #{matchPredictDecision}
         WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}
+    </update>
+
+    <update id="updateUserRank">
+        MERGE INTO USER_RANK ur
+            USING (
+                SELECT
+                    MEMBER_ID,
+                    RANK() OVER (ORDER BY SUM(EXPERIENCE_POINTS) DESC) AS rank
+                FROM
+                    USER_RANK
+                GROUP BY
+                    MEMBER_ID
+            ) RankedMembers ON (ur.MEMBER_ID = RankedMembers.MEMBER_ID)
+            WHEN MATCHED THEN
+                UPDATE SET ur.RANK_POSITION = RankedMembers.rank;
     </update>
 </mapper>

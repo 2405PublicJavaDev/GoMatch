@@ -28,7 +28,7 @@
         <div class="date-selector">
 
         </div>
-        <ul  class="game-list">
+        <ul class="game-list">
             <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
@@ -189,21 +189,100 @@
 
         }
     }
-    // 날짜 배열 생성 함수
-    function createDateArray(startDate, numberOfDays) {
-        const dateArray = [];
-        const currentDate = new Date(startDate);
-
-        for (let i = 0; i < numberOfDays; i++) {
-            const date = new Date(currentDate);
-            dateArray.push(date.toISOString().split('T')[0]);
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        return dateArray;
-    }
 
     document.addEventListener("DOMContentLoaded", function () {
+
+        const dateSelector = document.querySelector('.date-selector');
+        const today = new Date();
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+
+// 7일 간의 날짜 버튼 생성
+        for (let i = 0; i < 7; i++) {
+            const date = new Date();
+            date.setDate(today.getDate() + i);
+
+            const button = document.createElement('button');
+            button.classList.add('date');
+            if (i === 0) {
+                button.classList.add('active');
+                button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
+            } else {
+                button.innerText = date.toLocaleDateString('ko-KR', options);
+            }
+            dateSelector.appendChild(button);
+
+            // 날짜 버튼 클릭 시 스타일 전환 및 데이터 조회
+            button.addEventListener('click', function () {
+                const allButtons = document.querySelectorAll('.date');
+                allButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                const selectedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식
+                fetchPredictionsByDate(selectedDate);
+            });
+            // 이번주 기본적으로 활성화
+            const weekly = document.querySelector(".week-date")
+            weekly.classList.add("active");
+        }
+
+// 날짜에 따라 승부 예측 리스트를 조회하는 함수
+        function fetchPredictionsByDate(date) {
+            console.log(`Fetching predictions for date: ${date}`); // 추가한 로그
+            fetch(`/matchPredict/list/${date}`)
+                    .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data); // 서버에서 받은 데이터 로그
+                    const gameList = document.querySelector('.game-list');
+                    gameList.innerHTML = ''; // 기존 리스트 초기화
+
+                    // 서버에서 받은 데이터를 화면에 표시
+                    data.forEach(predict => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'game-item';
+                        listItem.innerHTML = `
+                    <span class="league">
+                        <img src="/img/고매치로고.png">
+                        GoMatch
+                    </span>
+                    <div class="upcoming-games">
+                        <span class="time">${predict.gameTime}</span>
+                        <p>경기 예정</p>
+                        <span class="time-out">후 종료</span>
+                    </div>
+                    <form name="add-form" action="/addPredict" method="post">
+                        <input type="hidden" name="memberId" value="${predict.memberId}"/>
+                        <input type="hidden" name="gameNo" value="${predict.gameNo}"/>
+                        <input type="hidden" name="matchPredictNo" value="1"/>
+                        <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
+                        <div class="teams">
+                            <button type="button" class="team-a" onclick="setPrediction('${predict.teamA}', '${predict.gameNo}')">
+                                <span>${predict.teamA}</span>
+                                <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
+                            </button>
+                            <button type="button" class="draw" onclick="setPrediction('무', '${predict.gameNo}')">
+                                <span class="vs">무승부</span>
+                            </button>
+                            <button type="button" class="team-b" onclick="setPrediction('${predict.teamB}', '${predict.gameNo}')">
+                                <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
+                                <span>${predict.teamB}</span>
+                            </button>
+                        </div>
+                    </form>
+                `;
+                        gameList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching predictions by date:', error));
+        }
+
+        // 페이지가 로드될 때 오늘 날짜의 예측 리스트를 조회
+        const todayISO = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식
+        fetchPredictionsByDate(todayISO);
 
         let loadMoreBtn = document.querySelector(".load-more");
         const allRankItem = document.querySelectorAll(".rank-item");
@@ -230,93 +309,6 @@
             }
         });
 
-        // 이번주 기본적으로 활성화
-        const weekly = document.querySelector(".week-date")
-        weekly.classList.add("active");
-
-        const dateSelector = document.querySelector('.date-selector');
-        const today = new Date();
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-
-        // 7일 간의 날짜 버튼 생성
-        for (let i = 0; i < 7; i++) {
-            const date = new Date();
-            date.setDate(today.getDate() + i);
-
-            const button = document.createElement('button');
-            button.classList.add('date');
-            if (i === 0) {
-                button.classList.add('active');
-                // 오늘 날짜인 경우 "오늘" 텍스트를 추가
-                button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
-            } else {
-                // 나머지 날짜는 그냥 날짜만 출력
-                button.innerText = date.toLocaleDateString('ko-KR', options);
-            }
-            // date-selector에 버튼 추가
-            dateSelector.appendChild(button);
-
-            // 날짜 버튼 클릭 시 스타일 전환 및 데이터 조회
-            button.addEventListener('click', function () {
-                const allButtons = document.querySelectorAll('.date');
-                allButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-
-                // 선택한 날짜를 포맷하여 문자열로 변환
-                const selectedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식
-
-                // 승부 예측 리스트를 조회하는 함수 호출
-                fetchPredictionsByDate(selectedDate);
-            });
-        }
-
-        // 날짜에 따라 승부 예측 리스트를 조회하는 함수
-        function fetchPredictionsByDate(date) {
-            fetch(`/matchPredict/list?gameDate=${date}`) // 해당 날짜에 대한 예측 리스트 API
-                .then(response => response.json())
-                .then(data => {
-                    const gameList = document.querySelector('.game-list');
-                    gameList.innerHTML = ''; // 기존 리스트 초기화
-
-                    // 서버에서 받은 데이터를 화면에 표시
-                    data.forEach(predict => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'game-item';
-                        listItem.innerHTML = `
-                    <span class="league">
-                        <img src="/img/고매치로고.png">
-                        GoMatch
-                    </span>
-                    <div class="upcoming-games">
-                        <span class="time">${predict.gameTime}</span>
-                        <p>경기 예정</p>
-                        <span class="time-out">후 종료</span>
-                    </div>
-                    <form name="add-form" action="/addPredict" method="post">
-                        <input type="hidden" name="memberId" value="${predict.memberId}"/>
-                        <input type="hidden" name="gameNo" value="${predict.gameNo}"/>
-                        <input type="hidden" name="matchPredictNo" value="1">
-                        <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
-                        <div class="teams">
-                            <button type="button" class="team-a" onclick="setPrediction('${predict.teamA}', '${predict.gameNo}')">
-                                <span>${predict.teamA}</span>
-                                <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                            </button>
-                            <button type="button" class="draw" onclick="setPrediction('무', '${predict.gameNo}')">
-                                <span class="vs">무승부</span>
-                            </button>
-                            <button type="button" class="team-b" onclick="setPrediction('${predict.teamB}', '${predict.gameNo}')">
-                                <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                                <span>${predict.teamB}</span>
-                            </button>
-                        </div>
-                    </form>
-                `;
-                        gameList.appendChild(listItem);
-                    });
-                })
-                .catch(error => console.error('Error fetching predictions by date:', error));
-        }
 
 
 
