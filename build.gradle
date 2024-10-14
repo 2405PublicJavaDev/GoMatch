@@ -43,11 +43,17 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.json:json:20240303'
 
-
-    // PortOne SDK 추가
-    implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.23' // 이니시스 결제
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// 이니시스 결제
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+

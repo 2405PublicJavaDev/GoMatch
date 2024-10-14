@@ -45,4 +45,21 @@ public class AdminServiceImpl1 implements AdminService1 {
     public void insertGoodsImage(GoodsImageVO goodsImage) {
         adminMapper1.insertGoodsImage(goodsImage); // 이미지 등록
     }
+
+    @Override
+    public List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo) {
+        return adminMapper1.selectGoodsImagesByGoodsNo(goodsNo);
+    }
+
+    @Override
+    public void deleteGoodsImage(Long goodsImageNo) {
+        adminMapper1.deleteGoodsImage(goodsImageNo);
+    }
+
+    @Override
+    public void deleteRepresentativeImage(Long goodsNo) {
+        adminMapper1.deleteRepresentativeImage(goodsNo); // 대표 이미지 삭제
+    }
+
+
 }

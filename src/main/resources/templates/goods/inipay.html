@@ -12,7 +12,6 @@
         <th>팀</th>
         <th>상품 이름</th>
         <th>가격</th>
-        <th>이미지</th>
         <th>상세 보기</th>
     </tr>
     </thead>
@@ -22,11 +21,6 @@
         <td th:text="${goods.goodsTeam}"></td>
         <td th:text="${goods.goodsProductName}"></td>
         <td th:text="${goods.goodsPrice}"></td>
-        <td>
-            <!-- 대표 이미지가 있을 경우 표시, 없으면 대체 텍스트 -->
-            <img th:if="${goods.goodsImageWebPath != null}" th:src="@{${goods.goodsImageWebPath}}" alt="대표 이미지" style="width: 100px; height: 100px;">
-            <span th:if="${goods.goodsImageWebPath == null}">이미지 없음</span>
-        </td>
         <td><a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>
     </tr>
     </tbody>

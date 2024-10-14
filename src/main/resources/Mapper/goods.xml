@@ -4,9 +4,21 @@
 <mapper namespace="com.moijo.gomatch.domain.goods.mapper.GoodsMapper">
 
     <select id="selectGoodsByCategory" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
-        SELECT GOODS_NO, GOODS_TEAM, GOODS_PRODUCT_NAME, GOODS_PRICE
-        FROM GOODS
-        WHERE GOODS_CATEGORY = #{category}
+        SELECT g.GOODS_NO, g.GOODS_TEAM, g.GOODS_PRODUCT_NAME, g.GOODS_PRICE,
+               gi.GOODS_IMAGE_WEB_PATH AS goodsImageWebPath
+        FROM GOODS g
+                 LEFT JOIN GOODS_IMAGE gi ON g.GOODS_NO = gi.GOODS_NO
+        WHERE g.GOODS_CATEGORY = #{category}
+          AND gi.GOODS_IMAGE_REP_YN = 'Y'  -- 대표 이미지 조건 추가
+    </select>
+
+    <select id="selectGoodsByTeam" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
+        SELECT g.GOODS_NO, g.GOODS_TEAM, g.GOODS_PRODUCT_NAME, g.GOODS_PRICE,
+               gi.GOODS_IMAGE_WEB_PATH AS goodsImageWebPath
+        FROM GOODS g
+                 LEFT JOIN GOODS_IMAGE gi ON g.GOODS_NO = gi.GOODS_NO
+        WHERE g.GOODS_TEAM = #{team}
+          AND gi.GOODS_IMAGE_REP_YN = 'Y'  -- 대표 이미지 조건 추가
     </select>
 
     <select id="searchAllGoods" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">

@@ -20,4 +20,11 @@ public interface AdminService1 {
 
     void insertGoodsImage(GoodsImageVO goodsImage); // 이미지 등록 메소드 추가
 
+    // 추가된 메소드
+    List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo);
+
+    void deleteRepresentativeImage(Long goodsNo);
+
+    void deleteGoodsImage(Long goodsImageNo); // 이미지 삭제 메소드 추가
+
 }

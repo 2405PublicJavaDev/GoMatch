@@ -1,5 +1,6 @@
 package com.moijo.gomatch.app.goods;
 
+import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.service.GoodsService;
 import com.moijo.gomatch.domain.goods.service.WishlistService;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
@@ -27,9 +28,25 @@ public class GoodsController {
 
     @GetMapping("/list")
     public String getGoodsList(Model model) {
-        List<GoodsVO> goodsList = goodsService.getAllGoods(); // 서비스 메소드를 호출하여 상품 목록을 가져옴
-        model.addAttribute("goodsList", goodsList); // 모델에 추가
-        return "goods/list"; // Thymeleaf 템플릿 경로 반환
+        List<GoodsVO> goodsList = goodsService.getAllGoods();
+
+        // 각 상품의 대표 이미지를 가져와서 설정
+        for (GoodsVO goods : goodsList) {
+            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
+            if (representativeImage != null) {
+                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
+            }
+        }
+
+        model.addAttribute("goodsList", goodsList);
+        return "goods/list";
+    }
+
+    @GetMapping("/team/list")
+    public String getGoodsListByTeam(@RequestParam("team") String team, Model model) {
+        List<GoodsVO> goodsList = goodsService.getGoodsByTeam(team);
+        model.addAttribute("goodsList", goodsList);
+        return "goods/teamlist";
     }
 
     @GetMapping("/category/list")
@@ -44,19 +61,47 @@ public class GoodsController {
         GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
         model.addAttribute("goods", goods);
 
+        // 대표 이미지 조회
+        GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goodsNo);
+        model.addAttribute("representativeImage", representativeImage);
+
+        // 상세 이미지 조회
+        List<GoodsImageVO> detailImages = goodsService.getDetailImagesByGoodsNo(goodsNo);
+        model.addAttribute("detailImages", detailImages);
+
         // 로그인한 사용자 정보 가져오기
-        MemberVO member = (MemberVO) session.getAttribute("member"); // 세션에서 로그인 정보 가져오기
+        MemberVO member = (MemberVO) session.getAttribute("member");
 
         if (member != null) {
             // 찜하기 상태 체크
             boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
-            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+            model.addAttribute("isWishlisted", isWishlisted);
         } else {
-            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
+            model.addAttribute("isWishlisted", false);
         }
 
-        return "goods/detail"; // 상품 세부 정보 뷰 반환
+        return "goods/detail";
     }
+
+
+//    @GetMapping("/detail/{goodsNo}")
+//    public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
+//        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
+//        model.addAttribute("goods", goods);
+//
+//        // 로그인한 사용자 정보 가져오기
+//        MemberVO member = (MemberVO) session.getAttribute("member"); // 세션에서 로그인 정보 가져오기
+//
+//        if (member != null) {
+//            // 찜하기 상태 체크
+//            boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
+//            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+//        } else {
+//            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
+//        }
+//
+//        return "goods/detail"; // 상품 세부 정보 뷰 반환
+//    }
 
     @GetMapping("/search")
     public String searchGoods(@RequestParam("searchValue") String searchValue,

@@ -23,4 +23,19 @@
                    SYSDATE, SYSDATE
                )
     </insert>
+
+    <!-- 이미지 삭제 -->
+<!--    <delete id="deleteGoodsImage" parameterType="Long">-->
+<!--        DELETE FROM GOODS_IMAGE WHERE GOODS_IMAGE_NO = #{goodsImageNo}-->
+<!--    </delete>-->
+
+    <!-- 상품 ID로 이미지 목록 조회 -->
+<!--    <select id="selectGoodsImagesByGoodsNo" parameterType="Long" resultType="com.moijo.gomatch.domain.admin.vo.GoodsImageVO">-->
+<!--        SELECT * FROM GOODS_IMAGE WHERE GOODS_NO = #{goodsNo}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 대표 이미지 삭제 &ndash;&gt;-->
+<!--    <delete id="deleteRepresentativeImage" parameterType="Long">-->
+<!--        DELETE FROM GOODS_IMAGE WHERE GOODS_NO = #{goodsNo} AND GOODS_IMAGE_REP_YN = 'Y'-->
+<!--    </delete>-->
 </mapper>

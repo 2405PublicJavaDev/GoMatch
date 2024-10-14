@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.goods.service.impl;
 
+import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.mapper.GoodsMapper;
 import com.moijo.gomatch.domain.goods.service.GoodsService;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
@@ -32,6 +33,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<GoodsVO> getGoodsByTeam(String team) {
+        return goodsMapper.selectGoodsByTeam(team); // 팀으로 상품 조회
+    }
+
+    @Override
     public List<GoodsVO> searchAllGoods(String searchValue) {
         return goodsMapper.searchAllGoods(searchValue);
     }
@@ -45,4 +51,19 @@ public class GoodsServiceImpl implements GoodsService {
     public List<GoodsVO> searchGoodsByCode(String goodsProductCode) {
         return goodsMapper.searchGoodsByCode(goodsProductCode);
     }
+
+    @Override
+    public GoodsImageVO getRepresentativeImageByGoodsNo(Long goodsNo) {
+        return goodsMapper.selectRepresentativeImage(goodsNo);
+    }
+
+    public List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo) {
+        return goodsMapper.selectGoodsImagesByGoodsNo(goodsNo);
+    }
+
+    @Override
+    public List<GoodsImageVO> getDetailImagesByGoodsNo(Long goodsNo) {
+        return goodsMapper.selectDetailImagesByGoodsNo(goodsNo);
+    }
+
 }

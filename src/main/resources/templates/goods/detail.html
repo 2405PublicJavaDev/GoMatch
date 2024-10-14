@@ -17,10 +17,16 @@
     .wishlist-button.active {
       background-color: red; /* 찜하기 버튼 활성화 색상 */
     }
+
+    .image-container img {
+      width: 200px;
+      height: 200px;
+      margin: 10px;
+    }
   </style>
 </head>
 <body>
-<h1 th:text="${goods.goodsProductName}"></h1>
+<h1 th:text="${' [' + goods.goodsTeam + '] ' + goods.goodsProductName }"></h1> <!-- 나머지도 이 양식으로 -->
 <p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>
 <p>팀: <span th:text="${goods.goodsTeam}"></span></p>
 <p>가격: <span th:text="${goods.goodsPrice}"></span></p>
@@ -29,8 +35,23 @@
 <p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
 <p>카테고리: <span th:text="${goods.goodsCategory}"></span></p>
 
+<!-- 대표 이미지 표시 -->
+<h2>대표 이미지</h2>
+<div class="image-container" th:if="${representativeImage != null}">
+  <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />
+</div>
+
+<!-- 상세 이미지 표시 -->
+<h2>상세 이미지</h2>
+<div class="image-container" th:if="${detailImages != null}">
+  <div th:each="image : ${detailImages}">
+    <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />
+  </div>
+</div>
+
 <a href="/goods/list" class="btn">목록</a>
 
+<!-- 찜하기 버튼 -->
 <button id="wishlistButton"
         class="btn wishlist-button"
         th:classappend="${isWishlisted} ? ' active' : ''"
@@ -38,11 +59,12 @@
   <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
 </button>
 
+<button class="btn">결제</button>
+
 <script>
   function toggleWishlist(goodsNo) {
     console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그
 
-    // goodsNo가 올바르게 전달되었는지 확인
     if (typeof goodsNo === 'undefined' || goodsNo === null) {
       console.error('Invalid goodsNo'); // 오류 로그
       return; // 잘못된 goodsNo가 전달되면 함수 종료
@@ -57,10 +79,9 @@
                 // 로그인 페이지로 리디렉션
                 window.location.href = '/member/loginpage';
               } else if (response.ok) {
-                // 로그인 상태에서 버튼 색상 및 텍스트 변경
                 const button = document.getElementById('wishlistButton');
-                button.classList.toggle('active'); // 클래스 토글
-                button.innerText = button.classList.contains('active') ? '찜하기 취소' : '찜하기'; // 버튼 텍스트 변경
+                button.classList.toggle('active');
+                button.innerText = button.classList.contains('active') ? '찜하기 취소' : '찜하기';
               } else {
                 console.error('Error:', response.statusText);
               }
@@ -70,3 +91,7 @@
 </script>
 </body>
 </html>
+
+
+
+
