@@ -1,0 +1,185 @@
+/* ■■■■■■■■■■ 폰트 css ■■■■■■■■■■ */
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
+}
+
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin: 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+
+/* 기본 컨테이너 설정 */
+.main-container {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 소모임 리스트 제목 스타일 */
+h1 {
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    text-align: center;
+    color: #16215F; /* 메인 색상 */
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+
+.filter-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+.filter-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: none;
+    outline: none;
+}
+.filter-tab.active {
+    background-color: #16215F;
+    color: white;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+}
+.new-tag {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+.search-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+.search-section select, .search-section input {
+    padding: 8px;
+    margin-right: 10px;
+}
+.search-section button {
+    padding: 8px 15px;
+    background-color: #16215F;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+.common-pagination-li-end {
+    display: inline-block;
+}
+
+.common-pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.common-pagination-li {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #E8E9ED;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.common-pagination-li a{
+    text-decoration: none;
+    color: #78797B;
+    width: 100%;
+    text-align: center;
+}
+
+.common-pagination-li-end a {
+    text-decoration: none;
+    color: black;
+}
+
+.common-pagination-li-active {
+    background-color: #3399FF;
+    border: transparent;
+}
+
+.common-pagination-li-active a {
+    color: white;
+}

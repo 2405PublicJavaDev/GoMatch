@@ -1,6 +1,6 @@
 package com.moijo.gomatch.app.meeting;
 
-import com.moijo.gomatch.common.FileUtil;
+import com.moijo.gomatch.common.MeetingFileUtil;
 import com.moijo.gomatch.domain.game.vo.GameVO;
 import com.moijo.gomatch.domain.meeting.service.MeetingService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO;
@@ -32,8 +32,15 @@ import java.util.Map;
 public class MeetingController {
 
     private final MeetingService meetingService;
-    private final FileUtil fileUtil;
-
+    private final MeetingFileUtil fileUtil;
+    @GetMapping("/meeting/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [페이지 폼] 소모임 개설하기
@@ -198,14 +205,7 @@ public class MeetingController {
         return "meeting/meeting-detail";
     }
 
-    @GetMapping("/meeting/checkLogin")
-    @ResponseBody
-    public Map<String, Boolean> checkLogin(HttpSession session) {
-        Map<String, Boolean> response = new HashMap<>();
-        String memberId = (String) session.getAttribute("memberId");
-        response.put("loggedIn", memberId != null);
-        return response;
-    }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Modify] 소모임 수정하기

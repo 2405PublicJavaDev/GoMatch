@@ -18,5 +18,6 @@ public class MeetingBoardVO {
     private String memberId;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
+    private int meetingBoardViewCount;
 
 }

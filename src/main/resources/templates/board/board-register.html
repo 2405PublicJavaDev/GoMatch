@@ -65,8 +65,8 @@
                 <label for="meetingBoardCategory">카테고리</label>
                 <select id="meetingBoardCategory" name="meetingBoardCategory" required>
                     <option value="">카테고리를 선택하세요</option>
-                    <option value="moijo">모임후기</option>
-                    <option value="freeboard">자유게시판</option>
+                    <option value="모임후기">모임후기</option>
+                    <option value="자유게시판">자유게시판</option>
                 </select>
             </div>
             <!-- 게시글 제목 -->
@@ -123,10 +123,10 @@
         placeholder: '📌욕설이나 비방, 모욕, 선정성이 존재하는 사진이나 게시글은 업로드하지 말아주세요📌',
         plugins: [colorSyntax],
         toolbarItems: [
-            ['bold', 'italic', 'strike'],
+            ['heading', 'bold', 'italic', 'strike'],
             ['hr'],
             ['ul', 'ol', 'task', 'indent', 'outdent'],
-            ['table', 'image', 'link'],
+            ['image', 'link'],
             ['code', 'codeblock']
         ],
         hooks: {

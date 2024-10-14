@@ -5,15 +5,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
 public class MeetingBoardLikeVO {
-    private int meetingFileNo;
-    private String fileName;
-    private String filePath;
+    private long meetingBoardLikeNo;
+    private String meetingBoardLikeYn;
+    private long meetingBoardNo;
+    private String memberId;
     private Timestamp regDate;
     private Timestamp updateDate;
-    private int fileOrder;
-    private int meetingNo;
 }

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Match</title>
+    <!-- 메인 css -->
+    <link rel="stylesheet" href="/css/board/board-detail.css">
+    <!-- 헤더/푸터 CSS-->
+    <link rel="stylesheet" href="/css/header-footer.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <a th:href="@{/}"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/game/list">일정/결과</a></li>
+            <li><a href="/goods/list">굿즈</a></li>
+            <li><a href="/meeting/list">소모임</a></li>
+            <li><a href="/matchPredict">승부예측</a></li>
+        </ul>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"><span th:text="${memberNickName + ' 님'}"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
+        </ul>
+    </nav>
+    <script>
+        function confirmLogout() {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                window.location.href = "/member/logout";
+            }
+        }
+    </script>
+</header>
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>게시판</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div class="main-container">
+        <div class="background-image">
+            <img src="/img/baseballground.png" alt="게시판 배경 이미지">
+        </div>
+
+        <div class="meeting-header">
+            <div class="meeting-title">
+                <h2 th:text="${board.meetingBoardTitle}">게시글 제목</h2>
+                <div class="top-buttons">
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-modify" onclick="modifyBoard()">수정</button>
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-delete" onclick="deleteBoard()">삭제</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="meeting-details">
+            <div class="detail-item">
+                <label>작성자</label>
+                <span th:text="${board.memberId}">작성자 아이디</span>
+            </div>
+            <div class="detail-item">
+                <label>등록일</label>
+                <span th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</span>
+            </div>
+            <div class="detail-item">
+                <label>조회수</label>
+                <span th:text="${board.meetingBoardViewCount}">123</span>
+            </div>
+        </div>
+
+        <div class="meeting-content">
+            <p th:utext="${board.meetingBoardContent}" class="formatted-text"></p>
+        </div>
+
+        <div class="meeting-files">
+            <div id="thumbnailContainer" class="file-thumbnails">
+                <div th:each="file : ${meetingBoardFile}">
+                    <div class="file-thumbnail-wrapper">
+                        <img th:src="${file.webPath}" alt="첨부파일 썸네일" class="thumbnail" onclick="openPopup(this.src)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 좋아요 버튼 -->
+
+        <div class="buttons">
+            <button type="button" id="likeButton" onclick="likePost()" style="display: block;">❤️ 좋아요 <span id="likeCount">0</span></button>
+            <button type="button" id="unlikeButton" onclick="unlikePost()" style="display: none;">💔 좋아요 취소 <span id="likeCount">0</span></button>
+            <button type="button" class="button-back" onclick="history.back()">목록으로</button>
+        </div>
+
+        <div>게시글 번호: <span th:text="${board.meetingBoardNo}">0</span></div>
+
+        <!-- 댓글 입력창 -->
+        <div class="comment-section">
+            <h3>댓글</h3>
+            <div class="comment-input">
+                <textarea id="replyText" rows="3" placeholder="댓글을 입력하세요..."></textarea>
+                <button type="button" class="button-submit" onclick="addReply()">댓글 등록</button>
+            </div>
+            <div class="comment-list" th:if="${replies.size() > 0}">
+                <div th:each="reply : ${replies}" class="comment">
+                    <span th:text="${formattedRegDate}">2023-01-01 12:00</span>
+                    <p th:utext="${reply.meetingReplyContent}">댓글 내용</p>
+                </div>
+            </div>
+            <div class="no-comments" th:if="${replies.size() == 0}">
+                <p>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
+            </div>
+        </div>
+
+        <!-- 이전글/다음글 버튼 -->
+        <div class="pagination-buttons">
+            <button th:if="${previousPostId != null}" type="button" class="button-prev" th:onclick="|location.href='/board/detail/' + ${previousPostId}|">이전글</button>
+            <button th:if="${nextPostId != null}" type="button" class="button-next" th:onclick="|location.href='/board/detail/' + ${nextPostId}|">다음글</button>
+        </div>
+    </div>
+</main>
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>개인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+<script th:inline="javascript">
+    const meetingBoardNo = /*[[${board.meetingBoardNo}]]*/ 0;
+    console.log("게시글 번호 (JavaScript 변수):", [[${board.meetingBoardNo}]]);
+
+    // 좋아요 버튼 클릭 시 호출되는 함수
+    function likePost() {
+        fetch(`/board/like/${meetingBoardNo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.loginRequired) {
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+                if (data.liked) {
+                    document.getElementById('likeButton').style.display = 'none';     // 좋아요 버튼 숨기기
+                    document.getElementById('unlikeButton').style.display = 'block';  // 좋아요 취소 버튼 보이기
+                    document.getElementById('likeCount').textContent = data.likeCount; // 좋아요 수 업데이트
+                }
+            })
+            .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
+    }
+
+    // 좋아요 취소 버튼 클릭 시 호출되는 함수
+    function unlikePost() {
+        fetch(`/board/unlike/${meetingBoardNo}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.loginRequired) {
+                    alert('로그인이 필요합니다.');
+                    return;
+                }
+                if (!data.liked) {
+                    document.getElementById('likeButton').style.display = 'block';    // 좋아요 버튼 보이기
+                    document.getElementById('unlikeButton').style.display = 'none';   // 좋아요 취소 버튼 숨기기
+                    document.getElementById('likeCount').textContent = data.likeCount; // 좋아요 수 업데이트
+                }
+            })
+            .catch(error => console.error('좋아요 취소 처리 중 오류 발생:', error));
+    }
+
+    // DOMContentLoaded 이벤트 발생 시 실행
+    document.addEventListener('DOMContentLoaded', function() {
+        // 초기 버튼 상태 설정
+        const isLiked = /*[[${isLiked}]]*/ false; // 서버에서 전달된 초기 좋아요 상태 (서버에서 설정 필요)
+
+        document.getElementById('likeButton').style.display = isLiked ? 'none' : 'block';
+        document.getElementById('unlikeButton').style.display = isLiked ? 'block' : 'none';
+    });
+
+    // 이미지 팝업 열기
+    function openPopup(src) {
+        const popup = document.getElementById('popup');
+        const popupImg = document.getElementById('popup-img');
+        popup.style.display = 'flex';
+        popupImg.src = src;
+    }
+
+    // 이미지 팝업 닫기
+    function closePopup() {
+        const popup = document.getElementById('popup');
+        popup.style.display = 'none';
+    }
+
+
+</script>
+
+<!-- 이미지 팝업을 위한 모달 -->
+<div id="popup" class="popup" onclick="closePopup()">
+    <img id="popup-img" class="popup-img">
+</div>
+</body>
+</html>

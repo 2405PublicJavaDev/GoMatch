@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 등록 - Go Match</title>
+    <!-- 메인 css -->
+    <link rel="stylesheet" href="/css/board/board-list.css">
+    <!-- 헤더/푸터 CSS-->
+    <link rel="stylesheet" href="/css/header-footer.css">
+    <!-- Toast UI Editor & Color Syntax Plugin CSS -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <a th:href="@{/}"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/game/list">일정/결과</a></li>
+            <li><a href="/goods/list">굿즈</a></li>
+            <li><a href="/meeting/list">소모임</a></li>
+            <li><a href="/matchPredict">승부예측</a></li>
+        </ul>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"><span th:text="${memberNickName + ' 님'}"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
+        </ul>
+    </nav>
+    <script>
+        function confirmLogout() {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                window.location.href = "/member/logout";
+            }
+        }
+    </script>
+</header>
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>게시판</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div class="main-container">
+        <div class="search-section">
+            <form action="/board/list" method="get">
+                <select name="searchType">
+                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                    <option value="content" th:selected="${searchType == 'content'}">내용</option>
+                </select>
+                <input type="text" name="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}">
+                <button type="submit">검색</button>
+            </form>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>분류</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>등록일</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boardList}">
+                <td th:text="${board.meetingBoardNo}"></td>
+                <td th:text="${board.meetingBoardCategory}"></td>
+                <td><a th:href="@{'/board/detail/' + ${board.meetingBoardNo}}" th:text="${board.meetingBoardTitle}"></a></td>
+                <td th:text="${board.memberId}"></td>
+                <td th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd')}"></td>
+
+                <td th:text="${board.meetingBoardViewCount}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- 페이지네이션 컨트롤 -->
+        <div id="pagination" class="pagination">
+            <ul th:if="${totalPages > 0}" class="common-pagination">
+                <li class="common-pagination-li-end">
+                    <a th:href="@{/board/list(page=${currentPage - 1})}" th:if="${currentPage > 1}">이전</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${i == currentPage} ? 'common-pagination-li common-pagination-li-active' : 'common-pagination-li'">
+                    <a th:href="@{/board/list(page=${i})}" th:text="${i}"></a>
+                </li>
+                <li class="common-pagination-li-end">
+                    <a th:href="@{/board/list(page=${currentPage + 1})}" th:if="${currentPage < totalPages}">다음</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>개인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+<script>
+
+</script>
+
+
+
+</body>
+</html>
