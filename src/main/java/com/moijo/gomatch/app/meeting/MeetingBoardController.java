@@ -3,7 +3,6 @@ package com.moijo.gomatch.app.meeting;
 import com.moijo.gomatch.common.BoardFileUtil;
 import com.moijo.gomatch.domain.meeting.service.MeetingBoardService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO;
-import com.moijo.gomatch.domain.meeting.vo.MeetingBoardLikeVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO;
 import jakarta.servlet.http.HttpSession;
@@ -103,8 +102,8 @@ public class MeetingBoardController {
     }
     /**
      * 담당자 : 김윤경
-     * 관련 기능 : [페이지 폼] 게시글 등록하기
-     * 설명 : 소모임 개설 페이지 보여주기
+     * 관련 기능 : [페이지 폼] 게시글 리스트 보여주기
+     * 설명 : 소모임 리스트 페이지 보여주기
      */
     @GetMapping("/board/list")
     public String showBoardListPage(
@@ -115,7 +114,8 @@ public class MeetingBoardController {
 
         String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
-
+        model.addAttribute("loggedIn", true);
+        model.addAttribute("memberNickName", memberNickName);
         int pageSize = 10;
         int totalBoardCount = mBoardService.getBoardCount(searchType, keyword);
         int totalPages = (int) Math.ceil((double) totalBoardCount / pageSize);
@@ -144,15 +144,21 @@ public class MeetingBoardController {
         // 게시글 정보 가져오기
         MeetingBoardVO board = mBoardService.getBoardDetail(meetingBoardNo);
         String memberId = (String) session.getAttribute("memberId");
-        model.addAttribute("loggedIn", true);
+        model.addAttribute("loggedIn", memberId != null);
+
+        // 로그인한 사용자의 닉네임 설정
         String memberNickName = (String) session.getAttribute("memberNickName");
         model.addAttribute("memberNickName", memberNickName);
-        log.info("세션에서 가져온 memberId: " + memberId);
-        // Markdown을 HTML로 변환
+
+        // 좋아요 상태 및 좋아요 수 가져오기
+        boolean isLiked = memberId != null && mBoardService.checkLikeStatus(meetingBoardNo, memberId);
+        int likeCount = mBoardService.getLikeCount(meetingBoardNo);
+
+        // Markdown을 HTML로 변환하여 게시글 본문에 설정
         String htmlContent = mBoardService.markdownToHtml(board.getMeetingBoardContent());
         board.setMeetingBoardContent(htmlContent);
 
-        // 댓글, 이전/다음 게시글 정보 가져오기
+        // 댓글 및 파일 목록, 이전/다음 게시글 정보 가져오기
         List<MeetingBoardReplyVO> replies = mBoardService.getRepliesByBoardId(meetingBoardNo);
         Long previousPostId = mBoardService.getPreviousPostId(meetingBoardNo);
         Long nextPostId = mBoardService.getNextPostId(meetingBoardNo);
@@ -162,19 +168,19 @@ public class MeetingBoardController {
         String formattedRegDate = board.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
         // 모델에 값 설정
-        model.addAttribute("formattedRegDate", formattedRegDate);
         model.addAttribute("board", board);
+        model.addAttribute("formattedRegDate", formattedRegDate);
         model.addAttribute("replies", replies);
         model.addAttribute("previousPostId", previousPostId);
         model.addAttribute("nextPostId", nextPostId);
         model.addAttribute("meetingBoardFile", meetingBoardFiles);
-        model.addAttribute("loggedIn", session.getAttribute("memberId") != null);
+        model.addAttribute("isLiked", isLiked);
+        model.addAttribute("likeCount", likeCount);
 
         return "board/board-detail";
     }
 
     // ■■■■■■■■■■■■■■■■■■■■■■■■■■ 게시글 좋아요/좋아요 취소 (MeetingBoardLike) ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ //
-
 
     @PostMapping("/board/like/{meetingBoardNo}")
     @ResponseBody
@@ -187,13 +193,22 @@ public class MeetingBoardController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
+        // 이미 좋아요 상태인지 확인
+        boolean alreadyLiked = mBoardService.checkLikeStatus(meetingBoardNo, memberId);
+        if (alreadyLiked) {
+            response.put("alreadyLiked", true);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
         mBoardService.likePost(meetingBoardNo, memberId);
+        int likeCount = mBoardService.getLikeCount(meetingBoardNo);
+        log.info("게시글 {}의 현재 좋아요 수: {}", meetingBoardNo, likeCount);
+
         response.put("liked", true);
-        response.put("likeCount", mBoardService.getLikeCount(meetingBoardNo));
+        response.put("likeCount", likeCount);
 
         return ResponseEntity.ok(response);
     }
-    
     @PostMapping("/board/unlike/{meetingBoardNo}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> unlikePost(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session) {
@@ -206,6 +221,8 @@ public class MeetingBoardController {
         }
 
         mBoardService.unlikePost(meetingBoardNo, memberId);
+        int likeCount = mBoardService.getLikeCount(meetingBoardNo);
+        log.info("게시글 {}의 현재 좋아요 수: {}", meetingBoardNo, likeCount);
         response.put("liked", false);
         response.put("likeCount", mBoardService.getLikeCount(meetingBoardNo));
 
@@ -224,6 +241,7 @@ public class MeetingBoardController {
         }
 
         boolean success = mBoardService.addReply(boardId, memberId, content);
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
 

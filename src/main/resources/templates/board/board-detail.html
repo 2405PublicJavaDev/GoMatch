@@ -99,12 +99,16 @@
         <!-- 좋아요 버튼 -->
 
         <div class="buttons">
-            <button type="button" id="likeButton" onclick="likePost()" style="display: block;">❤️ 좋아요 <span id="likeCount">0</span></button>
-            <button type="button" id="unlikeButton" onclick="unlikePost()" style="display: none;">💔 좋아요 취소 <span id="likeCount">0</span></button>
+            <button type="button" id="likeButton" onclick="likePost()" style="display: block;">
+                ❤️ 좋아요 (<span id="likeCount" th:text="${likeCount}">0</span>)
+            </button>
+            <button type="button" id="unlikeButton" onclick="unlikePost()" style="display: none;">
+                🖤 좋아요 취소 (<span id="likeCount" th:text="${likeCount}">0</span>)
+            </button>
             <button type="button" class="button-back" onclick="history.back()">목록으로</button>
         </div>
 
-        <div>게시글 번호: <span th:text="${board.meetingBoardNo}">0</span></div>
+        <div class="status-message" id="statusMessage"></div>
 
         <!-- 댓글 입력창 -->
         <div class="comment-section">
@@ -146,8 +150,11 @@
 <script th:inline="javascript">
     const meetingBoardNo = /*[[${board.meetingBoardNo}]]*/ 0;
     console.log("게시글 번호 (JavaScript 변수):", [[${board.meetingBoardNo}]]);
+    function updateLikeStatus(liked) {
+        document.getElementById('likeButton').style.display = liked ? 'none' : 'block';
+        document.getElementById('unlikeButton').style.display = liked ? 'block' : 'none';
+    }
 
-    // 좋아요 버튼 클릭 시 호출되는 함수
     function likePost() {
         fetch(`/board/like/${meetingBoardNo}`, {
             method: 'POST',
@@ -159,16 +166,17 @@
                     alert('로그인이 필요합니다.');
                     return;
                 }
+                if (data.alreadyLiked) {
+                    alert('이미 좋아요를 누르셨습니다.');
+                    return;
+                }
                 if (data.liked) {
-                    document.getElementById('likeButton').style.display = 'none';     // 좋아요 버튼 숨기기
-                    document.getElementById('unlikeButton').style.display = 'block';  // 좋아요 취소 버튼 보이기
-                    document.getElementById('likeCount').textContent = data.likeCount; // 좋아요 수 업데이트
+                    location.reload(); // 좋아요 후 새로고침
                 }
             })
             .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
     }
 
-    // 좋아요 취소 버튼 클릭 시 호출되는 함수
     function unlikePost() {
         fetch(`/board/unlike/${meetingBoardNo}`, {
             method: 'POST',
@@ -180,10 +188,8 @@
                     alert('로그인이 필요합니다.');
                     return;
                 }
-                if (!data.liked) {
-                    document.getElementById('likeButton').style.display = 'block';    // 좋아요 버튼 보이기
-                    document.getElementById('unlikeButton').style.display = 'none';   // 좋아요 취소 버튼 숨기기
-                    document.getElementById('likeCount').textContent = data.likeCount; // 좋아요 수 업데이트
+                if (data.liked === false) {
+                    location.reload(); // 좋아요 취소 후 새로고침
                 }
             })
             .catch(error => console.error('좋아요 취소 처리 중 오류 발생:', error));
@@ -211,7 +217,6 @@
         const popup = document.getElementById('popup');
         popup.style.display = 'none';
     }
-
 
 </script>
 
