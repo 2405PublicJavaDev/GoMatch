@@ -141,6 +141,9 @@ public class MeetingBoardController {
     // 게시글 상세 조회 메서드 추가
     @GetMapping("/board/detail/{meetingBoardNo}")
     public String showBoardDetail(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session, Model model) {
+        // 조회수 증가
+        mBoardService.increaseViewCount(meetingBoardNo);
+
         // 게시글 정보 가져오기
         MeetingBoardVO board = mBoardService.getBoardDetail(meetingBoardNo);
         String memberId = (String) session.getAttribute("memberId");

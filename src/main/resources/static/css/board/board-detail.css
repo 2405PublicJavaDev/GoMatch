@@ -229,30 +229,26 @@ h1 {
     padding: 20px;
     font-weight: bold;
 }
-
-.button-like, .button-back {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
+/* 좋아요 버튼 스타일 */
+.like-button {
+    background-color: #3399FF; /* 파란색 배경 */
+    color: white; /* 텍스트 색상 */
+    border: none; /* 테두리 없애기 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 10px 20px;
     cursor: pointer;
+    font-size: 16px;
+}
+.button-back{
+    border: none; /* 테두리 없애기 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.button-like {
-    background-color: #ffdd57;
-    color: #000;
-}
-
-.button-back {
-    background-color: #eeeeee;
-    color: #000;
-}
-
-.button-like:hover {
-    background-color: #ffcc33;
-}
-
-.button-back:hover {
-    background-color: #e0e0e0;
+.like-button:hover {
+    background-color: #007ACC; /* 호버 시 더 어두운 파란색 */
 }
 
 /* 댓글 섹션 */

@@ -153,7 +153,7 @@
     });
 
     function syncEditorContent() {
-        document.getElementById('meetingBoardContent').value = editor.getMarkdown();
+        document.getElementById('meetingBoardContent').value = editor.getHTML(); // HTML 형식으로 저장
     }
 
     function previewFiles() {

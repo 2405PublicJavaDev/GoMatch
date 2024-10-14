@@ -44,6 +44,6 @@ public interface MeetingBoardService {
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return renderer.render(document);
     }
-
+    void increaseViewCount(long meetingBoardNo); // 조회수 증가 메서드 추가
 
 }

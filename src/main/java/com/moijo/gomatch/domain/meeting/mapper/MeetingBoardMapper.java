@@ -33,4 +33,5 @@ public interface MeetingBoardMapper {
     int selectLikeCount(long meetingBoardNo);
     void deleteLike(@Param("meetingBoardNo") long meetingBoardNo, @Param("memberId") String memberId);
     void insertLike(@Param("meetingBoardNo") long meetingBoardNo, @Param("memberId") String memberId);
+    void updateMeetingBoardViewCount(long meetingBoardNo); // 조회수 증가 메서드 추가
 }

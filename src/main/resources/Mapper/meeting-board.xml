@@ -171,5 +171,11 @@
         WHERE MEETING_BOARD_NO &gt; #{meetingBoardNo}
     </select>
 
+    <!-- 조회수 증가 -->
+    <update id="updateMeetingBoardViewCount" parameterType="long">
+        UPDATE MEETING_BOARD
+        SET MEETING_BOARD_VIEW_COUNT = MEETING_BOARD_VIEW_COUNT + 1
+        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
+    </update>
 
 </mapper>

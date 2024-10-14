@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="/css/board/board-detail.css">
     <!-- 헤더/푸터 CSS-->
     <link rel="stylesheet" href="/css/header-footer.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <header>
@@ -99,16 +103,12 @@
         <!-- 좋아요 버튼 -->
 
         <div class="buttons">
-            <button type="button" id="likeButton" onclick="likePost()" style="display: block;">
-                ❤️ 좋아요 (<span id="likeCount" th:text="${likeCount}">0</span>)
-            </button>
-            <button type="button" id="unlikeButton" onclick="unlikePost()" style="display: none;">
-                🖤 좋아요 취소 (<span id="likeCount" th:text="${likeCount}">0</span>)
+            <button type="button" id="likeButton" class="like-button" onclick="toggleLike()">
+                <span id="likeIcon">🤍</span> 좋아요 (<span id="likeCount" th:text="${likeCount}">0</span>)
             </button>
             <button type="button" class="button-back" onclick="history.back()">목록으로</button>
         </div>
 
-        <div class="status-message" id="statusMessage"></div>
 
         <!-- 댓글 입력창 -->
         <div class="comment-section">
@@ -149,60 +149,64 @@
 </footer>
 <script th:inline="javascript">
     const meetingBoardNo = /*[[${board.meetingBoardNo}]]*/ 0;
-    console.log("게시글 번호 (JavaScript 변수):", [[${board.meetingBoardNo}]]);
-    function updateLikeStatus(liked) {
-        document.getElementById('likeButton').style.display = liked ? 'none' : 'block';
-        document.getElementById('unlikeButton').style.display = liked ? 'block' : 'none';
-    }
+    const isLiked = /*[[${isLiked}]]*/ false; // 서버에서 전달된 초기 좋아요 상태
 
-    function likePost() {
-        fetch(`/board/like/${meetingBoardNo}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.loginRequired) {
-                    alert('로그인이 필요합니다.');
-                    return;
-                }
-                if (data.alreadyLiked) {
-                    alert('이미 좋아요를 누르셨습니다.');
-                    return;
-                }
-                if (data.liked) {
-                    location.reload(); // 좋아요 후 새로고침
-                }
-            })
-            .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
-    }
-
-    function unlikePost() {
-        fetch(`/board/unlike/${meetingBoardNo}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.loginRequired) {
-                    alert('로그인이 필요합니다.');
-                    return;
-                }
-                if (data.liked === false) {
-                    location.reload(); // 좋아요 취소 후 새로고침
-                }
-            })
-            .catch(error => console.error('좋아요 취소 처리 중 오류 발생:', error));
-    }
-
-    // DOMContentLoaded 이벤트 발생 시 실행
     document.addEventListener('DOMContentLoaded', function() {
-        // 초기 버튼 상태 설정
-        const isLiked = /*[[${isLiked}]]*/ false; // 서버에서 전달된 초기 좋아요 상태 (서버에서 설정 필요)
+        const likeButton = document.getElementById('likeButton');
+        const likeIcon = document.getElementById('likeIcon');
 
-        document.getElementById('likeButton').style.display = isLiked ? 'none' : 'block';
-        document.getElementById('unlikeButton').style.display = isLiked ? 'block' : 'none';
+        if (isLiked) {
+            likeButton.classList.add('liked');
+            likeIcon.textContent = '❤️'; // 채워진 하트
+        } else {
+            likeButton.classList.remove('liked');
+            likeIcon.textContent = '🤍'; // 빈 하트
+        }
     });
+
+    function toggleLike() {
+        const likeButton = document.getElementById('likeButton');
+        const likeIcon = document.getElementById('likeIcon');
+        const likeCountElem = document.getElementById('likeCount');
+
+        const isCurrentlyLiked = likeButton.classList.contains('liked');
+        const url = isCurrentlyLiked ? `/board/unlike/${meetingBoardNo}` : `/board/like/${meetingBoardNo}`;
+
+        // SweetAlert을 통해 확인 창 표시
+        const alertTitle = isCurrentlyLiked ? '정말 좋아요를 취소하시겠습니까?' : '좋아요를 누르시겠습니까?';
+        const confirmButtonText = isCurrentlyLiked ? '네, 취소합니다' : '네, 좋아요';
+
+        Swal.fire({
+            title: alertTitle,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: '아니오'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 사용자가 확인 버튼을 눌렀을 때만 요청 실행
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.loginRequired) {
+                            alert('로그인이 필요합니다.');
+                            return;
+                        }
+
+                        // 좋아요 상태 업데이트
+                        likeButton.classList.toggle('liked', !isCurrentlyLiked);
+                        likeIcon.textContent = !isCurrentlyLiked ? '❤️' : '🤍';
+                        likeCountElem.textContent = data.likeCount;
+                    })
+                    .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
+            }
+        });
+    }
 
     // 이미지 팝업 열기
     function openPopup(src) {
@@ -217,7 +221,6 @@
         const popup = document.getElementById('popup');
         popup.style.display = 'none';
     }
-
 </script>
 
 <!-- 이미지 팝업을 위한 모달 -->

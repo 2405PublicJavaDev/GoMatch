@@ -85,6 +85,9 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     public boolean checkLikeStatus(long meetingBoardNo, String memberId) {
         return meetingBoardMapper.checkLikeStatus(meetingBoardNo, memberId) > 0;
     }
-
+    @Override
+    public void increaseViewCount(long meetingBoardNo) {
+        meetingBoardMapper.updateMeetingBoardViewCount(meetingBoardNo);
+    }
 
 }

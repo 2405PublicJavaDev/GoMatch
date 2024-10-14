@@ -87,7 +87,6 @@
                 <td><a th:href="@{'/board/detail/' + ${board.meetingBoardNo}}" th:text="${board.meetingBoardTitle}"></a></td>
                 <td th:text="${board.memberId}"></td>
                 <td th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd')}"></td>
-
                 <td th:text="${board.meetingBoardViewCount}"></td>
             </tr>
             </tbody>
