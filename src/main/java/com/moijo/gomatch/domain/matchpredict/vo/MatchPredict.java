@@ -21,6 +21,7 @@ public class MatchPredict {
     private String teamA;
     private String teamB;
     private String gameTime;
+    private String matchPredictStatus;
     private Date gameDate;
     private Timestamp regDate;
 }

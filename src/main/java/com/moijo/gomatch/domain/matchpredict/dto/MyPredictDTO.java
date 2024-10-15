@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 @Getter
 @Setter
@@ -13,11 +14,14 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Slf4j
 public class MyPredictDTO {
+    private Long matchPredictNo;
     private Long gameNo;
-    private Timestamp gameDate;
-    private String gameTime;
+    private String matchPredictDecision;
+    private String memberId;
     private String teamA;
     private String teamB;
-    private String matchPredictDecision;  // 예측 결정
-    private String memberId;
+    private String gameTime;
+    private String matchPredictStatus;
+    private Date gameDate;
+    private Timestamp regDate;
 }

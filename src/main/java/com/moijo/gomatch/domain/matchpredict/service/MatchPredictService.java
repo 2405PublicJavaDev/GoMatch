@@ -55,7 +55,6 @@ public interface MatchPredictService {
     int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId);
 
 
-
     /**
      * 예측 수정
      * @param memberId
@@ -93,4 +92,6 @@ public interface MatchPredictService {
      * @return 업데이트된 랭크
      */
     String updateUserRank(String memberId);
+
+    boolean hasPredictionForGame(String memberId, Long gameNo);
 }

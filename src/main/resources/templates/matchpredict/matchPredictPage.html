@@ -90,7 +90,7 @@
         </div>
         <div class="member-info" th:if="${memberInfo == null}">
             <div class="member-id" name="member-id">
-                <button type="button">로그인 하기</button>
+                <button type="button" onclick="location.href='/member/loginpage'">로그인 하기</button>
             </div>
         </div>
         <h3 class="calendar-title">2024.10</h3>
@@ -170,7 +170,11 @@
 </footer>
 
 <th:block th:replace="fragments/footer.html"></th:block>
-<script>
+<script th:inline="javascript">
+        var errorMessage = /*[[${errorMessage}]]*/ null;
+        if (errorMessage) {
+            alert(errorMessage);
+        }
     function setPrediction(decision, gameNo) {
 
         //matchPredictDecision의 hidden input에 선택한 값을 설정
@@ -192,9 +196,10 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
+
         const dateSelector = document.querySelector('.date-selector');
         const today = new Date();
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const options = { month: '2-digit', day: '2-digit' };
 
 // 7일 간의 날짜 버튼 생성
         for (let i = 0; i < 7; i++) {
@@ -203,11 +208,14 @@
 
             const button = document.createElement('button');
             button.classList.add('date');
+
+            let dateString = date.toLocaleDateString('ko-KR', options).replace(/\./g, '');
+
             if (i === 0) {
                 button.classList.add('active');
-                button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
+                button.innerText = `오늘\n ${dateString}`;
             } else {
-                button.innerText = date.toLocaleDateString('ko-KR', options);
+                button.innerText = dateString;
             }
             dateSelector.appendChild(button);
 

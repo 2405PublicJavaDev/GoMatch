@@ -108,6 +108,11 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     @Override
+    public boolean hasPredictionForGame(String memberId, Long gameNo) {
+        return matchPredictMapper.countPredictionsByMemberId(memberId, gameNo) > 0; // 예측이 존재하면 true 반환
+    }
+
+    @Override
     public String updateUserRank(String memberId) {
         // 회원의 경험치 조회
         int experience = matchPredictMapper.getUserExperience(memberId);
@@ -127,6 +132,9 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
         return newRank; // 업데이트된 랭크 반환
     }
+
+
+
 
 
     /**
@@ -171,5 +179,4 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         }
         return 0.0;
     }
-
 }

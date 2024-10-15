@@ -109,4 +109,6 @@ public interface MatchPredictMapper {
      * @param newRank
      */
     void updateMemberRank(String memberId, String newRank);
+
+    Integer countPredictionsByMemberId(String memberId, Long gameNo);
 }

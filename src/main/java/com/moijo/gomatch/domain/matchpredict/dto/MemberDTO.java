@@ -17,5 +17,4 @@ public class MemberDTO {
     private String memberName;
     private Long experiencePoints;
     private Long rankPosition;
-    private Long gameNo;
 }
