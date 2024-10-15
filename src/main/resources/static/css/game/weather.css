@@ -108,16 +108,10 @@
     padding-top: 40px;
 }
 
-caption {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
 .hourly-title {
     width: 100%;
 }
-#hourly-table {
+table {
     border-collapse: collapse;
     background-color: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -126,24 +120,36 @@ caption {
     width: 100%;
 }
 
-#hourly-table tr, td {
+ tr, td {
     height: 25px;
 }
 
-#hourly-table th {
+th {
     background-color: #4A5EE9;
     color: white;
 }
 
-#hourly-table tr:nth-child(even) {
+tr:nth-child(even) {
     background-color: #f8f8f8;
 }
-#hourly-table tr:hover {
+ tr:hover {
     background-color: #f1f1f1;
 }
+
+ #weekly-table th {
+     background-color: #ff8b59;
+ }
+
 .weather-icon {
     font-size: 24px;
 }
+
+caption{
+    font-size: 30px;
+    margin: 80px 0px 20px 0px;
+    font-weight: bold;
+}
+
 /*
     aside css
  */

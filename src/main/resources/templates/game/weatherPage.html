@@ -61,7 +61,10 @@
             <img src="/img/야구마루.png" class="default-img">
           </div>
       </div>
+      <div id="forecast-main">
       <div id="hourly-forecast">
+      </div>
+      <div id="weekly-forecast"></div>
       </div>
     </div>
   </section>
@@ -189,41 +192,16 @@
                                     .then(response => response.json())
                                     .then(hourlyData => {
                                       const now = new Date();
-                                      const hourlyForecast = hourlyData.list.filter(forecast => new Date(forecast.dt * 1000) > now); // 현재 시간 이후의 데이터 필터링
-                                      // let forecastInfo = `<div class="hourly-title"><h2>${stadium.stadiumName}의 시간대별 예보</h2></div>`
-                                      let forecastTable = '<table id="hourly-table">';
-                                      const headers = ['시간', '온도 (°C)', '날씨', '풍속 (m/s)', '습도 (%)', '강수 확률 (%)'];
-                                      const forecasts = hourlyForecast.slice(0, 9); // 첫 8개의 예보만 가져오기
+                                      const hourlyForecast = hourlyData.list.filter(forecast => new Date(forecast.dt * 1000) > now).slice(0, 5); // 현재 시간 이후의 데이터 필터링
+                                      const weeklyForecast = hourlyData.list.filter(forecast => new Date(forecast.dt * 1000).getHours() === 12).slice(0, 6); // 주간별 데이터 필터링
 
-// 시간 행 추가
-                                      forecastTable += '<caption>'+`${stadium.stadiumName}의 시간대별 예보`+'</caption><tr><th>시간</th>';
-                                      forecasts.forEach(forecast => {
-                                        const date = new Date(forecast.dt * 1000);
-                                        const hours = date.getHours();
-                                        forecastTable += `<td>${hours}:00</td>`;
-                                      });
-                                      forecastTable += '</tr>';
+                                      const headers  = ['시간/날짜', '온도 (°C)', '날씨', '풍속 (m/s)', '습도 (%)', '강수 확률 (%)'];
 
-// 나머지 정보 행 추가
-                                      headers.slice(1).forEach((header, index) => {
-                                        forecastTable += `<tr><th>${header}</th>`;
-                                        forecasts.forEach(forecast => {
-                                          let value;
-                                          switch(index) {
-                                            case 0: value = forecast.main.temp; break;
-                                            case 1 :  value = `<img src="http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" alt="${forecast.weather[0].description}">
-                                                                <br>` + `${forecast.weather[0].description}`; break;
-                                            case 2: value = forecast.wind.speed; break;
-                                            case 3: value = forecast.main.humidity; break;
-                                            case 4: value = (forecast.pop * 100).toFixed(0) + '%'; break;
-                                          }
-                                          forecastTable += `<td>${value}</td>`;
-                                        });
-                                        forecastTable += '</tr>';
-                                      });
+                                      const hourlyTable = createForecastTable(hourlyForecast, 'hourly', headers);
+                                      const weeklyTable = createForecastTable(weeklyForecast, 'weekly', headers);
 
-                                      forecastTable += '</table>';
-                                      document.getElementById('hourly-forecast').innerHTML = forecastTable; // 시간대별 예보 테이블 추가
+                                      document.getElementById('hourly-forecast').innerHTML = hourlyTable;
+                                      document.getElementById('weekly-forecast').innerHTML = weeklyTable;
                                     })
                                     .catch(error => {
                                       console.error('시간대별 예보를 가져오는 데 오류가 발생했습니다:', error);
@@ -242,6 +220,55 @@
   } else {
     console.error('stadiums 데이터가 비어 있습니다.');
   }
+
+  function formatDate(date) {
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  }
+
+  // 공통 함수: 시간 포맷팅
+  function formatTime(date) {
+    return `${date.getHours()}:00`;
+  }
+
+  // 공통 함수: 예보 데이터 가져오기
+  function getForecastData(forecast, index) {
+    switch(index) {
+      case 0: return forecast.main.temp;
+      case 1: return `<img src="http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" alt="${forecast.weather[0].description}"><br>${forecast.weather[0].description}`;
+      case 2: return forecast.wind.speed;
+      case 3: return forecast.main.humidity;
+      case 4: return (forecast.pop * 100).toFixed(0) + '%';
+      default: return '';
+    }
+  }
+
+  // 테이블 생성 함수
+  function createForecastTable(forecasts, type, headers) {
+    let table = `<table id="${type}-table">`;
+    table += `<caption>${type === 'hourly' ? '시간대별' : '주간'} 예보</caption>`;
+
+    // 헤더 행 추가
+    table += '<tr><th>' + (type === 'hourly' ? '시간' : '날짜') + '</th>';
+    forecasts.forEach(forecast => {
+      const date = new Date(forecast.dt * 1000);
+      table += `<td>${type === 'hourly' ? formatTime(date) : formatDate(date)}</td>`;
+    });
+    table += '</tr>';
+
+    // 데이터 행 추가
+    headers.slice(1).forEach((header, index) => {
+      table += `<tr><th>${header}</th>`;
+      forecasts.forEach(forecast => {
+        table += `<td>${getForecastData(forecast, index)}</td>`;
+      });
+      table += '</tr>';
+    });
+
+    table += '</table>';
+    return table;
+  }
+
+
   // 미세먼지 등급 결정 함수
   function getDust(level) {
     switch (level) {
