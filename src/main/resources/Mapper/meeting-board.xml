@@ -60,6 +60,9 @@
         SELECT COUNT(*)
         FROM MEETING_BOARD
         <where>
+            <if test="filterType != 'all'">
+                MEETING_BOARD_CATEGORY = #{filterType}
+            </if>
             <if test="searchType != null and keyword != null">
                 <choose>
                     <when test="searchType == 'title'">
@@ -72,7 +75,6 @@
             </if>
         </where>
     </select>
-
     <!-- 게시글 리스트 조회 -->
     <select id="selectBoardList" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
         SELECT * FROM (
@@ -80,6 +82,9 @@
         SELECT *
         FROM MEETING_BOARD
         <where>
+            <if test="filterType != 'all'">
+                MEETING_BOARD_CATEGORY = #{filterType}
+            </if>
             <if test="searchType != null and keyword != null">
                 <choose>
                     <when test="searchType == 'title'">
@@ -186,6 +191,11 @@
         #{meetingReplyNo}, #{meetingReplyContent}, #{boardNo}, #{memberId}, default, default
         )
     </insert>
+
+    <delete id="deleteReply" parameterType="long">
+        DELETE FROM MEETING_BOARD_REPLY
+        WHERE MEETING_REPLY_NO = #{meetingReplyNo}
+    </delete>
     <!-- 이전 게시글 ID 조회 -->
     <select id="selectPreviousPostId" parameterType="long" resultType="long">
         SELECT MAX(MEETING_BOARD_NO)

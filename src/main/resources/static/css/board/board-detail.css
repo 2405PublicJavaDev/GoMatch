@@ -65,14 +65,6 @@ aside {
     margin-top: 50px;
 }
 
-/* 기본 컨테이너 설정 */
-.main-container {
-    font-family: Arial, sans-serif;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
 /* 소모임 리스트 제목 스타일 */
 h1 {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
@@ -82,7 +74,7 @@ h1 {
     font-weight: normal;
 }
 
-/* 기본 설정 */
+/* ■■■■■■■■■■ 메인 컨테이너  ■■■■■■■■■■ */
 .main-container {
     font-family: Arial, sans-serif;
     max-width: 1000px;

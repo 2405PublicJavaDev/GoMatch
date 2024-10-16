@@ -27,15 +27,16 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     }
 
     @Override
-    public int getBoardCount(String searchType, String keyword) {
-        return meetingBoardMapper.selectBoardCount(searchType, keyword);
+    public int getBoardCount(String filterType, String searchType, String keyword) {
+        return meetingBoardMapper.selectBoardCount(filterType, searchType, keyword);
     }
 
     @Override
-    public List<MeetingBoardVO> getBoardList(int page, int pageSize, String searchType, String keyword) {
+    public List<MeetingBoardVO> getBoardList(int page, int pageSize, String filterType, String searchType, String keyword) {
         int offset = (page - 1) * pageSize;
-        return meetingBoardMapper.selectBoardList(offset, pageSize, searchType, keyword);
+        return meetingBoardMapper.selectBoardList(offset, pageSize, filterType, searchType, keyword);
     }
+
     @Override
     public List<MeetingBoardVO> getAllBoards() {
         return meetingBoardMapper.selectAllBoards();
@@ -65,6 +66,10 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     @Override
     public boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent) {
         return meetingBoardMapper.insertReply(meetingBoardNo, memberId, meetingReplyContent) > 0;
+    }
+    @Override
+    public boolean deleteReply(long meetingReplyNo) {
+        return meetingBoardMapper.deleteReply(meetingReplyNo) > 0;
     }
 
     @Override

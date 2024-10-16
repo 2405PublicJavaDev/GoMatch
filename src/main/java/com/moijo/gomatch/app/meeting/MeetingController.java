@@ -105,24 +105,33 @@ public class MeetingController {
      */
     @GetMapping("/meeting/list")
     public String showMeetingList(Model model, HttpSession session) {
-        model.addAttribute("loggedIn", true);
+        String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
-        model.addAttribute("memberNickName", memberNickName);
+
+        // 세션에 memberId가 존재하면 loggedIn을 true로 설정
+        boolean loggedIn = memberId != null;
+        model.addAttribute("loggedIn", loggedIn);
+        model.addAttribute("memberNickName", loggedIn ? memberNickName : ""); // 로그인하지 않았을 경우 빈 문자열
+
         // 예시 팀 이름 리스트를 모델에 추가
         model.addAttribute("teams", List.of("기아", "롯데", "삼성", "두산", "KT", "SSG", "NC", "한화", "키움", "LG"));
+
         // 현재 날짜의 소모임 리스트를 모델에 추가 (기본 조회)
         String today = LocalDate.now().toString();
         List<MeetingVO> meetings = meetingService.getMeetingsByDate(today);
+
         // 참석자 수를 계산하여 모델에 추가
         Map<Long, Integer> attendeesCountMap = new HashMap<>();
         for (MeetingVO meeting : meetings) {
             List<MeetingAttendVO> attendees = meetingService.getMeetingAttendeeByMeetingNo(meeting.getMeetingNo());
             attendeesCountMap.put(meeting.getMeetingNo(), attendees.size());
         }
+
         model.addAttribute("meetings", meetings);
         model.addAttribute("attendeesCountMap", attendeesCountMap);
         return "meeting/meeting-list";
     }
+
 
 
     @GetMapping("/meeting/gameDates")

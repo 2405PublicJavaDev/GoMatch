@@ -16,12 +16,12 @@ public interface MeetingBoardService {
     void removeBoard(long meetingBoardNo);
     MeetingBoardVO getBoardDetail(long meetingBoardNo);
 
-    List<MeetingBoardReplyVO> getRepliesByBoardId(long meetingBoardNo);
-    // 검색 조건에 맞는 게시글 수 조회
-    int getBoardCount(String searchType, String keyword);
-    // 검색 조건에 맞는 게시글 조회
-    List<MeetingBoardVO> getBoardList(int page, int pageSize, String searchType, String keyword);
 
+    // 검색 조건에 맞는 게시글 수 조회
+    int getBoardCount(String filterType, String searchType, String keyword);
+
+    // 검색 조건에 맞는 게시글 조회
+    List<MeetingBoardVO> getBoardList(int page, int pageSize, String filterType, String searchType, String keyword);
     List<MeetingBoardVO> getAllBoards();
 
     void likePost(long meetingBoardNo, String memberId);
@@ -29,9 +29,10 @@ public interface MeetingBoardService {
     boolean checkLikeStatus(long meetingBoardNo, String memberId);
     int getLikeCount(long meetingBoardNo);
 
+    List<MeetingBoardReplyVO> getRepliesByBoardId(long meetingBoardNo);
+    boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent);
 
-    boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent); //
-
+    boolean deleteReply(long meetingReplyNo);
     Long getPreviousPostId(long meetingBoardNo);
 
     Long getNextPostId(long meetingBoardNo);

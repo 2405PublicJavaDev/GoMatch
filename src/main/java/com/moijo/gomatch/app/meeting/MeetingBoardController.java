@@ -108,6 +108,7 @@ public class MeetingBoardController {
     @GetMapping("/board/list")
     public String showBoardListPage(
             @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "filterType", defaultValue = "all") String filterType,
             @RequestParam(value = "searchType", required = false) String searchType,
             @RequestParam(value = "keyword", required = false) String keyword,
             HttpSession session, Model model) {
@@ -118,20 +119,19 @@ public class MeetingBoardController {
         model.addAttribute("memberNickName", memberNickName);
 
         int pageSize = 10;
-        int totalBoardCount = mBoardService.getBoardCount(searchType, keyword);
+        int totalBoardCount = mBoardService.getBoardCount(filterType, searchType, keyword);
         int totalPages = (int) Math.ceil((double) totalBoardCount / pageSize);
 
-        List<MeetingBoardVO> boardList = mBoardService.getBoardList(page, pageSize, searchType, keyword);
-
+        List<MeetingBoardVO> boardList = mBoardService.getBoardList(page, pageSize, filterType, searchType, keyword);
         // 각 게시글의 좋아요 수를 설정
         for (MeetingBoardVO board : boardList) {
             int likeCount = mBoardService.getLikeCount(board.getMeetingBoardNo());
             board.setLikeCount(likeCount);
         }
-
         model.addAttribute("boardList", boardList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
+        model.addAttribute("filterType", filterType);
         model.addAttribute("searchType", searchType);
         model.addAttribute("keyword", keyword);
 
@@ -234,6 +234,8 @@ public class MeetingBoardController {
 
         return ResponseEntity.ok(response);
     }
+
+
     @PostMapping("/board/unlike/{meetingBoardNo}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> unlikePost(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session) {
@@ -264,12 +266,26 @@ public class MeetingBoardController {
         if (memberId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         boolean success = mBoardService.addReply(meetingBoardNo, memberId, meetingReplyContent);
         Map<String, Object> response = new HashMap<>();
         response.put("success", success);
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/board/reply/delete/{meetingReplyNo}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteReply(@PathVariable long meetingReplyNo, HttpSession session) {
+        String memberId = (String) session.getAttribute("memberId");
+        Map<String, Object> response = new HashMap<>();
+        if (memberId == null) {
+            response.put("loginRequired", true);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        boolean success = mBoardService.deleteReply(meetingReplyNo);
+        response.put("success", success);
+        return ResponseEntity.ok(response);
+    }
+
 }
 
