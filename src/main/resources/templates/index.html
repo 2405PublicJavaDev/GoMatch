@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>야구 정보 페이지</title>
+    <title>Go Match</title>
     <link rel="stylesheet" href="css/header-footer.css">
     <link rel="stylesheet" href="css/mainpage.css">
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
 </head>
 <body>
 <!-- 헤더 부분 -->
 <header>
     <nav>
         <div class="logo">
-            <a th:href="@{/}"><img src="img/고매치로고.png" alt="야구 리그 로고"></a>
+            <a th:href="@{/}"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
         </div>
         <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
-            <li><a href="#">굿즈</a></li>
-            <li><a href="#">소모임</a></li>
-            <li><a href="#">승부예측</a></li>
+            <li><a href="/game/list">일정/결과</a></li>
+            <li><a href="/goods/list">굿즈</a></li>
+            <li><a href="/meeting/list">소모임</a></li>
+            <li><a href="/matchPredict">승부예측</a></li>
         </ul>
         <ul class="member-links">
             <th:block th:if="${loggedIn}">
-                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+                <li class="member-link"><a th:href="@{/member/mypage}"><span th:text="${memberNickName + ' 님'}"></span></a>
+                </li>
                 <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
             </th:block>
             <th:block th:unless="${loggedIn}">
@@ -31,6 +33,13 @@
             </th:block>
         </ul>
     </nav>
+    <script>
+        function confirmLogout() {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                window.location.href = "/member/logout";
+            }
+        }
+    </script>
 </header>
 <!-- 메인내용 시작  -->
 <main>
@@ -162,7 +171,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">잠실 ｜ 18:30</p>
-                        <p class="teams"><img src="img/NC로고.png" class="game-logo"><span>VS</span><img src="img/두산로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/NC로고.png" class="game-logo"><span>VS</span><img
+                                src="img/두산로고.png" class="game-logo"></p>
                         <p class="teams-name">NC<span>VS</span>두산</p>
                         <p class="broadcaster">SPO-T</p>
                         <!-- <div class="pitchers">
@@ -177,7 +187,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">문학 ｜ 18:30</p>
-                        <p class="teams"><img src="img/삼성로고.png" class="game-logo"><span>VS</span><img src="img/키움로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/삼성로고.png" class="game-logo"><span>VS</span><img
+                                src="img/키움로고.png" class="game-logo"></p>
                         <p class="teams-name">삼성<span>VS</span>키움</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -192,7 +203,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">사직 ｜ 18:30</p>
-                        <p class="teams"><img src="img/LG로고.png" class="game-logo"><span>VS</span><img src="img/한화로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/LG로고.png" class="game-logo"><span>VS</span><img
+                                src="img/한화로고.png" class="game-logo"></p>
                         <p class="teams-name">LG<span>VS</span>한화</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -207,7 +219,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">대구 ｜ 18:30</p>
-                        <p class="teams"><img src="img/KT로고.png" class="game-logo"><span>VS</span><img src="img/롯데로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/KT로고.png" class="game-logo"><span>VS</span><img
+                                src="img/롯데로고.png" class="game-logo"></p>
                         <p class="teams-name">KT<span>VS</span>롯데</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -222,7 +235,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">수원 ｜ 18:30</p>
-                        <p class="teams"><img src="img/SSG로고.png" class="game-logo"><span>VS</span><img src="img/기아로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/SSG로고.png" class="game-logo"><span>VS</span><img
+                                src="img/기아로고.png" class="game-logo"></p>
                         <p class="teams-name">SSG<span>VS</span>KIA</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -236,55 +250,29 @@
             </div>
         </div>
 
-        <!-- 달력/ 게시판  -->
+        <!-- 소모임 제목과 배치 변경 -->
         <div class="bottom-content">
-            <div class="calendar">
-                <h2>2024년 9월</h2>
-                <table id="calendarTable">
-                    <thead>
-                    <tr>
-                        <th>일</th>
-                        <th>월</th>
-                        <th>화</th>
-                        <th>수</th>
-                        <th>목</th>
-                        <th>금</th>
-                        <th>토</th>
-                    </tr>
-                    </thead>
-                    <tbody id="calendarBody">
-                    <!-- JavaScript로 채워질 부분 -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="board">
-                <h2>게시판</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>경기</th>
-                        <th>팀</th>
-                        <th>내용</th>
-                        <th>조회</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>NC vs 두산</td>
-                        <td>두산</td>
-                        <td>네이버 지금 직관 중입니다...</td>
-                        <td>12/20</td>
-                    </tr>
-                    <tr>
-                        <td>LG vs SSG</td>
-                        <td>LG</td>
-                        <td>문자중계 우리가 이겼다!</td>
-                        <td>17/20</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <h2>소모임</h2>
+            <div class="content-layout">
+                <div class="calendar-container">
+                    <h3>달력</h3>
+                    <div id="calendar"></div>
+                    <p class="calendar-note">⚾경기가 있는 날입니다. 소모임을 개설할 수 있습니다.⚾</p>
+                </div>
+                <div class="meeting-list-container">
+                    <!-- 선택한 날짜와 더보기 버튼을 포함하는 새로운 div 추가 -->
+                    <div class="date-title-container">
+                        <h3 class="selected-date-title">선택한 날짜 :</h3>
+                        <button class="more-btn" onclick="window.location.href='/meeting/list'">더보기</button>
+                    </div>
+                    <div id="meeting-list">
+                        <p>날짜를 클릭하여 소모임을 확인하세요.</p>
+                    </div>
+                </div>
             </div>
         </div>
+
+
     </div>
 </main>
 <!-- 메인태그 닫고 로고 푸터 시작  -->
@@ -302,7 +290,7 @@
         <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
     </div>
 </div>
-</div>
+
 <footer class="footer-page">
     <div class="footer-content">
         <div class="logo">
@@ -315,6 +303,7 @@
         </div>
     </div>
 </footer>
+
 <script>
     // 캐러셀 스크립트
     let currentSlide = 0;
@@ -328,52 +317,173 @@
 
     // 자동 슬라이드 (옵션)
     setInterval(() => moveCarousel(1), 5000);
-
-    // 달력 출력/ 당일 색칠됨
-    function generateCalendar(year, month) {
-        const firstDay = new Date(year, month - 1, 1);
-        const lastDay = new Date(year, month, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay();
-
-        const calendarBody = document.getElementById('calendarBody');
-        calendarBody.innerHTML = '';
-
-        let date = 1;
-        for (let i = 0; i < 6; i++) {
-            const row = document.createElement('tr');
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < startingDay) {
-                    const cell = document.createElement('td');
-                    row.appendChild(cell);
-                } else if (date > daysInMonth) {
-                    break;
-                } else {
-                    const cell = document.createElement('td');
-                    cell.textContent = date;
-                    if (date === new Date().getDate() && month === new Date().getMonth() + 1 && year === new Date().getFullYear()) {
-                        cell.classList.add('today');
-                    }
-                    row.appendChild(cell);
-                    date++;
-                }
-            }
-            calendarBody.appendChild(row);
-            if (date > daysInMonth) {
-                break;
-            }
-        }
-    }
-
-    // 현재 날짜로 달력 생성
-    const currentDate = new Date();
-    generateCalendar(currentDate.getFullYear(), currentDate.getMonth() + 1);
-
-    function confirmLogout() {
-        if (confirm("로그아웃 하시겠습니까?")) {
-            window.location.href = /*[[@{/member/logout}]]*/ '/member/logout';
-        }
-    }
 </script>
+<!-- FullCalendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const selectedDateTitle = document.querySelector('.selected-date-title');
+        let gameDates = [];
+
+        // 오늘 날짜 가져오기
+        const today = new Date().toISOString().split('T')[0];
+
+        // 서버에서 경기 날짜 가져오기
+        fetch('/meeting/gameDates')
+            .then(response => response.json())
+            .then(dates => {
+                gameDates = dates.map(date => new Date(date).toISOString().split('T')[0]);
+                renderCalendar();
+                // 초기화 시 오늘 날짜로 소모임 목록 로드
+                loadMeetings(today);
+                selectedDateTitle.textContent = `선택한 날짜 : ${today}`;
+            })
+            .catch(error => {
+                console.error('경기 날짜 불러오기 중 오류 발생:', error);
+                renderCalendar();
+            });
+
+        // 달력 렌더링 함수
+        function renderCalendar() {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ko',
+                height: 'auto',
+                contentHeight: 'auto',
+                dayCellContent: function (e) {
+                    e.dayNumberText = e.dayNumberText.replace('일', '');
+                },
+                dateClick: function (info) {
+                    const selectedDate = info.dateStr;
+                    // 선택된 날짜 스타일 업데이트
+                    document.querySelectorAll('.fc-day-selected').forEach(cell => cell.classList.remove('fc-day-selected'));
+                    info.dayEl.classList.add('fc-day-selected');
+
+                    // 선택한 날짜를 표시
+                    selectedDateTitle.textContent = `선택한 날짜 : ${selectedDate}`;
+
+                    // 소모임 목록 불러오기
+                    loadMeetings(selectedDate);
+                },
+                dayCellDidMount: function (info) {
+                    const dateStr = info.date.toISOString().split('T')[0];
+
+                    // 오늘 날짜 강조 표시
+                    if (dateStr === today) {
+                        info.el.classList.add('fc-day-selected');
+                    }
+
+                    // 지난 날짜에 회색 배경 추가
+                    if (dateStr < today) {
+                        info.el.classList.add('past-date');
+                    } else {
+                        info.el.classList.remove('past-date');
+                    }
+
+                    // 경기 날짜에 아이콘 추가
+                    if (gameDates.includes(dateStr)) {
+                        info.el.classList.add('game-date');
+                    }
+                },
+                // 달이 변경될 때마다 호출되는 이벤트
+                datesSet: function () {
+                    const calendarDays = document.querySelectorAll('.fc-daygrid-day');
+                    calendarDays.forEach(dayCell => {
+                        const dateStr = dayCell.getAttribute('data-date');
+
+                        // 오늘 날짜 강조 표시
+                        if (dateStr === today) {
+                            dayCell.classList.add('fc-day-selected');
+                        }
+
+                        // 지난 날짜 스타일 적용
+                        if (dateStr < today) {
+                            dayCell.classList.add('past-date');
+                        } else {
+                            dayCell.classList.remove('past-date');
+                        }
+
+                        // 경기 날짜 스타일 적용
+                        if (gameDates.includes(dateStr)) {
+                            dayCell.classList.add('game-date');
+                        } else {
+                            dayCell.classList.remove('game-date');
+                        }
+                    });
+                }
+            });
+            calendar.render();
+        }
+    });
+
+</script>
+<script>
+    function loadMeetings(selectedDate) {
+        console.log(`Loading meetings for date: ${selectedDate}`);
+        fetch(`/meeting/listByDateAndTeam?date=${selectedDate}`)
+            .then(response => response.json())
+            .then(meetings => {
+                const meetingList = document.getElementById("meeting-list");
+                meetingList.innerHTML = ''; // 기존 내용 초기화
+
+                if (meetings.length === 0) {
+                    meetingList.innerHTML = '<p>선택한 날짜에 개설된 소모임이 없습니다.</p>';
+                    return;
+                }
+
+                meetings.slice(0, 3).forEach(meetingData => {
+                    const meeting = meetingData.meeting;
+                    const attendeeCount = meetingData.currentAttendeesCount;
+
+                    // 개별 meeting의 gameInfo 불러오기
+                    fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
+                        .then(gameResponse => gameResponse.json())
+                        .then(gameInfo => {
+                            const meetingItem = document.createElement("div");
+                            meetingItem.classList.add("item");
+                            meetingItem.innerHTML = `
+                        <div class="item-image">
+                            <img src="/img/${meeting.meetingTeamName}로고.png" alt="${meeting.meetingTeamName}">
+                        </div>
+                        <div class="item-content">
+                            <div class="meeting-title">
+                                <strong>${meeting.meetingTitle}</strong>
+                            </div>
+                            <div class="meeting-game-info">
+                                <img src="/img/info.png" alt="경기 정보 아이콘" class="icon">
+                                <span>${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})</span>
+                            </div>
+                            <div class="meeting-place">
+                                <img src="/img/where.png" alt="모임 장소 아이콘" class="icon">
+                                <span>${meeting.meetingPlace}</span>
+                            </div>
+                            <div class="meeting-max-people">
+                                <img src="/img/who.png" alt="참석자 정보 아이콘" class="icon">
+                                <span>${attendeeCount} / ${meeting.meetingMaxPeople}명</span>
+                            </div>
+                        </div>
+                    `;
+                            meetingItem.onclick = () => window.location.href = `/meeting/detail/${meeting.meetingNo}`;
+                            meetingList.appendChild(meetingItem);
+                        });
+                });
+
+                // 더 많은 소모임이 있을 경우 추가 메시지 표시
+                if (meetings.length > 3) {
+                    const moreIndicator = document.createElement("p");
+                    moreIndicator.classList.add("more-indicator");
+                    moreIndicator.textContent = "... 더 많은 소모임이 있습니다";
+                    meetingList.appendChild(moreIndicator);
+                }
+            })
+            .catch(error => {
+                console.error('소모임 목록 불러오기 중 오류 발생:', error);
+                meetingList.innerHTML = '<p>소모임 목록을 불러오는 중 오류가 발생했습니다.</p>';
+            });
+    }
+
+</script>
+
 </body>
 </html>

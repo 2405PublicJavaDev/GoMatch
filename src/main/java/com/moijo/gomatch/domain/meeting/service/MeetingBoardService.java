@@ -11,15 +11,11 @@ import java.util.List;
 
 public interface MeetingBoardService {
 
-
     void addBoard(MeetingBoardVO meetingBoardVO);
     void removeBoard(long meetingBoardNo);
     MeetingBoardVO getBoardDetail(long meetingBoardNo);
-
-
     // 검색 조건에 맞는 게시글 수 조회
     int getBoardCount(String filterType, String searchType, String keyword);
-
     // 검색 조건에 맞는 게시글 조회
     List<MeetingBoardVO> getBoardList(int page, int pageSize, String filterType, String searchType, String keyword);
     List<MeetingBoardVO> getAllBoards();
@@ -31,7 +27,6 @@ public interface MeetingBoardService {
 
     List<MeetingBoardReplyVO> getRepliesByBoardId(long meetingBoardNo);
     boolean addReply(long meetingBoardNo, String memberId, String meetingReplyContent);
-
     boolean deleteReply(long meetingReplyNo);
     Long getPreviousPostId(long meetingBoardNo);
 
