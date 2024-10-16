@@ -1,0 +1,28 @@
+<!-- 공통 헤더/푸터 적용 방법
+    1. 적용할.html 파일 맨위에 이거 전부 붙여넣기
+    2. 바디태그에 thymeleaf등 조건이 있다면 원래 코드대로 붙여넣기!
+    3. 각 페이지별 개별 CSS 붙여넣기 할 영역에 붙여넣기
+    4. 원래있던 <!DOCTYPE html> 부터 <Main> 태그 위까지 지우기
+    5. 푸터영역 (푸터태그 포함) 아래 코드 붙여넣기
+    <div th:insert="~{header-footer :: footer}"></div>
+    6. (선택)정상 작동 확인 후 주석 지우기!
+    *** 공통 모듈에 적용된 CSS/JS ***
+        (1) 헤더/푸더 CSS
+        (2) sweetAlert2 CSS/JS
+-->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body th:attr="data-logged-in=${loggedIn}">
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+<!-- 개별 CSS 붙여 넣기 할 영역 -->
+<!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
+
+
+
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+
+
