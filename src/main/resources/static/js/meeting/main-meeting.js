@@ -32,23 +32,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.dayNumberText = e.dayNumberText.replace('일', '');
             },
             dateClick: function (info) {
-                const selectedDate = info.dateStr;
-                // 선택된 날짜 스타일 업데이트
+                // 모든 셀에서 fc-day-selected 제거
                 document.querySelectorAll('.fc-day-selected').forEach(cell => cell.classList.remove('fc-day-selected'));
+
+                // 선택된 날짜만 fc-day-selected 추가
                 info.dayEl.classList.add('fc-day-selected');
 
                 // 선택한 날짜를 표시
-                selectedDateTitle.textContent = `선택한 날짜 : ${selectedDate}`;
+                selectedDateTitle.textContent = `선택한 날짜 : ${info.dateStr}`;
 
                 // 소모임 목록 불러오기
-                loadMeetings(selectedDate);
+                loadMeetings(info.dateStr);
             },
             dayCellDidMount: function (info) {
-                const dateStr = info.date.toISOString().split('T')[0];
+                const dateStr = info.date.toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).replace(/\. /g, '-').replace('.', '');
 
-                // 오늘 날짜 강조 표시
+                // 오늘 날짜에만 fc-day-selected 추가
                 if (dateStr === today) {
                     info.el.classList.add('fc-day-selected');
+                } else {
+                    info.el.classList.remove('fc-day-selected');
                 }
 
                 // 지난 날짜에 회색 배경 추가
@@ -63,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     info.el.classList.add('game-date');
                 }
             },
-            // 달이 변경될 때마다 호출되는 이벤트
             datesSet: function () {
                 const calendarDays = document.querySelectorAll('.fc-daygrid-day');
                 calendarDays.forEach(dayCell => {
@@ -92,32 +98,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         calendar.render();
     }
+
+
 });
 
-    function loadMeetings(selectedDate) {
+function loadMeetings(selectedDate) {
     console.log(`Loading meetings for date: ${selectedDate}`);
     fetch(`/meeting/listByDateAndTeam?date=${selectedDate}`)
-    .then(response => response.json())
-    .then(meetings => {
-    const meetingList = document.getElementById("meeting-list");
-    meetingList.innerHTML = ''; // 기존 내용 초기화
+        .then(response => response.json())
+        .then(meetings => {
+            const meetingList = document.getElementById("meeting-list");
+            meetingList.innerHTML = ''; // 기존 내용 초기화
 
-    if (meetings.length === 0) {
-    meetingList.innerHTML = '<p>선택한 날짜에 개설된 소모임이 없습니다.</p>';
-    return;
-}
+            if (meetings.length === 0) {
+                meetingList.innerHTML = '<p>선택한 날짜에 개설된 소모임이 없습니다.</p>';
+                return;
+            }
 
-    meetings.slice(0, 3).forEach(meetingData => {
-    const meeting = meetingData.meeting;
-    const attendeeCount = meetingData.currentAttendeesCount;
+            meetings.slice(0, 3).forEach(meetingData => {
+                const meeting = meetingData.meeting;
+                const attendeeCount = meetingData.currentAttendeesCount;
 
-    // 개별 meeting의 gameInfo 불러오기
-    fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
-    .then(gameResponse => gameResponse.json())
-    .then(gameInfo => {
-    const meetingItem = document.createElement("div");
-    meetingItem.classList.add("item");
-    meetingItem.innerHTML = `
+                // 개별 meeting의 gameInfo 불러오기
+                fetch(`/meeting/gameInfo?gameNo=${meeting.gameNo}`)
+                    .then(gameResponse => gameResponse.json())
+                    .then(gameInfo => {
+                        const meetingItem = document.createElement("div");
+                        meetingItem.classList.add("item");
+                        meetingItem.innerHTML = `
                         <div class="item-image">
                             <img src="/img/${meeting.meetingTeamName}로고.png" alt="${meeting.meetingTeamName}">
                         </div>
@@ -139,21 +147,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                     `;
-    meetingItem.onclick = () => window.location.href = `/meeting/detail/${meeting.meetingNo}`;
-    meetingList.appendChild(meetingItem);
-});
-});
+                        meetingItem.onclick = () => window.location.href = `/meeting/detail/${meeting.meetingNo}`;
+                        meetingList.appendChild(meetingItem);
+                    });
+            });
 
-    // 더 많은 소모임이 있을 경우 추가 메시지 표시
-    if (meetings.length > 3) {
-    const moreIndicator = document.createElement("p");
-    moreIndicator.classList.add("more-indicator");
-    moreIndicator.textContent = "... 더 많은 소모임이 있습니다";
-    meetingList.appendChild(moreIndicator);
-}
-})
-    .catch(error => {
-    console.error('소모임 목록 불러오기 중 오류 발생:', error);
-    meetingList.innerHTML = '<p>소모임 목록을 불러오는 중 오류가 발생했습니다.</p>';
-});
+            // 더 많은 소모임이 있을 경우 추가 메시지 표시
+            if (meetings.length > 3) {
+                const moreIndicator = document.createElement("p");
+                moreIndicator.classList.add("more-indicator");
+                moreIndicator.textContent = "... 더 많은 소모임이 있습니다";
+                meetingList.appendChild(moreIndicator);
+            }
+        })
+        .catch(error => {
+            console.error('소모임 목록 불러오기 중 오류 발생:', error);
+            meetingList.innerHTML = '<p>소모임 목록을 불러오는 중 오류가 발생했습니다.</p>';
+        });
 }

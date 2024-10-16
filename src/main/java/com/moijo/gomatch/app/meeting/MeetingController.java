@@ -42,6 +42,7 @@ public class MeetingController {
         response.put("loggedIn", memberId != null);
         return response;
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [페이지 폼] 소모임 개설하기
@@ -52,9 +53,9 @@ public class MeetingController {
         String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
-        if(memberId == null) {
+        if (memberId == null) {
             return "meeting/meeting-list";
-        }else {
+        } else {
             model.addAttribute("loggedIn", true);
             model.addAttribute("memberNickName", memberNickName);
         }
@@ -86,7 +87,7 @@ public class MeetingController {
         String memberId = (String) session.getAttribute("memberId");
         if (memberId == null) {
             return "로그인이 필요합니다.";
-        }else {
+        } else {
             log.info("세션에서 가져온 memberId: " + memberId);
         }
         // 소모임 정보 등록
@@ -98,6 +99,7 @@ public class MeetingController {
         }
         return "redirect:/meeting/detail/" + meetingVO.getMeetingNo(); // 소모임 목록 페이지로 리다이렉트
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
@@ -133,12 +135,12 @@ public class MeetingController {
     }
 
 
-
     @GetMapping("/meeting/gameDates")
     @ResponseBody
     public List<String> getAllGameDates() {
         return meetingService.getAllGameDates();
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
@@ -171,6 +173,7 @@ public class MeetingController {
     public GameVO getGameInfo(@RequestParam("gameNo") int gameNo) {
         return meetingService.getGameByNo(gameNo);
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Show] 소모임 디테일 페이지
@@ -242,6 +245,7 @@ public class MeetingController {
         model.addAttribute("gameInfo", gameInfo);
         return "meeting/meeting-modify";
     }
+
     /**
      * 담당자 : 김윤경
      * 관련 기능 : [Modify] 소모임 수정 처리
@@ -295,6 +299,7 @@ public class MeetingController {
     }
 
     // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 소모임 참석/취소 (MeetingAttend) ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ //
+
     /**
      * 담당자: 김윤경
      * 관련 기능: [Attend] 소모임 참여
@@ -348,7 +353,6 @@ public class MeetingController {
         meetingService.cancelAttend(meetingNo, memberId);
         return "참석이 취소되었습니다.";
     }
-
 
 
 }

@@ -1,245 +1,96 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Go Match</title>
-  <!-- 메인 css -->
-  <link rel="stylesheet" href="/css/meeting/meeting-modify.css">
-  <!-- 헤더/푸터 CSS-->
-  <link rel="stylesheet" href="/css/header-footer.css">
-
-</head>
+<head th:insert="~{header-footer :: head}"></head>
 <body>
-<header>
-  <nav>
-    <div class="logo">
-      <a th:href="@{/}"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
-    </div>
-    <ul class="nav-links">
-      <li><a href="/game/list">일정/결과</a></li>
-      <li><a href="/goods/list">굿즈</a></li>
-      <li><a href="/meeting/list">소모임</a></li>
-      <li><a href="/matchPredict">승부예측</a></li>
-    </ul>
-    <ul class="member-links">
-      <th:block th:if="${loggedIn}">
-        <li class="member-link"><a th:href="@{/member/mypage}"><span th:text="${memberNickName + ' 님'}"></span></a></li>
-        <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
-      </th:block>
-      <th:block th:unless="${loggedIn}">
-        <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
-        <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
-      </th:block>
-    </ul>
-  </nav>
-  <script>
-    function confirmLogout() {
-      if (confirm("로그아웃 하시겠습니까?")) {
-        window.location.href = "/member/logout";
-      }
-    }
-  </script>
-</header>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- 개별 CSS 붙여 넣기 할 영역-->
+<link rel="stylesheet" href="/css/meeting/meeting-modify.css">
 
-  <main>
+
+<!-- 개별 CSS 붙여 넣기 할 영역-->
+<main>
     <aside>
-      <div id="aside-main">
-        <div id="aside-content">
-          <span>소모임</span>
-          <hr  class="aside-header">
-          <ul>
-            <li><a href="/meeting/list" >소모임</a></li>
-            <li><a href="/board/list">게시판</a></li>
-          </ul>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>소모임</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </aside>
     <div class="main-container">
 
-    <h1>소모임 수정하기</h1>
-    <form action="/meeting/modify" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="meetingNo" th:value="${meeting.meetingNo}">
-      <input type="hidden" name="fileDeleteIds" id="deletedFileIds">
-      <!-- 수정 불가능한 필드들 - span 태그 유지 -->
-      <div class="form-group">
-        <label for="meetingDate">경기 날짜 <span class="no-edit">(수정불가)</span></label>
-        <span class="readonly-field" th:text="${#dates.format(meeting.meetingDate, 'YYYY-MM-dd')}"></span>
-      </div>
-      <div class="form-group">
-        <label for="gameInfo">경기 정보 <span class="no-edit">(수정불가)</span></label>
-        <span class="readonly-field">
+        <h1>소모임 수정하기</h1>
+        <form action="/meeting/modify" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="meetingNo" th:value="${meeting.meetingNo}">
+            <input type="hidden" name="fileDeleteIds" id="deletedFileIds">
+            <!-- 수정 불가능한 필드들 - span 태그 유지 -->
+            <div class="form-group">
+                <label for="meetingDate">경기 날짜 <span class="no-edit">(수정불가)</span></label>
+                <span class="readonly-field" th:text="${#dates.format(meeting.meetingDate, 'YYYY-MM-dd')}"></span>
+            </div>
+            <div class="form-group">
+                <label for="gameInfo">경기 정보 <span class="no-edit">(수정불가)</span></label>
+                <span class="readonly-field">
     <span th:text="${gameInfo.teamA}"></span> vs <span th:text="${gameInfo.teamB}"></span>
     <span th:text="'(' + ${gameInfo.gameTime} + ')'"></span>
   </span>
-      </div>
-      <div class="form-group">
-        <label for="meetingTeamName">응원하는 팀 <span class="no-edit">(수정불가)</span></label>
-        <span class="readonly-field" th:text="${meeting.meetingTeamName}"></span>
-      </div>
+            </div>
+            <div class="form-group">
+                <label for="meetingTeamName">응원하는 팀 <span class="no-edit">(수정불가)</span></label>
+                <span class="readonly-field" th:text="${meeting.meetingTeamName}"></span>
+            </div>
 
-      <!-- 수정 가능한 필드들 - input 태그 사용 -->
-      <div class="form-group">
-        <label for="meetingTime">모임 시간</label>
-        <input type="text" id="meetingTime" name="meetingTime" th:value="${meeting.meetingTime}">
-      </div>
-      <div class="form-group">
-        <label for="meetingPlace">모임 위치</label>
-        <input type="text" id="meetingPlace" name="meetingPlace" th:value="${meeting.meetingPlace}">
-      </div>
-      <div class="form-group">
-        <label for="meetingTitle">모임 제목</label>
-        <input type="text" id="meetingTitle" name="meetingTitle" th:value="${meeting.meetingTitle}">
-      </div>
-      <div class="form-group">
-        <label for="meetingContent">모임 내용</label>
-        <textarea id="meetingContent" name="meetingContent" th:text="${meeting.meetingContent}"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="meetingFile">사진 첨부</label>
-        <button type="button" class="add-image-btn" onclick="triggerFileInput()">이미지 추가</button>
-        <input type="file" id="newFiles" name="newFiles" accept="image/*" multiple style="display: none;" onchange="previewNewFiles()">
-        <span id="fileCount">파일 0개</span>
-        <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 파일만 추가할 수 있습니다.</p>
-      </div>
-      <div id="fileThumbnails">
-        <div id="existingFiles">
-          <div class="file-thumbnail-wrapper" th:each="file : ${meetingFile}" th:id="'file-' + ${file.meetingFileNo}">
-            <img th:src="${file.webPath}" class="thumbnail" alt="첨부파일 이미지">
-            <button type="button" class="x-btn" th:attr="data-file-id=${file.meetingFileNo}"
-                    onclick="removeExistingFile(this.getAttribute('data-file-id'))">X</button>
-          </div>
-        </div>
-        <div id="newFileThumbnails"></div>
-      </div>
+            <!-- 수정 가능한 필드들 - input 태그 사용 -->
+            <div class="form-group">
+                <label for="meetingTime">모임 시간</label>
+                <input type="text" id="meetingTime" name="meetingTime" th:value="${meeting.meetingTime}">
+            </div>
+            <div class="form-group">
+                <label for="meetingPlace">모임 위치</label>
+                <input type="text" id="meetingPlace" name="meetingPlace" th:value="${meeting.meetingPlace}">
+            </div>
+            <div class="form-group">
+                <label for="meetingTitle">모임 제목</label>
+                <input type="text" id="meetingTitle" name="meetingTitle" th:value="${meeting.meetingTitle}">
+            </div>
+            <div class="form-group">
+                <label for="meetingContent">모임 내용</label>
+                <textarea id="meetingContent" name="meetingContent" th:text="${meeting.meetingContent}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="meetingFile">사진 첨부</label>
+                <button type="button" class="add-image-btn" onclick="triggerFileInput()">이미지 추가</button>
+                <input type="file" id="newFiles" name="newFiles" accept="image/*" multiple style="display: none;"
+                       onchange="previewNewFiles()">
+                <span id="fileCount">파일 0개</span>
+                <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 파일만 추가할 수 있습니다.</p>
+            </div>
+            <div id="fileThumbnails">
+                <div id="existingFiles">
+                    <div class="file-thumbnail-wrapper" th:each="file : ${meetingFile}"
+                         th:id="'file-' + ${file.meetingFileNo}">
+                        <img th:src="${file.webPath}" class="thumbnail" alt="첨부파일 이미지">
+                        <button type="button" class="x-btn" th:attr="data-file-id=${file.meetingFileNo}"
+                                onclick="removeExistingFile(this.getAttribute('data-file-id'))">X
+                        </button>
+                    </div>
+                </div>
+                <div id="newFileThumbnails"></div>
+            </div>
 
-      <div class="buttons">
-        <button type="submit" class="submit">수정</button>
-        <button type="button" class="cancel" onclick="history.back()">취소</button>
-      </div>
-    </form>
+            <div class="buttons">
+                <button type="submit" class="submit">수정</button>
+                <button type="button" class="cancel" onclick="history.back()">취소</button>
+            </div>
+        </form>
     </div>
-  </main>
-  <footer class="footer-page">
-    <div class="footer-content">
-      <div class="logo">
-        <img src="/img/고매치로고.png" alt="GoMatch 로고">
-      </div>
-      <div class="footer-text">
-        <p>게인정보 처리방침</p>
-        <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-        <p>Copyright © GoMatch</p>
-      </div>
-    </div>
-  </footer>
-  <script>
-    // 전역 변수 선언
-    let maxFileCount = 5;
-    let newFileData = [];
-    let existingFileCount = 0;
-
-    function updateFileCount() {
-      const totalFiles = existingFileCount + newFileData.length;
-      document.getElementById('fileCount').innerText = `파일 ${totalFiles >= 0 ? totalFiles : 0}개`;
-    }
-
-    function removeExistingFile(fileId) {
-      console.log(`삭제할 파일 ID: ${fileId} (타입: ${typeof fileId})`);  // 파일 ID와 타입 출력
-
-      // fileId를 숫자로 변환하여 ID 찾기
-      const targetId = `file-${parseInt(fileId)}`;
-      console.log(`찾으려는 요소 ID: ${targetId}`);
-      const fileElement = document.getElementById(targetId);
-      console.log(`fileElement: `, fileElement);
-
-      if (fileElement) {
-        fileElement.remove(); // 썸네일 DOM에서 파일 제거
-        console.log(`fileElement가 제거되었습니다.`);
-
-        const deletedFileIdsInput = document.getElementById('deletedFileIds');
-        let deletedFileIds = deletedFileIdsInput.value ? deletedFileIdsInput.value.split(',') : [];
-        console.log(`현재 삭제할 파일 ID 목록(추가 전): ${deletedFileIds.join(',')}`);
-
-        deletedFileIds.push(fileId);
-        deletedFileIdsInput.value = deletedFileIds.join(',');
-
-        console.log(`현재 삭제할 파일 ID 목록(추가 후): ${deletedFileIds.join(',')}`);  // 삭제 목록 출력
-
-        // 기존 파일 개수 감소
-        if (existingFileCount > 0) {
-          existingFileCount--;
-        }
-        updateFileCount();
-      } else {
-        console.error(`fileElement가 null입니다. 파일 ID: ${fileId}`);
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      existingFileCount = document.querySelectorAll("#existingFiles .file-thumbnail-wrapper").length;
-
-      function triggerFileInput() {
-        document.getElementById('newFiles').click();
-      }
-
-      function previewNewFiles() {
-        const fileInput = document.getElementById('newFiles');
-        const fileLimitMessage = document.getElementById('fileLimitMessage');
-        const newFileThumbnails = document.getElementById('newFileThumbnails');
-        const files = Array.from(fileInput.files);
-
-        // 파일 개수 초과 체크
-        if (existingFileCount + newFileData.length + files.length > maxFileCount) {
-          fileLimitMessage.style.display = 'block';
-          fileInput.value = ''; // 초과 시 선택한 파일 초기화
-          return; // 초과하면 즉시 반환
-        } else {
-          fileLimitMessage.style.display = 'none';
-        }
-
-        files.forEach((file) => {
-          newFileData.push(file);
-
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const thumbnailWrapper = document.createElement('div');
-            thumbnailWrapper.classList.add('file-thumbnail-wrapper');
-
-            const thumbnail = document.createElement('img');
-            thumbnail.classList.add('thumbnail');
-            thumbnail.src = e.target.result;
-
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'X';
-            removeButton.classList.add('x-btn');
-            removeButton.addEventListener('click', function() {
-              newFileData.splice(newFileData.indexOf(file), 1);
-              thumbnailWrapper.remove();
-              updateFileCount();
-            });
-
-            thumbnailWrapper.appendChild(thumbnail);
-            thumbnailWrapper.appendChild(removeButton);
-            newFileThumbnails.appendChild(thumbnailWrapper);
-          };
-          reader.readAsDataURL(file);
-        });
-
-        updateFileCount();
-      }
-
-      document.querySelector('.add-image-btn').addEventListener('click', triggerFileInput);
-      document.getElementById('newFiles').addEventListener('change', previewNewFiles);
-
-      // 폼 제출 시 파일 개수 확인
-      document.querySelector('form').addEventListener('submit', function(event) {
-        const totalFiles = existingFileCount + newFileData.length;
-        if (totalFiles > maxFileCount) {
-          alert(`최대 ${maxFileCount}개의 파일만 첨부할 수 있습니다.`);
-          event.preventDefault(); // 폼 제출 막음
-        }
-      });
-    });
-  </script>
+</main>
+<div th:insert="~{header-footer :: footer}"></div>
+<script src="/js/meeting/meeting-modify.js"></script>
 </body>
 </html>
