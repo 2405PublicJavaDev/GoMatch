@@ -4,7 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let gameDates = [];
 
     // 오늘 날짜 가져오기
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Intl.DateTimeFormat('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }).format(new Date()).replace(/. /g, '-').replace('.', '');
 
     // 서버에서 경기 날짜 가져오기
     fetch('/meeting/gameDates')
