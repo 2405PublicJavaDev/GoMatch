@@ -261,8 +261,10 @@ public class MeetingBoardController {
 
     // 댓글 등록 메서드
     @PostMapping("/board/reply")
-    public ResponseEntity<Map<String, Object>> addReply(@RequestParam String meetingReplyContent, @RequestParam long meetingBoardNo, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> addReply(Model model, @RequestParam String meetingReplyContent, @RequestParam long meetingBoardNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");
+        model.addAttribute("loggedIn", memberId != null);
+
         if (memberId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -275,17 +277,21 @@ public class MeetingBoardController {
 
     @PostMapping("/board/reply/delete/{meetingReplyNo}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteReply(@PathVariable long meetingReplyNo, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> deleteReply(Model model, @PathVariable long meetingReplyNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");
+        model.addAttribute("loggedIn", memberId != null);
         Map<String, Object> response = new HashMap<>();
+
         if (memberId == null) {
             response.put("loginRequired", true);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
         boolean success = mBoardService.deleteReply(meetingReplyNo);
         response.put("success", success);
+
         return ResponseEntity.ok(response);
     }
 
 }
+
 

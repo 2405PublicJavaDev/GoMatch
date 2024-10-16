@@ -13,7 +13,7 @@
     <!-- SweetAlert2 JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body data-logged-in="${loggedIn}">
+<body th:attr="data-logged-in=${loggedIn}">
 <header>
     <nav>
         <div class="logo">
@@ -130,7 +130,6 @@
                     </div>
                     <!-- 삭제 버튼 -->
                     <button th:if="${reply.memberId == session.memberId}" type="button" class="button-delete-comment" th:onclick="'deleteReply(' + ${reply.meetingReplyNo} + ')'">삭제</button>
-
                 </div>
             </div>
             <div class="no-comments" th:if="${replies.size() == 0}">
