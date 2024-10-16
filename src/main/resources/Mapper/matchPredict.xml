@@ -42,11 +42,10 @@
             G.GAME_DATE = #{gameDate}
     </select>
 
-
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
-        SELECT M.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
+        SELECT U.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
         FROM MEMBER M
-        LEFT JOIN USER_RANK U
+        FULL OUTER JOIN USER_RANK U
         ON M.MEMBER_ID = U.MEMBER_ID
         ORDER BY U.RANK_POSITION
     </select>
@@ -77,9 +76,9 @@
             M.MEMBER_NAME,
             U.RANK_POSITION,
             U.EXPERIENCE_POINTS
-        FROM MEMBER M
-                 JOIN USER_RANK U ON M.MEMBER_ID = U.MEMBER_ID
-        WHERE U.MEMBER_ID = #{memberId}
+        FROM USER_RANK U
+                 JOIN MEMBER M ON M.MEMBER_ID = U.MEMBER_ID
+        WHERE M.MEMBER_ID = #{memberId}
     </select>
 
     <select id="countPredictionsByMemberId" resultType="Integer">
@@ -112,6 +111,12 @@
         INSERT INTO MATCH_PREDICT (MATCH_PREDICT_NO,GAME_NO,MATCH_PREDICT_DECISION,MEMBER_ID,MATCH_PREDICT_STATUS,REG_DATE)
         VALUES (SEQ_MATCH_PREDICT.NEXTVAL,#{gameNo},#{matchPredictDecision},#{memberId} ,DEFAULT,SYSDATE)
     </insert>
+
+<!--    <insert id="insertMemberRanking">-->
+<!--        INSERT INTO USER_RANK (RANK_NO,MEMBER_ID,EXPERIENCE_POINTS,RANK_POSITION,REG_DATE,UPDATE_DATE)-->
+<!--        VALUES (SEQ_USER_RANK.NEXTVAL,#{memberId},#{experiencePoints},#{rankPosition},SYSDATE,SYSDATE)-->
+<!--    </insert>-->
+
     <update id="updateMatchPredict">
         UPDATE MATCH_PREDICT
         SET MATCH_PREDICT_DECISION = #{matchPredictDecision}

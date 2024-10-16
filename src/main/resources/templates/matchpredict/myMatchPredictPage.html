@@ -94,7 +94,6 @@
         <button type="button">데이터가 존재하지 않습니다.</button>
       </div>
     </div>
-    <h3 class="calendar-title">2024.10</h3>
     <div class="calendar-week">
       <button class="week-date" type="button">10월 1주</button>
       <button class="week-date" type="button">10월 2주</button>
@@ -161,23 +160,6 @@
 
 <th:block th:replace="fragments/footer.html"></th:block>
 <script>
-  function setPrediction(decision) {
-    //matchPredictDecision의 hidden input에 선택한 값을 설정
-    const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
-    if (decisionInput) {
-      decisionInput.value = decision; // decisionInput이 null이 아닐 때만 설정
-    }
-    // const gameNoInput = document.querySelector("#gameNo"); // gameNo의 hidden input
-    // if (gameNoInput) {
-    //     gameNoInput.value = gameNo; // gameNoInput이 null이 아닐 때만 설정
-    // }
-    // 폼 제출
-    const form = document.forms["modify-form"]; // form 요소 찾기
-    if (form) {
-      form.submit(); // form이 null이 아닐 때만 제출
-    }
-  }
-
 
   document.addEventListener("DOMContentLoaded", function () {
   let loadMoreBtn = document.querySelector(".load-more");
@@ -204,39 +186,61 @@
         loadMoreBtn.style.display = "none";
       }
     });
-    // 이번주 기본적으로 활성화
-    const weekly = document.querySelector(".week-date")
-    weekly.classList.add("active");
-
-    const dateSelector = document.querySelector('.date-selector');
     const today = new Date();
-    const options = { month: 'numeric', day: 'numeric' };
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
 
-    // 오늘 날짜부터 7일 동안의 날짜 생성
-    for (let i = 0; i < 7; i++) {
-      const date = new Date();
-      date.setDate(today.getDate() + i);
+    // 주차 계산 및 버튼 생성
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+    const calendarWeek = document.querySelector('.calendar-week');
+    calendarWeek.innerHTML = '';
+    let weekCount = 1;
+
+    for (let d = new Date(firstDay); d <= today; d.setDate(d.getDate() + 7)) {
+      const weekStart = new Date(d);
+      const weekEnd = new Date(d);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+
+      if (weekEnd > lastDay) {
+        weekEnd.setDate(lastDay.getDate());
+      }
 
       const button = document.createElement('button');
-      button.classList.add('date');
-      if (i === 0) {
-        button.classList.add('active');
-        // 오늘 날짜인 경우 "오늘" 텍스트를 추가
-        button.innerText = `오늘\n ${date.toLocaleDateString('ko-KR', options)}`;
-      } else {
-        // 나머지 날짜는 그냥 날짜만 출력
-        button.innerText = date.toLocaleDateString('ko-KR', options);
-      }
-      // date-selector에 버튼 추가
-      dateSelector.appendChild(button);
+      button.className = 'week-date';
+      button.type = 'button';
+      button.textContent = `${currentMonth + 1}월 ${weekCount}주`;
 
-      // 날짜 버튼 클릭 시 스타일 전환
-      button.addEventListener('click', function () {
-        const allButtons = document.querySelectorAll('.date');
-        allButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-      });
+      // 각 버튼에 시작 날짜와 종료 날짜 데이터 추가
+      button.dataset.startDate = weekStart.toISOString().split('T')[0];
+      button.dataset.endDate = weekEnd.toISOString().split('T')[0];
+
+      if (today >= weekStart && today <= weekEnd) {
+        button.classList.add('active');
+      }
+
+      calendarWeek.appendChild(button);
+      weekCount++;
+
+      if (weekEnd >= today) {
+        break;
+      }
     }
+    const weekButtons = document.querySelectorAll(".week-date");
+    weekButtons.forEach(function (weekButton) {
+      weekButton.addEventListener("click", function () {
+        weekButtons.forEach(function (btn) {
+          btn.classList.remove("active");
+        });
+        this.classList.add("active");
+
+        // 클릭된 주차의 랭킹 리스트 조회
+        const startDate = this.dataset.startDate;
+        const endDate = this.dataset.endDate;
+        fetchRankingList(startDate,endDate);
+      });
+    });
 
     // 승부 예측 버튼에 active 클래스를 추가
     const matchPredictBtn = document.querySelector(".match-predict-btn");
@@ -288,16 +292,6 @@
         const perentGameItem = this.closest(".game-item");
         const sublingButtons = perentGameItem.querySelectorAll(".team-a, .draw, .team-b");
         sublingButtons.forEach(function (btn){
-          btn.classList.remove("active");
-        });
-        this.classList.add("active");
-      });
-    });
-
-    const weekButtons = document.querySelectorAll(".week-date");
-    weekButtons.forEach(function (weekButton) {
-      weekButton.addEventListener("click", function () {
-        weekButtons.forEach(function (btn) {
           btn.classList.remove("active");
         });
         this.classList.add("active");

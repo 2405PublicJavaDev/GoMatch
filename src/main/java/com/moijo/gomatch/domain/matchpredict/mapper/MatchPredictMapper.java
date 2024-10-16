@@ -42,10 +42,9 @@ public interface MatchPredictMapper {
      * 회원 정보 조회
      *
      * @param memberId
-     * @param gameNo
      * @return
      */
-    MemberDTO selectMemberInfo(String memberId, Long gameNo);
+    MemberDTO selectMemberInfo(String memberId);
 
     /**
      * 전체 회원 조회
@@ -105,10 +104,12 @@ public interface MatchPredictMapper {
 
     /**
      * 회원의 랭크 업데이트
+     *
      * @param memberId
-     * @param newRank
      */
-    void updateMemberRank(String memberId, String newRank);
+    void updateMemberRank(String memberId);
 
     Integer countPredictionsByMemberId(String memberId, Long gameNo);
+
+//    int insertMemberRanking(String memberId);
 }

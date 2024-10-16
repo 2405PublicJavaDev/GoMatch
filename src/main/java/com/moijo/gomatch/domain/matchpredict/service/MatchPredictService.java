@@ -39,10 +39,9 @@ public interface MatchPredictService {
      * 회원 정보
      *
      * @param memberId
-     * @param gameNo
      * @return
      */
-    MemberDTO getMemberInfo(String memberId, Long gameNo);
+    MemberDTO getMemberInfo(String memberId);
 
     /**
      * 예측 등록
@@ -88,10 +87,27 @@ public interface MatchPredictService {
 
     /**
      * 사용자 랭크 업데이트
+     *
      * @param memberId
      * @return 업데이트된 랭크
      */
-    String updateUserRank(String memberId);
+    int updateUserRank(String memberId);
 
+    /**
+     * 중복 등록 체크
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
     boolean hasPredictionForGame(String memberId, Long gameNo);
+
+    /**
+     * 주간 별 랭킹 리스트 조회
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    List<MemberRankDTO> getAllMemberRank(String startDate, String endDate);
+
+//    int addMemberRanking(String memberId);
 }
