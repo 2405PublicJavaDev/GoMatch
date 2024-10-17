@@ -9,7 +9,33 @@
 </head>
 <body>
 <!-- 헤더 부분 -->
+<<<<<<< HEAD
 <th:block th:replace="fragments/header.html"></th:block>
+=======
+<header>
+    <nav>
+        <div class="logo">
+            <a th:href="@{/}"><img src="img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="matchPredict">승부예측</a></li>
+        </ul>
+        <ul class="member-links">
+            <th:block th:if="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
+                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
+            </th:block>
+            <th:block th:unless="${loggedIn}">
+                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
+                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
+            </th:block>
+        </ul>
+    </nav>
+</header>
+>>>>>>> 8309dde96dea0e20bbe2ff5f012d0c9e607b4996
 <!-- 메인내용 시작  -->
 <main>
     <div class="container">

@@ -29,6 +29,15 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     /**
+     * @param gameDate
+     * @return
+     */
+    @Override
+    public List<MatchPredict> getPredictionsByDate(String gameDate) {
+        return matchPredictMapper.selectPredictByDate(gameDate);
+    }
+
+    /**
      * 회원 순위 리스트 조회
      * @return
      */
@@ -44,14 +53,26 @@ public class MatchPredictServiceImpl implements MatchPredictService {
      */
     @Override
     public List<MyPredictDTO> getAllMyMatchByMember(String memberId) {
-        return matchPredictMapper.selectAllMyMatchByMember(memberId);
+        List<MyPredictDTO> myPredictDTO = matchPredictMapper.selectAllMyMatchByMember(memberId);
+
+        if (myPredictDTO != null) {
+            return myPredictDTO;
+        }
+        return null;
     }
 
 
+    /**
+     * 회원 정보
+     *
+     * @param memberId
+     * @return
+     */
     @Override
     public MemberDTO getMemberInfo(String memberId) {
-        MemberDTO memberDTO = (MemberDTO) matchPredictMapper.selectMemberInfo(memberId);
-        return  memberDTO;
+        MemberDTO memberDTO = matchPredictMapper.selectMemberInfo(memberId);
+        log.info("serviceInpl:" , memberDTO);
+        return memberDTO;
     }
 
     /**
@@ -70,6 +91,59 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     /**
+     * 예측 결과가 맞으면 checkPredictionResult true 틀리면 checkPredictionResult false
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
+    @Override
+    public int increaseExperience(String memberId,Long gameNo){
+        boolean isCorrect = matchPredictMapper.checkPredictionResult(memberId, gameNo);
+
+        if(isCorrect) {
+            return matchPredictMapper.addExperience(memberId, 50); // 50 경험치 증가
+        }
+        return 0;
+    }
+
+    /**
+     *
+     * @param memberId
+     * @param gameNo
+     * @return
+     */
+    @Override
+    public boolean hasPredictionForGame(String memberId, Long gameNo) {
+        return matchPredictMapper.countPredictionsByMemberId(memberId, gameNo) > 0; // 예측이 존재하면 true 반환
+    }
+
+    @Override
+    public List<MemberRankDTO> getAllMemberRank(String startDate, String endDate) {
+        return List.of();
+    }
+
+//    @Override
+//    public int addMemberRanking(String memberId) {
+//        int result = matchPredictMapper.insertMemberRanking(memberId);
+//        return result;
+//    }
+
+    @Override
+    public int updateUserRank(String memberId) {
+        // 회원의 경험치 조회
+        int experience = matchPredictMapper.getUserExperience(memberId);
+
+        // 데이터베이스에 랭크 업데이트
+        matchPredictMapper.updateMemberRank(memberId);
+
+        return experience; // 업데이트된 랭크 반환
+    }
+
+
+
+
+
+    /**
      * 예측 수정
      *
      * @param memberId
@@ -81,11 +155,20 @@ public class MatchPredictServiceImpl implements MatchPredictService {
         return result;
     }
 
+    /**
+     * 전체 회원
+     * @return
+     */
     @Override
     public Long getTotalMemberCount() {
         return matchPredictMapper.getTotalMemberCount();
     }
 
+    /**
+     * 순위 퍼센트
+     * @param memberId
+     * @return
+     */
     @Override
     public double calculatorRankPercent(String memberId) {
         Long totalMember = getTotalMemberCount(); // 전체 회원 정보

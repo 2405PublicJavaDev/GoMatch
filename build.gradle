@@ -44,10 +44,16 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.json:json:20240303'
 
+<<<<<<< HEAD
     //Webflux
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.projectreactor.netty:reactor-netty'
     implementation 'org.springframework:spring-web'
+=======
+
+
+
+>>>>>>> 8309dde96dea0e20bbe2ff5f012d0c9e607b4996
     // PortOne SDK 추가
     implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
 }

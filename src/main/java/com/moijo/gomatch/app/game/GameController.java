@@ -23,7 +23,7 @@ public class GameController {
 
     // 팀 순위 보여주는 메소드
     @GetMapping("/game/teamrank")
-    public String showTeamRankPage(@RequestParam(value = "year", required = false,  defaultValue = "2024") String year, Model model) {
+    public String showTeamRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model) {
         List<String[]> teamList = gameBatchComponent.scrapeTeamRank(year);
         model.addAttribute("teams", teamList);
         model.addAttribute("selectedYear", year);
