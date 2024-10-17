@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
+
 
 @Getter
 @Setter
@@ -36,6 +36,7 @@ public class MemberVO {
     @NotBlank(message = "이름은 필수 입력 항목입니다.")
     private String memberName;
 
+    @Getter
     @NotNull(message = "생년월일은 필수 입력 항목입니다.")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
@@ -45,12 +46,11 @@ public class MemberVO {
     private String memberStatus;
     private Timestamp regDate;
     private Timestamp updateDate;
-    private String kakaoProfile;
     private String preferenceClub;
-    private MemberFile memberFile;
+    private String kakaoProfile;
+    private String profileImageUrl;
 
 //    private boolean emailVerified = false;
 //    private String emailVerificationCode;
-
 
 }

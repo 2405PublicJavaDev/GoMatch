@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.admin.service;
 
 import com.moijo.gomatch.domain.admin.vo.AdminVO1;
+import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
 
 import java.util.List;
@@ -17,5 +18,13 @@ public interface AdminService1 {
 
     void deleteGoods(Long goodsNo);
 
+    void insertGoodsImage(GoodsImageVO goodsImage); // 이미지 등록 메소드 추가
+
+    // 추가된 메소드
+    List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo);
+
+    void deleteRepresentativeImage(Long goodsNo);
+
+    void deleteGoodsImage(Long goodsImageNo); // 이미지 삭제 메소드 추가
 
 }

@@ -23,7 +23,7 @@ public interface GameMapper {
      * @param scoreB
      * @return int
      */
-    int updateGame(Date gameDate, int scoreA, int scoreB);
+    int updateGame(Date gameDate, int scoreA, int scoreB, String gameStatus);
 
     /**
      * 존재하는 경기 조회

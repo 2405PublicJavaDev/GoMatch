@@ -1,0 +1,288 @@
+/* ■■■■■■■■■■ 폰트 css ■■■■■■■■■■ */
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
+}
+
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin: 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+/* ■■■■■■■■■■ 메인 컨테이너 CSS ■■■■■■■■■■ */
+.main-container {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.background-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.background-image img {
+    width: 100%;
+    height: 250px;
+}
+
+/* 소모임 리스트 제목 스타일 */
+h1 {
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif;
+    text-align: center;
+    color: #16215F;
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+/* ■■■■■■■■■■ 필터 탭과 테이블 스타일 ■■■■■■■■■■ */
+.filter-table-container {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-tabs {
+    display: flex;
+    justify-content: space-between; /* 필터 탭과 글쓰기 버튼을 양쪽 끝으로 정렬 */
+    align-items: center; /* 가운데 정렬 */
+    border-bottom: 2px solid #e0e0e0;
+    background-color: #FFFFFF;
+    padding-right: 10px;
+
+}
+
+.filter-tab {
+    padding: 10px 0;
+    flex: 1;
+    font-weight: bold;
+    color: #78797B;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #E6F2FF;
+}
+
+.filter-tab:hover {
+    background-color: #CCE7FF;
+}
+
+.filter-tab.active {
+    color: white;
+    background-color: #16215F;
+    border-bottom: 2px solid #16215F;
+}
+.write-button {
+    background-color: #a63446;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-left: 300px;
+}
+
+.write-button:hover {
+    background-color: #c0392b;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 90%;
+    margin-top: 0;
+}
+
+th, td {
+    padding: 10px 4px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+}
+
+th:nth-child(1), td:nth-child(1) { /* 번호 */
+    width: 6%;
+}
+
+th:nth-child(2), td:nth-child(2) { /* 분류 */
+    width: 8%;
+}
+
+th:nth-child(3), td:nth-child(3) { /* 제목 */
+    width: 49%;
+}
+
+th:nth-child(4), td:nth-child(4) { /* 작성자 */
+    width: 10%;
+}
+
+th:nth-child(5), td:nth-child(5) { /* 등록일 */
+    width: 15%;
+}
+
+th:nth-child(6), td:nth-child(6),
+th:nth-child(7), td:nth-child(7) { /* 조회수, 좋아요 */
+    width: 6%;
+}
+
+tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+/* 검색 섹션을 페이지네이션 아래로 이동 */
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px; /* 간격 조정 */
+}
+.search-section select, .search-section input {
+    padding: 6px; /* 간격 줄임 */
+    margin-right: 5px;
+}
+.search-section button {
+    padding: 6px 12px;
+    background-color: #16215F;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.new-tag {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+/* 검색 섹션을 페이지네이션 아래로 이동 */
+.search-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.search-section select, .search-section input {
+    padding: 8px;
+    margin-right: 10px;
+}
+.search-section button {
+    padding: 8px 15px;
+    background-color: #16215F;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+.common-pagination-li-end {
+    display: inline-block;
+}
+
+.common-pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.common-pagination-li {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #E8E9ED;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.common-pagination-li a{
+    text-decoration: none;
+    color: #78797B;
+    width: 100%;
+    text-align: center;
+}
+
+.common-pagination-li-end a {
+    text-decoration: none;
+    color: black;
+}
+
+.common-pagination-li-active {
+    background-color: #3399FF;
+    border: transparent;
+}
+
+.common-pagination-li-active a {
+    color: white;
+}
+
+/* 추가적인 스타일 조정 */
+@media (max-width: 768px) {
+    .filter-tabs {
+        flex-direction: column; /* 작은 화면에서는 필터가 세로로 정렬됨 */
+    }
+}

@@ -6,89 +6,72 @@
     <title>야구 리그 로그인</title>
     <link rel="stylesheet" href="/css/member/login.css">
     <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
 <!-- 헤더 부분 -->
-<header>
-    <nav>
-        <div class="logo">
-            <a href="/"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
-            <li><a href="#">굿즈</a></li>
-            <li><a href="#">소모임</a></li>
-            <li><a href="#">승부예측</a></li>
-        </ul>
-        <ul class="member-links">
-            <th:block th:if="${loggedIn}">
-                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
-                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
-            </th:block>
-            <th:block th:unless="${loggedIn}">
-                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
-                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
-            </th:block>
-        </ul>
-    </nav>
-</header>
+<th:block th:replace="fragments/header.html"></th:block>
 <main>
     <div class="container">
         <div class="image-container">
-            <img src="/img/승리예측 홍보.jpg" alt=""></a>
+            <img src="/img/승리예측 홍보.jpg" alt="">
         </div>
         <div class="login-container">
             <h2>로그인</h2>
-            <form action="/member/loginpage" method="post">
-            <label for="memberId">아이디 입력</label>
-            <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요.">
+            <form id="loginForm" action="/member/loginpage" method="post">
+                <label for="memberId">아이디 입력</label>
+                <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요." required>
 
-            <label for="memberPw">비밀번호 입력</label>
-            <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요.">
+                <label for="memberPw">비밀번호 입력</label>
+                <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요." required>
 
-            <button type="submit" class="login-btn" >로그인</button>
+                <button type="submit" class="login-btn">로그인</button>
             </form>
             <div class="find-member">
-                <p><a href="./findid" class="find-member">아이디 찾기</a>
+                <p>
+                    <a href="./findid" class="find-member">아이디 찾기</a>
                     <a href="./findpw" class="find-member">비밀번호 찾기</a>
-                    <a href="./joinmember" class="find-member">회원가입</a></p>
+                    <a href="./joinmember" class="find-member">회원가입</a>
+                </p>
             </div>
             <div class="sns-login">
-                <p>SNS계정으로 간편 로그인</p>
-                <button type="submit" class="kakao-btn">카카오톡</button>
-                <button type="submit" class="naver-btn">네이버</button>
+                <h4>SNS계정으로 간편 로그인</h4>
+                <a href="#">
+                    <img src="/img/kakaologinbutton.png" alt="카카오 로그인">
+                </a>
+                <button type="button" class="naver-btn">네이버</button>
             </div>
         </div>
     </div>
 </main>
-<div class="team-logos">
-    <div class="team-logos-container">
-        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
-        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
-        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
-        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
-        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
-        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
-        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
-        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
-        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
-    </div>
-</div>
-<footer class="footer-page">
-    <div class="footer-content">
-        <div class="logo">
-            <img src="/img/고매치로고.png" alt="GoMatch 로고">
-        </div>
-        <div class="footer-text">
-            <p>게인정보 처리방침</p>
-            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-            <p>Copyright © GoMatch</p>
-        </div>
-    </div>
-</footer>
+<!-- 메인태그 닫고 로고 푸터 시작  -->
+<th:block th:replace="fragments/footer.html"></th:block>
+<script>
+    $(document).ready(function() {
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
 
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirect;
+
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

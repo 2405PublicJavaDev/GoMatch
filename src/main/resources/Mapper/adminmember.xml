@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moijo.gomatch.domain.admin.mapper.AdminMemberMapper">
+    <select id="getAllMembers" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        SELECT * FROM MEMBER ORDER BY REG_DATE DESC
+    </select>
+
+    <update id="updateMemberStatus">
+        UPDATE MEMBER
+        SET MEMBER_STATUS = #{status}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+    <delete id="deleteMemberByAdmin" parameterType="string">
+        DELETE FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+    <select id="searchMembersById" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        SELECT * FROM MEMBER WHERE MEMBER_ID LIKE #{keyword}
+    </select>
+
+    <select id="searchMembersByEmail" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        SELECT * FROM MEMBER WHERE MEMBER_EMAIL LIKE #{keyword}
+    </select>
+
+    <select id="searchMembersByName" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        SELECT * FROM MEMBER WHERE MEMBER_NAME LIKE #{keyword}
+    </select>
+
+    <select id="searchMembersAll" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        SELECT * FROM MEMBER
+        WHERE MEMBER_ID LIKE #{keyword}
+           OR MEMBER_EMAIL LIKE #{keyword}
+           OR TO_CHAR(REG_DATE, 'YYYY-MM-DD') LIKE #{keyword}
+    </select>
+    <select id="getRecentMembers" resultType="com.moijo.gomatch.domain.admin.vo.AdminMemberVO">
+        <![CDATA[
+        SELECT * FROM (
+                          SELECT * FROM MEMBER
+                          ORDER BY REG_DATE DESC
+                      )
+        WHERE ROWNUM <= 5
+        ]]>
+    </select>
+    <select id="getRecentMeetings" resultType="com.moijo.gomatch.domain.admin.vo.AdminMeetingVO">
+        <![CDATA[
+        SELECT * FROM (
+                          SELECT * FROM MEETING
+                          ORDER BY REG_DATE DESC
+                      )
+        WHERE ROWNUM <= 5
+        ]]>
+    </select>
+
+</mapper>

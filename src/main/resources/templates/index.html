@@ -1,38 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>야구 정보 페이지</title>
-    <link rel="stylesheet" href="css/header-footer.css">
-    <link rel="stylesheet" href="css/mainpage.css">
-</head>
+<head th:insert="~{header-footer :: head}"></head>
 <body>
-<!-- 헤더 부분 -->
-<header>
-    <nav>
-        <div class="logo">
-            <a th:href="@{/}"><img src="img/고매치로고.png" alt="야구 리그 로고"></a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">일정/결과</a></li>
-            <li><a href="#">굿즈</a></li>
-            <li><a href="#">소모임</a></li>
-            <li><a href="matchPredict">승부예측</a></li>
-        </ul>
-        <ul class="member-links">
-            <th:block th:if="${loggedIn}">
-                <li class="member-link"><a th:href="@{/member/mypage}"> <span th:text="${memberNickName} + ' 님'"></span></a></li>
-                <li class="member-link"><a href="#" onclick="confirmLogout(); return false;">로그아웃</a></li>
-            </th:block>
-            <th:block th:unless="${loggedIn}">
-                <li class="member-link"><a th:href="@{/member/loginpage}">로그인</a></li>
-                <li class="member-link"><a th:href="@{/member/joinmember}">회원가입</a></li>
-            </th:block>
-        </ul>
-    </nav>
-</header>
-<!-- 메인내용 시작  -->
+
+<div th:insert="~{header-footer :: header}"></div>
+
+<link rel="stylesheet" href="/css/mainpage.css">
+<!--소모임 CSS -->
+<link rel="stylesheet" href="/css/meeting/main-meeting.css">
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'/>
+
+
 <main>
     <div class="container">
         <div class="top-content">
@@ -162,7 +140,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">잠실 ｜ 18:30</p>
-                        <p class="teams"><img src="img/NC로고.png" class="game-logo"><span>VS</span><img src="img/두산로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/NC로고.png" class="game-logo"><span>VS</span><img
+                                src="img/두산로고.png" class="game-logo"></p>
                         <p class="teams-name">NC<span>VS</span>두산</p>
                         <p class="broadcaster">SPO-T</p>
                         <!-- <div class="pitchers">
@@ -177,7 +156,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">문학 ｜ 18:30</p>
-                        <p class="teams"><img src="img/삼성로고.png" class="game-logo"><span>VS</span><img src="img/키움로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/삼성로고.png" class="game-logo"><span>VS</span><img
+                                src="img/키움로고.png" class="game-logo"></p>
                         <p class="teams-name">삼성<span>VS</span>키움</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -192,7 +172,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">사직 ｜ 18:30</p>
-                        <p class="teams"><img src="img/LG로고.png" class="game-logo"><span>VS</span><img src="img/한화로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/LG로고.png" class="game-logo"><span>VS</span><img
+                                src="img/한화로고.png" class="game-logo"></p>
                         <p class="teams-name">LG<span>VS</span>한화</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -207,7 +188,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">대구 ｜ 18:30</p>
-                        <p class="teams"><img src="img/KT로고.png" class="game-logo"><span>VS</span><img src="img/롯데로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/KT로고.png" class="game-logo"><span>VS</span><img
+                                src="img/롯데로고.png" class="game-logo"></p>
                         <p class="teams-name">KT<span>VS</span>롯데</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -222,7 +204,8 @@
                 <div class="game">
                     <div class="game-info">
                         <p class="time">수원 ｜ 18:30</p>
-                        <p class="teams"><img src="img/SSG로고.png" class="game-logo"><span>VS</span><img src="img/기아로고.png" class="game-logo"></p>
+                        <p class="teams"><img src="img/SSG로고.png" class="game-logo"><span>VS</span><img
+                                src="img/기아로고.png" class="game-logo"></p>
                         <p class="teams-name">SSG<span>VS</span>KIA</p>
                         <p class="broadcaster">KN-T</p>
                         <!-- <div class="pitchers">
@@ -236,55 +219,29 @@
             </div>
         </div>
 
-        <!-- 달력/ 게시판  -->
+        <!-- 소모임 제목과 배치 변경 -->
         <div class="bottom-content">
-            <div class="calendar">
-                <h2>2024년 9월</h2>
-                <table id="calendarTable">
-                    <thead>
-                    <tr>
-                        <th>일</th>
-                        <th>월</th>
-                        <th>화</th>
-                        <th>수</th>
-                        <th>목</th>
-                        <th>금</th>
-                        <th>토</th>
-                    </tr>
-                    </thead>
-                    <tbody id="calendarBody">
-                    <!-- JavaScript로 채워질 부분 -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="board">
-                <h2>게시판</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>경기</th>
-                        <th>팀</th>
-                        <th>내용</th>
-                        <th>조회</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>NC vs 두산</td>
-                        <td>두산</td>
-                        <td>네이버 지금 직관 중입니다...</td>
-                        <td>12/20</td>
-                    </tr>
-                    <tr>
-                        <td>LG vs SSG</td>
-                        <td>LG</td>
-                        <td>문자중계 우리가 이겼다!</td>
-                        <td>17/20</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <h2>소모임</h2>
+            <div class="content-layout">
+                <div class="calendar-container">
+                    <h3>달력</h3>
+                    <div id="calendar"></div>
+                    <p class="calendar-note">⚾경기가 있는 날입니다. 소모임을 개설할 수 있습니다.⚾</p>
+                </div>
+                <div class="meeting-list-container">
+                    <!-- 선택한 날짜와 더보기 버튼을 포함하는 새로운 div 추가 -->
+                    <div class="date-title-container">
+                        <h3 class="selected-date-title">선택한 날짜 :</h3>
+                        <button class="more-btn" onclick="window.location.href='/meeting/list'">더보기</button>
+                    </div>
+                    <div id="meeting-list">
+                        <p>날짜를 클릭하여 소모임을 확인하세요.</p>
+                    </div>
+                </div>
             </div>
         </div>
+
+
     </div>
 </main>
 <!-- 메인태그 닫고 로고 푸터 시작  -->
@@ -302,19 +259,8 @@
         <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
     </div>
 </div>
-</div>
-<footer class="footer-page">
-    <div class="footer-content">
-        <div class="logo">
-            <img src="img/고매치로고.png" alt="GoMatch 로고">
-        </div>
-        <div class="footer-text">
-            <p>게인정보 처리방침</p>
-            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-            <p>Copyright © GoMatch</p>
-        </div>
-    </div>
-</footer>
+<div th:insert="~{header-footer :: footer}"></div>
+
 <script>
     // 캐러셀 스크립트
     let currentSlide = 0;
@@ -328,52 +274,10 @@
 
     // 자동 슬라이드 (옵션)
     setInterval(() => moveCarousel(1), 5000);
-
-    // 달력 출력/ 당일 색칠됨
-    function generateCalendar(year, month) {
-        const firstDay = new Date(year, month - 1, 1);
-        const lastDay = new Date(year, month, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDay = firstDay.getDay();
-
-        const calendarBody = document.getElementById('calendarBody');
-        calendarBody.innerHTML = '';
-
-        let date = 1;
-        for (let i = 0; i < 6; i++) {
-            const row = document.createElement('tr');
-            for (let j = 0; j < 7; j++) {
-                if (i === 0 && j < startingDay) {
-                    const cell = document.createElement('td');
-                    row.appendChild(cell);
-                } else if (date > daysInMonth) {
-                    break;
-                } else {
-                    const cell = document.createElement('td');
-                    cell.textContent = date;
-                    if (date === new Date().getDate() && month === new Date().getMonth() + 1 && year === new Date().getFullYear()) {
-                        cell.classList.add('today');
-                    }
-                    row.appendChild(cell);
-                    date++;
-                }
-            }
-            calendarBody.appendChild(row);
-            if (date > daysInMonth) {
-                break;
-            }
-        }
-    }
-
-    // 현재 날짜로 달력 생성
-    const currentDate = new Date();
-    generateCalendar(currentDate.getFullYear(), currentDate.getMonth() + 1);
-
-    function confirmLogout() {
-        if (confirm("로그아웃 하시겠습니까?")) {
-            window.location.href = /*[[@{/member/logout}]]*/ '/member/logout';
-        }
-    }
 </script>
+
+<!-- 소모임 부분 자스 (윤경)-->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+<script src="/js/meeting/main-meeting.js"></script>
+
 </body>
-</html>

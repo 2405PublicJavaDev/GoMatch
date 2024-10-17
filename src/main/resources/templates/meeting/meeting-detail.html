@@ -1,35 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>소모임 상세</title>
-  <!-- 메인 css -->
-  <link rel="stylesheet" href="/css/meeting/meeting-detail.css">
-  <!-- 헤더/푸터 CSS-->
-  <link rel="stylesheet" href="/css/header-footer.css">
-
-</head>
+<head th:insert="~{header-footer :: head}"></head>
 <body>
-<header>
-  <nav>
-    <div class="logo">
-      <img src="/img/고매치로고.png" alt="야구 리그 로고">
-    </div>
-    <ul class="nav-links">
-      <li><a href="#">일정/결과</a></li>
-      <li><a href="#">굿즈</a></li>
-      <li><a href="/meeting/list">소모임</a></li>
-      <li><a href="#">승부예측</a></li>
-    </ul>
-    <ul class="member-links">
-      <li><a href="loginpage.html">로그인</a></li>
-      <li><a href="#">회원가입</a></li>
-    </ul>
-  </nav>
-</header>
-
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- 메인 css -->
+<link rel="stylesheet" href="/css/meeting/meeting-detail.css">
 <main>
+  <aside>
+    <div id="aside-main">
+      <div id="aside-content">
+        <span>소모임</span>
+        <hr  class="aside-header">
+        <ul>
+          <li><a href="/meeting/list" >소모임</a></li>
+          <li><a href="/board/list">게시판</a></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
   <div class="main-container">
     <!-- 상단 배경 이미지 -->
     <div class="background-image">
@@ -43,12 +32,15 @@
       </div>
       <div class="meeting-title">
         <h2 th:text="${meeting.meetingTitle}">글 제목</h2>
+        <!-- 지난 모임일 경우 안내 문구 추가 -->
+        <div th:if="${isPastMeeting}" class="past-meeting-notice">
+          <h3>이 소모임은 이미 종료된 상태입니다. 참여 및 수정을 할 수 없습니다.</h3>
+        </div>
         <div class="top-buttons">
-          <!-- 수정된 부분: 조건부 버튼 표시 -->
-          <button th:if="${session.memberId == meeting.memberId}"
+          <button th:if="${session.memberId == meeting.memberId && !isPastMeeting}"
                   type="button" class="button-modify"
-                  onclick="editMeeting()">수정</button>
-          <button th:if="${session.memberId == meeting.memberId and (currentAttendeesCount == 1 or currentAttendeesCount == 0)}"
+                  onclick="modifyMeeting()">수정</button>
+          <button th:if="${session.memberId == meeting.memberId && (currentAttendeesCount == 1 || currentAttendeesCount == 0)}"
                   type="button" class="button-delete"
                   onclick="deleteMeeting()">삭제</button>
         </div>
@@ -100,10 +92,20 @@
     </div>
 
     <div class="buttons">
-      <button type="button" class="button-join" onclick="attendMeeting()">참여</button>
-      <button type="button" class="button-cancel" onclick="cancelMeeting()">취소</button>
-      <button type="button" class="button-back" onclick="history.back()">이전</button>
+      <!-- 참석 버튼 -->
+      <button type="button" class="button-join"
+              th:disabled="${isPastMeeting || currentAttendeesCount >= meeting.meetingMaxPeople}"
+              th:if="${!isPastMeeting && currentAttendeesCount < meeting.meetingMaxPeople}"
+              onclick="attendMeeting()">참여</button>
+      <!-- 취소 버튼 -->
+      <button type="button" class="button-cancel"
+              th:disabled="${isPastMeeting}"
+              th:if="${!isPastMeeting}"
+              onclick="cancelMeeting()">취소</button>
+      <button type="button" class="button-back"
+              onclick="history.back()">이전</button>
     </div>
+
 
     <!-- 이미지 팝업을 위한 모달 -->
     <div id="popup" class="popup" onclick="closePopup()">
@@ -122,127 +124,18 @@
       아직 참석자가 없습니다.<br>
       제일 먼저 참여하기를 눌러주세요👍
     </div>
+  </div>
 </main>
 
-<footer class="footer-page">
-  <div class="footer-content">
-    <div class="logo">
-      <img src="img/고매치로고.png" alt="GoMatch 로고">
-    </div>
-    <div class="footer-text">
-      <p>개인정보 처리방침</p>
-      <p>(사)GoMatch｜서울 중구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-      <p>Copyright © GoMatch</p>
-    </div>
-  </div>
-</footer>
+<!-- 푸터 fragment 포함 -->
+<div th:insert="~{header-footer :: footer}"></div>
 
 <script th:inline="javascript">
-  // Thymeleaf에서 gameNo와 meetingNo를 전달받아 JavaScript 변수로 저장
   var gameNo = /*[[${meeting.gameNo}]]*/ '';  // 서버에서 전달된 gameNo
   var meetingNo = /*[[${meeting.meetingNo}]]*/ '';  // 서버에서 전달된 meetingNo
+  var loggedIn =true; // 서버에서 로그인 여부를 전달
 </script>
-<script>
+<script src="/js/meeting/meeting-detail.js"></script>
 
-  // 이미지 팝업 열기
-  function openPopup(src) {
-    const popup = document.getElementById('popup');
-    const popupImg = document.getElementById('popup-img');
-    popup.style.display = 'flex';  // 팝업을 표시
-    popupImg.src = src;  // 팝업 이미지 경로 설정
-  }
-
-  // 이미지 팝업 닫기
-  function closePopup() {
-    const popup = document.getElementById('popup');
-    popup.style.display = 'none';  // 팝업을 숨김
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    // gameNo가 존재하는지 확인한 후 fetch 요청
-    if (gameNo) {
-      fetch(`/meeting/gameInfo?gameNo=${gameNo}`)
-              .then(response => response.json())
-              .then(gameInfo => {
-                const gameInfoElement = document.getElementById('game-info');
-                gameInfoElement.innerHTML = `${gameInfo.teamA} vs ${gameInfo.teamB} (${gameInfo.gameTime}, @ ${gameInfo.gameField})`;
-              })
-              .catch(error => {
-                console.error('경기 정보 가져오기 중 오류 발생:', error);
-                document.getElementById('game-info').textContent = '경기 정보를 불러오지 못했습니다.';
-              });
-    }
-  });
-
-  // 참석 요청 함수
-  function attendMeeting() {
-    if (confirm("참여하시겠습니까?")) {
-      if (meetingNo) {
-        fetch(`/meeting/attend?meetingNo=${meetingNo}`, {
-          method: 'POST',
-        })
-                .then(response => response.text())
-                .then(message => {
-                  alert(message);
-                  if (message === "참석이 완료되었습니다.") {
-                    location.reload(); // 참석 완료 후 페이지 새로고침
-                  }
-                })
-                .catch(error => {
-                  console.error('참석 처리 중 오류 발생:', error);
-                  alert('참석 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
-      }
-    }
-  }
-  // 참석 취소 요청 함수
-  function cancelMeeting() {
-    if (confirm("😢정말 참석을 취소하시겠습니까?😢")) {
-      if (meetingNo) {
-        fetch(`/meeting/cancel?meetingNo=${meetingNo}`, {
-          method: 'POST',
-        })
-                .then(response => response.text())
-                .then(message => {
-                  alert(message);
-                  if (message === "참석이 취소되었습니다.") {
-                    location.reload(); // 참석 취소 후 페이지 새로고침
-                  }
-                })
-                .catch(error => {
-                  console.error('참석 취소 처리 중 오류 발생:', error);
-                  alert('참석 취소 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
-      }
-    }
-  }
-  function deleteMeeting() {
-    if (confirm("정말로 소모임을 삭제하시겠습니까?")) {
-      if (meetingNo) {
-        fetch(`/meeting/delete/${meetingNo}`, {
-          method: 'POST',
-        })
-                .then(() => {
-                  // 삭제가 완료되었음을 알리고, 페이지 이동
-                  alert("삭제가 완료되었습니다.");
-                  window.location.href = "/meeting/list";
-                })
-                .catch(error => {
-                  console.error('삭제 처리 중 오류 발생:', error);
-                  alert('삭제 처리 중 오류가 발생했습니다.');
-                });
-      } else {
-        alert('소모임 정보를 찾을 수 없습니다.');
-      }
-    }
-  }
-
-
-
-</script>
 </body>
 </html>

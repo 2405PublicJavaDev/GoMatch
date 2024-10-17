@@ -1,6 +1,17 @@
+/* 메인 컨텐츠 스타일 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
 .mypage-container {
-    background-color: #888;
-    color: white;
+    background-color: #e7e4e4;
+    color: black;
     padding: 50px;
     display: flex;
     max-width: 1200px;
@@ -9,6 +20,7 @@
     height: 100px;
     border-radius: 10px;
 }
+
 .profile-img img {
     width: 130px;
     height: 130px;
@@ -16,25 +28,27 @@
     background-color: #999;
     margin-right: 20px;
 }
+
 .profile-info {
     flex-grow: 1;
     margin-left: 30px;
 }
+
 .profile-info h1 {
     font-size: 24px;
 }
+
 .profile-info h5 {
     font-size: 15px;
     margin-top: -5px;
     margin-bottom: 20px;
 }
-.profile-info p {
 
+.profile-info p {
     font-size: 13px;
     margin: 5px;
 }
 
-/* 회원가입 폼 css */
 .container {
     display: flex;
     background-color: white;
@@ -44,32 +58,60 @@
     padding: 50px;
     margin-bottom: 30px;
 }
+
 .form-container {
     padding: 20px;
-    width: 550px;
+    /*width: 550px;*/
+    width: 800px;
+    height: 900px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    border-radius: 8px;
 }
+#updateForm{
+    width:600px;
+    margin-left:100px;
+}
+
 h2 {
-    margin-top: 0;
+    margin-left: 100px;
+    margin-bottom: 20px;
 }
+
 form {
     display: flex;
     flex-direction: column;
 }
+
 label {
     margin-top: 10px;
     font-size: 14px;
+    color: #333;
 }
+
 input {
     margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+}
 
+input[readonly] {
+    background-color: #f0f0f0;
 }
-.emailbox {
-    width: 300px;
+
+.email-input {
     display: flex;
+    align-items: center;
+    margin-top: 5px;
 }
+
+.email-input input {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
 button {
     margin-top: 20px;
     padding: 10px;
@@ -79,19 +121,66 @@ button {
     border-radius: 4px;
     cursor: pointer;
 }
+
 button:hover {
     background-color: #0056b3;
 }
 
-.email-input {
-    display: flex;
-    align-items: center;
-    margin-top: -10px;
+.emailbutton {
+    margin-top: 0;
+    margin-bottom: 0;
 }
-.email-input input {
-    flex-grow: 1;
-    margin-right: 10px;
+
+#nicknameCheckResult,
+#emailCheckResult,
+#passwordMatchResult {
+    font-size: 12px;
+    margin-top: 5px;
 }
-.emailbutton{
-    margin-bottom: 15px;
+
+#updateButton {
+    margin-top: 30px;
+}
+#preferenceClub{
+    margin-top: 10px;
+    width: 250px;
+    height: 37px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.form-group {
+    margin-top: 10px;
+}
+
+.form-group input {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.form-group label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* 커스텀 파일 선택 버튼 스타일 */
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    color: rgb(0, 0, 0);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 70px;
+    text-align: center;
+}
+
+.custom-file-label:hover {
+    background-color: #c9c9c9;
+}
+#profileImageInput {
+    display: none;
 }

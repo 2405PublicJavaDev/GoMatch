@@ -1,205 +1,186 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 페이지</title>
-    <link rel="stylesheet" href="../css/admin-mainpage.css">
+    <link rel="stylesheet" href="/css/admin-mainpage.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div class="sidebar">
-    <div class="sidebarmember"><a href="./admin-member.html"> <h3>회원 관리</h3> </a></div>
+    <div class="sidebarmember"><a href="admin-member"> <h3>회원 관리</h3> </a></div>
     <div class="sidebarmember2"><a href="#"><h3>상품 관리</h3></a></div>
 </div>
 <div class="content">
-    <a href="./admin-mainpage.html"><h1>관리자 페이지</h1></a>
+    <div class="header-container">
+        <div style="display: flex; align-items: center;">
+            <a href="admin-mainpage"><h1>관리자 페이지</h1></a>
+        </div>
+        <button onclick="logout()" class="logout-button">로그아웃</button>
+    </div>
     <p>관리자 계정으로 로그인 하였습니다.</p>
-
     <div class="admin-info">
         <div>
             <h2>관리자 1</h2>
-            <div class="admin-box"><img src="../images/나이용재2.JPG"></div>
+            <div class="admin-box"><img src="/img/기본프로필.png"></div>
             <p>이용재</p>
         </div>
         <div>
             <h2>관리자2</h2>
-            <div class="admin-box"><img src="../images/나이용재.PNG"></div>
+            <div class="admin-box"><img src="/img/기본프로필.png"></div>
             <p>이채민</p>
         </div>
+
     </div>
 
-    <h2 class="category">소모임 최신 어느정도?</h2>
+    <h2 class="category">최근 개설된 소모임</h2>
     <table>
         <tr>
             <th>선택</th>
-            <th>번호</th>
-            <th>소모임</th>
             <th>구단명</th>
+            <th>소모임</th>
             <th>모임 장소</th>
+            <th>시간</th>
             <th>경기 일정</th>
             <th>작성자</th>
-            <th>비고</th>
+            <th>관리</th>
         </tr>
-        <tr>
+        <tr th:each="meeting : ${meetings}" th:id="'meeting-' + ${meeting.meetingNo}">
             <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>이거</td>
-            <td>해야하나</td>
-            <td>모르겠네</td>
-            <td>2024.08.27</td>
-            <td>일용재</td>
+            <td th:text="${meeting.meetingTeamName}"></td>
+            <td th:text="${meeting.meetingTitle}"></td>
+            <td th:text="${meeting.meetingPlace}"></td>
+            <td th:text="${meeting.meetingTime}"></td>
+            <td th:text="${#dates.format(meeting.regDate, 'yyyy.MM.dd')}"></td>
+            <td th:text="${meeting.memberId}"></td>
             <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>이거</td>
-            <td>해야하나</td>
-            <td>모르겠네</td>
-            <td>2024.08.27</td>
-            <td>이용재</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>이거</td>
-            <td>해야하나</td>
-            <td>모르겠네</td>
-            <td>2024.08.27</td>
-            <td>삼용재</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>이거</td>
-            <td>해야하나</td>
-            <td>모르겠네</td>
-            <td>2024.08.27</td>
-            <td>사용재</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>이거</td>
-            <td>해야하나</td>
-            <td>모르겠네</td>
-            <td>2024.08.27</td>
-            <td>오용재</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
+                <button class="statusbutton delete-button" th:data-meeting-no="${meeting.meetingNo}">삭제</button>
             </td>
         </tr>
     </table>
 
-    <h2 class="category">회원 최신 어느정도?</h2>
+    <h2 class="category">최근 가입한 회원정보</h2>
     <table>
         <tr>
             <th>선택</th>
-            <th>번호</th>
             <th>아이디</th>
             <th>이름</th>
             <th>닉네임</th>
-            <th>생년월일</th>
             <th>이메일</th>
-            <th>비고</th>
+            <th>가입 날짜</th>
+            <th>상태</th>
+            <th>관리</th>
         </tr>
-        <tr>
+        <tr th:each="member : ${members}">
             <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>leeyongjae</td>
-            <td>이용재</td>
-            <td>집</td>
-            <td>1998.10.23</td>
-            <td>leeyongjae1023@gmail.com</td>
+            <td th:text="${member.memberId}"></td>
+            <td th:text="${member.memberName}"></td>
+            <td th:text="${member.memberNickName}"></td>
+            <td th:text="${member.memberEmail}"></td>
+            <td th:text="${#dates.format(member.regDate, 'yyyy.MM.dd')}"></td>
+            <td th:class="${member.memberStatus == 'SUSPENDED'} ? 'status-suspended'">
+                <span th:text="${member.memberStatus == 'NORMAL' ? '정상' : '정지됨'}"></span>
+            </td>
             <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
+                <button th:class="statusbutton" th:if="${member.memberStatus == 'NORMAL'}"
+                        th:data-member-id="${member.memberId}"
+                        onclick="suspendMember(this.getAttribute('data-member-id'))">정지</button>
+                <button th:class="statusbutton" th:if="${member.memberStatus == 'SUSPENDED'}"
+                        th:data-member-id="${member.memberId}"
+                        onclick="activateMember(this.getAttribute('data-member-id'))">활성화</button>
+                <button th:class="statusbutton"
+                        th:data-member-id="${member.memberId}"
+                        onclick="deleteMember(this.getAttribute('data-member-id'))">삭제</button>
             </td>
         </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>leeyongjae</td>
-            <td>이용재</td>
-            <td>집</td>
-            <td>1998.10.23</td>
-            <td>leeyongjae1023@gmail.com</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>leeyongjae</td>
-            <td>이용재</td>
-            <td>집</td>
-            <td>1998.10.23</td>
-            <td>leeyongjae1023@gmail.com</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>leeyongjae</td>
-            <td>이용재</td>
-            <td>집</td>
-            <td>1998.10.23</td>
-            <td>leeyongjae1023@gmail.com</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>1</td>
-            <td>leeyongjae</td>
-            <td>이용재</td>
-            <td>집</td>
-            <td>1998.10.23</td>
-            <td>leeyongjae1023@gmail.com</td>
-            <td>
-                <button class="button">수정</button>
-                <button class="button">삭제</button>
-            </td>
-        </tr>
-
     </table>
 </div>
 <script>
-    function setActive(element) {
-        // 모든 메뉴 아이템에서 'active' 클래스 제거
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        // 클릭된 메뉴 아이템에 'active' 클래스 추가
-        element.classList.add('active');
+
+
+    function suspendMember(memberId) {
+        if (confirm('이 회원을 정지하시겠습니까?')) {
+            $.ajax({
+                url: '/admin/suspend-member',
+                type: 'POST',
+                data: JSON.stringify({ memberId: memberId }),
+                contentType: 'application/json',
+                success: function(response) {
+                    if (response.success) {
+                        alert('회원이 정지되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('회원 정지에 실패했습니다: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('서버 오류가 발생했습니다.');
+                }
+            });
+        }
     }
 
-    document.getElementById('sidebarToggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
+    function activateMember(memberId) {
+        if (confirm('이 회원을 활성화하시겠습니까?')) {
+            $.ajax({
+                url: '/admin/activate-member',
+                type: 'POST',
+                data: JSON.stringify({ memberId: memberId }),
+                contentType: 'application/json',
+                success: function(response) {
+                    if (response.success) {
+                        alert('회원이 활성화되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('회원 활성화에 실패했습니다: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('서버 오류가 발생했습니다.');
+                }
+            });
+        }
+    }
+
+    function deleteMember(memberId) {
+        if (confirm('이 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            $.ajax({
+                url: '/admin/delete-member',
+                type: 'POST',
+                data: JSON.stringify({memberId: memberId}),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        alert('회원이 삭제되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('회원 삭제에 실패했습니다: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('서버 오류가 발생했습니다.');
+                }
+            });
+        }
+            }
+</script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('.delete-button').on('click', function () {
+            const meetingNo = $(this).data('meeting-no');
+            if (confirm('이 소모임을 삭제하시겠습니까?')) {
+                $('#meeting-' + meetingNo).hide();
+            }
+        });
     });
+        function logout() {
+        if (confirm('로그아웃하시겠습니까?')) {
+        window.location.href = '/admin/logout';
+    }
+    }
+</script>
+
 </script>
 </body>
 </html>

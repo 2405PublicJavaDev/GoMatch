@@ -1,3 +1,14 @@
+/* 메인 컨텐츠 스타일 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
 .container {
     display: flex;
     background-color: white;
@@ -15,10 +26,20 @@
 }
 .form-container {
     padding: 20px;
-    width: 550px;
+    width: 800px;
+    height: 800px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: rgba(226, 233, 241, 0.3);
+    border-radius: 8px;
+
+}
+#joinForm{
+    width: 600px;
+    margin-left: 100px;
 }
 h2 {
-    margin-top: 0;
+    margin-left: 100px;
+    margin-bottom: 20px;
 }
 form {
     display: flex;
@@ -30,6 +51,7 @@ label {
 }
 input {
     margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -79,8 +101,5 @@ button:hover {
     height: 37px;
     border-radius: 8px;
     border: 1px solid #ddd;
-}
-.joinbutton{
-    margin-top: 30px;
 }
 

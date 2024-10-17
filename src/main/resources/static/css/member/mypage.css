@@ -1,4 +1,15 @@
-
+/* 메인 컨텐츠 스타일 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
+/* ==================================================== 마이페이지 컨테이너 ===================================================*/
 .mypage-container {
     background-color: #e7e4e4;
     color: black;
@@ -10,6 +21,7 @@
     height: 100px;
     border-radius: 10px;
 }
+
 .profile-img img {
     width: 130px;
     height: 130px;
@@ -17,42 +29,43 @@
     background-color: #999;
     margin-right: 20px;
 }
+
 .profile-info {
     flex-grow: 1;
     margin-left: 30px;
 }
+
 .profile-info h1 {
     font-size: 24px;
 }
+
 .profile-info h5 {
     font-size: 15px;
     margin-top: -5px;
     margin-bottom: 20px;
 }
-.profile-info p {
 
+.profile-info p {
     font-size: 13px;
     margin: 5px;
-
 }
 
-
+/* ==================================================== 콘텐츠 영역 ===================================================*/
 .content {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     max-width: 1300px;
-    height: 400px;
     margin: 0 auto;
     gap: 30px;
     margin-bottom: 100px;
-
 }
+
 .section {
     width: 300px;
     height: 350px;
-
 }
+
 .section-title {
     border: 1px solid #ddd;
     padding: 15px;
@@ -77,75 +90,40 @@
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
-.section-content {
+
+.section-content, .section-content2, .section-content3 {
     height: 250px;
     border: 1px solid #ddd;
     border-radius: 8px;
     margin-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
 }
+
+.section-content img, .section-content2 img, .section-content3 img {
+    width: 110px;
+    height: 100px;
+    margin: 0 auto;
+    display: block;
+}
+
 .content-name {
     text-align: center;
     font-size: 20px;
-}
-.section-content img {
-    width: 110px;
-    height: 100px;
-    margin: 10px 98px;
-    margin-top: 20px;
+    margin: 10px 0;
 }
 
-/* 구매내역 이미지 조정 */
-.section-content2 {
-    height: 250px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 100px;
-}
-.section-content2 img {
-    width: 110px;
-    height: 100px;
-    margin: 10px 80px;
-    margin-top: 20px;
-}
-/* 승부예측 이미지 조정 */
-.section-content3 {
-    height: 250px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 100px;
-}
-.section-content3 img {
-    width: 110px;
-    height: 100px;
-    margin: 10px 90px;
-    margin-top: 20px;
-}
-
-.button-link{
+/* ==================================================== 버튼 스타일 ===================================================*/
+.button-link {
     width: 48%;
     text-decoration: none;
 }
 
 button {
-    width: 95%;
-    height: 40px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    background-color: #699ed6;
-    color: white;
-    border-radius: 8px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-.buttons-container{
-    display: flex;
-    justify-content: space-between;
-    padding: 0 10px;
-}
-
-.buttons-container button {
     width: 100%;
     height: 40px;
     padding: 5px;
@@ -154,16 +132,52 @@ button:hover {
     color: white;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 14px;
 }
-.buttons-container button:hover {
+
+button:hover {
     background-color: #0056b3;
 }
-/* 이미지 버튼 구분선  */
-.section-line{
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
+
+.buttons-container, .button-container2 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    margin-top: 10px;
 }
-/* 버튼이 1개만 있는 div 위치 조정 */
-.button-container2 {
-    margin-left: 15px;
+
+.button-container2 button {
+    width: 100%;
+}
+
+/* ==================================================== 구분선 ===================================================*/
+.section-line {
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    width: 100%;
+}
+
+/* ==================================================== 반응형 디자인 ===================================================*/
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+    .section {
+        width: 90%;
+        margin-bottom: 30px;
+    }
+    .mypage-container {
+        flex-direction: column;
+        height: auto;
+        text-align: center;
+    }
+    .profile-img img {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    .profile-info {
+        margin-left: 0;
+    }
 }
