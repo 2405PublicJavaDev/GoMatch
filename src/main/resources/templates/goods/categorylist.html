@@ -1,29 +1,35 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>카테고리 상품 목록</title>
-</head>
-<body>
-<h1>카테고리 상품 목록</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>상품 번호</th>
-        <th>팀</th>
-        <th>상품 이름</th>
-        <th>가격</th>
-        <th>상세 보기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="goods : ${goodsList}">
-        <td th:text="${goods.goodsNo}"></td>
-        <td th:text="${goods.goodsTeam}"></td>
-        <td th:text="${goods.goodsProductName}"></td>
-        <td th:text="${goods.goodsPrice}"></td>
-        <td><a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>
-    </tr>
-    </tbody>
-</table>
-</body>
-</html>
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>카테고리 상품 목록</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>카테고리 상품 목록</h1>-->
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>상품 번호</th>-->
+<!--        <th>팀</th>-->
+<!--        <th>상품 이름</th>-->
+<!--        <th>가격</th>-->
+<!--        <th>이미지</th>-->
+<!--        <th>상세 보기</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr th:each="goods : ${goodsList}">-->
+<!--        <td th:text="${goods.goodsNo}"></td>-->
+<!--        <td th:text="${goods.goodsTeam}"></td>-->
+<!--        <td th:text="${goods.goodsProductName}"></td>-->
+<!--        <td th:text="${goods.goodsPrice}"></td>-->
+<!--        <td>-->
+<!--            &lt;!&ndash; 대표 이미지가 있을 경우 표시, 없으면 대체 텍스트 &ndash;&gt;-->
+<!--            <img th:if="${goods.goodsImageWebPath != null}" th:src="@{${goods.goodsImageWebPath}}" alt="대표 이미지" style="width: 100px; height: 100px;">-->
+<!--            <span th:if="${goods.goodsImageWebPath == null}">이미지 없음</span>-->
+<!--        </td>-->
+<!--        <td><a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->

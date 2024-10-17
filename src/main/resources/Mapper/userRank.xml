@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.userrank.mapper.UserRankMapper">
-    <select id="selectUserInfo" resultType="userRankDTO">
-        SELECT * FROM MEMBER
+
+    <select id="getUserExperience" parameterType="String" resultType="int">
+        SELECT EXPERIENCE_POINTS FROM USER_RANK WHERE MEMBER_ID = #{memberId}
     </select>
+
+    <update id="updateUserExperience">
+        UPDATE USER_RANK SET EXPERIENCE_POINTS = #{experiencePoints} WHERE MEMBER_ID = #{memberId}
+    </update>
 </mapper>

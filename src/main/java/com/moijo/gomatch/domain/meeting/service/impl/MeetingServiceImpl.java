@@ -7,11 +7,12 @@ import com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingFileVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MeetingServiceImpl implements MeetingService {
@@ -74,6 +75,21 @@ public class MeetingServiceImpl implements MeetingService {
     public void removeMeeting(long meetingNo) {
         meetingMapper.deleteMeeting(meetingNo);
     }
+    @Override
+    public void updateMeeting(MeetingVO meetingVO) {
+        meetingMapper.updateMeeting(meetingVO);
+    }
 
+    @Override
+    public void deleteMeetingFiles(List<Long> fileDeleteIds) {
+        log.info("MeetingServiceImpl - 삭제할 파일 ID 목록: {}", fileDeleteIds);
+        if (fileDeleteIds != null && !fileDeleteIds.isEmpty()) {
+            meetingMapper.deleteMeetingFiles(fileDeleteIds);
+        }
+    }
+    @Override
+    public List<String> getAllGameDates() {
+        return meetingMapper.getAllGameDates();
+    }
 }
 

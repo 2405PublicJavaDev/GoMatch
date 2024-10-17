@@ -20,6 +20,7 @@ public class EmailController {
     private final EmailService emailService;
     private final MemberService memberService;
 
+    // 이메일 전송
     @ResponseBody
     @PostMapping("/mail")
     public ResponseEntity<String> sendMail(@RequestParam String mail) {
@@ -32,6 +33,7 @@ public class EmailController {
         }
     }
 
+    // 이메일 전송 코드
     @ResponseBody
     @PostMapping("/member/verifyCode")
     public ResponseEntity<Map<String, Boolean>> verifyCode(@RequestBody Map<String, String> payload) {
@@ -45,6 +47,7 @@ public class EmailController {
 
         return ResponseEntity.ok(response);
     }
+    // 비밀번호 전송 후 비밀번호 변경
     @PostMapping("/member/findPw")
     @ResponseBody
     public ResponseEntity<String> findPassword(@RequestParam String memberId, @RequestParam String email) {

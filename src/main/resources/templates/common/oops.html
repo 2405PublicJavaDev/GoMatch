@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>접근 오류</title>
+    <style>
+        @font-face {
+            font-family: 'KBO Dia Gothic Bold';
+            src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'KBO Dia Gothic Medium';
+            src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .error-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-image {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+        }
+        .error-message {
+            font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 테마 폰트 적용 */
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .home-button {
+            font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+            background-color: #FFD700;
+            color: #1E1E1E;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .home-button:hover {
+            background-color: #FFA500;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <img src="/img/error.png" alt="Error Emoji" class="error-image">
+    <div class="error-message">잘못된 접근 경로입니다.<br><br>로그인을 하고 시도해주세요.</div>
+    <button class="home-button" onclick="window.location.href='/'">GoMatch<br>홈으로</button>
+</div>
+</body>
+</html>

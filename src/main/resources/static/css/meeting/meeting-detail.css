@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'KBO Dia Gothic Bold';
     src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
-    font-weight: bold;
+    font-weight: normal;
     font-style: normal;
 }
 @font-face {
@@ -9,16 +9,127 @@
     src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-}zz
-body {
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+}/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
 }
-.main-container {
+
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin : 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    --color: black;
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+/* 기본 컨테이너 설정 */
+.container {
+    font-family: Arial, sans-serif;
     max-width: 1000px;
     margin: 0 auto;
-    background-color: white;
+    padding: 20px;
+}/* ■■■■■■■■■■ 사이드바 css ■■■■■■■■■■ */
+aside {
+    --width: 15%;
+    float: left;
+}
+
+#aside-main {
+    margin-top: 50px;
+    margin-left: 150px;
+    background-color: #16215F;
+    border-radius: 30px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    width: 200px;
+}
+
+#aside-content {
+    align-content: space-between;
+    font-size: 17px;
+    color: white;
+    margin : 50px 0px;
+    text-align: center;
+}
+
+#aside-content ul {
+    padding: 0;
+    margin-left: 0;
+}
+#aside-content li {
+    margin: 0;
+    padding-top: 30px;
+    text-decoration: none;
+    list-style: none;
+}
+
+#aside-content li a {
+    --color: black;
+    color: white;
+    text-decoration: none;
+}
+
+#aside-content li a:hover {
+    font-weight: 600;
+
+}
+
+#aside-content li a.active {
+    font-weight: 600;
+}
+
+.aside-header {
+    margin-top: 50px;
+}
+
+/* 기본 컨테이너 설정 */
+.main-container {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 .background-image {
     position: relative;
@@ -27,7 +138,7 @@ body {
 }
 .background-image img {
     width: 100%;
-    height: auto;
+    height: 250px;
 }
 .meeting-header {
     position: relative;
@@ -56,6 +167,12 @@ body {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
     text-align: center;
 }
+.past-meeting-notice{
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    text-align: center;
+    color : #ff002e;
+}
+
 .top-buttons {
     position: absolute;
     top: 20px;

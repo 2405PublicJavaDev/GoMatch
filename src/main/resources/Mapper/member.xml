@@ -39,10 +39,40 @@
         WHERE MEMBER_ID = #{memberId} AND MEMBER_EMAIL = #{email}
     </select>
 
+    <!-- 회원 정보 수정을 위한 새로운 쿼리 추가 -->
+    <update id="modifyMember" parameterType="com.moijo.gomatch.domain.member.vo.MemberVO">
+        UPDATE MEMBER
+        SET
+            MEMBER_NICKNAME = #{memberNickName},
+            MEMBER_EMAIL = #{memberEmail},
+            MEMBER_NAME = #{memberName},
+            MEMBER_BIRTHDATE = #{birthDate},
+            PREFERENCE_CLUB = #{preferenceClub},
+            MEMBER_PW = #{memberPw},
+            PROFILE_IMAGE_URL = #{profileImageUrl},
+            UPDATE_DATE = SYSDATE
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+
+    <!-- 기존 updatePassword 쿼리 유지 -->
     <update id="updatePassword">
         UPDATE MEMBER
         SET MEMBER_PW = #{password}
         WHERE MEMBER_ID = #{memberId}
     </update>
+
+    <!-- 회원 정보 조회를 위한 쿼리 추가 -->
+    <select id="getMemberById" resultType="com.moijo.gomatch.domain.member.vo.MemberVO">
+        SELECT * FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </select>
+    <delete id="deleteMember">
+        DELETE FROM MEMBER WHERE MEMBER_ID = #{memberId}
+    </delete>
+    <delete id="deleteMemberRank">
+        DELETE FROM USER_RANK WHERE MEMBER_ID = #{memberId}
+    </delete>
+
+
     </mapper>
 
