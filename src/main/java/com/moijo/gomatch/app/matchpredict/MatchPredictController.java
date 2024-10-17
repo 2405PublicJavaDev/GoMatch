@@ -10,12 +10,14 @@ import com.moijo.gomatch.domain.member.vo.MemberVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -34,12 +36,11 @@ public class MatchPredictController {
      */
     @GetMapping("/matchPredict")
     public String showMatchPredictionListPage(HttpSession session, Model model
-            ,@RequestParam(value = "gameNo", required = false) Long gameNo) {
+            , @RequestParam(value = "gameNo", required = false) Long gameNo) {
         // 승부 예측 목록 조회
         String memberId = (String)session.getAttribute("memberId");
         boolean hasPrediction = false; // 예측 상태 변수 초기화
         log.info("Session memberId: {}", memberId);
-        Timestamp gameDate = (Timestamp)session.getAttribute("gameDate");
         List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
         if (memberId != null) {
 
@@ -64,7 +65,9 @@ public class MatchPredictController {
 
     @GetMapping("/matchPredict/list/{gameDate}")
     @ResponseBody
-    public ResponseEntity<List<MatchPredict>> getMatchPredictions(@PathVariable String gameDate) {
+    public ResponseEntity<List<MatchPredict>> getMatchPredictions(HttpSession session
+            ,@PathVariable String gameDate) {
+        String memberId =  (String)session.getAttribute("memberId");
         List<MatchPredict> predictions = matchPredictService.getPredictionsByDate(gameDate);
         return ResponseEntity.ok(predictions); // JSON으로 반환
     }

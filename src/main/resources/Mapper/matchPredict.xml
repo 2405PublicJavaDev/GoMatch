@@ -6,7 +6,6 @@
         SELECT P.MATCH_PREDICT_NO,
                G.GAME_NO,
                P.MATCH_PREDICT_DECISION,
-               M.MEMBER_ID,
                G.TEAM_A,
                G.TEAM_B,
                G.GAME_TIME,
@@ -14,18 +13,16 @@
                G.GAME_DATE,
                G.REG_DATE
         FROM GAME G
-        LEFT JOIN MATCH_PREDICT P
+        JOIN MATCH_PREDICT P
         ON G.GAME_NO = P.GAME_NO
-        LEFT JOIN MEMBER M
-        ON P.MEMBER_ID = M.MEMBER_ID
+        WHERE G.GAME_NO = #{gameNo}
     </select>
 
     <select id="selectPredictByDate" resultType="MatchPredict">
         SELECT
-            P.MATCH_PREDICT_NO,
             G.GAME_NO,
+            P.MATCH_PREDICT_NO,
             P.MATCH_PREDICT_DECISION,
-            M.MEMBER_ID,
             G.TEAM_A,
             G.TEAM_B,
             G.GAME_TIME,
@@ -34,10 +31,8 @@
             G.REG_DATE
         FROM
             GAME G
-                LEFT JOIN
+                JOIN
             MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
-                LEFT JOIN
-            MEMBER M ON P.MEMBER_ID = M.MEMBER_ID
         WHERE
             G.GAME_DATE = #{gameDate}
     </select>

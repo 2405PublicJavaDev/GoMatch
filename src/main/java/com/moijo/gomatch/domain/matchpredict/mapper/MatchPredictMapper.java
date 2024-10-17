@@ -19,6 +19,8 @@ public interface MatchPredictMapper {
 
     /**
      * 날짜 별 승부예측 리스트
+     *
+     * @param
      * @param gameDate
      * @return
      */

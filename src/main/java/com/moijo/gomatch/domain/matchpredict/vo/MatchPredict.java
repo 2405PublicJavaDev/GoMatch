@@ -17,7 +17,6 @@ public class MatchPredict {
     private Long matchPredictNo;
     private Long gameNo;
     private String matchPredictDecision;
-    private String memberId;
     private String teamA;
     private String teamB;
     private String gameTime;

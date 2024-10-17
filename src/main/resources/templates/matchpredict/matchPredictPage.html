@@ -40,6 +40,7 @@
                     <span class="time-out">후 종료</span>
                 </div>
                 <form name="add-form" action="/addPredict" method="post">
+<!--                    <input type="date" name="gameDate" required>-->
                     <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
                     <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
                     <input type="hidden" name="matchPredictNo" th:value="1">
@@ -144,7 +145,7 @@
         </div>
         <div class="footer-details">
             <div class="company-info">
-                <p>대표이사: 최수연</p>
+                <p>대표이사: 백인호</p>
                 <p>전화: 1588-3200 (대표전화/고객센터)</p>
                 <p>사업자등록번호: 220-81-62517</p>
             </div>

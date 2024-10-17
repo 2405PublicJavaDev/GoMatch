@@ -29,7 +29,6 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     /**
-     *
      * @param gameDate
      * @return
      */
