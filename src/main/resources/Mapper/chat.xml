@@ -6,7 +6,7 @@
 <mapper namespace="com.moijo.gomatch.domain.chatting.mapper.ChatMapper">
 
     <!-- Chat 데이터 삽입 -->
-    <insert id="insertChat" parameterType="com.moijo.gomatch.domain.chatting.vo.Chat">
+    <insert id="insertChat" parameterType="com.moijo.gomatch.domain.chatting.vo.ChatMessage">
         INSERT INTO chat (chat_id, room_id, sender, sender_email, chat_message, send_date)
         VALUES (
                    SEQ_CHAT_NO.NEXTVAL,  -- 시퀀스 사용
@@ -19,7 +19,7 @@
     </insert>
 
     <!-- 특정 채팅방의 채팅 목록 조회 -->
-    <select id="getChatsByRoomId" resultType="com.moijo.gomatch.domain.chatting.vo.Chat">
+    <select id="getChatsByRoomId" resultType="com.moijo.gomatch.domain.chatting.vo.ChatMessage">
         SELECT
             c.chat_id AS id,
             c.room_id AS room_id,
