@@ -1,73 +1,165 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>상품 상세 조회</title>
-  <style>
-    .btn {
-      cursor: pointer;
-      font-size: 18px;
-      padding: 10px 20px;
-      background-color: gray;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-
-    .wishlist-button.active {
-      background-color: red; /* 찜하기 버튼 활성화 색상 */
-    }
-
-    .image-container img {
-      width: 200px;
-      height: 200px;
-      margin: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/goods/detail.css">
+  <link rel="stylesheet" href="/css/goods/standard.css">
 </head>
 <body>
-<h1 th:text="${' [' + goods.goodsTeam + '] ' + goods.goodsProductName }"></h1> <!-- 나머지도 이 양식으로 -->
-<p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>
-<p>팀: <span th:text="${goods.goodsTeam}"></span></p>
-<p>가격: <span th:text="${goods.goodsPrice}"></span></p>
-<p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>
-<p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>
-<p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
-<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p>
 
-<!-- 대표 이미지 표시 -->
-<h2>대표 이미지</h2>
-<div class="image-container" th:if="${representativeImage != null}">
-  <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />
-</div>
+<!-- 헤더 부분 -->
+<header>
+  <nav>
+    <div class="logo">
+      <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">일정/결과</a></li>
+      <li><a href="#">굿즈</a></li>
+      <li><a href="#">소모임</a></li>
+      <li><a href="#">승부예측</a></li>
+    </ul>
+    <ul class="memeber-links">
+      <li><a href="loginpage">로그인</a></li>
+      <li><a href="joinmember">회원가입</a></li>
+    </ul>
+  </nav>
+</header>
 
-<!-- 상세 이미지 표시 -->
-<h2>상세 이미지</h2>
-<div class="image-container" th:if="${detailImages != null}">
-  <div th:each="image : ${detailImages}">
-    <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />
+<div class="team-logos">
+  <div class="team-logos-container">
+    <!-- 각 팀별로 GET 파라미터로 팀 이름을 전달 -->
+    <a href="/goods/team/list?team=LG"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+    <a href="/goods/team/list?team=KT 위즈"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+    <a href="/goods/team/list?team=SSG 랜더스"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+    <a href="/goods/team/list?team=NC 다이노스"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+    <a href="/goods/team/list?team=두산 베어스"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+    <a href="/goods/team/list?team=KIA 타이거즈"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+    <a href="/goods/team/list?team=롯데 자이언츠"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+    <a href="/goods/team/list?team=삼성 라이온즈"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+    <a href="/goods/team/list?team=한화 이글스"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+    <a href="/goods/team/list?team=키움 히어로즈"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
   </div>
-</div>
 
-<a href="/goods/list" class="btn">목록</a>
+<main class="main-container">
+  <!-- 상품 이미지와 상세 정보가 나란히 배치된 섹션 -->
+  <div class="container">
+    <!-- 이미지 섹션 -->
+    <div class="image-container">
+      <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />
+    </div>
 
-<!-- 찜하기 버튼 -->
-<button id="wishlistButton"
-        class="btn wishlist-button"
-        th:classappend="${isWishlisted} ? ' active' : ''"
-        th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">
-  <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
-</button>
+    <!-- 상품 정보 섹션 -->
+    <div class="details-container">
+      <h1 th:text="${'[' + goods.goodsTeam + '] ' + goods.goodsProductName }"></h1>
+<!--      <p class="price" th:text="'₩ ' + ${goods.goodsPrice}"></p>-->
 
-<button class="btn">결제</button>
+      <!-- 상품 세부 정보 -->
+      <div class="product-info">
+        <div class="product-info-row">
+          <span class="label">가격:</span>
+          <span class="value" th:text="${goods.goodsPrice}"></span>
+        </div>
+        <div class="product-info-row">
+          <span class="label">팀:</span>
+          <span class="value" th:text="${goods.goodsTeam}"></span>
+        </div>
+        <div class="product-info-row">
+          <span class="label">상품 코드:</span>
+          <span class="value" th:text="${goods.goodsProductCode}"></span>
+        </div>
+        <div class="product-info-row">
+          <span class="label">제조일:</span>
+          <span class="value" th:text="${goods.goodsMakeDate}"></span>
+        </div>
+        <div class="product-info-row">
+          <span class="label">출시일:</span>
+          <span class="value" th:text="${goods.goodsOutDate}"></span>
+        </div>
+        <div class="product-info-row">
+          <span class="label">카테고리:</span>
+          <span class="value" th:text="${goods.goodsCategory}"></span>
+        </div>
+      </div>
+
+      <!-- 구매 및 찜하기 버튼 -->
+      <div class="purchase-options">
+        <div class="btn-group">
+          <button id="wishlistButton"
+                  class="wishlist-button btn"
+                  th:classappend="${isWishlisted} ? ' active' : ''"
+                  th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">
+            <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
+          </button>
+          <button class="btn btn-buy-now">바로 구매</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 상품 상세 및 배송 안내 탭 섹션 -->
+  <div class="main-container">
+    <div class="tab-menu">
+      <button class="tab-link active" onclick="openTab(event, 'productDetail')">상품 상세 정보</button>
+      <button class="tab-link" onclick="openTab(event, 'shippingInfo')">배송 안내</button>
+    </div>
+
+    <!-- 상품 상세 정보 섹션 -->
+    <div id="productDetail" class="tab-content active">
+      <div class="product-detail-info">
+        <h2>상품 상세 정보</h2>
+        <p>
+          - 마킹, 자수 포함된 유니폼 주문 제작 상품으로 결제 완료 후 주문 상태가
+          <strong>상품 준비 중, 배송 중</strong> 상태로 변경된 건은 교환, 환불 불가능하니 신중히 구매해 주시기 바랍니다.<br>
+          - 이외 상품들도 주문 상태가 <strong>상품 준비 중, 배송 중</strong> 상태로 변경된 경우 출고 처리 진행 중으로 교환, 환불 신청 시 즉시 처리가 불가능하며 배송이 진행될 수 있습니다.<br>
+          - 단시간 내 동일 상태로 교환 및 재배송 요청이 가능한 상품만 배송됩니다.<br>
+        </p>
+
+        <!-- 상세 이미지 표시 (세로 정렬 및 크기 600x600) -->
+        <div class="detail-images" th:if="${detailImages != null}">
+          <div th:each="image : ${detailImages}">
+            <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 배송 안내 섹션 -->
+    <div id="shippingInfo" class="tab-content">
+      <div class="shipping-info">
+        <h2>배송 안내</h2>
+        <p>
+          - 배송비는 기본 3,000원이며, 상품 구매 금액에 따라 차등 적용됩니다.<br>
+          - 배송 기간은 결제 완료 후 2~5일 정도 소요됩니다. 다만, 지역에 따라 차이가 있을 수 있습니다.<br>
+          - 택배사의 사정에 따라 배송 지연이 발생할 수 있습니다.
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer-page">
+  <div class="footer-content">
+    <div class="logo">
+      <img src="/img/고매치로고.png" alt="GoMatch 로고">
+    </div>
+    <div class="footer-text">
+      <p>게인정보 처리방침</p>
+      <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+      <p>Copyright © GoMatch</p>
+    </div>
+  </div>
+</footer>
 
 <script>
   function toggleWishlist(goodsNo) {
-    console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그
+    console.log('goodsNo:', goodsNo);
 
     if (typeof goodsNo === 'undefined' || goodsNo === null) {
-      console.error('Invalid goodsNo'); // 오류 로그
-      return; // 잘못된 goodsNo가 전달되면 함수 종료
+      console.error('Invalid goodsNo');
+      return;
     }
 
     fetch('/wishlist/toggle?goodsNo=' + goodsNo, {
@@ -76,7 +168,6 @@
     })
             .then(response => {
               if (response.status === 401) {
-                // 로그인 페이지로 리디렉션
                 window.location.href = '/member/loginpage';
               } else if (response.ok) {
                 const button = document.getElementById('wishlistButton');
@@ -88,9 +179,119 @@
             })
             .catch(error => console.error('Error:', error));
   }
+
+  function openTab(evt, tabName) {
+    var i, tabContent, tabLinks;
+    tabContent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabContent.length; i++) {
+      tabContent[i].style.display = "none";
+    }
+    tabLinks = document.getElementsByClassName("tab-link");
+    for (i = 0; i < tabLinks.length; i++) {
+      tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
 </script>
+
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <title>상품 상세 조회</title>-->
+<!--  <style>-->
+<!--    .btn {-->
+<!--      cursor: pointer;-->
+<!--      font-size: 18px;-->
+<!--      padding: 10px 20px;-->
+<!--      background-color: gray;-->
+<!--      color: white;-->
+<!--      border: none;-->
+<!--      border-radius: 5px;-->
+<!--      margin-right: 10px;-->
+<!--    }-->
+
+<!--    .wishlist-button.active {-->
+<!--      background-color: red; /* 찜하기 버튼 활성화 색상 */-->
+<!--    }-->
+
+<!--    .image-container img {-->
+<!--      width: 200px;-->
+<!--      height: 200px;-->
+<!--      margin: 10px;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1 th:text="${' [' + goods.goodsTeam + '] ' + goods.goodsProductName }"></h1> &lt;!&ndash; 나머지도 이 양식으로 &ndash;&gt;-->
+<!--<p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>-->
+<!--<p>팀: <span th:text="${goods.goodsTeam}"></span></p>-->
+<!--<p>가격: <span th:text="${goods.goodsPrice}"></span></p>-->
+<!--<p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>-->
+<!--<p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>-->
+<!--<p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>-->
+<!--<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p>-->
+
+<!--&lt;!&ndash; 대표 이미지 표시 &ndash;&gt;-->
+<!--<h2>대표 이미지</h2>-->
+<!--<div class="image-container" th:if="${representativeImage != null}">-->
+<!--  <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />-->
+<!--</div>-->
+
+<!--&lt;!&ndash; 상세 이미지 표시 &ndash;&gt;-->
+<!--<h2>상세 이미지</h2>-->
+<!--<div class="image-container" th:if="${detailImages != null}">-->
+<!--  <div th:each="image : ${detailImages}">-->
+<!--    <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<a href="/goods/list" class="btn">목록</a>-->
+
+<!--&lt;!&ndash; 찜하기 버튼 &ndash;&gt;-->
+<!--<button id="wishlistButton"-->
+<!--        class="btn wishlist-button"-->
+<!--        th:classappend="${isWishlisted} ? ' active' : ''"-->
+<!--        th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">-->
+<!--  <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>-->
+<!--</button>-->
+
+<!--<button class="btn">결제</button>-->
+
+<!--<script>-->
+<!--  function toggleWishlist(goodsNo) {-->
+<!--    console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그-->
+
+<!--    if (typeof goodsNo === 'undefined' || goodsNo === null) {-->
+<!--      console.error('Invalid goodsNo'); // 오류 로그-->
+<!--      return; // 잘못된 goodsNo가 전달되면 함수 종료-->
+<!--    }-->
+
+<!--    fetch('/wishlist/toggle?goodsNo=' + goodsNo, {-->
+<!--      method: 'POST',-->
+<!--      credentials: 'include' // 쿠키와 인증정보 포함-->
+<!--    })-->
+<!--            .then(response => {-->
+<!--              if (response.status === 401) {-->
+<!--                // 로그인 페이지로 리디렉션-->
+<!--                window.location.href = '/member/loginpage';-->
+<!--              } else if (response.ok) {-->
+<!--                const button = document.getElementById('wishlistButton');-->
+<!--                button.classList.toggle('active');-->
+<!--                button.innerText = button.classList.contains('active') ? '찜하기 취소' : '찜하기';-->
+<!--              } else {-->
+<!--                console.error('Error:', response.statusText);-->
+<!--              }-->
+<!--            })-->
+<!--            .catch(error => console.error('Error:', error));-->
+<!--  }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
 
 
 

@@ -2,34 +2,138 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>구단 상품 목록</title>
+    <link rel="stylesheet" href="/css/goods/teamlist.css">
+    <link rel="stylesheet" href="/css/goods/standard.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h1>구단 상품 목록</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>상품 번호</th>
-        <th>팀</th>
-        <th>상품 이름</th>
-        <th>가격</th>
-        <th>이미지</th>
-        <th>상세 보기</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="goods : ${goodsList}">
-        <td th:text="${goods.goodsNo}"></td>
-        <td th:text="${goods.goodsTeam}"></td>
-        <td th:text="${goods.goodsProductName}"></td>
-        <td th:text="${goods.goodsPrice}"></td>
-        <td>
-            <!-- 대표 이미지가 있을 경우 표시, 없으면 대체 텍스트 -->
-            <img th:if="${goods.goodsImageWebPath != null}" th:src="@{${goods.goodsImageWebPath}}" alt="대표 이미지" style="width: 100px; height: 100px;">
-            <span th:if="${goods.goodsImageWebPath == null}">이미지 없음</span>
-        </td>
-        <td><a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>
-    </tr>
-    </tbody>
-</table>
+
+<!-- 헤더 부분 -->
+<header>
+    <nav>
+        <div class="logo">
+            <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">일정/결과</a></li>
+            <li><a href="#">굿즈</a></li>
+            <li><a href="#">소모임</a></li>
+            <li><a href="#">승부예측</a></li>
+        </ul>
+        <ul class="memeber-links">
+            <li><a href="loginpage">로그인</a></li>
+            <li><a href="joinmember">회원가입</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="team-logos">
+    <div class="team-logos-container">
+        <!-- 각 팀별로 GET 파라미터로 팀 이름을 전달 -->
+        <a href="/goods/team/list?team=LG"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="/goods/team/list?team=KT 위즈"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="/goods/team/list?team=SSG 랜더스"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="/goods/team/list?team=NC 다이노스"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="/goods/team/list?team=두산 베어스"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="/goods/team/list?team=KIA 타이거즈"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="/goods/team/list?team=롯데 자이언츠"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="/goods/team/list?team=삼성 라이온즈"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="/goods/team/list?team=한화 이글스"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="/goods/team/list?team=키움 히어로즈"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+    </div>
+
+    <div class="main-container">
+        <!-- 구단 이름 섹션 -->
+        <div class="team-name-container">
+            <h1 class="team-name" id="teamName">구단을 선택해주세요</h1>
+        </div>
+
+        <!-- 구단 배너 -->
+        <div class="team-banner-container">
+            <img id="teamBanner" src="/img/default_banner.jpg" alt="Team Banner" class="banner-image">
+        </div>
+
+        <!-- 카테고리 필터 -->
+        <div class="category-container">
+            <form id="categoryForm" method="get" action="/goods/team/category/list">
+                <input type="hidden" name="team" id="teamInput" value=""> <!-- 팀 정보 전달 -->
+
+                <button type="submit" name="category" value="유니폼">유니폼</button>
+                <button type="submit" name="category" value="모자">모자</button>
+                <button type="submit" name="category" value="의류">의류</button>
+                <button type="submit" name="category" value="잡화">잡화</button>
+                <button type="submit" name="category" value="응원용품">응원용품</button>
+                <button type="submit" name="category" value="야구용품">야구용품</button>
+            </form>
+        </div>
+
+        <!-- 구단 상품 목록 -->
+        <div class="goods-list">
+            <div class="goods-item" th:each="goods : ${goodsList}">
+                <a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">
+                    <img class="goods-image"
+                         th:src="@{${goods.goodsImageWebPath}}"
+                         alt="대표 이미지">
+                </a>
+                <div class="goods-info">
+                    <p class="goods-name">
+                        <span th:text="'[' + ${goods.goodsTeam} + '] ' + ${goods.goodsProductName}"></span>
+                    </p>
+                    <p class="goods-price" th:text="${goods.goodsPrice} + '원'"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="footer-page">
+    <div class="footer-content">
+        <div class="logo">
+            <img src="/img/고매치로고.png" alt="GoMatch 로고">
+        </div>
+        <div class="footer-text">
+            <p>게인정보 처리방침</p>
+            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+            <p>Copyright © GoMatch</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function getParameterByName(name) {
+        let url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    let team = getParameterByName('team');
+    let teamName = document.getElementById('teamName');
+    let teamBanner = document.getElementById('teamBanner');
+    let teamInput = document.getElementById('teamInput');
+
+    const teamBannerImages = {
+        "LG": "/img/banner/LG.jpg",
+        "KT 위즈": "/img/banner/KT.jpg",
+        "SSG 랜더스": "/img/banner/SSG.jpg",
+        "NC 다이노스": "/img/banner/NC.jpg",
+        "두산 베어스": "/img/banner/DS.jpg",
+        "KIA 타이거즈": "/img/banner/KIA.jpg",
+        "롯데 자이언츠": "/img/banner/LOTTE.jpg",
+        "삼성 라이온즈": "/img/banner/SS.jpg",
+        "한화 이글스": "/img/banner/HW.jpg",
+        "키움 히어로즈": "/img/banner/KW.jpg"
+    };
+
+    if (team && teamBannerImages[team]) {
+        teamName.textContent = team;
+        teamBanner.src = teamBannerImages[team];
+        teamInput.value = team;
+    }
+</script>
+
 </body>
 </html>

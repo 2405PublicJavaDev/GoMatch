@@ -102,7 +102,7 @@ public class AdminController1 {
         }
 
         model.addAttribute("message", "상품과 이미지가 성공적으로 등록되었습니다.");
-        return "redirect:/admin1/list";
+        return "redirect:/admin1/insert"; // 노가다를 위해 list에서 insert로 변경 해놓음
     }
 
     @GetMapping("/list")

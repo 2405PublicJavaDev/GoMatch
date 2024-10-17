@@ -49,6 +49,7 @@
     <select id="goodsCategory" name="goodsCategory" th:value="${goods.goodsCategory}" required>
         <option value="" disabled>카테고리 선택</option>
         <option value="유니폼" th:selected="${goods.goodsCategory == '유니폼'}">유니폼</option>
+        <option value="유니폼" th:selected="${goods.goodsCategory == '의류'}">의류</option>
         <option value="모자" th:selected="${goods.goodsCategory == '모자'}">모자</option>
         <option value="잡화" th:selected="${goods.goodsCategory == '잡화'}">잡화</option>
         <option value="응원용품" th:selected="${goods.goodsCategory == '응원용품'}">응원용품</option>

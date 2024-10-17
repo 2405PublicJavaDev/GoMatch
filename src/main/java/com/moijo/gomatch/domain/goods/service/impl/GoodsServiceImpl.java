@@ -27,14 +27,19 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsMapper.selectGoodsById(goodsNo); // 상품 ID로 조회
     }
 
-    @Override
-    public List<GoodsVO> getGoodsByCategory(String category) {
-        return goodsMapper.selectGoodsByCategory(category); // 카테고리로 상품 조회
-    }
+//    @Override
+//    public List<GoodsVO> getGoodsByCategory(String category) {
+//        return goodsMapper.selectGoodsByCategory(category); // 카테고리로 상품 조회
+//    }
 
     @Override
     public List<GoodsVO> getGoodsByTeam(String team) {
         return goodsMapper.selectGoodsByTeam(team); // 팀으로 상품 조회
+    }
+
+    @Override
+    public List<GoodsVO> getGoodsByTeamAndCategory(String team, String category) {
+        return goodsMapper.selectGoodsByTeamAndCategory(team, category);  // 쿼리 호출
     }
 
     @Override
@@ -57,13 +62,25 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsMapper.selectRepresentativeImage(goodsNo);
     }
 
-    public List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo) {
-        return goodsMapper.selectGoodsImagesByGoodsNo(goodsNo);
-    }
+//    @Override
+//    public List<GoodsImageVO> getGoodsImagesByGoodsNo(Long goodsNo) {
+//        return goodsMapper.selectGoodsImagesByGoodsNo(goodsNo);
+//    }
 
     @Override
     public List<GoodsImageVO> getDetailImagesByGoodsNo(Long goodsNo) {
         return goodsMapper.selectDetailImagesByGoodsNo(goodsNo);
     }
+
+    @Override
+    public List<GoodsVO> getGoodsByWishlistCount() {
+        return goodsMapper.selectGoodsByWishlistCount();
+    }
+
+    @Override
+    public List<GoodsVO> getNewGoods() {
+        return goodsMapper.selectNewGoods();
+    }
+
 
 }
