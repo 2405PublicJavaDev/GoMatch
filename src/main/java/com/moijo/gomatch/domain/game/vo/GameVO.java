@@ -2,6 +2,7 @@ package com.moijo.gomatch.domain.game.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,6 +11,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @Slf4j
+@NoArgsConstructor
 @AllArgsConstructor
 public class GameVO {
     private int gameNo;
@@ -23,7 +25,7 @@ public class GameVO {
     private String gameResult;
     private int scoreA;
     private int scoreB;
-    private String gameStatus;
+    private String gameStatus;  // 경기비고
 
     public GameVO(Date sqlDate, String gameTime, String homeTeamName, String awayTeamName, String gameLocation, int homeScore, int awayScore) {
         this.gameDate = sqlDate;
@@ -38,16 +40,20 @@ public class GameVO {
     @Override
     public String toString() {
         return "GameVO{" +
-                "date='" + gameDate + '\'' +
-                ", time='" + gameTime + '\'' +
-                ", homeTeam='" + teamA + '\'' +
-                ", awayTeam='" + teamB + '\'' +
-                ", location='" + gameField + '\'' +
-                ", homeScore=" + scoreA +
-                ", awayScore=" + scoreB +
+                "gameNo=" + gameNo +
+                ", gameDate=" + gameDate +
+                ", gameTime='" + gameTime + '\'' +
+                ", teamA='" + teamA + '\'' +
+                ", teamB='" + teamB + '\'' +
+                ", regDate='" + regDate + '\'' +
+                ", gameField='" + gameField + '\'' +
+                ", memberId='" + memberId + '\'' +
+                ", gameResult='" + gameResult + '\'' +
+                ", scoreA=" + scoreA +
+                ", scoreB=" + scoreB +
+                ", gameStatus='" + gameStatus + '\'' +
                 '}';
     }
-
 
     // MyBatis에서 자동으로 매핑할 수 있는 생성자 추가(윤경)
     public GameVO(int gameNo, String gameDate, String gameTime, String teamA, String teamB, String gameField) {

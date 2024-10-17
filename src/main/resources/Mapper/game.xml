@@ -6,7 +6,7 @@
         VALUES (SEQ_GAME_NO.NEXTVAL, #{gameDate}, #{gameTime}, #{teamA}, #{teamB}, DEFAULT, #{gameField}, #{scoreA}, #{scoreB}, #{gameStatus})
     </insert>
     <update id="updateGame">
-        UPDATE GAME SET SCORE_A = #{scoreA}, SCORE_B = #{scoreB}
+        UPDATE GAME SET SCORE_A = #{scoreA}, SCORE_B = #{scoreB}, GAME_STATUS = #{gameStatus}
         WHERE GAME_DATE = #{gameDate}
     </update>
 

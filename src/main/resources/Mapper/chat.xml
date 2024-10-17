@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moijo.gomatch.domain.chatting.mapper.ChatMapper">
+
+    <!-- Chat 데이터 삽입 -->
+    <insert id="insertChat" parameterType="com.moijo.gomatch.domain.chatting.vo.Chat">
+        INSERT INTO chat (chat_id, room_id, sender, sender_email, chat_message, send_date)
+        VALUES (
+                   SEQ_CHAT_NO.NEXTVAL,  -- 시퀀스 사용
+                   #{room.id},
+                   #{sender},
+                   #{senderEmail},
+                   #{message},
+                   CURRENT_TIMESTAMP  -- SYSDATE 또는 TIMESTAMP 사용
+               )
+    </insert>
+
+    <!-- 특정 채팅방의 채팅 목록 조회 -->
+    <select id="getChatsByRoomId" resultType="com.moijo.gomatch.domain.chatting.vo.Chat">
+        SELECT
+            c.chat_id AS id,
+            c.room_id AS room_id,
+            c.sender AS sender,
+            c.sender_email AS senderEmail,
+            c.chat_message AS message,
+            c.send_date AS sendDate
+        FROM chat c
+        WHERE c.room_id = #{roomId}
+        ORDER BY c.send_date ASC
+    </select>
+
+</mapper>
