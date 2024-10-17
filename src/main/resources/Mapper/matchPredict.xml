@@ -19,23 +19,27 @@
     </select>
 
     <select id="selectPredictByDate" resultType="MatchPredict">
-        SELECT
-            G.GAME_NO,
-            P.MATCH_PREDICT_NO,
-            P.MATCH_PREDICT_DECISION,
-            G.TEAM_A,
-            G.TEAM_B,
-            G.GAME_TIME,
-            P.MATCH_PREDICT_STATUS,
-            G.GAME_DATE,
-            G.REG_DATE
-        FROM
-            GAME G
-                JOIN
-            MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
-        WHERE
-            G.GAME_DATE = #{gameDate}
+        SELECT * FROM (
+                          SELECT
+                              G.GAME_NO,
+                              P.MATCH_PREDICT_NO,
+                              P.MATCH_PREDICT_DECISION,
+                              G.TEAM_A,
+                              G.TEAM_B,
+                              G.GAME_TIME,
+                              P.MATCH_PREDICT_STATUS,
+                              G.GAME_DATE,
+                              G.REG_DATE,
+                              ROW_NUMBER() OVER (PARTITION BY G.GAME_NO ORDER BY P.MATCH_PREDICT_NO DESC) AS rn
+                          FROM
+                              GAME G
+                                  JOIN MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
+                          WHERE
+                              G.GAME_DATE = #{gameDate}
+                      )
+        WHERE rn = 1
     </select>
+
 
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
         SELECT U.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION

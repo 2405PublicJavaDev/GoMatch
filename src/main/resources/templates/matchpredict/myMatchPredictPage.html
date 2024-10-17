@@ -32,13 +32,17 @@
 
     </div>
     <ul class="game-list">
+      <li th:if="${matchPredictions.size() == 0}" class="no-predictions">
+        <h1>등록된 예측이 없습니다.</h1>
+      </li>
       <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
                     GoMatch
                 </span>
         <div class="upcoming-games">
-          <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
+          <span th:text="${predict.gameTime}" class="time"></span>
+          <span>후 경기 예정</span>
           <span class="time-out">후 종료</span>
         </div>
         <form name="modify-form" action="/modifyPredict" method="post">
