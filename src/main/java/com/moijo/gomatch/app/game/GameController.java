@@ -47,7 +47,7 @@ public class GameController {
         String year = "2024";
         String dateParam = year + month;
         // 크롤링 한 데이터로부터 gameList 리스트 생성
-        List<GameVO> gameList = gameBatchComponent.scrapeSchedule(month);
+        List<GameVO> gameList = gameBatchComponent.scrapeSchedule(dateParam);
         model.addAttribute("games", gameList);  // gameList를 games라는 이름으로 페이지에 저장
         model.addAttribute("selectedMonth", month);
         //model.addAttribute("memberId", memberId);

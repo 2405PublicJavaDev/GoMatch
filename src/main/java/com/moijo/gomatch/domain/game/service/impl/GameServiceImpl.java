@@ -55,7 +55,7 @@ public class GameServiceImpl implements GameService {
             Date currentDate = Date.valueOf(LocalDate.now()); // 현재날짜
             if ((game.getGameDate()).before(currentDate)){
                 // 경기날짜가 현재날짜보다 전이면 성적 업데이트
-                int result = gameMapper.updateGame(game.getGameDate(), game.getScoreA(), game.getScoreB());
+                int result = gameMapper.updateGame(game.getGameDate(), game.getScoreA(), game.getScoreB(), game.getGameStatus());
             } else {
                 Integer existGameNo = gameMapper.findGameByDateAndTeams(game.getGameDate(), game.getTeamA(), game.getTeamB());
                 System.out.println("조회된 경기 번호: " + existGameNo);

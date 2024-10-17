@@ -18,6 +18,7 @@ public class StadiumVO {
     private String stadiumName;
     private double latitude;    // 위도
     private double longitude;   // 경도
-    private String stadiumAddress;
+    private String stadiumAddress; // 주소
+    private String sidoName; // 시도명
 
 }
