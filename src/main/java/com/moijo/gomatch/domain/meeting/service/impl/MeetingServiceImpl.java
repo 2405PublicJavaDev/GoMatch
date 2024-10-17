@@ -76,7 +76,7 @@ public class MeetingServiceImpl implements MeetingService {
         meetingMapper.deleteMeeting(meetingNo);
     }
     @Override
-    public void updateMeeting(MeetingVO meetingVO) {
+    public void modifyMeeting(MeetingVO meetingVO) {
         meetingMapper.updateMeeting(meetingVO);
     }
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{header-footer :: head}"></head>
-<body>
+<body th:attr="data-logged-in=${loggedIn}">
 <!-- 헤더 fragment 포함 -->
 <div th:insert="~{header-footer :: header}"></div>
 <!-- 메인 css -->
@@ -113,7 +113,9 @@
     </div>
 
     <hr>
-    <h3>🙌함께해요🙌</h3>
+    <h3>🙌함께해요🙌
+      <button type="button" class="button-chatting" th:if="${isAttending}" onclick="window.location.href='/meeting/url'">채팅하기</button>
+    </h3>
     <div class="participant-list" th:if="${meetingAttendee.size() > 0}">
       <div class="participant" th:each="attendee : ${meetingAttendee}">
         <img th:src="${attendee.memberId == meeting.memberId ? '/img/host.png' : '/img/bat.png'}" alt="아이콘" class="icon">
@@ -134,6 +136,9 @@
   var gameNo = /*[[${meeting.gameNo}]]*/ '';  // 서버에서 전달된 gameNo
   var meetingNo = /*[[${meeting.meetingNo}]]*/ '';  // 서버에서 전달된 meetingNo
   var loggedIn =true; // 서버에서 로그인 여부를 전달
+  var isAttending = /*[[${isAttending}]]*/ false;
+
+
 </script>
 <script src="/js/meeting/meeting-detail.js"></script>
 
