@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // Thymeleaf 스타터 추가
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -42,7 +43,7 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.json:json:20240303'
-
+    implementation 'org.commonmark:commonmark:0.18.2' // 마크다운 -> html 의존성 추가 (윤경)
 
     // PortOne SDK 추가
     implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
