@@ -1,11 +1,16 @@
-package com.moijo.gomatch.domain.goods.mapper;
-
-import com.moijo.gomatch.domain.goods.vo.PaymentRequestVO;
-import com.moijo.gomatch.domain.goods.vo.PaymentResponseVO;
-import org.apache.ibatis.annotations.Mapper;
-
-@Mapper
-public interface PaymentMapper {
-    void insertPayment(PaymentRequestVO paymentRequestVO);
-    PaymentResponseVO getPaymentById(String impUid); // 필요에 따라 구현 및 사용 검토
-}
+//package com.moijo.gomatch.domain.goods.mapper;
+//
+//import java.util.Map;
+//
+//@Mapper
+//public interface PaymentMapper {
+//
+//    List<ReservationDTO> searchPayment(ReservationDTO rDto);
+//
+//    void insertPaymentInfo(Map<String, Object> buyerInfo);
+//
+//    String selectImpUid(String reservationNo);
+//
+//    void deletePaymentInfo(String impUid);
+//}
+//

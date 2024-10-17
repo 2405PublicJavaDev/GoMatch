@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.json:json:20240303'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     //Webflux
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.projectreactor.netty:reactor-netty'
@@ -56,8 +57,19 @@ dependencies {
 >>>>>>> 8309dde96dea0e20bbe2ff5f012d0c9e607b4996
     // PortOne SDK 추가
     implementation 'io.portone:portone-java:0.0.1-RC03' // PortOne SDK 의존성 추가
+=======
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.23' // 이니시스 결제
+>>>>>>> e9acda41e70900069b33c31fc8e92d686374af73
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// 이니시스 결제
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+

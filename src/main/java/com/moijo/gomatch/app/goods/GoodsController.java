@@ -1,5 +1,6 @@
 package com.moijo.gomatch.app.goods;
 
+import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.service.GoodsService;
 import com.moijo.gomatch.domain.goods.service.WishlistService;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
@@ -25,38 +26,133 @@ public class GoodsController {
         this.wishlistService = wishlistService;
     }
 
-    @GetMapping("/list")
+    @GetMapping("/main")
     public String getGoodsList(Model model) {
-        List<GoodsVO> goodsList = goodsService.getAllGoods(); // 서비스 메소드를 호출하여 상품 목록을 가져옴
-        model.addAttribute("goodsList", goodsList); // 모델에 추가
-        return "goods/list"; // Thymeleaf 템플릿 경로 반환
+        // 찜하기 많은 순 상품 목록 (최대 10개)
+        List<GoodsVO> popularGoods = goodsService.getGoodsByWishlistCount();
+        for (GoodsVO goods : popularGoods) {
+            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
+            if (representativeImage != null) {
+                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
+            }
+        }
+        // 상위 10개만 남기기
+        if (popularGoods.size() > 10) {
+            popularGoods = popularGoods.subList(0, 10);
+        }
+
+        // 최신 등록 상품 목록 (최대 10개)
+        List<GoodsVO> newGoods = goodsService.getNewGoods();
+        for (GoodsVO goods : newGoods) {
+            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
+            if (representativeImage != null) {
+                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
+            }
+        }
+        // 상위 10개만 남기기
+        if (newGoods.size() > 10) {
+            newGoods = newGoods.subList(0, 10);
+        }
+
+        model.addAttribute("popularGoods", popularGoods);  // 찜하기 많은 순 목록 전달
+        model.addAttribute("newGoods", newGoods);          // 최신 등록 목록 전달
+
+        return "goods/main";  // 하나의 HTML 페이지에서 두 목록 출력
     }
 
-    @GetMapping("/category/list")
-    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
-        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category);
+
+
+//    @GetMapping("/list")
+//    public String getGoodsList(Model model) {
+//        List<GoodsVO> goodsList = goodsService.getAllGoods();
+//
+//        // 각 상품의 대표 이미지를 가져와서 설정
+//        for (GoodsVO goods : goodsList) {
+//            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
+//            if (representativeImage != null) {
+//                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
+//            }
+//        }
+//
+//        model.addAttribute("goodsList", goodsList);
+//        return "goods/list";
+//    }
+
+
+
+    @GetMapping("/team/list")
+    public String getGoodsListByTeam(@RequestParam("team") String team, Model model) {
+        List<GoodsVO> goodsList = goodsService.getGoodsByTeam(team);
         model.addAttribute("goodsList", goodsList);
-        return "goods/categorylist";
+        return "goods/teamlist";
     }
+
+    // 팀별 + 카테고리별 상품 조회
+    @GetMapping("/team/category/list")
+    public String getGoodsByTeamAndCategory(
+            @RequestParam("team") String team,
+            @RequestParam("category") String category,
+            Model model) {
+        List<GoodsVO> goodsList = goodsService.getGoodsByTeamAndCategory(team, category);
+        model.addAttribute("team", team);  // 팀 이름 전달
+        model.addAttribute("category", category);  // 카테고리 전달
+        model.addAttribute("goodsList", goodsList);
+        return "goods/teamlist";
+    }
+
+//    @GetMapping("/category/list")
+//    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
+//        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category);
+//        model.addAttribute("goodsList", goodsList);
+//        return "goods/categorylist";
+//    }
 
     @GetMapping("/detail/{goodsNo}")
     public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
         GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
         model.addAttribute("goods", goods);
 
+        // 대표 이미지 조회
+        GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goodsNo);
+        model.addAttribute("representativeImage", representativeImage);
+
+        // 상세 이미지 조회
+        List<GoodsImageVO> detailImages = goodsService.getDetailImagesByGoodsNo(goodsNo);
+        model.addAttribute("detailImages", detailImages);
+
         // 로그인한 사용자 정보 가져오기
-        MemberVO member = (MemberVO) session.getAttribute("loginUser"); // 세션에서 로그인 정보 가져오기
+        MemberVO member = (MemberVO) session.getAttribute("member");
 
         if (member != null) {
             // 찜하기 상태 체크
             boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
-            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+            model.addAttribute("isWishlisted", isWishlisted);
         } else {
-            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
+            model.addAttribute("isWishlisted", false);
         }
 
-        return "goods/detail"; // 상품 세부 정보 뷰 반환
+        return "goods/detail";
     }
+
+
+//    @GetMapping("/detail/{goodsNo}")
+//    public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
+//        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
+//        model.addAttribute("goods", goods);
+//
+//        // 로그인한 사용자 정보 가져오기
+//        MemberVO member = (MemberVO) session.getAttribute("member"); // 세션에서 로그인 정보 가져오기
+//
+//        if (member != null) {
+//            // 찜하기 상태 체크
+//            boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
+//            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
+//        } else {
+//            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
+//        }
+//
+//        return "goods/detail"; // 상품 세부 정보 뷰 반환
+//    }
 
     @GetMapping("/search")
     public String searchGoods(@RequestParam("searchValue") String searchValue,
@@ -64,6 +160,7 @@ public class GoodsController {
                               Model model) {
         List<GoodsVO> goodsList;
 
+        // 검색 유형에 따라 상품 조회
         if ("all".equals(searchType)) {
             goodsList = goodsService.searchAllGoods(searchValue);
         } else if ("name".equals(searchType)) {
@@ -72,7 +169,34 @@ public class GoodsController {
             goodsList = goodsService.searchGoodsByCode(searchValue);
         }
 
+        // 각 상품의 대표 이미지 설정
+        for (GoodsVO goods : goodsList) {
+            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
+            if (representativeImage != null) {
+                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
+            }
+        }
+
         model.addAttribute("goodsList", goodsList);
-        return "goods/list"; // 검색 후 상품 목록으로 이동
+        return "goods/search"; // 검색 결과 페이지로 이동
     }
+
+
+//    @GetMapping("/search")
+//    public String searchGoods(@RequestParam("searchValue") String searchValue,
+//                              @RequestParam("searchType") String searchType,
+//                              Model model) {
+//        List<GoodsVO> goodsList;
+//
+//        if ("all".equals(searchType)) {
+//            goodsList = goodsService.searchAllGoods(searchValue);
+//        } else if ("name".equals(searchType)) {
+//            goodsList = goodsService.searchGoodsByName(searchValue);
+//        } else {
+//            goodsList = goodsService.searchGoodsByCode(searchValue);
+//        }
+//
+//        model.addAttribute("goodsList", goodsList);
+//        return "goods/search"; // 검색 후 상품 목록으로 이동 이거 수정해야 함
+//    }
 }

@@ -3,17 +3,19 @@ package com.moijo.gomatch.domain.admin.vo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class GoodsImageVO {
-    private Long goodsImageNo; // 이미지 번호 (Primary Key)
-    private String goodsImageRepYn; // 대표 이미지 여부 ('Y' 또는 'N')
-    private String goodsImageRealPath; // 실제 파일 경로
-    private String goodsImageWebPath; // 웹에서 접근 가능한 경로
-    private Integer goodsImageOrder; // 이미지 순서
-    private Long goodsNo; // 참조하는 상품 번호 (Foreign Key)
-    private LocalDateTime regDate; // 등록일
-    private LocalDateTime updateDate; // 수정일
+    private Long goodsImageNo;       // GOODS_IMAGE_NO
+    private String goodsImageType;   // GOODS_IMAGE_TYPE
+    private String goodsImageRepYn;  // GOODS_IMAGE_REP_YN
+    private String goodsImageRealPath; // GOODS_IMAGE_REAL_PATH
+    private String goodsImageWebPath;  // GOODS_IMAGE_WEB_PATH
+    private int goodsImageOrder;      // GOODS_IMAGE_ORDER
+    private Long goodsNo;              // GOODS_NO
+    private Timestamp regDate;        // REG_DATE
+    private Timestamp updateDate;     // UPDATE_DATE
 }

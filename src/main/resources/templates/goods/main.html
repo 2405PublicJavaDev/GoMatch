@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>상품 목록</title>
+  <link rel="stylesheet" href="/css/goods/main.css">
+  <link rel="stylesheet" href="/css/goods/standard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- 헤더 부분 -->
+<header>
+  <nav>
+    <div class="logo">
+      <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">일정/결과</a></li>
+      <li><a href="#">굿즈</a></li>
+      <li><a href="#">소모임</a></li>
+      <li><a href="#">승부예측</a></li>
+    </ul>
+    <ul class="memeber-links">
+      <li><a href="loginpage">로그인</a></li>
+      <li><a href="joinmember">회원가입</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="team-logos">
+  <div class="team-logos-container">
+    <!-- 각 팀별로 GET 파라미터로 팀 이름을 전달 -->
+    <a href="/goods/team/list?team=LG"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+    <a href="/goods/team/list?team=KT 위즈"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+    <a href="/goods/team/list?team=SSG 랜더스"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+    <a href="/goods/team/list?team=NC 다이노스"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+    <a href="/goods/team/list?team=두산 베어스"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+    <a href="/goods/team/list?team=KIA 타이거즈"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+    <a href="/goods/team/list?team=롯데 자이언츠"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+    <a href="/goods/team/list?team=삼성 라이온즈"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+    <a href="/goods/team/list?team=한화 이글스"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+    <a href="/goods/team/list?team=키움 히어로즈"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
+  </div>
+
+  <!-- 검색바 -->
+  <div class="search-bar-container">
+    <form action="/goods/search" method="get" class="search-bar">
+      <select name="searchType">
+        <option value="all" selected>전체</option>
+        <option value="name">상품 이름</option>
+        <option value="code">상품 코드</option>
+      </select>
+      <input type="text" name="searchValue" placeholder="검색어를 입력하세요">
+      <button type="submit">검색</button>
+    </form>
+  </div>
+
+  <div class="main-container">
+    <!-- New Items Section -->
+    <div class="section new-items">
+      <h2 class="section-title">- NEW ITEMS -</h2>
+      <div class="goods-list">
+        <div th:each="goods : ${newGoods}" class="goods-item">
+          <a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">
+            <img th:src="@{${goods.goodsImageWebPath}}" alt="상품 이미지" class="goods-image" />
+          </a>
+          <div class="goods-info">
+            <p class="goods-name" th:text="'[' + ${goods.goodsTeam} + '] ' + ${goods.goodsProductName}"></p>
+            <p class="goods-price" th:text="${goods.goodsPrice} + '원'"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Best Section -->
+    <div class="section weekly-best">
+      <h2 class="section-title">- WEEKLY BEST -</h2>
+      <div class="goods-list">
+        <div th:each="goods : ${popularGoods}" class="goods-item">
+          <a th:href="@{/goods/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">
+            <img th:src="@{${goods.goodsImageWebPath}}" alt="상품 이미지" class="goods-image" />
+          </a>
+          <div class="goods-info">
+            <p class="goods-name" th:text="'[' + ${goods.goodsTeam} + '] ' + ${goods.goodsProductName}"></p>
+            <p class="goods-price" th:text="${goods.goodsPrice} + '원'"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer-page">
+    <div class="footer-content">
+      <div class="logo">
+        <img src="/img/고매치로고.png" alt="GoMatch 로고">
+      </div>
+      <div class="footer-text">
+        <p>게인정보 처리방침</p>
+        <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
+        <p>Copyright © GoMatch</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+
+
+
