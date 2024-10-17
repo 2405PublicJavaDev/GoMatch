@@ -14,7 +14,6 @@
 .bottom-content h2 {
     font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 테마 폰트 적용 */
     margin-bottom: 20px;
-    font-size: 24px;
     color: #333;
 }
 /* 달력과 소모임 리스트를 나란히 배치 */
@@ -29,8 +28,7 @@
 .calendar-container h3,
 .meeting-list-container h3 {
     font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
-    font-size : 22px;
-    padding: 10px 0;
+    font-size : 20px;
     margin: 0;
     height: 35px !important; /* 높이를 고정 */
     display: flex;
@@ -42,14 +40,13 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* 그림자 통일 */
-    padding: 20px;
+    padding: 10px 20px;
 }
 /* ■■■■■■■■■■ 달력 섹션 ■■■■■■■■■■ */
 /* 달력 컨테이너 */
 .calendar-container {
     flex: 1;
     flex-direction: column;
-    padding: 20px;
     max-width: 45%;
 }
 
@@ -64,12 +61,11 @@
 #calendar {
     width: 100%;
     height: 100%;
-    max-height: 380px;
+    max-height: 390px;
 }
 
 .fc {
     overflow: hidden !important; /* FullCalendar에서 스크롤바가 생기지 않도록 추가 설정 */
-    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 테마 폰트 적용 */
 }
 /* 요일 헤더 글씨 굵기 조정 */
 .fc .fc-col-header-cell-cushion {
@@ -111,7 +107,7 @@
 }
 /* FullCalendar 날짜 셀 높이 조정 */
 .fc-daygrid-day-frame {
-    height: 44px !important; /* 원하는 높이로 설정 */
+    height: 43px !important; /* 원하는 높이로 설정 */
 }
 .fc-toolbar-title {
     font-size: 1.2em !important;
@@ -132,7 +128,7 @@
 
 /* 지난 날짜 스타일 */
 .fc-daygrid-day.past-date {
-    background-color: #9f9f9f !important; /* 연한 회색 배경 */
+    background-color: #d1d1d1 !important; /* 연한 회색 배경 */
     color: #ffffff; /* 텍스트 색상도 회색으로 */
 }
 
@@ -204,12 +200,15 @@
     width: 100px;
     height: auto;
     margin-right: 5px;
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
 }
 
 #meeting-list .item .item-image img {
     width: 100%;
     height: auto;
     border-radius: 5px;
+
 }
 
 #meeting-list .item .item-content {
@@ -221,8 +220,11 @@
     font-size: 16px;
     color: #00AEEF;
     font-weight: bold;
-    margin-bottom: 10px;
 }
+.meeting-title{
+  margin-bottom: 10px;
+}
+
 #meeting-list .meeting-game-info,
 #meeting-list .meeting-place,
 #meeting-list .meeting-max-people {
