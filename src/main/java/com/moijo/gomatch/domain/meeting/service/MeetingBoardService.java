@@ -42,5 +42,6 @@ public interface MeetingBoardService {
     }
     // 조회수 증가
     void increaseViewCount(long meetingBoardNo);
-
+    void modifyBoard(MeetingBoardVO meetingBoardVO);
+    void deleteBoardFiles(List<Long> fileDDeleteIds);
 }

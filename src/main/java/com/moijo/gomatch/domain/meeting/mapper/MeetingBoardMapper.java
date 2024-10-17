@@ -40,4 +40,6 @@ public interface MeetingBoardMapper {
     void deleteLike(@Param("meetingBoardNo") long meetingBoardNo, @Param("memberId") String memberId);
     void insertLike(@Param("meetingBoardNo") long meetingBoardNo, @Param("memberId") String memberId);
     void updateMeetingBoardViewCount(long meetingBoardNo); // 조회수 증가 메서드 추가
+    void updateBoard(MeetingBoardVO meetingBoardVO);
+    void deleteBoardFiles(@Param("fileDeleteIds") List<Long> fileDeleteIds);
 }
