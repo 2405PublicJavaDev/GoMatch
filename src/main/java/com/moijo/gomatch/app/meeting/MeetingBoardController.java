@@ -146,11 +146,7 @@ public class MeetingBoardController {
         return ResponseEntity.ok(boardList);
     }
 
-    /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [페이지 폼] 게시글 상세페이지
-     * 설명 : 게시글 정보, 조회수, 댓글, 좋아요 수
-     */
+    // 게시글 상세 조회 메서드 추가
     @GetMapping("/board/detail/{meetingBoardNo}")
     public String showBoardDetail(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session, Model model) {
         // 조회수 증가
@@ -194,66 +190,7 @@ public class MeetingBoardController {
 
         return "board/board-detail";
     }
-    /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [Modify] 게시글 수정하기
-     * 설명 : 게시글 수정 페이지 보여주기
-     */
-    @GetMapping("/board/modify/{meetingBoardNo}")
-    public String showModifyBoardPage(@PathVariable("meetingBoardNo") long meetingBoardNo
-            , HttpSession session, Model model ) {
-        String memberId = (String) session.getAttribute("memberId");
-        model.addAttribute("loggedIn", true);
-        String memberNickName = (String) session.getAttribute("memberNickName");
-        model.addAttribute("memberNickName", memberNickName);
-        if(memberId == null) {
-            return "common/oops";
-        }
-        MeetingBoardVO board = mBoardService.getBoardDetail(meetingBoardNo);
-        if(!memberId.equals(board.getMemberId())){
-            return "common/oops";
-        }
-        List<MeetingBoardFileVO> boardFiles = mBoardService.getMeetingBoardFiles(meetingBoardNo);
-        model.addAttribute("board", board);
-        model.addAttribute("boardFile", boardFiles);
-        return "board/board-modify";
-    }
-    /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [Modify] 게시글 수정하기
-     * 설명 : 게시글의 수정 기능
-     */
-    @PostMapping("/board/modify")
-    public String modifyBoard(MeetingBoardVO boardVO
-            , @RequestParam(value = "newFiles", required = false) List<MultipartFile> newFiles
-            , @RequestParam(value = "fileDeleteIds", required = false) List<Long> fileDeleteIds
-            , HttpSession session) throws IOException {
-        log.info("modifyMeeting 메서드 호출됨. 삭제할 파일 ID 목록: {}", fileDeleteIds);
-        String memberId = (String) session.getAttribute("memberId");
-            if(memberId == null) {
-                return "common/oops";
-            }
-            MeetingBoardVO existingBoard = mBoardService.getBoardDetail(boardVO.getMeetingBoardNo());
-            if(!memberId.equals(existingBoard.getMemberId())){
-                return "common/oops";
-            }
-            boardVO.setMemberId(memberId);
-            mBoardService.modifyBoard(boardVO);
-            // 삭제할 파일 확인
-            if(fileDeleteIds != null && !fileDeleteIds.isEmpty()){
-                log.info("삭제할 File ID 목록 : " +  fileDeleteIds);
-                mBoardService.deleteBoardFiles(fileDeleteIds);
-            }if(newFiles != null && !newFiles.isEmpty()){
-                boardFileUtil.uploadFiles(newFiles, boardVO.getMeetingBoardNo(), "board");
-        }
-        return "redirect:/board/detail/" + boardVO.getMeetingBoardNo();
-    }
 
-    /**
-     * 담당자 : 김윤경
-     * 관련 기능 : 게시글 삭제
-     * 설명 : 게시글의 삭제
-     */
     @PostMapping("/board/delete/{meetingBoardNo}")
     public String deleteBoard(@PathVariable("meetingBoardNo") long meetingBoardNo, HttpSession session) {
         String memberId = (String) session.getAttribute("memberId");

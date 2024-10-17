@@ -6,11 +6,10 @@ import com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class MeetingBoardServiceImpl implements MeetingBoardService {
@@ -101,19 +100,6 @@ public class MeetingBoardServiceImpl implements MeetingBoardService {
     @Override
     public void increaseViewCount(long meetingBoardNo) {
         meetingBoardMapper.updateMeetingBoardViewCount(meetingBoardNo);
-    }
-
-    @Override
-    public void modifyBoard(MeetingBoardVO meetingBoardVO) {
-        meetingBoardMapper.updateBoard(meetingBoardVO);
-    }
-
-    @Override
-    public void deleteBoardFiles(List<Long> fileDeleteIds) {
-        log.info("MeetingBoardServiceImpl - 삭제할 파일 ID 목록 : {}", fileDeleteIds);
-        if(fileDeleteIds != null && !!fileDeleteIds.isEmpty()) {
-            meetingBoardMapper.deleteBoardFiles(fileDeleteIds);
-        }
     }
 
 }

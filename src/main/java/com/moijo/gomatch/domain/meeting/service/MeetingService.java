@@ -33,7 +33,7 @@ public interface MeetingService {
     void cancelAttend(long meetingNo, String memberId);
     // 소모임 삭제
     void removeMeeting(long meetingNo);
-    void modifyMeeting(MeetingVO meetingVO);
+    void updateMeeting(MeetingVO meetingVO);
     void deleteMeetingFiles(List<Long> fileDeleteIds);
     List<String> getAllGameDates();
 }

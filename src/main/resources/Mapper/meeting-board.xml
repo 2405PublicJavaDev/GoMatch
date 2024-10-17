@@ -217,20 +217,4 @@
         WHERE MEETING_BOARD_NO = #{meetingBoardNo}
     </update>
 
-    <update id="updateBoard" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
-        UPDATE MEETING_BOARD
-        SET MEETING_BOARD_TITLE = #{meetingBoardTitle},
-            MEETING_BOARD_CONTENT = #{meetingBoardContent},
-            MEETING_BOARD_CATEGORY = #{meetingBoardCategory},
-            UPDATE_DATE = default
-        WHERE MEETING_BOARD_NO =#{meetingBoardNo}
-    </update>
-
-    <delete id="deleteBoardFiles">
-        DELETE FROM MEETING_FILE
-        WHERE MEETING_BOARD_FILE_NO IN
-        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
-            #{id, jdbcType=BIGINT}
-        </foreach>
-    </delete>
 </mapper>

@@ -208,15 +208,12 @@ public class MeetingController {
         }
 
         boolean isPastMeeting = meetingDate.isBefore(today);
-        boolean isAttending = meetingService.checkAlreadyAttended(meetingNo, memberId);
-
 
         model.addAttribute("meeting", meetingDetail);
         model.addAttribute("isPastMeeting", isPastMeeting);
         model.addAttribute("meetingFile", meetingFile);
         model.addAttribute("meetingAttendee", meetingAttendee);
         model.addAttribute("currentAttendeesCount", currentAttendeesCount);
-        model.addAttribute("isAttending", isAttending);
 
         return "meeting/meeting-detail";
     }
@@ -270,7 +267,7 @@ public class MeetingController {
             return "common/oops";
         }
         meetingVO.setMemberId(memberId);
-        meetingService.modifyMeeting(meetingVO);
+        meetingService.updateMeeting(meetingVO);
         // 삭제할 파일 확인
         if (fileDeleteIds != null && !fileDeleteIds.isEmpty()) {
             log.info("삭제할 파일 ID 목록: " + fileDeleteIds);
