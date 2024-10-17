@@ -72,26 +72,13 @@ public class MatchPredictController {
         return ResponseEntity.ok(predictions); // JSON으로 반환
     }
 
-//    @GetMapping("/rankingList/{startDate}/{endDate}")
-//    @ResponseBody
-//    public ResponseEntity<List<MemberRankDTO>> getAllRankingList(@PathVariable String startDate, @PathVariable String endDate) {
-//        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank(startDate,endDate);
-//        return ResponseEntity.ok(memberRank);
-//    }
+    @GetMapping("/rankingList/{startDate}/{endDate}")
+    @ResponseBody
+    public ResponseEntity<List<MemberRankDTO>> getAllRankingList(@PathVariable String startDate, @PathVariable String endDate) {
+        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRankUpdate(startDate,endDate);
+        return ResponseEntity.ok(memberRank);
+    }
 
-//    function fetchRankingList(startDate,endDate){
-//        fetch(`/rankingList/${startDate}/${endDate}`)
-//                .then(response => {
-//        if(!response.ok) {
-//            throw new Error(`Http error! status: ${response.status}`);
-//        }
-//        return response.json();
-//                })
-//                .then(data => {
-//                updateRankingList(data);
-//                })
-//                .catch(error => console.error(`Error fetching ranking list:`,error));
-//    }
 
 
     /**
@@ -193,8 +180,11 @@ public class MatchPredictController {
      * @param model
      * @param session
      */
-    @PostMapping
-
+//    @PostMapping("updateUserRank")
+//    public String updateUserRank(){
+//
+//        return
+//    }
 
 
     @ModelAttribute

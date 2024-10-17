@@ -5,6 +5,7 @@ import com.moijo.gomatch.domain.matchpredict.dto.MemberRankDTO;
 import com.moijo.gomatch.domain.matchpredict.dto.MyPredictDTO;
 import com.moijo.gomatch.domain.matchpredict.vo.MatchPredict;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public interface MatchPredictMapper {
      * @return
      */
     List<MemberRankDTO> selectAllMemberRank();
+
 
     /**
      * 나의 예측 리스트 조회
@@ -109,9 +111,11 @@ public interface MatchPredictMapper {
      *
      * @param memberId
      */
-    void updateMemberRank(String memberId);
 
     Integer countPredictionsByMemberId(String memberId, Long gameNo);
+
+    List<MemberRankDTO> getAllMemberRankUpdate(@Param("startDate") String startDate,@Param("endDate") String endDate);
+
 
 //    int insertMemberRanking(String memberId);
 }
