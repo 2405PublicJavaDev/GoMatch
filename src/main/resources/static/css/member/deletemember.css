@@ -1,16 +1,68 @@
-delete-container {
+/* 메인 컨텐츠 스타일 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
+.mypage-container {
+    background-color: #e7e4e4;
+    color: black;
+    padding: 50px;
+    display: flex;
+    max-width: 1200px;
+    align-items: center;
+    margin: 50px auto;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.profile-img img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background-color: #999;
+    margin-right: 20px;
+}
+
+.profile-info {
+    flex-grow: 1;
+    margin-left: 30px;
+}
+
+.profile-info h1 {
+    font-size: 24px;
+}
+
+.profile-info h5 {
+    font-size: 15px;
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
+.profile-info p {
+    font-size: 13px;
+    margin: 5px;
+}
+.delete-container {
     max-width: 800px;
+    height: 450px;
     margin: 100px auto;
-    background-color: #f8f8f8;
+    background-color: #ffffff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 50px;
     border-radius: 8px;
 }
-
 .delete-container h2 {
-    text-align: center;
+    margin-top: 50px;
     margin-bottom: 30px;
-    color: #333;
+    padding: 10px;
+    background-color: #e7e4e4;
+    /* background-color: #a3a2a2; */
 }
 
 .form-content {
@@ -18,49 +70,47 @@ delete-container {
     justify-content: space-between;
     margin-top: 40px;
 }
-
 .form-inputs {
     width: 48%;
+    margin-top: 20px;
 }
-
 .form-message {
     width: 48%;
+    margin-top: -15px;
 }
-
 .form-group {
-    margin-bottom: 20px;
-}
+    margin-bottom: 30px;
+    margin-top: 25px;
 
+}
 .form-group label {
     display: block;
     margin-bottom: 5px;
-    color: #555;
 }
-
 .form-group input {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #ccc;
 }
-
 .form-message-box {
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 4px;
-    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 150px;
+}
+.form-message-box p {
+    margin-top: 10px;
 }
 
 .submit-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    width: 200px;
+    margin-top: 30px;
+    margin-left: 100px;
+    background-color: #e7e4e4;
 }
 
 .submit-btn:hover {
-    background-color: #c82333;
+    background-color: #999;
 }

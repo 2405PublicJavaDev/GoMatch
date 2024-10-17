@@ -1,6 +1,17 @@
+/* 메인 컨텐츠 스타일 */
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
 .mypage-container {
-    background-color: #888;
-    color: white;
+    background-color: #e7e4e4;
+    color: black;
     padding: 50px;
     display: flex;
     max-width: 1200px;
@@ -50,12 +61,21 @@
 
 .form-container {
     padding: 20px;
-    width: 550px;
+    /*width: 550px;*/
+    width: 800px;
+    height: 900px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+#updateForm{
+    width:600px;
+    margin-left:100px;
 }
 
 h2 {
-    margin-top: 0;
-    color: #333;
+    margin-left: 100px;
+    margin-bottom: 20px;
 }
 
 form {
@@ -71,6 +91,7 @@ label {
 
 input {
     margin-top: 5px;
+    margin-bottom: 5px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -119,4 +140,47 @@ button:hover {
 
 #updateButton {
     margin-top: 30px;
+}
+#preferenceClub{
+    margin-top: 10px;
+    width: 250px;
+    height: 37px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.form-group {
+    margin-top: 10px;
+}
+
+.form-group input {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.form-group label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* 커스텀 파일 선택 버튼 스타일 */
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    color: rgb(0, 0, 0);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 70px;
+    text-align: center;
+}
+
+.custom-file-label:hover {
+    background-color: #c9c9c9;
+}
+#profileImageInput {
+    display: none;
 }

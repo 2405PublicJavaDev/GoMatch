@@ -69,6 +69,10 @@
     <delete id="deleteMember">
         DELETE FROM MEMBER WHERE MEMBER_ID = #{memberId}
     </delete>
+    <delete id="deleteMemberRank">
+        DELETE FROM USER_RANK WHERE MEMBER_ID = #{memberId}
+    </delete>
+
 
     </mapper>
 

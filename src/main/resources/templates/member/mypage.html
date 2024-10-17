@@ -13,7 +13,7 @@
 <main>
     <div class="mypage-container">
         <div class="profile-img">
-            <img id="profileImagePreview" th:src="${memberVO.profileImageUrl != null ? memberVO.profileImageUrl : '../images/default-profile.png'}" alt="프로필 이미지">
+            <img id="profileImagePreview" th:src="${memberVO.profileImageUrl != null ? memberVO.profileImageUrl : '/img/기본프로필.png'}" alt="프로필 이미지">
         </div>
         <div class="profile-info">
             <h1 th:text="${memberName}">이름</h1>

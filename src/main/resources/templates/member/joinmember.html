@@ -14,15 +14,12 @@
 <th:block th:replace="fragments/header.html"></th:block>
 <main>
     <div class="container">
-        <!-- <div class="image-container">
-            <img src="/img/승리예측 홍보.jpg" alt=""></a>
-        </div> -->
         <div class="form-container">
             <h2>회원가입</h2>
             <form id="joinForm" th:action="@{/member/joinmember}" th:object="${memberVO}" method="post">
                 <label for="memberId">아이디 입력</label>
-                <input type="text" id="memberId" th:field="*{memberId}" placeholder="아이디를 입력하세요" minlength="5" maxlength="20" required>
-                <span id="idCheckResult"></span>
+                <input type="text" id="memberId" name="memberId" class="form-control" placeholder="아이디를 입력하세요" required>
+                <small id="idCheckResult" class="form-text text-muted"></small>
 
                 <label for="memberPw">비밀번호 입력</label>
                 <input type="password" id="memberPw" th:field="*{memberPw}" placeholder="비밀번호를 입력하세요" required>
@@ -74,8 +71,7 @@
                     <option value="없음">없음</option>
                 </select>
 
-                <!--                <button type="button" onclick="joinSuccessMsg" class="joinbutton">회원가입</button>-->
-                <button type="submit" id="joinButton" disabled>회원가입</button>
+                <button type="submit" id="joinButton" >회원가입</button>
             </form>
         </div>
     </div>
@@ -83,7 +79,6 @@
 <!-- 메인태그 닫고 로고 푸터 시작  -->
 <th:block th:replace="fragments/footer.html"></th:block>
 <script>
-    // ajax 중복 확인 처리
     $(document).ready(function() {
         let idValid = false;
         let nicknameValid = false;
@@ -91,28 +86,58 @@
         let passwordValid = false;
         let emailVerified = false;
 
-        function checkDuplicate(field, value) {
+        function checkIdValidity(memberId) {
+            var $idCheckResult = $('#idCheckResult');
 
+            if (memberId.length < 5) {
+                $idCheckResult.text('아이디는 5자 이상 사용해야 합니다.').css('color', 'red');
+                idValid = false;
+            } else if (memberId.length >= 20) {
+                $idCheckResult.text('아이디는 20자 미만으로 사용 가능합니다.').css('color', 'red');
+                idValid = false;
+            } else {
+                $.ajax({
+                    url: '/member/checkDuplicate',
+                    type: 'GET',
+                    data: {field: 'id', value: memberId},
+                    success: function (response) {
+                        if (response.available) {
+                            $idCheckResult.text('사용 가능한 아이디입니다.').css('color', 'green');
+                            idValid = true;
+                        } else {
+                            $idCheckResult.text('이미 사용 중인 아이디입니다.').css('color', 'red');
+                            idValid = false;
+                        }
+                    },
+                    error: function () {
+                        $idCheckResult.text('서버 오류가 발생했습니다.').css('color', 'red');
+                        idValid = false;
+                    }
+                });
+            }
+            checkAllValid();
+
+        }
+
+        function checkDuplicate(field, value) {
             $.ajax({
                 url: '/member/checkDuplicate',
                 type: 'GET',
-                data: { field: field, value: value },
-                success: function(response) {
+                data: {field: field, value: value},
+                success: function (response) {
                     var resultSpan = $('#' + field + 'CheckResult');
-                    if(response.available) {
+                    if (response.available) {
                         resultSpan.text('사용 가능합니다!').css('color', 'green');
-                        if (field === 'id') idValid = true;
                         if (field === 'nickname') nicknameValid = true;
                         if (field === 'email') emailValid = true;
                     } else {
                         resultSpan.text('이미 사용 중입니다.').css('color', 'red');
-                        if (field === 'id') idValid = false;
                         if (field === 'nickname') nicknameValid = false;
                         if (field === 'email') emailValid = false;
                     }
                     checkAllValid();
                 },
-                error: function() {
+                error: function () {
                     $('#' + field + 'CheckResult').text('확인 중 오류가 발생했습니다.').css('color', 'red');
                 }
             });
@@ -123,7 +148,7 @@
             var confirmPassword = $('#password-confirm').val();
             var $resultSpan = $('#passwordMatchResult');
 
-            if(password === confirmPassword) {
+            if (password === confirmPassword) {
                 $resultSpan.text('비밀번호가 일치합니다.').css('color', 'green');
                 passwordValid = true;
             } else {
@@ -132,23 +157,21 @@
             }
             checkAllValid();
         }
+0
 
-        function checkAllValid() {
-            if (idValid && nicknameValid && emailValid && passwordValid && emailVerified) {
-                $('#joinButton').prop('disabled', false);
-            } else {
-                $('#joinButton').prop('disabled', true);
-            }
-        }
 
-        $('#memberId, #memberNickName, #memberEmail').on('input', function() {
+        $('#memberId').on('input', function () {
+            var memberId = $(this).val();
+            checkIdValidity(memberId);
+        });
+
+        $('#memberNickName, #memberEmail').on('input', function () {
             var field = this.id.replace('member', '').toLowerCase();
             var value = $(this).val();
-            if(value.length > 0) {
+            if (value.length > 0) {
                 checkDuplicate(field, value);
             } else {
                 $('#' + field + 'CheckResult').text('');
-                if (field === 'id') idValid = false;
                 if (field === 'nickname') nicknameValid = false;
                 if (field === 'email') emailValid = false;
                 checkAllValid();
@@ -157,29 +180,29 @@
 
         $('#memberPw, #password-confirm').on('input', checkPasswordMatch);
 
-        $('#generateNickname').on('click', function() {
+        $('#generateNickname').on('click', function () {
             var adjectives = ['행복한', '즐거운', '신나는', '배고픈', '집가고싶은'];
-            var middlename = ['KIA', '삼성', 'LG','두산','KT', 'SSG', '롯데', '한화','NC','키움'];
+            var middlename = ['KIA', '삼성', 'LG', '두산', 'KT', 'SSG', '롯데', '한화', 'NC', '키움'];
             var nouns = ['팬', '타자', '투수', '감독'];
             var adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
             var middlename = middlename[Math.floor(Math.random() * middlename.length)];
             var noun = nouns[Math.floor(Math.random() * nouns.length)];
             var number = Math.floor(Math.random() * 1000);
-            var nickname = adjective +' '+ middlename + ' ' +noun + ' ' + number;
+            var nickname = adjective + ' ' + middlename + ' ' + noun + ' ' + number;
             $('#memberNickName').val(nickname).trigger('input');
         });
 
-        $('#sendVerificationCode').on('click', function() {
+        $('#sendVerificationCode').on('click', function () {
             var email = $('#memberEmail').val();
-            if(email && emailValid) {
+            if (email && emailValid) {
                 $.ajax({
                     url: '/mail',
                     type: 'POST',
-                    data: { mail: email },
-                    success: function(response) {
+                    data: {mail: email},
+                    success: function (response) {
                         alert('인증번호가 이메일로 전송되었습니다.');
                     },
-                    error: function() {
+                    error: function () {
                         alert('인증번호 전송에 실패했습니다. 다시 시도해주세요.');
                     }
                 });
@@ -188,18 +211,17 @@
             }
         });
 
-        $('#verifyCode').on('click', function() {
+        $('#verifyCode').on('click', function () {
             var email = $('#memberEmail').val();
             var inputCode = $('#email-verification').val();
             $.ajax({
                 url: '/member/verifyCode',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ email: email, code: inputCode }),
-                success: function(response) {
-                    if(response.verified) {
-                        window.alert('인증에 성공했습니다!');  // 인증 성공 시 alert 표시
-
+                data: JSON.stringify({email: email, code: inputCode}),
+                success: function (response) {
+                    if (response.verified) {
+                        alert('인증에 성공했습니다!');
                         $('#verificationResult').text('인증이 완료 되었습니다.').css('color', 'green');
                         emailVerified = true;
                     } else {
@@ -208,42 +230,81 @@
                     }
                     checkAllValid();
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     console.error('Error:', textStatus, errorThrown);
-                    window.alert('인증 확인에 실패했습니다. 다시 시도해주세요.');
+                    alert('인증 확인에 실패했습니다. 다시 시도해주세요.');
                 }
             });
         });
 
-        $('#joinForm').on('submit', function(e) {
-            e.preventDefault(); // 기본 폼 제출 동작 방지
+        $('#joinForm').on('submit', function (e) {
+            e.preventDefault();
 
-            if (idValid && nicknameValid && emailValid && passwordValid && emailVerified) {
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        window.alert('회원가입이 완료되었습니다.');
-                        window.location.href = '/'; // 메인 페이지로 리다이렉트
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', status, error);
-                        window.alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
-                    }
-                });
-            } else {
-                window.alert('모든 항목을 올바르게 입력하고 이메일 인증을 완료해주세요.');
+            // 필수 입력 필드 확인
+            var requiredFields = [
+                { id: 'memberId', name: '아이디' },
+                { id: 'memberPw', name: '비밀번호' },
+                { id: 'password-confirm', name: '비밀번호 확인' },
+                { id: 'memberName', name: '이름' },
+                { id: 'memberNickName', name: '닉네임' },
+                { id: 'birthDate', name: '생년월일' },
+                { id: 'memberEmail', name: '이메일' }
+            ];
+
+            for (var i = 0; i < requiredFields.length; i++) {
+                var field = requiredFields[i];
+                if (!$('#' + field.id).val()) {
+                    alert(field.name + '을(를) 입력해주세요.');
+                    return;
+                }
             }
+
+            if (!idValid) {
+                alert('유효한 아이디를 입력해주세요.');
+                return;
+            }
+
+            if (!nicknameValid) {
+                alert('유효한 닉네임을 입력해주세요.');
+                return;
+            }
+
+            if (!emailValid) {
+                alert('유효한 이메일을 입력해주세요.');
+                return;
+            }
+
+            if (!passwordValid) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            if (!emailVerified) {
+                alert('이메일 인증을 완료해주세요.');
+                return;
+            }
+
+            // 모든 검증을 통과한 경우
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    swal({
+                        title: "GoMatch!",
+                        text: "회원가입 성공!",
+                        icon: "success",
+                        timer: 1500,
+                    }).then(() => {
+                        window.location.href = '/';
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', status, error);
+                    alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
         });
-        function sweetAlert() {
-            swal({
-                title : "GoMatch!",
-                text : "회원가입 성공!",
-                icon : "success",
-                timer : 1500,
-            })
-        }
     });
 </script>
 </body>

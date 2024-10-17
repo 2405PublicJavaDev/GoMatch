@@ -2,17 +2,17 @@
 /* kbo 폰트*/
 @font-face {
     font-family: 'KBO Dia Gothic';
-    src : url('../font/KBO Dia Gothic_medium.ttf') format('opentype');
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
-
 body, html {
     margin: 0;
     padding: 0;
     background-color: #ffffff;
-    font-family: 'KBO Dia Gothic Medium', sans-serif;
+    font-family: 'KBO Dia Gothic', sans-serif;
 }
+
 header {
     background-color: #f3f4f8;
     padding: 10px 0;

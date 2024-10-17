@@ -6,6 +6,7 @@ import com.moijo.gomatch.domain.member.service.MemberService;
 import com.moijo.gomatch.domain.member.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,6 +32,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper mapper;
     private final EmailService emailService;
 
+
+    // 로그인 처리
     @Override
     public MemberVO checkLogin(MemberVO member) {
         MemberVO result = mapper.checkLogin(member);
@@ -39,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
         return null;
     }
 
+    // 회원가입
     @Override
     public void registerMember(MemberVO memberVO) {
         // 디폴트값
@@ -51,38 +56,33 @@ public class MemberServiceImpl implements MemberService {
         mapper.insertMember(memberVO);
     }
 
+    // 아이디 중복체크
     @Override
     public boolean isIdDuplicate(String memberId) {
         return mapper.countByMemberId(memberId) > 0;
     }
 
+    // 이메일 중복체크
     @Override
     public boolean isEmailDuplicate(String memberEmail) {
         return mapper.countByMemberEmail(memberEmail) > 0;
     }
 
+    // 닉네임 중복체크
     @Override
     public boolean isNicknameDuplicate(String memberNickname) {
         return mapper.countByMemberNickname(memberNickname) > 0;
     }
 
+    // 아이디 찾기(아이디,생년월일)
     @Override
     public String findIdByNameAndBirthDate(String name, String birthDate) {
         // birthDate는 이미 'yyyy-MM-dd' 형식으로 입력된다고 가정합니다.
         return mapper.findIdByNameAndBirthDate(name, birthDate);
     }
 
-//    private String formatBirthDate(String birthDate) {
-//        try {
-//            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMdd");
-//            SimpleDateFormat outputFormat = new SimpleDateFormat("yy/MM/dd");
-//            Date date = inputFormat.parse(birthDate);
-//            return outputFormat.format(date);
-//        } catch (ParseException e) {
-//            throw new IllegalArgumentException("Invalid birth date format", e);
-//        }
-//    }
 
+    // 비밀번호찾기( 임시 비밀번호 전송)
     @Override
     public boolean resetPassword(String memberId, String email) {
         MemberVO member = mapper.findByIdAndEmail(memberId, email);
@@ -94,48 +94,14 @@ public class MemberServiceImpl implements MemberService {
         emailService.sendTempPassword(email, tempPassword);
         return true;
     }
+
+    // 임시 비밀번호 생성
     private String generateTempPassword() {
         return UUID.randomUUID().toString().substring(0, 8);
     }
-//    @Override
-//    @Transactional
-//    public boolean updateMember(MemberVO memberVO) {
-//        try {
-//            log.info("Updating member in service: {}", memberVO);
-//            int result = mapper.updateMember(memberVO);
-//            log.info("Update result in service for member {}: {}", memberVO.getMemberId(), result);
-//            if (result > 0) {
-//                log.info("Member updated successfully in service");
-//                return true;
-//            } else {
-//                log.warn("No rows were updated for member {} in service", memberVO.getMemberId());
-//                return false;
-//            }
-//        } catch (Exception e) {
-//            log.error("Error updating member in service: {}", memberVO.getMemberId(), e);
-//            return false;
-//        }
-//    }
 
 
-//    @Override
-//    @Transactional
-//    public boolean changePassword(String memberId, String currentPassword, String newPassword) {
-//        try {
-//            MemberVO member = mapper.getMemberById(memberId);
-//            if (member != null && member.getMemberPw().equals(currentPassword)) {
-//                member.setMemberPw(newPassword);
-//                int result = mapper.updateMember(member);
-//                log.info("Password change result for member {}: {}", memberId, result);
-//                return result > 0;
-//            }
-//            return false;
-//        } catch (Exception e) {
-//            log.error("Error changing password for member: {}", memberId, e);
-//            return false;
-//        }
-//    }
-
+    // 프로필 이미지 등록(서버)
     @Override
     public String uploadProfileImage(MultipartFile file) {
         try {
@@ -153,11 +119,14 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 회원 정보 조회
     @Override
     public MemberVO getMemberById(String memberId) {
         return mapper.getMemberById(memberId);
     }
 
+
+    // 회원 정보 수정
     @Override
     @Transactional
     public boolean modifyMember(MemberVO memberVO) {
@@ -172,6 +141,8 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 회원 탈퇴
+    @Transactional
     public boolean deleteMember(String memberId, String password) {
         MemberVO member = mapper.getMemberById(memberId);
         if (member == null || !member.getMemberPw().equals(password)) {
@@ -179,10 +150,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         try {
-            // 회원 관련 데이터 삭제
-            // 예: 게시글, 댓글, 좋아요 등
-            // postMapper.deleteAllByMemberId(memberId);
-            // commentMapper.deleteAllByMemberId(memberId);
+            // 회원 랭크 정보 삭제
+            mapper.deleteMemberRank(memberId);
+
+            // 기타 관련 데이터 삭제
+            // mapper.deleteMemberPosts(memberId);
+            // mapper.deleteMemberComments(memberId);
+            // 등등...
 
             // 프로필 이미지 삭제
             deleteProfileImage(member.getProfileImageUrl());
@@ -198,6 +172,8 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+
+    // 회원탈퇴시 이미지 삭제
     private void deleteProfileImage(String profileImageUrl) {
         if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
             try {
@@ -209,6 +185,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    // 비밀번호 일치 확인
     @Override
     public boolean checkPassword(String memberId, String password) {
         MemberVO member = mapper.getMemberById(memberId);
@@ -221,8 +198,5 @@ public class MemberServiceImpl implements MemberService {
         log.warn("User not found for password check: {}", memberId);
         return false;
     }
-
-
-
 
 }

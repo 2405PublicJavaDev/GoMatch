@@ -18,11 +18,13 @@ public class EmailService {
     private static final String senderEmail = "jjinmoijo5@gmail.com";
     private static Map<String, String> verificationCodes = new HashMap<>();
 
+    // 인증번호 난수 생성기(6자리)
     public static void createNumber(String email) {
         String number = String.format("%06d", (int) (Math.random() * 1000000));
         verificationCodes.put(email, number);
     }
 
+    // 인증된 이메일에게 인증번호 담기
     public MimeMessage CreateMail(String mail) {
         createNumber(mail);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -44,6 +46,7 @@ public class EmailService {
         return message;
     }
 
+    //인증번호 포함된 이메일 전송
     public String sendMail(String mail) {
         MimeMessage message = CreateMail(mail);
         try {
@@ -55,6 +58,7 @@ public class EmailService {
         }
     }
 
+    // 인증번호 올바른지 검증
     public boolean verifyCode(String email, String inputCode) {
         String storedCode = verificationCodes.get(email);
         if (storedCode != null && storedCode.equals(inputCode)) {
@@ -64,6 +68,7 @@ public class EmailService {
         return false;
     }
 
+    // 임시비밀번호 생성하여 이메일로 전송
     public void sendTempPassword(String mail, String tempPassword) {
         MimeMessage message = javaMailSender.createMimeMessage();
         try {

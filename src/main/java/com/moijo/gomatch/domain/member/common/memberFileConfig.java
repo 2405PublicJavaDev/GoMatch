@@ -8,6 +8,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 public class memberFileConfig implements WebMvcConfigurer {
 
+    // 멤버 이미지 수정시 경로 지정
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/img/member-img/**")

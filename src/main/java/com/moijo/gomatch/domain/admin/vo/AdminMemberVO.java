@@ -1,4 +1,4 @@
-package com.moijo.gomatch.domain.member.vo;
+package com.moijo.gomatch.domain.admin.vo;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -8,14 +8,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
-
 
 @Getter
 @Setter
 @ToString
-public class MemberVO {
-
+public class AdminMemberVO {
     @NotBlank(message = "아이디는 필수 입력 항목입니다.")
     @Size(min = 5, max = 20, message = "아이디는 5자 이상 20자 이하여야 합니다.")
     private String memberId;
@@ -50,8 +47,4 @@ public class MemberVO {
     private String preferenceClub;
     private String kakaoProfile;
     private String profileImageUrl;
-
-//    private boolean emailVerified = false;
-//    private String emailVerificationCode;
-
 }

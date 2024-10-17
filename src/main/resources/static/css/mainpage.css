@@ -1,5 +1,14 @@
 /* 메인 컨텐츠 스타일 */
-
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body, html {
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+}
 /* 사진 팀순위  */
 .container {
     max-width: 1200px;

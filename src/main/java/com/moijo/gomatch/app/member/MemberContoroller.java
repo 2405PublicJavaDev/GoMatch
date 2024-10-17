@@ -8,6 +8,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -31,7 +35,13 @@ public class MemberContoroller {
     private final MemberService mService;
     private final ImageService imageService;
 
-    // 로그인 폼
+
+
+    /**
+     * 로그인 페이지
+     * @param model
+     * @return
+     */
     @GetMapping("member/loginpage")
     public String showLoginPage(Model model) {
         return "member/loginpage";
@@ -39,9 +49,11 @@ public class MemberContoroller {
 
     // 로그인 기능
     @PostMapping("member/loginpage")
-    public String loginpage(@RequestParam("memberId") String memberId,
-                            @RequestParam("memberPw") String memberPw,
-                            HttpSession session, Model model) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> loginpage(@RequestParam("memberId") String memberId,
+                                                         @RequestParam("memberPw") String memberPw,
+                                                         HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
         MemberVO member = new MemberVO();
         member.setMemberId(memberId);
         member.setMemberPw(memberPw);
@@ -54,11 +66,19 @@ public class MemberContoroller {
             session.setAttribute("preferenceClub", member.getPreferenceClub());
             session.setAttribute("matchPredictExp", member.getMatchPredictExp());
             System.out.println("로그인 성공: " + member.getMemberNickName());
-            return "redirect:/";
+            response.put("success", true);
+
+            // 관리자 계정 확인 및 리다이렉트
+            if (member.getMemberId().startsWith("admin")) {
+                response.put("redirect", "/admin/admin-mainpage");
+            } else {
+                response.put("redirect", "/");
+            }
         } else {
-            model.addAttribute("loginError", "회원 정보를 잘못 입력하셨습니다.");
-            return "member/loginpage";
+            response.put("success", false);
+            response.put("message", "회원 정보를 잘못 입력하셨습니다.");
         }
+        return ResponseEntity.ok(response);
     }
     // 회원가입 폼
     @GetMapping("member/joinmember")
@@ -113,7 +133,7 @@ public class MemberContoroller {
 
 
 
-    // 로그아웃
+    // 로그아웃 페이지
     @GetMapping("/member/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -131,11 +151,13 @@ public class MemberContoroller {
         }
         return "index";
     }
+    // 아이디찾기 페이지
     @GetMapping("/member/findid")
     public String showFindIdForm() {
         return "member/findid";
     }
 
+    // 아이디 찾기 기능
     @PostMapping("/member/findid")
     public String findId(@RequestParam String name,
                          @RequestParam String birthDate,
@@ -165,7 +187,7 @@ public class MemberContoroller {
 
         return id;
     }
-// 비밀번호 찾기 폼
+// 비밀번호 찾기 페이지
     @GetMapping("/member/findpw")
     public String showFindPwdForm() {
 
@@ -211,7 +233,7 @@ public class MemberContoroller {
         return "member/mypage";
     }
 
-// 메서드에 nickname 세션 저장
+// 메서드들에 nickname 세션 저장 (헤더부분)
 @ModelAttribute
 public void addAttributes(Model model, HttpSession session) {
     MemberVO member = (MemberVO) session.getAttribute("member");
@@ -224,7 +246,6 @@ public void addAttributes(Model model, HttpSession session) {
 }
 
 // 회원정보 수정
-
     @GetMapping("/member/modifymember")
     public String showModifyMemberForm(Model model, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("member");
@@ -237,6 +258,7 @@ public void addAttributes(Model model, HttpSession session) {
         return "member/modifymember";
     }
 
+    // 비밀번호 중복확인
     @PostMapping("/member/checkCurrentPassword")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> checkCurrentPassword(@RequestParam String currentPassword,
@@ -254,6 +276,7 @@ public void addAttributes(Model model, HttpSession session) {
         return ResponseEntity.ok(response);
     }
 
+    // 회원정보 수정 기능
     @PostMapping("/member/modifymember")
     public ResponseEntity<?> modifyMember(@ModelAttribute @Valid MemberVO memberVO,
                                           BindingResult bindingResult,
@@ -312,6 +335,7 @@ public void addAttributes(Model model, HttpSession session) {
         }
     }
 
+    // 회원탈퇴 페이지
     @GetMapping("/member/deletemember")
     public String deleteMemberForm(HttpSession session, Model model) {
         log.info("Accessing deleteMemberForm");
@@ -326,6 +350,7 @@ public void addAttributes(Model model, HttpSession session) {
     }
 
 
+    // 회원탈퇴 기능
     @PostMapping("/member/delete")
     public ResponseEntity<?> deleteMember(@RequestParam String password, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("member");
@@ -339,13 +364,19 @@ public void addAttributes(Model model, HttpSession session) {
                 session.invalidate();
                 return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
             } else {
-                return ResponseEntity.badRequest().body("비밀번호가 일치하지 않거나 탈퇴 처리 중 오류가 발생했습니다.");
+                return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
             }
+        } catch (DataIntegrityViolationException e) {
+            log.error("회원 탈퇴 중 데이터 무결성 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("회원과 관련된 데이터로 인해 탈퇴할 수 없습니다. 관리자에게 문의해주세요.");
         } catch (Exception e) {
             log.error("회원 탈퇴 중 오류 발생", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 처리 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
     }
+
+
+
 
 }
 

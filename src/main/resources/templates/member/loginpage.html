@@ -6,6 +6,7 @@
     <title>야구 리그 로그인</title>
     <link rel="stylesheet" href="/css/member/login.css">
     <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
@@ -14,35 +15,63 @@
 <main>
     <div class="container">
         <div class="image-container">
-            <img src="/img/승리예측 홍보.jpg" alt=""></a>
+            <img src="/img/승리예측 홍보.jpg" alt="">
         </div>
         <div class="login-container">
             <h2>로그인</h2>
-            <form action="/member/loginpage" method="post">
-            <label for="memberId">아이디 입력</label>
-            <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요.">
+            <form id="loginForm" action="/member/loginpage" method="post">
+                <label for="memberId">아이디 입력</label>
+                <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요." required>
 
-            <label for="memberPw">비밀번호 입력</label>
-            <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요.">
+                <label for="memberPw">비밀번호 입력</label>
+                <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요." required>
 
-            <button type="submit" class="login-btn" >로그인</button>
+                <button type="submit" class="login-btn">로그인</button>
             </form>
             <div class="find-member">
-                <p><a href="./findid" class="find-member">아이디 찾기</a>
+                <p>
+                    <a href="./findid" class="find-member">아이디 찾기</a>
                     <a href="./findpw" class="find-member">비밀번호 찾기</a>
-                    <a href="./joinmember" class="find-member">회원가입</a></p>
+                    <a href="./joinmember" class="find-member">회원가입</a>
+                </p>
             </div>
             <div class="sns-login">
-                <p>SNS계정으로 간편 로그인</p>
-                <button type="submit" class="kakao-btn">카카오톡</button>
-                <button type="submit" class="naver-btn">네이버</button>
+                <h4>SNS계정으로 간편 로그인</h4>
+                <a href="#">
+                    <img src="/img/kakaologinbutton.png" alt="카카오 로그인">
+                </a>
+                <button type="button" class="naver-btn">네이버</button>
             </div>
         </div>
     </div>
 </main>
 <!-- 메인태그 닫고 로고 푸터 시작  -->
 <th:block th:replace="fragments/footer.html"></th:block>
+<script>
+    $(document).ready(function() {
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
 
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirect;
+
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

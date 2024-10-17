@@ -110,3 +110,19 @@ th {
 .pagination a:hover {
     background-color: #ddd;
 }
+.status-suspended {
+    color: red;
+}
+
+.statusbutton{
+    background-color: #f2f2f2;
+    padding: 5px 10px;
+    border : 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+    width: 60px;
+
+}
+.statusbutton:hover{
+    background-color: #ddd;
+}
