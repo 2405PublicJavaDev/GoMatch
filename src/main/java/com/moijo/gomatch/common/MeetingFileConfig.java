@@ -8,13 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Getter
-public class FileConfig implements WebMvcConfigurer {
+public class MeetingFileConfig implements WebMvcConfigurer {
 
     public static String baseFolderPath;  // static 선언
 
     @Value("${GOMATCH_UPLOAD_BASE_PATH}")
     public void setBaseFolderPath(String baseFolderPath) {
-        FileConfig.baseFolderPath = baseFolderPath;
+        MeetingFileConfig.baseFolderPath = baseFolderPath;
     }
 
     // 모듈별 저장 경로 반환

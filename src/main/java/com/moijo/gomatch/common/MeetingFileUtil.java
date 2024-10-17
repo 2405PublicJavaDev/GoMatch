@@ -15,7 +15,7 @@ import java.util.UUID;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class FileUtil {
+public class MeetingFileUtil {
 
     private final MeetingMapper meetingMapper;
 
@@ -24,7 +24,7 @@ public class FileUtil {
         long order = 1;
 
         // 모듈별 저장 경로 설정
-        String folderPath = FileConfig.getModuleUploadPath(moduleName);  // 모듈별 경로 설정
+        String folderPath = MeetingFileConfig.getModuleUploadPath(moduleName);  // 모듈별 경로 설정
         File folder = new File(folderPath);
         if (!folder.exists()) {
             // 경로가 없으면 폴더 생성

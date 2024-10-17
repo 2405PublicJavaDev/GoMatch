@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // Thymeleaf 스타터 추가
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -43,6 +44,7 @@ dependencies {
     implementation 'org.seleniumhq.selenium:selenium-java:4.25.0'
     implementation 'org.jsoup:jsoup:1.18.1'
     implementation 'org.json:json:20240303'
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -51,6 +53,9 @@ dependencies {
     implementation 'io.projectreactor.netty:reactor-netty'
     implementation 'org.springframework:spring-web'
 =======
+=======
+    implementation 'org.commonmark:commonmark:0.18.2' // 마크다운 -> html 의존성 추가 (윤경)
+>>>>>>> 4a6695359fd77f3720f2f1478d4fb59290f48c57
 
 
 

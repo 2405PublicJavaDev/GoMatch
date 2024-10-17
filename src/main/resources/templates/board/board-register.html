@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+<!-- 개별 CSS 붙여 넣기 할 영역 -->
+<!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
+<!-- 메인 css -->
+<link rel="stylesheet" href="/css/board/board-register.css">
+<!-- Toast UI Editor & Color Syntax Plugin CSS -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>게시판</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div class="main-container">
+        <h1>게시글 등록</h1>
+        <form action="/board/register" method="post" enctype="multipart/form-data" onsubmit="syncEditorContent()">
+            <!-- 게시글 카테고리 -->
+            <div class="form-group">
+                <label for="meetingBoardCategory">카테고리</label>
+                <select id="meetingBoardCategory" name="meetingBoardCategory" required>
+                    <option value="">카테고리를 선택하세요</option>
+                    <option value="모임후기">모임후기</option>
+                    <option value="자유게시판">자유게시판</option>
+                </select>
+            </div>
+            <!-- 게시글 제목 -->
+            <div class="form-group">
+                <label for="meetingBoardTitle">제목</label>
+                <input type="text" id="meetingBoardTitle" name="meetingBoardTitle" placeholder="제목을 입력하세요" required>
+            </div>
+            <!-- 게시글 내용 -->
+            <div class="form-group">
+                <label for="meetingBoardContent">내용</label>
+                <div id="editor"></div>
+                <input type="hidden" id="meetingBoardContent" name="meetingBoardContent">
+            </div>
+            <!-- 파일 업로드 필드 -->
+            <div class="form-group">
+                <label for="groupImage">첨부 파일</label>
+                <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple onchange="previewFiles()" />
+            </div>
+            <!-- 썸네일이 보여질 영역 -->
+            <div id="thumbnailContainer"></div>
+            <div class="buttons">
+                <button type="submit" class="submit">등록</button>
+                <button type="button" class="cancel" onclick="history.back()">취소</button>
+            </div>
+        </form>
+    </div>
+</main>
+<link rel="stylesheet" href="/css/board/board-register.css">
+
+<!-- Script 부분 -->
+<script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js"></script>
+<script>
+    const { Editor } = toastui;
+    const { colorSyntax } = Editor.plugin;
+
+    const editor = new Editor({
+        el: document.querySelector('#editor'),
+        height: '500px',
+        initialEditType: 'wysiwyg', // WYSIWYG 모드로 설정하여 HTML 형식의 이미지가 바로 표시되도록 합니다.
+        previewStyle: 'vertical',
+        placeholder: '📌욕설이나 비방, 모욕, 선정성이 존재하는 사진이나 게시글은 업로드하지 말아주세요📌',
+        plugins: [colorSyntax],
+        toolbarItems: [
+            ['heading', 'bold', 'italic', 'strike'],
+            ['hr'],
+            ['ul', 'ol', 'task', 'indent', 'outdent'],
+            ['image', 'link'],
+            ['code', 'codeblock']
+        ],
+        hooks: {
+            addImageBlobHook: async (blob, callback) => {
+                const formData = new FormData();
+                formData.append('file', blob);
+
+                try {
+                    const response = await fetch('/upload/image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    const imageUrl = result.url;
+
+                    // callback을 사용하여 WYSIWYG 및 마크다운 모드에서 이미지가 삽입되도록 합니다.
+                    callback(imageUrl, '이미지 설명');
+                } catch (error) {
+                    console.error('이미지 업로드 실패:', error);
+                }
+            }
+        }
+    });
+
+    function syncEditorContent() {
+        document.getElementById('meetingBoardContent').value = editor.getHTML(); // HTML 형식으로 저장
+    }
+
+    function previewFiles() {
+        const previewContainer = document.getElementById('thumbnailContainer');
+        const files = document.getElementById('groupImage').files;
+        previewContainer.innerHTML = '';
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('thumbnail');
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+
+
+</body>
+</html>

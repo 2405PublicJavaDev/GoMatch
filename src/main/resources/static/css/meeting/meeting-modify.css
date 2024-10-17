@@ -73,11 +73,12 @@ aside {
     margin: 0 auto;
     padding: 20px;
 }
+/* ■■■■■■■■■■ 메인 영역 css ■■■■■■■■■■ */
 
 h1 {
-    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif; /* 폰트 적용 */
+    font-family: 'KBO Dia Gothic Bold', Arial, sans-serif;
     text-align: center;
-    color: #16215F; /* 메인 색상 */
+    color: #16215F;
     margin-bottom: 20px;
     font-weight: normal;
 }
@@ -85,60 +86,65 @@ form {
     display: grid;
     gap: 15px;
 }
+
+/* input과 span을 공통적으로 스타일링 */
 .form-group {
     display: flex;
     align-items: center;
+    margin-bottom: 15px;
 }
 label {
-    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif; /* 폰트 적용 */
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
     font-weight: bold;
     width: 150px;
     flex-shrink: 0;
 }
-/* 경기 날짜 선택 인풋의 너비를 40%로 줄이고 글꼴 동일하게 설정 */
-#gameDate {
-    width: 30% !important;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif; /* 글꼴 통일 */
-}
-input[type="text"], input[type="date"], select, textarea {
+input[type="text"], textarea, .readonly-field {
     flex-grow: 1;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-}
-/* textarea 크기 고정 및 리사이즈 비활성화 */
-textarea {
-    resize: none; /* 사이즈 변경 불가 */
-    width: 100%; /* 기본 넓이 설정 */
-    height: 200px; /* 기본 높이 설정 */
-    padding: 8px; /* 여백 설정 */
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    font-family: Arial, sans-serif;
     box-sizing: border-box;
-    font-family: Arial, sans-serif; /* 인풋 필드와 같은 글꼴 적용 */
 }
 
-/* 주소 입력 창을 넓게 설정 */
+/* read-only 상태인 span을 input과 유사하게 스타일링 */
+.readonly-field {
+    display: inline-block;
+    background-color: #f9f9f9;
+    color: #555;
+    pointer-events: none;
+}
+.no-edit {
+    color: #a63446;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-left: 5px;
+}
+
+/* textarea 스타일 */
+textarea {
+    resize: none;
+    width: 100%;
+    height: 150px;
+}
+
+/* 경기 날짜 선택 인풋의 너비를 조정 */
+#gameDate, .readonly-field {
+    width: 100%;
+}
+
+/* 모임 위치 및 버튼 */
 #meetingPlace {
-    flex-grow: 2; /* 넓이를 더 많이 차지하게 설정 */
-    width: 70%; /* 창 너비를 70%로 설정 */
+    flex-grow: 2;
     margin-right: 5px;
 }
-
-/* 상세 주소 입력 창을 좁게 설정 */
 #meetingPlaceDetail {
-    flex-grow: 1; /* 기본 크기를 작게 설정 */
-    width: 30%; /* 창 너비를 30%로 설정 */
+    flex-grow: 1;
 }
-
-/* 모임 위치 검색 버튼을 인풋 창과 동일한 높이로 유지 */
 .search-btn {
     padding: 5px 5px;
-    height: 32px; /* 인풋 창 높이와 동일하게 설정 */
+    height: 32px;
     width: 70px;
     margin-left: 5px;
     background-color: #007bff;
@@ -148,20 +154,22 @@ textarea {
     cursor: pointer;
     font-size: smaller;
 }
-
 .search-btn:hover {
     background-color: #0056b3;
 }
-/* 최대 참석 인원 인풋 창 높이를 다른 인풋 및 셀렉트 박스와 동일하게 설정 */
+
+/* 최대 참석 인원 인풋 창 */
 #meetingMaxPeople {
     height: 34px;
     width: 150px;
     padding: 2px;
     padding-left: 8px;
-    border: 1px solid #ccc; /* 인풋 박스 테두리 */
-    border-radius: 4px; /* 모서리 둥글게 */
-    box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
+
+/* 버튼 스타일 */
 .buttons {
     display: flex;
     justify-content: center;
@@ -183,53 +191,76 @@ button {
     background-color: #6c757d;
     color: white;
 }
-#meetPlace {
-    width: calc(100% - 70px);
-    margin-right: 10px;
-}
 
-/* 파일 업로드 기능 */
-/* 썸네일 미리보기를 위한 스타일 */
-#thumbnailContainer {
+/* 파일 업로드 및 썸네일 미리보기 */
+#fileThumbnails {
     display: flex;
     flex-wrap: nowrap;
     gap: 10px;
-    overflow-x: auto;
     margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px; /* 스크롤바를 위한 여백 */
 }
 
 .file-thumbnail-wrapper {
-    height: 150px;
-    width: 150px;
     position: relative;
+    height: 140px;
+    width: 140px;
+    flex: 0 0 auto;
 }
 
 .thumbnail {
-    width: 140px;
-    height: 140px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #ccc;
 }
-
 /* X 버튼 스타일 */
 .x-btn {
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: red;
+    background-color: rgba(255, 0, 0, 0.7);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 24px; /* 너비와 높이를 동일하게 설정 */
-    height: 24px; /* 너비와 높이를 동일하게 설정 */
+    width: 24px;
+    height: 24px;
     cursor: pointer;
-    font-size: 14px; /* X 글자의 크기를 적절하게 조정 */
-    line-height: 24px; /* 버튼의 높이와 동일하게 설정하여 글자가 중앙에 위치 */
+    font-size: 14px;
+    line-height: 24px;
     text-align: center;
     padding: 0;
 }
 
 .x-btn:hover {
-    background-color: darkred;
+    background-color: rgba(139, 0, 0, 0.9);
+}
+
+/* 이미지 추가 버튼 */
+.add-image-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.add-image-btn:hover {
+    background-color: #218838;
+}
+
+/* 파일 개수 표시 스타일 */
+#fileCount {
+    margin-left: 10px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* 파일 업로드 경고 메시지 */
+#fileLimitMessage {
+    color: red;
+    display: none;
 }

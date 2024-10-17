@@ -1,0 +1,183 @@
+<!-- 공통 헤더/푸터 적용 방법
+    1. 적용할.html 파일 맨위에 이거 다 붙여넣기
+    2. ★★바디태그에 thymeleaf등 조건이 있다면 원래 코드대로 붙여넣기!
+    3. 각 페이지별 개별 CSS 붙여넣기 할 영역에 붙여넣기
+    4. 원래있던 <!DOCTYPE html> 부터 <Main> 태그 위까지 지우기
+    5. 푸터영역 (푸터태그 포함) 아래 코드 붙여넣기
+    <div th:insert="~{header-footer :: footer}"></div>
+    6. (선택)정상 작동 확인 후 주석 지우기!
+    *** 공통 모듈에 적용된 CSS/JS ***
+        (1) 헤더/푸더 CSS
+        (2) sweetAlert2 CSS/JS
+-->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body th:attr="data-logged-in=${loggedIn}">
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+<!-- 개별 CSS 붙여 넣기 할 영역 -->
+<!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
+<link rel="stylesheet" href="/css/board/board-list.css">
+
+
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+
+<main>
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>게시판</span>
+                <hr class="aside-header">
+                <ul>
+                    <li><a href="/meeting/list">소모임</a></li>
+                    <li><a href="/board/list">게시판</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <div class="main-container">
+        <div class="background-image">
+            <img src="/img/baseballground.png" alt="게시판 배경 이미지">
+        </div>
+        <h1>Go Match Board</h1>
+        <!-- 필터와 테이블을 감싸는 컨테이너 추가 -->
+        <div class="filter-table-container">
+            <div class="filter-tabs">
+                <div class="filter-tab" data-filter-type="all">전체</div>
+                <div class="filter-tab" data-filter-type="모임후기">모임후기</div>
+                <div class="filter-tab" data-filter-type="자유게시판">자유게시판</div>
+                <!-- 글쓰기 버튼 추가 -->
+                <button class="write-button" onclick="writePost()">글쓰기</button>
+            </div>
+
+
+            <table>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>분류</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>조회수</th>
+                    <th>좋아요</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="board : ${boardList}"
+                    th:onclick="|window.location.href='/board/detail/' + ${board.meetingBoardNo}|"
+                    style="cursor: pointer;">
+                    <td th:text="${board.meetingBoardNo}"></td>
+                    <td th:text="${board.meetingBoardCategory}"></td>
+                    <td th:text="${board.meetingBoardTitle}"></td>
+                    <td th:text="${board.memberId}"></td>
+                    <td th:text="${#temporals.format(board.regDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${board.meetingBoardViewCount}"></td>
+                    <td th:text="${board.likeCount}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(boardList)}">
+                    <td colspan="7" style="text-align: center; padding: 20px; color: #78797B;">검색 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지네이션 컨트롤 -->
+        <div id="pagination" class="pagination">
+            <ul th:if="${totalPages > 0}" class="common-pagination">
+                <li class="common-pagination-li-end">
+                    <a th:href="@{/board/list(page=${currentPage - 1}, filterType=${filterType}, searchType=${searchType}, keyword=${keyword})}"
+                       th:if="${currentPage > 1}">이전</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${i == currentPage} ? 'common-pagination-li common-pagination-li-active' : 'common-pagination-li'">
+                    <a th:href="@{/board/list(page=${i}, filterType=${filterType}, searchType=${searchType}, keyword=${keyword})}"
+                       th:text="${i}"></a>
+                </li>
+                <li class="common-pagination-li-end">
+                    <a th:href="@{/board/list(page=${currentPage + 1}, filterType=${filterType}, searchType=${searchType}, keyword=${keyword})}"
+                       th:if="${currentPage < totalPages}">다음</a>
+                </li>
+            </ul>
+        </div>
+        <!-- 검색 섹션 -->
+        <div class="search-section">
+            <form action="/board/list" method="get">
+                <select name="searchType">
+                    <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                    <option value="content" th:selected="${searchType == 'content'}">내용</option>
+                </select>
+                <input type="text" name="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}">
+                <button type="submit">검색</button>
+            </form>
+        </div>
+    </div>
+</main>
+<div th:insert="~{header-footer :: footer}"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const savedFilterType = sessionStorage.getItem('selectedFilterType');
+        // sessionStorage에 저장된 필터 타입에 따라 active 클래스 초기 설정
+        if (savedFilterType) setActiveFilter(savedFilterType);
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                const filterType = this.getAttribute('data-filter-type');
+                // 클릭한 탭에만 active 클래스 추가
+                setActiveFilter(filterType);
+                // 선택된 필터 타입을 sessionStorage에 저장
+                sessionStorage.setItem('selectedFilterType', filterType);
+                // 필터 타입 설정 후 폼 제출
+                applyFilter(filterType);
+            });
+        });
+
+        function setActiveFilter(filterType) {
+            filterTabs.forEach(tab =>
+                tab.classList.toggle('active', tab.getAttribute('data-filter-type') === filterType)
+            );
+        }
+
+        function applyFilter(filterType) {
+            const form = document.querySelector('.search-section form');
+            let filterInput = form.querySelector('input[name="filterType"]') ||
+                form.appendChild(document.createElement('input'));
+
+            filterInput.type = 'hidden';
+            filterInput.name = 'filterType';
+            filterInput.value = filterType;
+            form.submit();
+        }
+    });
+</script>
+<script>
+    function writePost() {
+        // 로그인 상태를 HTML의 data- 속성에서 읽어오기
+        const loggedIn = document.body.dataset.loggedIn === 'true';
+
+        if (!loggedIn) {
+            Swal.fire({
+                title: '로그인한 사용자만 이용이 가능한 서비스입니다.',
+                text: '로그인을 하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Yes 선택 시 로그인 페이지로 이동
+                    window.location.href = '/member/loginpage';
+                }
+            });
+        } else {
+            // 로그인한 상태에서는 글쓰기 페이지로 이동
+            window.location.href = '/board/register';
+        }
+    }
+</script>
+
+
+</body>
+</html>
