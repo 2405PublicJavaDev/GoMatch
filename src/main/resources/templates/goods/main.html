@@ -1,32 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title>상품 목록</title>
-  <link rel="stylesheet" href="/css/goods/main.css">
-  <link rel="stylesheet" href="/css/goods/standard.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
 <body>
-
-<!-- 헤더 부분 -->
-<header>
-  <nav>
-    <div class="logo">
-      <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
-    </div>
-    <ul class="nav-links">
-      <li><a href="#">일정/결과</a></li>
-      <li><a href="#">굿즈</a></li>
-      <li><a href="#">소모임</a></li>
-      <li><a href="#">승부예측</a></li>
-    </ul>
-    <ul class="memeber-links">
-      <li><a href="loginpage">로그인</a></li>
-      <li><a href="joinmember">회원가입</a></li>
-    </ul>
-  </nav>
-</header>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<link rel="stylesheet" href="/css/goods/main.css">
+<link rel="stylesheet" href="/css/goods/standard.css">
 
 <div class="team-logos">
   <div class="team-logos-container">

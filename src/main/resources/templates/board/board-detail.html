@@ -1,15 +1,3 @@
-<!-- 공통 헤더/푸터 적용 방법
-    1. 적용할.html 파일 맨위에 이거 다 붙여넣기
-    2. 바디태그에 thymeleaf등 조건이 있다면 원래 코드대로 붙여넣기!
-    3. 각 페이지별 개별 CSS 붙여넣기 할 영역에 붙여넣기
-    4. 원래있던 <!DOCTYPE html> 부터 <Main> 태그 위까지 지우기
-    5. 푸터영역 (푸터태그 포함) 아래 코드 붙여넣기
-    <div th:insert="~{header-footer :: footer}"></div>
-    6. (선택)정상 작동 확인 후 주석 지우기!
-    *** 공통 모듈에 적용된 CSS/JS ***
-        (1) 헤더/푸더 CSS
-        (2) sweetAlert2 CSS/JS
--->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{header-footer :: head}"></head>
@@ -20,7 +8,6 @@
 <!-- 개별 CSS 붙여 넣기 할 영역 -->
 <!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
 <link rel="stylesheet" href="/css/board/board-detail.css">
-
 
 
 <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
@@ -47,8 +34,12 @@
             <div class="meeting-title">
                 <h2 th:text="${board.meetingBoardTitle}">게시글 제목</h2>
                 <div class="top-buttons">
-                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-modify" onclick="modifyBoard()">수정</button>
-                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-delete" onclick="deleteBoard()">삭제</button>
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-modify"
+                            onclick="modifyBoard()">수정
+                    </button>
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-delete"
+                            onclick="deleteBoard()">삭제
+                    </button>
                 </div>
             </div>
         </div>
@@ -91,7 +82,7 @@
             <button type="button" id="likeButton" class="like-button" onclick="toggleLike()">
                 <span id="likeIcon">🤍</span> 좋아요 (<span id="likeCount" th:text="${likeCount}">0</span>)
             </button>
-            <button type="button" class="button-back" onclick="history.back()">목록으로</button>
+            <button type="button" class="button-back" onclick="goToList()">목록으로</button>
         </div>
 
 
@@ -110,7 +101,10 @@
                         <p th:utext="${reply.meetingReplyContent}">댓글 내용</p>
                     </div>
                     <!-- 삭제 버튼 -->
-                    <button th:if="${reply.memberId == session.memberId}" type="button" class="button-delete-comment" th:onclick="'deleteReply(' + ${reply.meetingReplyNo} + ')'">삭제</button>              </div>
+                    <button th:if="${reply.memberId == session.memberId}" type="button" class="button-delete-comment"
+                            th:onclick="'deleteReply(' + ${reply.meetingReplyNo} + ')'">삭제
+                    </button>
+                </div>
             </div>
             <div class="no-comments" th:if="${replies.size() == 0}">
                 <p>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
@@ -119,18 +113,23 @@
 
         <!-- 이전글/다음글 버튼 -->
         <div class="pagination-buttons">
-            <button th:if="${previousPostId != null}" type="button" class="button-prev" th:onclick="|location.href='/board/detail/' + ${previousPostId}|">이전글</button>
-            <button th:if="${nextPostId != null}" type="button" class="button-next" th:onclick="|location.href='/board/detail/' + ${nextPostId}|">다음글</button>
+            <button th:if="${previousPostId != null}" type="button" class="button-prev"
+                    th:onclick="|location.href='/board/detail/' + ${previousPostId}|">이전글
+            </button>
+            <button th:if="${nextPostId != null}" type="button" class="button-next"
+                    th:onclick="|location.href='/board/detail/' + ${nextPostId}|">다음글
+            </button>
         </div>
     </div>
 </main>
 <div th:insert="~{header-footer :: footer}"></div>
 
 <script th:inline="javascript">
+    // ■■■■■■■■■■■■■■■■ 좋아요 관련 기능 ■■■■■■■■■■■■■■■■
     const meetingBoardNo = /*[[${board.meetingBoardNo}]]*/ 0;
     const isLiked = /*[[${isLiked}]]*/ false; // 서버에서 전달된 초기 좋아요 상태
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const likeButton = document.getElementById('likeButton');
         const likeIcon = document.getElementById('likeIcon');
 
@@ -148,49 +147,9 @@
         const likeIcon = document.getElementById('likeIcon');
         const likeCountElem = document.getElementById('likeCount');
 
-        const isCurrentlyLiked = likeButton.classList.contains('liked');
-        const url = isCurrentlyLiked ? `/board/unlike/${meetingBoardNo}` : `/board/like/${meetingBoardNo}`;
-
-        // SweetAlert을 통해 확인 창 표시
-        const alertTitle = isCurrentlyLiked ? '정말 좋아요를 취소하시겠습니까?' : '좋아요를 누르시겠습니까?';
-        const confirmButtonText = isCurrentlyLiked ? '네, 취소합니다' : '네, 좋아요';
-
-        Swal.fire({
-            title: alertTitle,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: confirmButtonText,
-            cancelButtonText: '아니오'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // 사용자가 확인 버튼을 눌렀을 때만 요청 실행
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.loginRequired) {
-                            alert('로그인이 필요합니다.');
-                            return;
-                        }
-
-                        // 좋아요 상태 업데이트
-                        likeButton.classList.toggle('liked', !isCurrentlyLiked);
-                        likeIcon.textContent = !isCurrentlyLiked ? '❤️' : '🤍';
-                        likeCountElem.textContent = data.likeCount;
-                    })
-                    .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
-            }
-        });
-    }
-    function addReply() {
-        const loggedIn = document.body.dataset.loggedIn === 'true'; // 로그인 상태 확인
+        const loggedIn = document.body.dataset.loggedIn === 'true'; // 로그인 여부 확인
 
         if (!loggedIn) {
-            // 로그인하지 않은 경우 SweetAlert 창 표시
             Swal.fire({
                 title: '로그인이 필요한 서비스입니다.',
                 text: '로그인을 하시겠습니까?',
@@ -203,7 +162,61 @@
                     window.location.href = '/member/loginpage'; // 로그인 페이지로 이동
                 }
             });
-            return; // 로그인하지 않은 경우 함수 종료
+            return;
+        }
+
+        const isCurrentlyLiked = likeButton.classList.contains('liked');
+        const url = isCurrentlyLiked ? `/board/unlike/${meetingBoardNo}` : `/board/like/${meetingBoardNo}`;
+
+        Swal.fire({
+            title: isCurrentlyLiked ? '정말 좋아요를 취소하시겠습니까?' : '좋아요를 누르시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: isCurrentlyLiked ? '네, 취소합니다' : '네, 좋아요',
+            cancelButtonText: '아니오'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.loginRequired) {
+                            alert('로그인이 필요합니다.');
+                            return;
+                        }
+                        likeButton.classList.toggle('liked', !isCurrentlyLiked);
+                        likeIcon.textContent = !isCurrentlyLiked ? '❤️' : '🤍';
+                        likeCountElem.textContent = data.likeCount;
+                    })
+                    .catch(error => console.error('좋아요 처리 중 오류 발생:', error));
+            }
+        });
+    }
+</script>
+
+<script th:inline="javascript">
+    // ■■■■■■■■■■■■■■■■ 댓글 관련 기능 ■■■■■■■■■■■■■■■■
+    function addReply() {
+        const loggedIn = document.body.dataset.loggedIn === 'true';
+
+        if (!loggedIn) {
+            Swal.fire({
+                title: '로그인이 필요한 서비스입니다.',
+                text: '로그인을 하시겠습니까?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '로그인',
+                cancelButtonText: '취소'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/member/loginpage'; // 로그인 페이지로 이동
+                }
+            });
+            return;
         }
 
         const content = document.getElementById('replyText').value;
@@ -214,26 +227,21 @@
 
         fetch(`/board/reply`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `meetingReplyContent=${encodeURIComponent(content)}&meetingBoardNo=${meetingBoardNo}`
         })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // 댓글 등록이 성공하면 댓글 목록을 다시 불러오거나 페이지를 새로 고침
-                    location.reload();
+                    location.reload(); // 댓글 등록 성공 시 새로고침
                 } else {
                     alert('댓글 등록에 실패했습니다.');
                 }
             })
-            .catch(error => {
-                console.error('댓글 등록 중 오류 발생:', error);
-            });
+            .catch(error => console.error('댓글 등록 중 오류 발생:', error));
     }
+
     function deleteReply(replyId) {
-        // 댓글 삭제 확인을 위한 SweetAlert 창 표시
         Swal.fire({
             title: '정말 댓글을 삭제하시겠습니까?',
             icon: 'warning',
@@ -244,18 +252,15 @@
             cancelButtonText: '아니오'
         }).then((result) => {
             if (result.isConfirmed) {
-                // 사용자가 확인 버튼을 눌렀을 때만 요청 실행
                 fetch(`/board/reply/delete/${replyId}`, {
-                    method: 'POST', // 'POST' 메서드를 사용하여 서버에 요청
-                    headers: { 'Content-Type': 'application/json' }
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // 성공적으로 댓글 삭제 시 페이지를 새로 고침
-                            location.reload();
+                            location.reload(); // 성공 시 새로고침
                         } else {
-                            // 삭제 실패 시 경고창 표시
                             Swal.fire({
                                 title: '삭제 실패',
                                 text: '댓글 삭제에 실패했습니다.',
@@ -274,10 +279,10 @@
             }
         });
     }
+</script>
 
-
-
-    // 이미지 팝업 열기
+<script th:inline="javascript">
+    // ■■■■■■■■■■■■■■■■ 첨부파일 및 기타 페이지 동작 관련 기능 ■■■■■■■■■■■■■■■■
     function openPopup(src) {
         const popup = document.getElementById('popup');
         const popupImg = document.getElementById('popup-img');
@@ -285,11 +290,15 @@
         popupImg.src = src;
     }
 
-    // 이미지 팝업 닫기
     function closePopup() {
         const popup = document.getElementById('popup');
         popup.style.display = 'none';
     }
+
+    function modifyBoard() {
+        window.location.href = `/board/modify/${meetingBoardNo}`;
+    }
+
     function deleteBoard() {
         Swal.fire({
             title: '정말 게시글을 삭제하시겠습니까?',
@@ -302,10 +311,8 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 fetch(`/board/delete/${meetingBoardNo}`, {
-                    method: 'POST', // POST 메서드를 사용하여 서버에 요청
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
                 })
                     .then(response => {
                         if (response.redirected) {
@@ -331,10 +338,9 @@
             }
         });
     }
-
 </script>
 
-<!-- 이미지 팝업을 위한 모달 -->
+<!-- 이미지 팝업을 위한 모달 -->s
 <div id="popup" class="popup" onclick="closePopup()">
     <img id="popup-img" class="popup-img">
 </div>

@@ -1,0 +1,23 @@
+/* 드롭다운 메뉴 */
+.sidebar .dropdown-content {
+    display: none !important;
+    padding-left: 20px;
+}
+
+.sidebar .dropdown-content.show {
+    display: block !important;
+    padding: 10px;
+}
+
+.sidebar .dropdown-content a {
+    padding: 10px;
+}
+
+.sidebar .dropbtn::after {
+    content: ' ▼';
+    font-size: 12px;
+}
+
+.sidebar .dropbtn.active::after {
+    content: ' ▲';
+}

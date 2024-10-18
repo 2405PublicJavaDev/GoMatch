@@ -22,6 +22,7 @@ public interface MatchPredictMapper {
      *
      * @param
      * @param gameDate
+     * @param gameNo
      * @return
      */
     List<MatchPredict> selectPredictByDate(String gameDate);
@@ -32,6 +33,7 @@ public interface MatchPredictMapper {
      * @return
      */
     List<MemberRankDTO> selectAllMemberRank();
+
 
     /**
      * 나의 예측 리스트 조회
@@ -108,10 +110,13 @@ public interface MatchPredictMapper {
      * 회원의 랭크 업데이트
      *
      * @param memberId
+     * @param gameNo
      */
-    void updateMemberRank(String memberId);
 
     Integer countPredictionsByMemberId(String memberId, Long gameNo);
+
+    int updateMemberRank();
+
 
 //    int insertMemberRanking(String memberId);
 }

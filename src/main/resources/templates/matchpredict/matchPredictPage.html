@@ -35,9 +35,14 @@
                     GoMatch
                 </span>
                 <div class="upcoming-games">
-                    <span th:text="${predict.gameTime}" class="time"></span>
-                    <p>경기 예정</p>
-                    <span class="time-out">후 종료</span>
+                    <div class="game-date">
+                        <p>경기 날짜</p>
+                        <span th:text="${predict.gameDate}" class="date"></span>
+                    </div>
+                    <div class="game-time">
+                        <p th:text="${predict.gameTime}" class="time"></p>
+                        <span>경기 예정</span>
+                    </div>
                 </div>
                 <form name="add-form" action="/addPredict" method="post">
 <!--                    <input type="date" name="gameDate" required>-->
@@ -125,45 +130,20 @@
         </div>
     </aside>
 </main>
-<footer>
-    <div class="footer-container">
-        <div class="footer-info">
-            <div class="footer-links">
-                <a href="#">공지사항</a>
-                <a href="#">7~8월 K리그 베스트 플레이어 & MY...</a>
-                <a href="#">홈</a>
-                <a href="#">야구</a>
-                <a href="#">해외축구</a>
-                <a href="#">축구</a>
-                <a href="#">농구</a>
-                <a href="#">배구</a>
-                <a href="#">N골프</a>
-                <a href="#">일반-펠리칸</a>
-                <a href="#">e스포츠</a>
-                <a href="#">연재</a>
-            </div>
-        </div>
-        <div class="footer-details">
-            <div class="company-info">
-                <p>대표이사: 백인호</p>
-                <p>전화: 1588-3200 (대표전화/고객센터)</p>
-                <p>사업자등록번호: 220-81-62517</p>
-            </div>
-            <div class="address">
-                <p>주소: 경기도 성남시 분당구 정자동로 95 NAVER 1784, 13561</p>
-                <p>이메일: helpcustomer@naver.com</p>
-                <p>통신판매업자 등록번호: 제2006-경기성남-692호</p>
-            </div>
-            <div class="responsible-person">
-                <p>기사배열 책임자: 김수향</p>
-                <p>청소년 보호 책임자: 이정규</p>
-            </div>
-            <div class="copyright">
-                <p>본 콘텐츠의 저작권은 저작권법 또는 네이버에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적 책임을 질 수 있습니다.</p>
-            </div>
-        </div>
+<div class="team-logos">
+    <div class="team-logos-container">
+        <a href="#"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="#"><img src="img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="#"><img src="img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="#"><img src="img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="#"><img src="img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="#"><img src="img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="#"><img src="img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="#"><img src="img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="#"><img src="img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
     </div>
-</footer>
+</div>
 
 <th:block th:replace="fragments/footer.html"></th:block>
 <script th:inline="javascript">
@@ -172,7 +152,7 @@
         alert(errorMessage);
     }
 
-    function setPrediction(decision, gameNo) {
+    function setPrediction(decision, gameNo, teamButton) {
         const decisionInput = document.querySelector("input[name='matchPredictDecision']");
         if (decisionInput) {
             decisionInput.value = decision;
@@ -185,9 +165,34 @@
         if (form) {
             form.submit();
         }
+
+        // 팀 버튼 활성화
+        const parentGameItem = teamButton.closest(".game-item");
+        const siblingButtons = parentGameItem.querySelectorAll(".team-a, .draw, .team-b");
+        siblingButtons.forEach(function (btn) {
+            btn.classList.remove("active");
+        });
+        teamButton.classList.add("active");
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.teams button');
+
+        // 모든 버튼에서 active 클래스 제거
+        buttons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // 선택된 팀의 버튼에 active 클래스 추가
+        buttons.forEach(button => {
+            if (button.classList.contains('team-a') && button.querySelector('span').innerText === selectedTeam) {
+                button.classList.add('active');
+            } else if (button.classList.contains('draw') && selectedTeam === '무') {
+                button.classList.add('active');
+            } else if (button.classList.contains('team-b') && button.querySelector('span').innerText === selectedTeam) {
+                button.classList.add('active');
+            }
+        })
         const today = new Date();
         const currentYear = today.getFullYear();
         const currentMonth = today.getMonth();
@@ -395,42 +400,43 @@
                 });
                 this.classList.add("active");
 
-                // 클릭된 주차의 랭킹 리스트 조회
-                const startDate = this.dataset.startDate;
-                const endDate = this.dataset.endDate;
-                fetchRankingList(startDate,endDate);
+
             });
         });
 
         // 랭킹 리스트 조회 함수
-        function fetchRankingList(startDate,endDate){
-            fetch(`/rankingList/${startDate}/${endDate}`)
+        function fetchRankingList() {
+            fetch(`/rankingList`)
                 .then(response => {
-                    if(!response.ok) {
+                    if (!response.ok) {
                         throw new Error(`Http error! status: ${response.status}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    updateRankingList(data);
+                    updateRankingList(data); // 랭킹 리스트 업데이트
                 })
-                .catch(error => console.error(`Error fetching ranking list:`,error));
+                .catch(error => console.error(`Error fetching ranking list:`, error));
         }
-        function updateRankingList(ranking){
-            const rankingList = document.querySelector(".top-predictors ol");
-            rankingList.innerHTML = '<h4>랭킹</h4>'; // 기존 리스트 초기화
 
-            ranking.forEach = document.createElement("li");
-            listItem.className = "rank-item";
-            listItem.innerHTML = `
+        function updateRankingList(ranking) {
+            const rankingList = document.querySelector(".top-predictors ol");
+            rankingList.innerHTML = ''; // 기존 리스트 초기화
+
+            // 랭킹 정보를 순회하며 리스트에 추가
+            ranking.forEach((member, index) => {
+                const listItem = document.createElement("li"); // li 요소 생성
+                listItem.className = "rank-item";
+                listItem.innerHTML = `
             <div class="rank-position">
-                        <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
-                        <span class="rank">${index + 1}</span>
-                    </div>
-                    <span class="name">${member.memberNickname}</span>
-                    <span class="points">${member.experiencePoints}</span>
-                `;
-            rankingList.appendChild(listItem);
+                <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
+                <span class="rank">${index + 1}</span> <!-- 순위 -->
+            </div>
+            <span class="name">${member.memberNickname}</span> <!-- 회원 닉네임 -->
+            <span class="points">${member.experiencePoints}</span> <!-- 경험치 -->
+        `;
+                rankingList.appendChild(listItem); // 리스트에 추가
+            });
         }
         const initialWeekButton = document.querySelector(".week-date.active");
         if (initialWeekButton) {
@@ -438,8 +444,8 @@
             const endDate = initialWeekButton.dataset.endDate;
             fetchRankingList(startDate, endDate);
         }
+    window.onload = fetchRankingList;
     });
-
 </script>
 </body>
 </html>

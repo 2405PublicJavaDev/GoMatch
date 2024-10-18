@@ -3,10 +3,7 @@ package com.moijo.gomatch.domain.admin.mapper;
 import com.moijo.gomatch.domain.admin.vo.AdminVO1;
 import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -37,4 +34,9 @@ public interface AdminMapper1 {
 
     @Delete("DELETE FROM GOODS_IMAGE WHERE GOODS_NO = #{goodsNo} AND GOODS_IMAGE_REP_YN = 'Y'")
     void deleteRepresentativeImage(Long goodsNo); // 대표 이미지 삭제
+
+    @Insert("INSERT INTO GOODS_OPTION (OPTION_ID, GOODS_NO, OPTION_NAME) " +
+            "VALUES (GOODS_OPTION_SEQ.NEXTVAL, #{goodsNo}, #{optionName})")
+    void insertGoodsOption(@Param("goodsNo") Long goodsNo, @Param("optionName") String optionName);
+
 }

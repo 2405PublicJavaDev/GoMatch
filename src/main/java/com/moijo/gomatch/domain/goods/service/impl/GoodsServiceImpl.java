@@ -82,5 +82,10 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsMapper.selectNewGoods();
     }
 
+    @Override
+    public List<String> getGoodsOptions(Long goodsNo) {
+        return goodsMapper.selectGoodsOptions(goodsNo);  // 매퍼 호출
+    }
+
 
 }

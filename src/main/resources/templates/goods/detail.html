@@ -1,32 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>상품 상세 조회</title>
-  <link rel="stylesheet" href="/css/goods/detail.css">
-  <link rel="stylesheet" href="/css/goods/standard.css">
-</head>
+<head th:insert="~{header-footer :: head}"></head>
 <body>
-
-<!-- 헤더 부분 -->
-<header>
-  <nav>
-    <div class="logo">
-      <a href="./mainpage.html"><img src="/img/고매치로고.png" alt="야구 리그 로고"></a>
-    </div>
-    <ul class="nav-links">
-      <li><a href="#">일정/결과</a></li>
-      <li><a href="#">굿즈</a></li>
-      <li><a href="#">소모임</a></li>
-      <li><a href="#">승부예측</a></li>
-    </ul>
-    <ul class="memeber-links">
-      <li><a href="loginpage">로그인</a></li>
-      <li><a href="joinmember">회원가입</a></li>
-    </ul>
-  </nav>
-</header>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<link rel="stylesheet" href="/css/goods/detail.css">
+<link rel="stylesheet" href="/css/goods/standard.css">
 
 <div class="team-logos">
   <div class="team-logos-container">
@@ -84,6 +63,25 @@
         </div>
       </div>
 
+      <div class="product-info-row option-select">
+        <span class="label">옵션 선택:</span>
+        <div class="custom-select-container">
+          <select class="custom-select" name="option" required>
+            <option value="" disabled selected>옵션 선택</option>
+            <option th:each="option : ${options}" th:value="${option}" th:text="${option}"></option>
+          </select>
+          <span class="custom-arrow">&#9662;</span> <!-- ▼ 화살표 추가 -->
+        </div>
+      </div>
+
+      <!--      <div class="product-info-row">-->
+<!--        <span class="label">옵션 선택:</span>-->
+<!--        <select name="option" required>-->
+<!--          <option value="" disabled selected>옵션 선택</option>-->
+<!--          <option th:each="option : ${options}" th:value="${option}" th:text="${option}"></option>-->
+<!--        </select>-->
+<!--      </div>-->
+
       <!-- 구매 및 찜하기 버튼 -->
       <div class="purchase-options">
         <div class="btn-group">
@@ -93,7 +91,14 @@
                   th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">
             <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>
           </button>
-          <button class="btn btn-buy-now">바로 구매</button>
+
+          <!-- 바로 구매 버튼 -->
+          <button class="btn btn-buy-now"
+                  th:onclick="|location.href='/goods/payment/' + ${goods.goodsNo};|">
+            결제
+          </button>
+
+
         </div>
       </div>
     </div>
@@ -197,102 +202,4 @@
 
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-<!--  <title>상품 상세 조회</title>-->
-<!--  <style>-->
-<!--    .btn {-->
-<!--      cursor: pointer;-->
-<!--      font-size: 18px;-->
-<!--      padding: 10px 20px;-->
-<!--      background-color: gray;-->
-<!--      color: white;-->
-<!--      border: none;-->
-<!--      border-radius: 5px;-->
-<!--      margin-right: 10px;-->
-<!--    }-->
-
-<!--    .wishlist-button.active {-->
-<!--      background-color: red; /* 찜하기 버튼 활성화 색상 */-->
-<!--    }-->
-
-<!--    .image-container img {-->
-<!--      width: 200px;-->
-<!--      height: 200px;-->
-<!--      margin: 10px;-->
-<!--    }-->
-<!--  </style>-->
-<!--</head>-->
-<!--<body>-->
-<!--<h1 th:text="${' [' + goods.goodsTeam + '] ' + goods.goodsProductName }"></h1> &lt;!&ndash; 나머지도 이 양식으로 &ndash;&gt;-->
-<!--<p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>-->
-<!--<p>팀: <span th:text="${goods.goodsTeam}"></span></p>-->
-<!--<p>가격: <span th:text="${goods.goodsPrice}"></span></p>-->
-<!--<p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>-->
-<!--<p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>-->
-<!--<p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>-->
-<!--<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p>-->
-
-<!--&lt;!&ndash; 대표 이미지 표시 &ndash;&gt;-->
-<!--<h2>대표 이미지</h2>-->
-<!--<div class="image-container" th:if="${representativeImage != null}">-->
-<!--  <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />-->
-<!--</div>-->
-
-<!--&lt;!&ndash; 상세 이미지 표시 &ndash;&gt;-->
-<!--<h2>상세 이미지</h2>-->
-<!--<div class="image-container" th:if="${detailImages != null}">-->
-<!--  <div th:each="image : ${detailImages}">-->
-<!--    <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--<a href="/goods/list" class="btn">목록</a>-->
-
-<!--&lt;!&ndash; 찜하기 버튼 &ndash;&gt;-->
-<!--<button id="wishlistButton"-->
-<!--        class="btn wishlist-button"-->
-<!--        th:classappend="${isWishlisted} ? ' active' : ''"-->
-<!--        th:onclick="'toggleWishlist(' + ${goods.goodsNo} + ')'">-->
-<!--  <span th:text="${isWishlisted} ? '찜하기 취소' : '찜하기'"></span>-->
-<!--</button>-->
-
-<!--<button class="btn">결제</button>-->
-
-<!--<script>-->
-<!--  function toggleWishlist(goodsNo) {-->
-<!--    console.log('goodsNo:', goodsNo); // 디버깅을 위한 로그-->
-
-<!--    if (typeof goodsNo === 'undefined' || goodsNo === null) {-->
-<!--      console.error('Invalid goodsNo'); // 오류 로그-->
-<!--      return; // 잘못된 goodsNo가 전달되면 함수 종료-->
-<!--    }-->
-
-<!--    fetch('/wishlist/toggle?goodsNo=' + goodsNo, {-->
-<!--      method: 'POST',-->
-<!--      credentials: 'include' // 쿠키와 인증정보 포함-->
-<!--    })-->
-<!--            .then(response => {-->
-<!--              if (response.status === 401) {-->
-<!--                // 로그인 페이지로 리디렉션-->
-<!--                window.location.href = '/member/loginpage';-->
-<!--              } else if (response.ok) {-->
-<!--                const button = document.getElementById('wishlistButton');-->
-<!--                button.classList.toggle('active');-->
-<!--                button.innerText = button.classList.contains('active') ? '찜하기 취소' : '찜하기';-->
-<!--              } else {-->
-<!--                console.error('Error:', response.statusText);-->
-<!--              }-->
-<!--            })-->
-<!--            .catch(error => console.error('Error:', error));-->
-<!--  }-->
-<!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
-
-
 

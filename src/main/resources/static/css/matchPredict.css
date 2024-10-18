@@ -16,6 +16,12 @@ button {
 }
 
 
+.no-predictions {
+    display: flex;
+    justify-content: center;
+}
+
+
 /* Main Content */
 .main-content {
     max-width: 1200px;
@@ -28,6 +34,14 @@ button {
 /* Prediction Section */
 .prediction-section {
     flex: 1;
+    height: 100%;
+    padding: 16px;
+    max-width: 768px;
+}
+
+.myPrediction-section {
+    flex: 1;
+    height: 100%;
     padding: 16px;
     max-width: 768px;
 }
@@ -75,6 +89,18 @@ button {
     color: white;
 }
 
+.game-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.game-time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 /* Game List */
 .game-list {
     list-style-type: none;
@@ -104,10 +130,16 @@ button {
 
 .upcoming-games {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     font-size: 12px;
     color: #666;
     margin-bottom: 12px;
+}
+.upcoming-games > span {
+    display: flex;
+    justify-content: flex-start;
 }
 
 .teams {
