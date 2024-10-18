@@ -247,16 +247,16 @@
 <!-- 메인태그 닫고 로고 푸터 시작  -->
 <div class="team-logos">
     <div class="team-logos-container">
-        <a href="#"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
-        <a href="#"><img src="img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-        <a href="#"><img src="img/SSG로고.png" alt="Landers" class="team-logo"></a>
-        <a href="#"><img src="img/NC로고.png" alt="Dinos" class="team-logo"></a>
-        <a href="#"><img src="img/두산로고.png" alt="Bears" class="team-logo"></a>
-        <a href="#"><img src="img/기아로고.png" alt="Tigers" class="team-logo"></a>
-        <a href="#"><img src="img/롯데로고.png" alt="Giants" class="team-logo"></a>
-        <a href="#"><img src="img/삼성로고.png" alt="Lions" class="team-logo"></a>
-        <a href="#"><img src="img/한화로고.png" alt="Wiz" class="team-logo"></a>
-        <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
+        <a href="https://www.lgtwins.com/service/html.ncd?view=/pc_twins/twins_main/twins_main" target="_blank"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="https://www.ktwiz.co.kr/" target="_blank">                 <img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="https://www.ssglanders.com/main" target="_blank">          <img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="https://www.ncdinos.com/" target="_blank">                 <img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="https://www.doosanbears.com/" target="_blank">             <img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="https://tigers.co.kr/" target="_blank">                    <img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="https://www.giantsclub.com/html/" target="_blank">         <img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="https://www.samsunglions.com/" target="_blank">            <img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="https://www.hanwhaeagles.co.kr/index.do" target="_blank">  <img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="https://heroesbaseball.co.kr/index.do" target="_blank">    <img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
     </div>
 </div>
 <div th:insert="~{header-footer :: footer}"></div>
@@ -279,5 +279,13 @@
 <!-- 소모임 부분 자스 (윤경)-->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script src="/js/meeting/main-meeting.js"></script>
+<script>
+    window.onload = function() {
+        if (localStorage.getItem('showLoginSuccess') === 'true') {
+            alert("로그인 성공하셨습니다!");
+            localStorage.removeItem('showLoginSuccess');
+        }
+    };
+</script>
 
 </body>
