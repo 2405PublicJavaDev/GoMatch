@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,11 +39,10 @@ public class MatchPredictController {
     @GetMapping("/matchPredict")
     public String showMatchPredictionListPage(HttpSession session, Model model
             , @RequestParam(value = "gameNo", required = false) Long gameNo) {
-        // 승부 예측 목록 조회
         String memberId = (String)session.getAttribute("memberId");
         boolean hasPrediction = false; // 예측 상태 변수 초기화
         log.info("Session memberId: {}", memberId);
-        List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
+//        List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
         List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank(); // 멤버 랭킹 리스트 조회
         if (memberId != null) {
 
@@ -54,12 +55,9 @@ public class MatchPredictController {
             }
         }
 
-        // 모델에 승부 예측 목록 추가
-        model.addAttribute("matchPredictions", matchPredictions);
+//        model.addAttribute("matchPredictions", matchPredictions);
         model.addAttribute("memberRank", memberRank);
 
-
-        // 뷰 이름 반환 (HTML 템플릿 파일)
         return "matchPredict/matchPredictPage";
     }
 
@@ -67,7 +65,7 @@ public class MatchPredictController {
     @ResponseBody
     public ResponseEntity<List<MatchPredict>> getMatchPredictions(HttpSession session
             ,@PathVariable String gameDate) {
-        String memberId =  (String)session.getAttribute("memberId");
+        String memberId = (String)session.getAttribute("memberId");
         List<MatchPredict> predictions = matchPredictService.getPredictionsByDate(gameDate);
         return ResponseEntity.ok(predictions); // JSON으로 반환
     }
@@ -125,7 +123,6 @@ public class MatchPredictController {
             int result = matchPredictService.addMatchPredict(gameNo, matchPredictNo, matchPredictDecision, memberId);
                 matchPredictService.updateRank();
             if (result > 0) {
-//                int addRank = matchPredictService.addMemberRanking(memberId);
                 return "redirect:/matchPredict"; // 성공적으로 추가된 경우
             } else {
                 model.addAttribute("errorMessage", "예측 등록에 실패했습니다."); // 실패 메시지 추가
@@ -185,7 +182,7 @@ public class MatchPredictController {
 
     /**
      * 유저 랭킹 등록
-     * @param model
+     * @param
      * @param session
      */
 //    @PostMapping("updateUserRank")
@@ -194,6 +191,14 @@ public class MatchPredictController {
 //        return
 //    }
 
+    @GetMapping("/game/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
 
     @ModelAttribute
     public void addAttributes(Model model, HttpSession session) {
@@ -205,5 +210,7 @@ public class MatchPredictController {
             model.addAttribute("loggedIn", false);
         }
     }
+
+
 
 }

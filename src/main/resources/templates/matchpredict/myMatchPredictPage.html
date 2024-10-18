@@ -86,11 +86,6 @@
         <span th:text="${memberInfo.experiencePoints}"></span>
         <span>입니다.</span>
       </div>
-      <div class="user-rank">
-        <span>현재 순위는</span>
-        <span th:text="${memberInfo.rankPosition}">-위 </span>
-        <span>위 입니다.</span>
-      </div>
       <div class="user-points">
         <span>전체 예측에서 </span>
         <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
@@ -107,9 +102,19 @@
     <div class="top-predictors">
       <ol>
         <h4>랭킹</h4>
+        <li th:if="${memberInfo != null}" class="rank-item">
+          <div class="rank-position">
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
+            <span th:text="${memberInfo.rankPosition}" class="rank"></span>
+          </div>
+          <span th:text="${memberInfo.memberNickname}" class="name"></span>
+          <span>(나)</span>
+          <span th:text="${memberInfo.experiencePoints}" class="points"></span>
+        </li>
+
         <li th:each="member : ${memberRank}" class="rank-item">
           <div class="rank-position">
-            <img class="profile-img" src="/img/LG로고.png" alt="profile-img"/>
+            <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
             <span th:text="${member.rankPosition}" class="rank"></span>
           </div>
           <span th:text="${member.memberNickname}" class="name"></span>
