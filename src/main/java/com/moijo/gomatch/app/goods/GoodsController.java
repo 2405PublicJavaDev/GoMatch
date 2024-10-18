@@ -60,26 +60,6 @@ public class GoodsController {
         return "goods/main";  // 하나의 HTML 페이지에서 두 목록 출력
     }
 
-
-
-//    @GetMapping("/list")
-//    public String getGoodsList(Model model) {
-//        List<GoodsVO> goodsList = goodsService.getAllGoods();
-//
-//        // 각 상품의 대표 이미지를 가져와서 설정
-//        for (GoodsVO goods : goodsList) {
-//            GoodsImageVO representativeImage = goodsService.getRepresentativeImageByGoodsNo(goods.getGoodsNo());
-//            if (representativeImage != null) {
-//                goods.setGoodsImageWebPath(representativeImage.getGoodsImageWebPath());
-//            }
-//        }
-//
-//        model.addAttribute("goodsList", goodsList);
-//        return "goods/list";
-//    }
-
-
-
     @GetMapping("/team/list")
     public String getGoodsListByTeam(@RequestParam("team") String team, Model model) {
         List<GoodsVO> goodsList = goodsService.getGoodsByTeam(team);
@@ -100,13 +80,6 @@ public class GoodsController {
         return "goods/teamlist";
     }
 
-//    @GetMapping("/category/list")
-//    public String getGoodsListByCategory(@RequestParam("category") String category, Model model) {
-//        List<GoodsVO> goodsList = goodsService.getGoodsByCategory(category);
-//        model.addAttribute("goodsList", goodsList);
-//        return "goods/categorylist";
-//    }
-
     @GetMapping("/detail/{goodsNo}")
     public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
         GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
@@ -119,6 +92,9 @@ public class GoodsController {
         // 상세 이미지 조회
         List<GoodsImageVO> detailImages = goodsService.getDetailImagesByGoodsNo(goodsNo);
         model.addAttribute("detailImages", detailImages);
+
+        List<String> options = goodsService.getGoodsOptions(goodsNo);  // 옵션 조회
+        model.addAttribute("options", options);
 
         // 로그인한 사용자 정보 가져오기
         MemberVO member = (MemberVO) session.getAttribute("member");
@@ -133,26 +109,6 @@ public class GoodsController {
 
         return "goods/detail";
     }
-
-
-//    @GetMapping("/detail/{goodsNo}")
-//    public String getGoodsDetail(@PathVariable Long goodsNo, HttpSession session, Model model) {
-//        GoodsVO goods = goodsService.getGoodsById(goodsNo); // 상품 ID로 상품 세부 정보 조회
-//        model.addAttribute("goods", goods);
-//
-//        // 로그인한 사용자 정보 가져오기
-//        MemberVO member = (MemberVO) session.getAttribute("member"); // 세션에서 로그인 정보 가져오기
-//
-//        if (member != null) {
-//            // 찜하기 상태 체크
-//            boolean isWishlisted = wishlistService.isWishlisted(member.getMemberId(), goodsNo);
-//            model.addAttribute("isWishlisted", isWishlisted); // 모델에 찜하기 상태 추가
-//        } else {
-//            model.addAttribute("isWishlisted", false); // 로그인하지 않은 경우
-//        }
-//
-//        return "goods/detail"; // 상품 세부 정보 뷰 반환
-//    }
 
     @GetMapping("/search")
     public String searchGoods(@RequestParam("searchValue") String searchValue,
@@ -181,22 +137,18 @@ public class GoodsController {
         return "goods/search"; // 검색 결과 페이지로 이동
     }
 
+    @GetMapping("/payment/{goodsNo}")
+    public String showPaymentForm(@PathVariable Long goodsNo, HttpSession session, Model model) {
+        GoodsVO goods = goodsService.getGoodsById(goodsNo);
+        MemberVO member = (MemberVO) session.getAttribute("member");
 
-//    @GetMapping("/search")
-//    public String searchGoods(@RequestParam("searchValue") String searchValue,
-//                              @RequestParam("searchType") String searchType,
-//                              Model model) {
-//        List<GoodsVO> goodsList;
-//
-//        if ("all".equals(searchType)) {
-//            goodsList = goodsService.searchAllGoods(searchValue);
-//        } else if ("name".equals(searchType)) {
-//            goodsList = goodsService.searchGoodsByName(searchValue);
-//        } else {
-//            goodsList = goodsService.searchGoodsByCode(searchValue);
-//        }
-//
-//        model.addAttribute("goodsList", goodsList);
-//        return "goods/search"; // 검색 후 상품 목록으로 이동 이거 수정해야 함
-//    }
+        if (member == null) {
+            return "redirect:/member/loginpage";  // 비로그인 시 로그인 페이지로 이동
+        }
+
+        model.addAttribute("goods", goods);
+        model.addAttribute("member", member);
+        return "goods/paymentForm";  // 결제 정보 입력 페이지로 이동
+    }
+
 }

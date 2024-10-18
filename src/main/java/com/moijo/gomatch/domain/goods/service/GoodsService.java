@@ -31,6 +31,8 @@ public interface GoodsService {
 
     GoodsImageVO getRepresentativeImageByGoodsNo(Long goodsNo);  // 대표 이미지 조회
 
+    List<String> getGoodsOptions(Long goodsNo);  // 옵션 조회 메서드
+
 
 
 }

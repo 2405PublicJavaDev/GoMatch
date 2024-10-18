@@ -10,7 +10,17 @@
 <body>
 <div class="sidebar">
     <div class="sidebarmember"><a href="admin-member"> <h3>회원 관리</h3> </a></div>
-    <div class="sidebarmember2"><a href="#"><h3>상품 관리</h3></a></div>
+<!--    <div class="sidebarmember2"><a href="admin-product"><h3>상품 관리</h3></a></div>-->
+    <div class="sidebarmember2">
+        <a href="admin-pList">
+            <h3>상품 관리 ▾</h3>
+        </a>
+        <ul class="submenu">
+            <li><a href="/admin/product/register">상품 등록</a></li>
+            <li><a href="/admin/product/list">상품 수정</a></li>
+        </ul>
+    </div>
+
 </div>
 <div class="content">
     <div class="header-container">
