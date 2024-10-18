@@ -19,7 +19,7 @@
     </select>
 
     <select id="selectPredictByDate" resultType="MatchPredict">
-        SELECT
+        SELECT distinct
             G.GAME_NO,
             P.MATCH_PREDICT_NO,
             P.MATCH_PREDICT_DECISION,
@@ -29,20 +29,29 @@
             P.MATCH_PREDICT_STATUS,
             G.GAME_DATE,
             G.REG_DATE
-        FROM
-            GAME G
-                LEFT JOIN
-            MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
-        WHERE
-            G.GAME_DATE = #{gameDate}
+        FROM GAME G
+        LEFT JOIN MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
+        WHERE G.GAME_DATE = #{gameDate}
     </select>
 
     <select id="selectAllMemberRank" resultType="MemberRankDTO">
-        SELECT U.MEMBER_ID,M.MEMBER_NAME,M.MEMBER_NICKNAME,U.EXPERIENCE_POINTS,U.RANK_POSITION
-        FROM MEMBER M
-        FULL OUTER JOIN USER_RANK U
-        ON M.MEMBER_ID = U.MEMBER_ID
-        ORDER BY U.RANK_POSITION
+        SELECT M.MEMBER_ID,
+               M.MEMBER_NAME,
+            M.MEMBER_NICKNAME,
+            SUM(U.EXPERIENCE_POINTS) AS experiencePoints,
+            U.RANK_POSITION
+        FROM
+            USER_RANK U
+                LEFT JOIN
+            MEMBER M ON U.MEMBER_ID = M.MEMBER_ID
+                LEFT JOIN
+            MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID
+                LEFT JOIN
+            GAME G ON G.GAME_NO = P.GAME_NO
+        GROUP BY
+            M.MEMBER_ID, M.MEMBER_NAME, M.MEMBER_NICKNAME, U.RANK_POSITION
+        ORDER BY
+            experiencePoints DESC
     </select>
 
     <select id="selectAllMyMatchByMember" resultType="MyPredictDTO">
@@ -101,6 +110,7 @@
         )
     </select>
 
+
     <select id="getAllMemberRankUpdate" resultType="MemberRankDTO">
         SELECT
             M.MEMBER_ID,
@@ -115,20 +125,18 @@
             MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID
                 JOIN
             GAME G ON G.GAME_NO = P.GAME_NO
-        WHERE
-            G.GAME_DATE BETWEEN #{startDate} AND #{endDate}
         GROUP BY
             M.MEMBER_ID, M.MEMBER_NICKNAME, U.RANK_POSITION
         ORDER BY
             experiencePoints DESC;  -- 경험치 총합 기준으로 정렬
     </select>
 
-
-
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (MATCH_PREDICT_NO,GAME_NO,MATCH_PREDICT_DECISION,MEMBER_ID,MATCH_PREDICT_STATUS,REG_DATE)
         VALUES (SEQ_MATCH_PREDICT.NEXTVAL,#{gameNo},#{matchPredictDecision},#{memberId} ,DEFAULT,SYSDATE)
     </insert>
+
+
 
 <!--    <insert id="insertMemberRanking">-->
 <!--        INSERT INTO USER_RANK (RANK_NO,MEMBER_ID,EXPERIENCE_POINTS,RANK_POSITION,REG_DATE,UPDATE_DATE)-->
@@ -139,6 +147,42 @@
         UPDATE MATCH_PREDICT
         SET MATCH_PREDICT_DECISION = #{matchPredictDecision}
         WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}
+    </update>
+
+    <update id="updateMemberRank">
+        UPDATE USER_RANK U
+        SET RANK_POSITION = (
+            SELECT newRankPosition
+            FROM (
+                     SELECT
+                         M.MEMBER_ID,
+                         RANK() OVER (ORDER BY SUM(U.EXPERIENCE_POINTS) DESC) AS newRankPosition
+                     FROM
+                         USER_RANK U
+                             LEFT JOIN
+                         MEMBER M ON U.MEMBER_ID = M.MEMBER_ID
+                             LEFT JOIN
+                         MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID
+                             LEFT JOIN
+                         GAME G ON G.GAME_NO = P.GAME_NO
+                     GROUP BY
+                         M.MEMBER_ID
+                 ) RankedMembers
+            WHERE RankedMembers.MEMBER_ID = U.MEMBER_ID
+        )
+        WHERE U.MEMBER_ID IN (
+            SELECT M.MEMBER_ID
+            FROM
+                USER_RANK U
+                    LEFT JOIN
+                MEMBER M ON U.MEMBER_ID = M.MEMBER_ID
+                    LEFT JOIN
+                MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID
+                    LEFT JOIN
+                GAME G ON G.GAME_NO = P.GAME_NO
+            GROUP BY
+                M.MEMBER_ID
+        )
     </update>
 
 

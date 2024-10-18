@@ -176,6 +176,23 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.teams button');
+
+        // 모든 버튼에서 active 클래스 제거
+        buttons.forEach(button => {
+            button.classList.remove('active');
+        });
+
+        // 선택된 팀의 버튼에 active 클래스 추가
+        buttons.forEach(button => {
+            if (button.classList.contains('team-a') && button.querySelector('span').innerText === selectedTeam) {
+                button.classList.add('active');
+            } else if (button.classList.contains('draw') && selectedTeam === '무') {
+                button.classList.add('active');
+            } else if (button.classList.contains('team-b') && button.querySelector('span').innerText === selectedTeam) {
+                button.classList.add('active');
+            }
+        })
         const today = new Date();
         const currentYear = today.getFullYear();
         const currentMonth = today.getMonth();
@@ -383,16 +400,13 @@
                 });
                 this.classList.add("active");
 
-                // 클릭된 주차의 랭킹 리스트 조회
-                const startDate = this.dataset.startDate;
-                const endDate = this.dataset.endDate;
-                fetchRankingList(startDate,endDate);
+
             });
         });
 
         // 랭킹 리스트 조회 함수
-        function fetchRankingList(startDate, endDate) {
-            fetch(`/rankingList/${startDate}/${endDate}`)
+        function fetchRankingList() {
+            fetch(`/rankingList`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Http error! status: ${response.status}`);
@@ -400,37 +414,37 @@
                     return response.json();
                 })
                 .then(data => {
-                    updateRankingList(data);
+                    updateRankingList(data); // 랭킹 리스트 업데이트
                 })
                 .catch(error => console.error(`Error fetching ranking list:`, error));
         }
 
         function updateRankingList(ranking) {
             const rankingList = document.querySelector(".top-predictors ol");
-            rankingList.innerHTML = '<h4>랭킹</h4>'; // 기존 리스트 초기화
+            rankingList.innerHTML = ''; // 기존 리스트 초기화
 
-            ranking.forEach((member, index) => { // forEach로 순회
+            // 랭킹 정보를 순회하며 리스트에 추가
+            ranking.forEach((member, index) => {
                 const listItem = document.createElement("li"); // li 요소 생성
                 listItem.className = "rank-item";
                 listItem.innerHTML = `
             <div class="rank-position">
                 <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
-                <span class="rank">${index + 1}</span>
+                <span class="rank">${index + 1}</span> <!-- 순위 -->
             </div>
-            <span class="name">${member.memberNickname}</span>
-            <span class="points">${member.experiencePoints}</span>
+            <span class="name">${member.memberNickname}</span> <!-- 회원 닉네임 -->
+            <span class="points">${member.experiencePoints}</span> <!-- 경험치 -->
         `;
                 rankingList.appendChild(listItem); // 리스트에 추가
             });
         }
-
-
         const initialWeekButton = document.querySelector(".week-date.active");
         if (initialWeekButton) {
             const startDate = initialWeekButton.dataset.startDate;
             const endDate = initialWeekButton.dataset.endDate;
             fetchRankingList(startDate, endDate);
         }
+    window.onload = fetchRankingList;
     });
 </script>
 </body>

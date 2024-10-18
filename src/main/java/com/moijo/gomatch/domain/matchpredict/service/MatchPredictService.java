@@ -19,6 +19,7 @@ public interface MatchPredictService {
      * 날짜 별 승부예측 리스트
      *
      * @param gameDate
+     * @param gameNo
      * @return
      */
     List<MatchPredict> getPredictionsByDate(String gameDate);
@@ -101,7 +102,7 @@ public interface MatchPredictService {
      */
     boolean hasPredictionForGame(String memberId, Long gameNo);
 
-    List<MemberRankDTO> getAllMemberRankUpdate(String startDate, String endDate);
+    int updateRank();
 
 
 //    int addMemberRanking(String memberId);

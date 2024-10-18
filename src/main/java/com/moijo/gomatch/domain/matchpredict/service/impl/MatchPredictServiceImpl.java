@@ -30,6 +30,7 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
     /**
      * @param gameDate
+     * @param gameNo
      * @return
      */
     @Override
@@ -118,8 +119,9 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     @Override
-    public List<MemberRankDTO> getAllMemberRankUpdate(String startDate, String endDate) {
-        return matchPredictMapper.getAllMemberRankUpdate(startDate,endDate);
+    public int updateRank() {
+        int result = matchPredictMapper.updateMemberRank();
+        return result;
     }
 
 

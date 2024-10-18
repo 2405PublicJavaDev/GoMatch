@@ -42,6 +42,7 @@ public class MatchPredictController {
         boolean hasPrediction = false; // 예측 상태 변수 초기화
         log.info("Session memberId: {}", memberId);
         List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
+        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank(); // 멤버 랭킹 리스트 조회
         if (memberId != null) {
 
             MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
@@ -54,7 +55,6 @@ public class MatchPredictController {
         }
 
         // 모델에 승부 예측 목록 추가
-        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank();
         model.addAttribute("matchPredictions", matchPredictions);
         model.addAttribute("memberRank", memberRank);
 
@@ -72,14 +72,6 @@ public class MatchPredictController {
         return ResponseEntity.ok(predictions); // JSON으로 반환
     }
 
-    @GetMapping("/rankingList/{startDate}/{endDate}")
-    @ResponseBody
-    public ResponseEntity<List<MemberRankDTO>> getAllRankingList(@PathVariable String startDate, @PathVariable String endDate) {
-        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRankUpdate(startDate,endDate);
-        return ResponseEntity.ok(memberRank);
-    }
-
-
 
     /**
      * 나의 예측 리스트 조회(gameNo,memberId),화원 정보 조회
@@ -96,9 +88,9 @@ public class MatchPredictController {
         }
 
         List<MyPredictDTO> matchPredictions = matchPredictService.getAllMyMatchByMember(memberId);
-        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank();
-        MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
-        double rankPercent = matchPredictService.calculatorRankPercent(memberId);
+        List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank(); // 멤버 랭킹 리스트 조회
+        MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId); // 내 정보 조회
+        double rankPercent = matchPredictService.calculatorRankPercent(memberId); // 퍼센트 조회
 
         model.addAttribute("memberRank", memberRank);
         model.addAttribute("matchPredictions", matchPredictions);
@@ -131,7 +123,7 @@ public class MatchPredictController {
 
         try {
             int result = matchPredictService.addMatchPredict(gameNo, matchPredictNo, matchPredictDecision, memberId);
-
+                matchPredictService.updateRank();
             if (result > 0) {
 //                int addRank = matchPredictService.addMemberRanking(memberId);
                 return "redirect:/matchPredict"; // 성공적으로 추가된 경우
@@ -145,15 +137,31 @@ public class MatchPredictController {
         return "redirect:/matchPredict"; // 에러 발생 시 같은 페이지로
     }
 
+    @PostMapping("updateMemberRank")
+    public String updateMemberRank(HttpSession session, Model model) {
+        try{
+        int result = matchPredictService.updateRank();
+        } catch (Exception e) {
+            log.error("Error updating member rank: {}", e.getMessage());
+            model.addAttribute("errorMessage", "랭킹 업데이트 오류 발생");
+        }
 
-    @PostMapping("/matchPedict")
-    public int increaseExperience(HttpSession session, Model model
-    , @RequestParam Long gameNo){
-        String memberId = (String) session.getAttribute("memberId");
-
-        int result = matchPredictService.increaseExperience(memberId,gameNo);
-        return result;
+        return "redirect:/matchPredict";
     }
+
+
+    /**
+     * 경험치 추가
+      */
+
+//    @PostMapping("/matchPedict")
+//    public int increaseExperience(HttpSession session, Model model
+//    , @RequestParam Long gameNo){
+//        String memberId = (String) session.getAttribute("memberId");
+//
+//        int result = matchPredictService.increaseExperience(memberId,gameNo);
+//        return result;
+//    }
 
     /**
      * 예측 수정(나의 예측리스트에서 가능)
