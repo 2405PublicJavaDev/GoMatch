@@ -11,7 +11,7 @@
 <th:block th:replace="fragments/header.html"></th:block>
 
 <main class="main-content">
-  <section class="prediction-section">
+  <section class="myPrediction-section">
     <div class="btn-container">
       <form action="matchPredict" method="get">
         <div class="match-predict">
@@ -32,14 +32,23 @@
 
     </div>
     <ul class="game-list">
+      <li th:if="${matchPredictions.size() == 0}" class="no-predictions">
+        <h1>등록된 예측이 없습니다.</h1>
+      </li>
       <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
                     GoMatch
                 </span>
         <div class="upcoming-games">
-          <span th:text="${predict.gameTime}" class="time">17:00 경기예정</span>
-          <span class="time-out">후 종료</span>
+          <div class="game-date">
+            <p>경기 날짜</p>
+            <span th:text="${predict.gameDate}" class="date"></span>
+          </div>
+          <div class="game-time">
+            <p th:text="${predict.gameTime}" class="time"></p>
+            <span>경기 예정</span>
+          </div>
         </div>
         <form name="modify-form" action="/modifyPredict" method="post">
           <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
@@ -113,49 +122,35 @@
     </div>
   </aside>
 </main>
-<footer>
-  <div class="footer-container">
-    <div class="footer-info">
-      <div class="footer-links">
-        <a href="#">공지사항</a>
-        <a href="#">7~8월 K리그 베스트 플레이어 & MY...</a>
-        <a href="#">홈</a>
-        <a href="#">야구</a>
-        <a href="#">해외축구</a>
-        <a href="#">축구</a>
-        <a href="#">농구</a>
-        <a href="#">배구</a>
-        <a href="#">N골프</a>
-        <a href="#">일반-펠리칸</a>
-        <a href="#">e스포츠</a>
-        <a href="#">연재</a>
-      </div>
-    </div>
-    <div class="footer-details">
-      <div class="company-info">
-        <p>대표이사: 최수연</p>
-        <p>전화: 1588-3200 (대표전화/고객센터)</p>
-        <p>사업자등록번호: 220-81-62517</p>
-      </div>
-      <div class="address">
-        <p>주소: 경기도 성남시 분당구 정자동로 95 NAVER 1784, 13561</p>
-        <p>이메일: helpcustomer@naver.com</p>
-        <p>통신판매업자 등록번호: 제2006-경기성남-692호</p>
-      </div>
-      <div class="responsible-person">
-        <p>기사배열 책임자: 김수향</p>
-        <p>청소년 보호 책임자: 이정규</p>
-      </div>
-      <div class="copyright">
-        <p>본 콘텐츠의 저작권은 저작권법 또는 네이버에 있으며, 이를 무단 이용하는 경우 저작권법 등에 따라 법적 책임을 질 수 있습니다.</p>
-      </div>
-    </div>
+<div class="team-logos">
+  <div class="team-logos-container">
+    <a href="#"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
+    <a href="#"><img src="img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+    <a href="#"><img src="img/SSG로고.png" alt="Landers" class="team-logo"></a>
+    <a href="#"><img src="img/NC로고.png" alt="Dinos" class="team-logo"></a>
+    <a href="#"><img src="img/두산로고.png" alt="Bears" class="team-logo"></a>
+    <a href="#"><img src="img/기아로고.png" alt="Tigers" class="team-logo"></a>
+    <a href="#"><img src="img/롯데로고.png" alt="Giants" class="team-logo"></a>
+    <a href="#"><img src="img/삼성로고.png" alt="Lions" class="team-logo"></a>
+    <a href="#"><img src="img/한화로고.png" alt="Wiz" class="team-logo"></a>
+    <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
   </div>
-</footer>
+</div>
 
 <th:block th:replace="fragments/footer.html"></th:block>
 <script>
-
+  function setPrediction(decision) {
+    //matchPredictDecision의 hidden input에 선택한 값을 설정
+    const decisionInput = document.querySelector('input[name="matchPredictDecision"]');
+    if (decisionInput) {
+      decisionInput.value = decision; // decisionInput이 null이 아닐 때만 설정
+    }
+    // 폼 제출
+    const form = document.forms["modify-form"]; // form 요소 찾기
+    if (form) {
+      form.submit(); // form이 null이 아닐 때만 제출
+    }
+  }
   document.addEventListener("DOMContentLoaded", function () {
   let loadMoreBtn = document.querySelector(".load-more");
   const allRankItem = document.querySelectorAll(".rank-item");

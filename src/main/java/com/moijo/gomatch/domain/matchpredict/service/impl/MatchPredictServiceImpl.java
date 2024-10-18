@@ -30,6 +30,7 @@ public class MatchPredictServiceImpl implements MatchPredictService {
 
     /**
      * @param gameDate
+     * @param gameNo
      * @return
      */
     @Override
@@ -118,29 +119,10 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     }
 
     @Override
-    public List<MemberRankDTO> getAllMemberRank(String startDate, String endDate) {
-        return List.of();
+    public int updateRank() {
+        int result = matchPredictMapper.updateMemberRank();
+        return result;
     }
-
-//    @Override
-//    public int addMemberRanking(String memberId) {
-//        int result = matchPredictMapper.insertMemberRanking(memberId);
-//        return result;
-//    }
-
-    @Override
-    public int updateUserRank(String memberId) {
-        // 회원의 경험치 조회
-        int experience = matchPredictMapper.getUserExperience(memberId);
-
-        // 데이터베이스에 랭크 업데이트
-        matchPredictMapper.updateMemberRank(memberId);
-
-        return experience; // 업데이트된 랭크 반환
-    }
-
-
-
 
 
     /**
