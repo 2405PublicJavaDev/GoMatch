@@ -162,50 +162,79 @@ th {
 }
 
 th:nth-child(1), td:nth-child(1) { /* 번호 */
-    width: 6%;
+    width: 5%;
 }
 
 th:nth-child(2), td:nth-child(2) { /* 분류 */
-    width: 8%;
-}
-
-th:nth-child(3), td:nth-child(3) { /* 제목 */
-    width: 49%;
-}
-
-th:nth-child(4), td:nth-child(4) { /* 작성자 */
     width: 10%;
 }
 
+th:nth-child(3), td:nth-child(3) { /* 제목 */
+    width: 52%;
+}
+
+th:nth-child(4), td:nth-child(4) { /* 작성자 */
+    width: 8%;
+}
+
 th:nth-child(5), td:nth-child(5) { /* 등록일 */
-    width: 15%;
+    width: 11%;
 }
 
 th:nth-child(6), td:nth-child(6),
 th:nth-child(7), td:nth-child(7) { /* 조회수, 좋아요 */
-    width: 6%;
+    width: 7%;
 }
 
 tbody tr:hover {
     background-color: #f0f8ff;
 }
-
-/* 검색 섹션을 페이지네이션 아래로 이동 */
+/* 검색바 컨테이너 중앙 정렬 */
 .search-section {
     display: flex;
     justify-content: center;
-    margin-top: 10px; /* 간격 조정 */
+    margin: 40px 0; /* 팀 로고와 New Items 사이 간격 조정 */
 }
-.search-section select, .search-section input {
-    padding: 6px; /* 간격 줄임 */
-    margin-right: 5px;
+
+/* 검색바 디자인 */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 10px 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%; /* 검색바 전체 너비 조정 */
+    max-width: 600px; /* 최대 너비 제한 */
 }
-.search-section button {
-    padding: 6px 12px;
-    background-color: #16215F;
+
+/* 검색바 요소 스타일 */
+.search-bar select,
+.search-bar input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.search-bar input {
+    flex: 1;
+}
+
+.search-bar button {
+    background-color: #0056b3;
     color: white;
     border: none;
+    padding: 8px 16px;
     cursor: pointer;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+    background-color: #004494;
 }
 .new-tag {
     background-color: #e74c3c;
@@ -215,25 +244,6 @@ tbody tr:hover {
     font-size: 0.8em;
     margin-left: 5px;
 }
-
-/* 검색 섹션을 페이지네이션 아래로 이동 */
-.search-section {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-.search-section select, .search-section input {
-    padding: 8px;
-    margin-right: 10px;
-}
-.search-section button {
-    padding: 8px 15px;
-    background-color: #16215F;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
 
 .common-pagination-li-end {
     display: inline-block;

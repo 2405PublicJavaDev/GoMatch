@@ -81,12 +81,14 @@ h1 {
     margin-bottom: 20px;
     font-weight: normal;
 }
-
+form {
+    display: grid;
+    gap: 15px;
+}
 /* 폼 그룹 스타일 */
 .form-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
 }
 
 label {
@@ -104,21 +106,51 @@ input[type="text"], select, #editor {
     width: 100%;
 }
 
-/* 파일 미리보기 스타일 */
-#thumbnailContainer {
+/* 파일 업로드 기능 */
+/* 썸네일 미리보기를 위한 스타일 */
+#thumbnailContainerBoard {
     display: flex;
-    flex-wrap: nowrap;
+    flex-direction: row; /* 가로로 배치 */
+    flex-wrap: nowrap;   /* 줄바꿈을 막고 가로로 스크롤 가능하도록 설정 */
     gap: 10px;
-    overflow-x: auto;
+    overflow-x: auto;    /* 가로 스크롤 허용 */
     margin-top: 10px;
 }
 
+.file-thumbnail-wrapper {
+    height: 150px;
+    width: 150px;
+    position: relative;
+}
+
 .thumbnail {
-    height: 140px;
     width: 140px;
+    height: 140px;
     object-fit: cover;
     border-radius: 4px;
     border: 1px solid #ccc;
+}
+
+/* X 버튼 스타일 */
+.x-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px; /* 너비와 높이를 동일하게 설정 */
+    height: 24px; /* 너비와 높이를 동일하게 설정 */
+    cursor: pointer;
+    font-size: 14px; /* X 글자의 크기를 적절하게 조정 */
+    line-height: 24px; /* 버튼의 높이와 동일하게 설정하여 글자가 중앙에 위치 */
+    text-align: center;
+    padding: 0;
+}
+
+.x-btn:hover {
+    background-color: darkred;
 }
 
 /* 버튼 스타일 */

@@ -132,25 +132,6 @@
         document.getElementById('meetingBoardContent').value = editor.getHTML();
     }
 
-    function previewFiles() {
-        const previewContainer = document.getElementById('thumbnailContainer');
-        const files = document.getElementById('groupImage').files;
-        previewContainer.innerHTML = '';
-
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.classList.add('thumbnail');
-                previewContainer.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-</script>
-<script>
-    // 전역 변수 선언
     let maxFileCount = 5;
     let newFileData = [];
     let existingFileCount = 0;
@@ -161,28 +142,17 @@
     }
 
     function removeExistingFile(fileId) {
-        console.log(`삭제할 파일 ID: ${fileId} (타입: ${typeof fileId})`);  // 파일 ID와 타입 출력
-
-        // fileId를 숫자로 변환하여 ID 찾기
         const targetId = `file-${parseInt(fileId)}`;
-        console.log(`찾으려는 요소 ID: ${targetId}`);
         const fileElement = document.getElementById(targetId);
-        console.log(`fileElement: `, fileElement);
 
         if (fileElement) {
             fileElement.remove(); // 썸네일 DOM에서 파일 제거
-            console.log(`fileElement가 제거되었습니다.`);
 
             const deletedFileIdsInput = document.getElementById('deletedFileIds');
             let deletedFileIds = deletedFileIdsInput.value ? deletedFileIdsInput.value.split(',') : [];
-            console.log(`현재 삭제할 파일 ID 목록(추가 전): ${deletedFileIds.join(',')}`);
-
             deletedFileIds.push(fileId);
             deletedFileIdsInput.value = deletedFileIds.join(',');
 
-            console.log(`현재 삭제할 파일 ID 목록(추가 후): ${deletedFileIds.join(',')}`);  // 삭제 목록 출력
-
-            // 기존 파일 개수 감소
             if (existingFileCount > 0) {
                 existingFileCount--;
             }
@@ -195,6 +165,19 @@
     document.addEventListener('DOMContentLoaded', function() {
         existingFileCount = document.querySelectorAll("#existingFiles .file-thumbnail-wrapper").length;
 
+        // 기존 파일을 main 컨테이너에 직접 추가
+        const fileThumbnailsContainer = document.getElementById('fileThumbnails');
+        const existingFiles = document.querySelectorAll('#existingFiles .file-thumbnail-wrapper');
+        existingFiles.forEach(file => {
+            fileThumbnailsContainer.appendChild(file);
+        });
+
+        // 가로 정렬 스타일 적용
+        fileThumbnailsContainer.style.display = 'flex';
+        fileThumbnailsContainer.style.flexDirection = 'row';
+        fileThumbnailsContainer.style.flexWrap = 'wrap';
+        fileThumbnailsContainer.style.gap = '10px';
+
         function triggerFileInput() {
             document.getElementById('newFiles').click();
         }
@@ -202,14 +185,12 @@
         function previewNewFiles() {
             const fileInput = document.getElementById('newFiles');
             const fileLimitMessage = document.getElementById('fileLimitMessage');
-            const newFileThumbnails = document.getElementById('newFileThumbnails');
             const files = Array.from(fileInput.files);
 
-            // 파일 개수 초과 체크
             if (existingFileCount + newFileData.length + files.length > maxFileCount) {
                 fileLimitMessage.style.display = 'block';
                 fileInput.value = ''; // 초과 시 선택한 파일 초기화
-                return; // 초과하면 즉시 반환
+                return;
             } else {
                 fileLimitMessage.style.display = 'none';
             }
@@ -237,7 +218,7 @@
 
                     thumbnailWrapper.appendChild(thumbnail);
                     thumbnailWrapper.appendChild(removeButton);
-                    newFileThumbnails.appendChild(thumbnailWrapper);
+                    fileThumbnailsContainer.appendChild(thumbnailWrapper); // 여기서 main 컨테이너에 추가
                 };
                 reader.readAsDataURL(file);
             });
@@ -248,15 +229,15 @@
         document.querySelector('.add-image-btn').addEventListener('click', triggerFileInput);
         document.getElementById('newFiles').addEventListener('change', previewNewFiles);
 
-        // 폼 제출 시 파일 개수 확인
         document.querySelector('form').addEventListener('submit', function(event) {
             const totalFiles = existingFileCount + newFileData.length;
             if (totalFiles > maxFileCount) {
                 alert(`최대 ${maxFileCount}개의 파일만 첨부할 수 있습니다.`);
-                event.preventDefault(); // 폼 제출 막음
+                event.preventDefault();
             }
         });
     });
 </script>
+
 </body>
 </html>

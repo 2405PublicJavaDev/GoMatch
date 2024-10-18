@@ -1,15 +1,3 @@
-<!-- 공통 헤더/푸터 적용 방법
-    1. 적용할.html 파일 맨위에 이거 다 붙여넣기
-    2. 바디태그에 thymeleaf등 조건이 있다면 원래 코드대로 붙여넣기!
-    3. 각 페이지별 개별 CSS 붙여넣기 할 영역에 붙여넣기
-    4. 원래있던 <!DOCTYPE html> 부터 <Main> 태그 위까지 지우기
-    5. 푸터영역 (푸터태그 포함) 아래 코드 붙여넣기
-    <div th:insert="~{header-footer :: footer}"></div>
-    6. (선택)정상 작동 확인 후 주석 지우기!
-    *** 공통 모듈에 적용된 CSS/JS ***
-        (1) 헤더/푸더 CSS
-        (2) sweetAlert2 CSS/JS
--->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{header-footer :: head}"></head>
@@ -20,7 +8,6 @@
 <!-- 개별 CSS 붙여 넣기 할 영역 -->
 <!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
 <link rel="stylesheet" href="/css/board/board-detail.css">
-
 
 
 <!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
@@ -47,8 +34,12 @@
             <div class="meeting-title">
                 <h2 th:text="${board.meetingBoardTitle}">게시글 제목</h2>
                 <div class="top-buttons">
-                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-modify" onclick="modifyBoard()">수정</button>
-                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-delete" onclick="deleteBoard()">삭제</button>
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-modify"
+                            onclick="modifyBoard()">수정
+                    </button>
+                    <button th:if="${session.memberId == board.memberId}" type="button" class="button-delete"
+                            onclick="deleteBoard()">삭제
+                    </button>
                 </div>
             </div>
         </div>
@@ -91,7 +82,7 @@
             <button type="button" id="likeButton" class="like-button" onclick="toggleLike()">
                 <span id="likeIcon">🤍</span> 좋아요 (<span id="likeCount" th:text="${likeCount}">0</span>)
             </button>
-            <button type="button" class="button-back" onclick="history.back()">목록으로</button>
+            <button type="button" class="button-back" onclick="goToList()">목록으로</button>
         </div>
 
 
@@ -110,7 +101,10 @@
                         <p th:utext="${reply.meetingReplyContent}">댓글 내용</p>
                     </div>
                     <!-- 삭제 버튼 -->
-                    <button th:if="${reply.memberId == session.memberId}" type="button" class="button-delete-comment" th:onclick="'deleteReply(' + ${reply.meetingReplyNo} + ')'">삭제</button>              </div>
+                    <button th:if="${reply.memberId == session.memberId}" type="button" class="button-delete-comment"
+                            th:onclick="'deleteReply(' + ${reply.meetingReplyNo} + ')'">삭제
+                    </button>
+                </div>
             </div>
             <div class="no-comments" th:if="${replies.size() == 0}">
                 <p>아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</p>
@@ -119,8 +113,12 @@
 
         <!-- 이전글/다음글 버튼 -->
         <div class="pagination-buttons">
-            <button th:if="${previousPostId != null}" type="button" class="button-prev" th:onclick="|location.href='/board/detail/' + ${previousPostId}|">이전글</button>
-            <button th:if="${nextPostId != null}" type="button" class="button-next" th:onclick="|location.href='/board/detail/' + ${nextPostId}|">다음글</button>
+            <button th:if="${previousPostId != null}" type="button" class="button-prev"
+                    th:onclick="|location.href='/board/detail/' + ${previousPostId}|">이전글
+            </button>
+            <button th:if="${nextPostId != null}" type="button" class="button-next"
+                    th:onclick="|location.href='/board/detail/' + ${nextPostId}|">다음글
+            </button>
         </div>
     </div>
 </main>
@@ -130,7 +128,7 @@
     const meetingBoardNo = /*[[${board.meetingBoardNo}]]*/ 0;
     const isLiked = /*[[${isLiked}]]*/ false; // 서버에서 전달된 초기 좋아요 상태
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const likeButton = document.getElementById('likeButton');
         const likeIcon = document.getElementById('likeIcon');
 
@@ -168,7 +166,7 @@
                 // 사용자가 확인 버튼을 눌렀을 때만 요청 실행
                 fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {'Content-Type': 'application/json'}
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -186,6 +184,7 @@
             }
         });
     }
+
     function addReply() {
         const loggedIn = document.body.dataset.loggedIn === 'true'; // 로그인 상태 확인
 
@@ -232,6 +231,7 @@
                 console.error('댓글 등록 중 오류 발생:', error);
             });
     }
+
     function deleteReply(replyId) {
         // 댓글 삭제 확인을 위한 SweetAlert 창 표시
         Swal.fire({
@@ -247,7 +247,7 @@
                 // 사용자가 확인 버튼을 눌렀을 때만 요청 실행
                 fetch(`/board/reply/delete/${replyId}`, {
                     method: 'POST', // 'POST' 메서드를 사용하여 서버에 요청
-                    headers: { 'Content-Type': 'application/json' }
+                    headers: {'Content-Type': 'application/json'}
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -275,7 +275,9 @@
         });
     }
 
-
+    function modifyBoard() {
+        window.location.href = `/board/modify/${meetingBoardNo}`;
+    }
 
     // 이미지 팝업 열기
     function openPopup(src) {
@@ -289,6 +291,9 @@
     function closePopup() {
         const popup = document.getElementById('popup');
         popup.style.display = 'none';
+    }
+    function goToList() {
+        window.location.href = '/board/list'; // 게시판 목록 페이지로 이동하는 URL
     }
     function deleteBoard() {
         Swal.fire({

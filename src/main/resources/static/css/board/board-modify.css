@@ -111,6 +111,24 @@ input[type="text"], select, #editor {
     gap: 10px;
     overflow-x: auto;
     margin-top: 10px;
+    width: 100%; /* 전체 너비로 확장 */
+}
+
+#fileThumbnails, #existingFiles, #newFileThumbnails {
+    display: flex;
+    gap: 10px;
+    flex-direction: row; /* 가로 정렬 */
+    flex-wrap: wrap; /* 줄바꿈 허용 */
+    overflow-x: auto; /* 가로 스크롤 허용 */
+    width: 100%;
+}
+
+.file-thumbnail-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    max-width: 140px; /* 썸네일과 동일한 크기로 제한 */
 }
 
 .thumbnail {
@@ -119,6 +137,13 @@ input[type="text"], select, #editor {
     object-fit: cover;
     border-radius: 4px;
     border: 1px solid #ccc;
+}
+
+#fileThumbnails {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap; /* 필요시 줄바꿈 허용 */
 }
 
 /* 버튼 스타일 */
@@ -145,4 +170,22 @@ button {
 .cancel {
     background-color: #6c757d;
     color: white;
+}
+
+/* 파일 삭제 버튼 */
+.x-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
