@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -23,8 +24,11 @@ public class GameController {
 
     // 팀 순위 보여주는 메소드
     @GetMapping("/game/teamrank")
-    public String showTeamRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model) {
+    public String showTeamRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model, HttpSession session) {
         List<String[]> teamList = gameBatchComponent.scrapeTeamRank(year);
+        if ("2024".equals(year)) {
+            session.setAttribute("2024_Rank", teamList);
+        }
         model.addAttribute("teams", teamList);
         model.addAttribute("selectedYear", year);
         return "game/teamRankPage";

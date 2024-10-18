@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<head th:insert="~{header-footer :: head}"></head>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<link rel="stylesheet" href="/css/chat/chatList.css">
+<main>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">채팅방 목록</h2>
+        </div>
+        <div class="card-body">
+            <form action="/chat/createRoom" method="post" class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="roomName" placeholder="채팅방 이름" required>
+                    <button type="submit" class="btn btn-primary">방 만들기</button>
+                </div>
+            </form>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>채팅방 이름</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="room : ${roomList}">
+                    <td>
+                        <a th:href="@{chatRoom(roomId=${room.roomId})}"
+                           th:text="${room.name}"
+                           class="text-decoration-none"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</main>
+<div th:insert="~{header-footer :: footer}"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</html>
