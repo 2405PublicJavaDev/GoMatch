@@ -27,4 +27,7 @@ public interface AdminService1 {
 
     void deleteGoodsImage(Long goodsImageNo); // 이미지 삭제 메소드 추가
 
+    void insertGoodsOption(Long goodsNo, String optionName);
+
+
 }

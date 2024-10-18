@@ -62,7 +62,35 @@
     <option value="야구용품">야구용품</option>
   </select><br>
 
+  <!-- 옵션 입력 부분 -->
+  <label for="options">옵션 입력 (최대 3개):</label>
+  <div id="optionsContainer"></div> <!-- 옵션이 추가되는 영역 -->
+  <button type="button" onclick="addOption()">옵션 추가</button><br><br>
+
   <button type="submit">등록</button>
 </form>
+
+<script>
+  let optionCount = 0;
+
+  // 옵션 추가 함수 (최대 3개)
+  function addOption() {
+    if (optionCount >= 3) {
+      alert('최대 3개의 옵션만 추가할 수 있습니다.');
+      return;
+    }
+
+    const container = document.getElementById('optionsContainer');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'options';  // 여러 옵션을 배열 형태로 전송
+    input.placeholder = `옵션 ${optionCount + 1}`;
+    input.classList.add('option-input');  // 스타일 적용
+
+    container.appendChild(input);
+    optionCount++;
+  }
+</script>
+
 </body>
 </html>

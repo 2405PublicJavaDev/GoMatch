@@ -1,79 +1,76 @@
-//package com.moijo.gomatch.domain.goods.service;
-//
-//import com.moijo.gomatch.domain.goods.mapper.PaymentMapper;
-//import com.siot.IamportRestClient.IamportClient;
-//import com.siot.IamportRestClient.request.CancelData;
-//import com.siot.IamportRestClient.response.IamportResponse;
-//import com.siot.IamportRestClient.response.Payment;
-//import jakarta.annotation.PostConstruct;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.util.Map;
-//
-//
-//@Configuration
-//@Service
-//public class PaymentService {
-//
-//    private IamportClient iamportClient;
-//
-//    @Value("${IMP_API_KEY}")
-//    String apiKey;
-//    @Value("${IMP_API_SECRETKEY}")
-//    String apiSecret;
-//
-//    @PostConstruct
-//    public void init() {
-//        this.iamportClient = new IamportClient(apiKey, apiSecret);
-//    }
-//
-//    @Autowired
-//    private PaymentMapper pmapper;
-//
-//    @Autowired
-//    private ReservationMapper rmapper;
-//    // 제품 확인 메소드
-//    public IamportResponse<Payment> validateIamport(String imp_uid) {
-//        try {
-//            IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
-//            System.out.println("Service ValidatepaymentInfo:" + payment);
-//            return payment;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-//    // 결제 취소 메소드
-//    public IamportResponse<Payment> cancelPayment(String imp_uid) {
-//        try {
-//            CancelData cancelData = new CancelData(imp_uid, true);
-//            IamportResponse<Payment> payment = iamportClient.cancelPaymentByImpUid(cancelData);
-//            System.out.println("Service CancelpaymentInfo:" + payment);
-//
-//            return payment;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-//    // 결제 정보 와 주문 정보 저장 메소드
-//    public void saveBuyerAndOrderInfo(Map<String, Object> buyerInfo, Map<String, Object> reserveInfo) {
-//        rmapper.insertReservationInfo(reserveInfo);
-//        pmapper.insertPaymentInfo(buyerInfo);
-//    }
-//    // imp_uid 조회 메소드
-//    public String selectImpUid(String reservationNo) {
-//        return pmapper.selectImpUid(reservationNo);
-//    }
-//    // 결제 취소 후 결제 db에 저장된 정보와 작성자 기준 예매 정보 삭제 메소드
-//    @Transactional
-//    public void deleteReserveAndPaymentInfo(String impUid) {
-//        rmapper.deleteReservationInfo(impUid);
-//        pmapper.deletePaymentInfo(impUid);
-//    }
-//}
-//
+package com.moijo.gomatch.domain.goods.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moijo.gomatch.domain.goods.mapper.PaymentMapper;
+import com.moijo.gomatch.domain.goods.vo.GoodsPayVO;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class PaymentService {
+
+    private final PaymentMapper paymentMapper;
+    private final IamportClient iamportClient;
+
+    @Autowired
+    public PaymentService(PaymentMapper paymentMapper,
+                          @Value("${IMP_API_KEY}") String apiKey,
+                          @Value("${IMP_API_SECRETKEY}") String apiSecret) {
+        this.paymentMapper = paymentMapper;
+        this.iamportClient = new IamportClient(apiKey, apiSecret);
+    }
+
+    public IamportResponse<Payment> validateIamport(String impUid) throws IOException {
+        try {
+            return iamportClient.paymentByImpUid(impUid);
+        } catch (IamportResponseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void savePaymentInfo(Payment payment, String memberId) {
+        GoodsPayVO goodsPayVO = new GoodsPayVO();
+
+        // 필수 값 설정
+        goodsPayVO.setGoodsNo(Long.parseLong(payment.getMerchantUid().split("_")[1]));
+        goodsPayVO.setMemberId(memberId);  // 세션에서 전달된 memberId 사용
+        goodsPayVO.setGoodsPayPhone(payment.getBuyerTel());
+        goodsPayVO.setGoodsPayArrival(payment.getBuyerAddr());
+        goodsPayVO.setGoodsPayAddressCode(payment.getBuyerPostcode());
+
+        // 커스텀 데이터 파싱 (JSON 형식)
+        Map<String, String> customDataMap = parseCustomData(payment.getCustomData());
+
+        // 요청 메시지 및 환불 계좌 설정
+        goodsPayVO.setGoodsRequirement(customDataMap.getOrDefault("requirement", "요청사항 없음"));
+        goodsPayVO.setGoodsPayReturnAccount(customDataMap.getOrDefault("returnAccount", "없음"));
+
+        // 데이터베이스에 결제 정보 저장
+        paymentMapper.insertPaymentInfo(goodsPayVO);
+    }
+
+    // 커스텀 데이터 파싱 메서드
+    private Map<String, String> parseCustomData(String customData) {
+        if (customData == null || customData.isEmpty()) {
+            return new HashMap<>(); // 비어있을 경우 빈 맵 반환
+        }
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(customData, Map.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>(); // 파싱 실패 시 빈 맵 반환
+        }
+    }
+}

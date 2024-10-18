@@ -65,4 +65,8 @@ public interface GoodsMapper {
     """)
     List<GoodsVO> selectNewGoods();
 
+    @Select("SELECT OPTION_NAME FROM GOODS_OPTION WHERE GOODS_NO = #{goodsNo}")
+    List<String> selectGoodsOptions(Long goodsNo);  // 옵션 조회 SQL
+
+
 }

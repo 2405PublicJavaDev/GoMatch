@@ -2,7 +2,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0px;
+    padding: 0;
     background-color: white;
 }
 
@@ -19,35 +19,31 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    gap: 60px; /* 두 섹션 간의 간격 */
-    margin-top: 20px; /* 팀 로고와 상품 이미지/정보 사이 간격 추가 */
+    gap: 60px;
+    margin-top: 20px;
 }
 
 .image-container, .details-container {
-    flex: 1; /* 두 섹션이 동일한 비율로 확장 */
-    max-width: 50%; /* 각각의 섹션이 50% 너비를 가짐 */
+    flex: 1;
+    max-width: 50%;
 }
 
 /* 상품 이미지 */
 .image-container img {
-    width: 100%; /* 이미지가 섹션 너비에 맞춰짐 */
+    width: 100%;
     height: auto;
-    object-fit: cover; /* 이미지 비율 유지하며 꽉 채우기 */
+    object-fit: cover;
     border-radius: 10px;
-    border: 1px solid #ddd; /* 연한 회색 테두리 */
+    border: 1px solid #ddd;
     background-color: white;
 }
 
 /* 상품 정보 */
-.details-container {
-    /*flex: 1.5;*/
-}
-
 .details-container h1 {
     font-size: 28px;
     margin-bottom: 20px;
-    padding-bottom: 20px; /* 밑줄과 글자 사이의 여백 */
-    border-bottom: 2px solid #ddd; /* 연한 회색 밑줄 */
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd;
 }
 
 .details-container p {
@@ -57,7 +53,7 @@ body {
 
 .details-container .price {
     font-size: 26px;
-    color: #000000;
+    color: #000;
     font-weight: bold;
     margin: 20px 0;
 }
@@ -66,26 +62,86 @@ body {
 .product-info {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 각 항목 사이의 간격 */
+    gap: 15px;
     margin-top: 20px;
 }
 
 .product-info-row {
     display: flex;
-    justify-content: space-between; /* 레이블과 값을 양 끝에 배치 */
-    align-items: center; /* 세로로 가운데 정렬 */
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: 10px;
 }
 
 .label {
-    flex-basis: 150px; /* 레이블의 고정 너비 */
-    text-align: left;  /* 레이블을 왼쪽 정렬 */
-    font-weight: bold; /* 레이블을 굵게 */
+    flex-basis: 150px;
+    text-align: left;
+    font-weight: bold;
 }
 
 .value {
-    flex-grow: 1; /* 값의 너비를 유동적으로 확장 */
-    text-align: left; /* 값을 왼쪽 정렬 */
+    flex-grow: 1;
+    text-align: left;
+}
+
+/* 옵션 선택 영역 */
+.option-select {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    justify-content: space-between;
+}
+
+/* 드롭다운 정렬과 일관성 유지 */
+.option-select .label {
+    font-weight: bold;
+    font-size: 18px;
+    flex-basis: 150px; /* 다른 정보와 동일한 크기 */
+    text-align: left;
+}
+
+/* 드롭다운 컨테이너 */
+.custom-select-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+/* 드롭다운 기본 스타일 */
+.custom-select {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    appearance: none;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease-in-out;
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: #b68d40;
+}
+
+/* 커스텀 화살표 */
+.custom-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #333;
+    pointer-events: none;
+}
+
+/* 드롭다운 호버 효과 */
+.custom-select:hover {
+    border-color: #aaa;
 }
 
 /* 구매 및 찜하기 버튼 */
@@ -175,16 +231,16 @@ body {
 /* 상세 이미지 세로 정렬 */
 .detail-images {
     display: flex;
-    flex-direction: column; /* 세로 정렬 */
-    align-items: center;    /* 이미지 가운데 정렬 */
+    flex-direction: column;
+    align-items: center;
     gap: 50px;
     margin-top: 20px;
-    background-color: white; /* 상세 이미지 배경을 흰색으로 설정 */
+    background-color: white;
 }
 
 .detail-images img {
     width: 600px;
     height: 600px;
-    object-fit: cover; /* 이미지가 잘리지 않고 비율을 유지 */
+    object-fit: cover;
     border-radius: 10px;
 }

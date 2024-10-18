@@ -61,5 +61,11 @@ public class AdminServiceImpl1 implements AdminService1 {
         adminMapper1.deleteRepresentativeImage(goodsNo); // 대표 이미지 삭제
     }
 
+    @Override
+    public void insertGoodsOption(Long goodsNo, String optionName) {
+        adminMapper1.insertGoodsOption(goodsNo, optionName);
+    }
+
+
 
 }
