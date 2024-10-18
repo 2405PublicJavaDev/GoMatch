@@ -3,6 +3,8 @@ package com.moijo.gomatch.app.chatting;
 import com.moijo.gomatch.domain.chatting.service.ChatService;
 
 import com.moijo.gomatch.domain.chatting.vo.ChatRoom;
+import com.moijo.gomatch.domain.member.vo.MemberVO;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Controller;
@@ -19,7 +21,6 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
 
-
     @RequestMapping("/chat/chatList")
     public String chatList(Model model){
         List<ChatRoom> roomList = chatService.findAllRoom();
@@ -27,18 +28,35 @@ public class ChatController {
         return "chat/chatList";
     }
 
-    @PostMapping("/chat/createRoom")  //방을 만들었으면 해당 방으로 가야지.
-    public String createRoom(Model model, @RequestParam String name, String username) {
-        ChatRoom room = chatService.createRoom(name);
+    @PostMapping("/chat/createRoom")  //방 만들기
+    public String createRoom(Model model, @RequestParam String roomName, HttpSession session) {
+        String memberNickName = (String) session.getAttribute("memberNickName");
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member == null) {
+            // 세션이 없을 경우 처리
+            return "common/oops";
+        }
+        String profileUrl = member.getProfileImageUrl() != null ? member.getProfileImageUrl() : "/img/기본프로필.png";
+        System.out.println(profileUrl);
+        ChatRoom room = chatService.createRoom(roomName);
         model.addAttribute("room",room);
-        model.addAttribute("username",username);
-        return "chat/chatRoom";  //만든사람이 채팅방 1빠로 들어가게 됩니다
+        model.addAttribute("memberNickName",memberNickName);
+        model.addAttribute("member",member);
+        model.addAttribute("profileUrl",profileUrl);
+        return "chat/chatRoom";  //만든사람이 채팅방을 처음으로 들어가게 됨
     }
 
     @GetMapping("/chat/chatRoom")
-    public String chatRoom(Model model, @RequestParam String roomId){
+    public String chatRoom(Model model, @RequestParam String roomId, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member == null) {
+            return "common/oops";
+        }
         ChatRoom room = chatService.findRoomById(roomId);
-        model.addAttribute("room",room);   //현재 방에 들어오기위해서 필요한데...... 접속자 수 등등은 실시간으로 보여줘야 돼서 여기서는 못함
+        String profileUrl = member.getProfileImageUrl() != null ? member.getProfileImageUrl() : "/img/기본프로필.png";
+        model.addAttribute("member",member);
+        model.addAttribute("profileUrl",profileUrl);
+        model.addAttribute("room",room);   // 현재 방의 정보를 보냄
         return "chat/chatRoom";
     }
 }

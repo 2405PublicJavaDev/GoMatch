@@ -1,0 +1,78 @@
+/* ■■■■■■■■■■ 폰트 css ■■■■■■■■■■ */
+@font-face {
+    font-family: 'KBO Dia Gothic Bold';
+    src: url('/font/KBO Dia Gothic_bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'KBO Dia Gothic Medium';
+    src: url('/font/KBO Dia Gothic_medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+*{
+    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+.chat-container {
+    max-width: 800px;
+    margin: 30px auto;
+}
+.chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 15px;
+}
+.message {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.message.sent {
+    align-items: flex-end;
+}
+.message.received {
+    align-items: flex-start;
+}
+.message-content {
+    max-width: 70%;
+    padding: 8px 15px;
+    border-radius: 15px;
+}
+.sent .message-content {
+    background-color: #007bff;
+    color: white;
+}
+.received .message-content {
+    background-color: #f1f3f5;
+    color: black;
+}
+.sender {
+    font-size: 0.8em;
+    margin-bottom: 2px;
+}
+.system-message {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.profile {
+    width: 50px;
+    height: 50px;
+}
+
+.profile-img {
+    object-fit: cover;
+    width: 50px;
+    height: 50px;
+}
