@@ -12,4 +12,5 @@ public class KakaoLoginDto {
     public String accessToken;
 
     public String refreshToken;
+    private String nickname;
 }

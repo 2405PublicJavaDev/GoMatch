@@ -13,7 +13,7 @@
 </head>
 <body>
 <!-- 헤더 부분 -->
-<th:block th:replace="fragments/header.html"></th:block>
+<div th:insert="~{header-footer :: header}"></div>
 <main>
     <div class="container">
         <div class="findid">
@@ -35,8 +35,9 @@
         </div>
     </div>
 </main>
+
 <!-- 메인태그 닫고 로고 푸터 시작  -->
-<th:block th:replace="fragments/footer.html"></th:block>
+<div th:insert="~{header-footer :: footer}"></div>
 <script>
     document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
         e.preventDefault();

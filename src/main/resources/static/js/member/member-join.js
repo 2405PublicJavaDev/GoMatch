@@ -76,6 +76,7 @@ $(document).ready(function() {
         }
         checkAllValid();
     }
+
     0
 
 
@@ -149,7 +150,7 @@ $(document).ready(function() {
             success: function (response) {
                 if (response.verified) {
                     swal({
-                        title: "GoMatch!",
+
                         text: "인증에 성공했습니다!",
                         icon: "success",
                         timer: 1500,
@@ -165,7 +166,7 @@ $(document).ready(function() {
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error('Error:', textStatus, errorThrown);
                 swal({
-                    title: "GoMatch!",
+
                     text: "인증 확인에 실패했습니다. 다시 시도해주세요.",
                     icon: "error",
                     timer: 1500,
@@ -179,79 +180,75 @@ $(document).ready(function() {
 
         // 필수 입력 필드 확인
         var requiredFields = [
-            { id: 'memberId', name: '아이디' },
-            { id: 'memberPw', name: '비밀번호' },
-            { id: 'password-confirm', name: '비밀번호 확인' },
-            { id: 'memberName', name: '이름' },
-            { id: 'memberNickName', name: '닉네임' },
-            { id: 'birthDate', name: '생년월일' },
-            { id: 'memberEmail', name: '이메일' }
+            {id: 'memberId', name: '아이디'},
+            {id: 'memberPw', name: '비밀번호'},
+            {id: 'password-confirm', name: '비밀번호 확인'},
+            {id: 'memberName', name: '이름'},
+            {id: 'memberNickName', name: '닉네임'},
+            {id: 'birthDate', name: '생년월일'},
+            {id: 'memberEmail', name: '이메일'}
         ];
 
         for (var i = 0; i < requiredFields.length; i++) {
             var field = requiredFields[i];
             if (!$('#' + field.id).val()) {
                 swal({
-                    title: "GoMatch!",
+
                     text: field.name + '을(를) 입력해주세요.',
                     icon: "error",
                     timer: 1500,
-                })
+                });
                 return;
             }
         }
 
         if (!idValid) {
-            alert('유효한 아이디를 입력해주세요.');
             swal({
-                title: "GoMatch!",
-                text: field.name + '을(를) 입력해주세요.',
+
+                text: '유효한 아이디를 입력해주세요.',
                 icon: "error",
                 timer: 1500,
-            })
+            });
             return;
         }
 
         if (!nicknameValid) {
-            alert('유효한 닉네임을 입력해주세요.');
             swal({
-                title: "GoMatch!",
+
                 text: '유효한 닉네임을 입력해주세요.',
                 icon: "error",
                 timer: 1500,
-            })
+            });
             return;
         }
 
         if (!emailValid) {
-            alert('유효한 이메일을 입력해주세요.');
             swal({
-                title: "GoMatch!",
+
                 text: '유효한 이메일을 입력해주세요.',
                 icon: "error",
                 timer: 1500,
-            })
+            });
             return;
         }
 
         if (!passwordValid) {
-            alert('비밀번호가 일치하지 않습니다.');
             swal({
-                title: "GoMatch!",
+
                 text: '비밀번호가 일치하지 않습니다.',
                 icon: "error",
                 timer: 1500,
-            })
+            });
             return;
         }
 
         if (!emailVerified) {
             swal({
-                title: "GoMatch!",
+
                 text: '이메일 인증을 완료해주세요.',
                 icon: "error",
                 timer: 1500,
-            })
+            });
             return;
         }
 
@@ -262,7 +259,7 @@ $(document).ready(function() {
             data: $(this).serialize(),
             success: function (response) {
                 swal({
-                    title: "GoMatch!",
+
                     text: "회원가입 성공!",
                     icon: "success",
                     timer: 1500,
@@ -272,7 +269,12 @@ $(document).ready(function() {
             },
             error: function (xhr, status, error) {
                 console.error('Error:', status, error);
-                alert('회원가입 중 오류가 발생했습니다. 다시 시도해주세요.');
+                swal({
+
+                    text: '회원가입 중 오류가 발생했습니다. 다시 시도해주세요.',
+                    icon: "error",
+                    timer: 1500,
+                });
             }
         });
     });

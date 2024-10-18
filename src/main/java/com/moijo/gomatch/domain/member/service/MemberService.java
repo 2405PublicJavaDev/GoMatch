@@ -92,6 +92,7 @@ public interface MemberService {
      */
     boolean deleteMember(String memberId, String password);
 
+    MemberVO getMemberByEmail(String email);
 
 
 }

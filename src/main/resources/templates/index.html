@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{header-footer :: head}"></head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 
 <div th:insert="~{header-footer :: header}"></div>
@@ -177,7 +178,7 @@
 <!-- 메인태그 닫고 로고 푸터 시작  -->
 <div class="team-logos">
     <div class="team-logos-container">
-        <a href="https://www.lgtwins.com/service/html.ncd?view=/pc_twins/twins_main/twins_main" target="_blank"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="https://www.lgtwins.com/service/html.ncd?view=/pc_twins/twins_main/twins_main" target="_blank"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
         <a href="https://www.ktwiz.co.kr/" target="_blank">                 <img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
         <a href="https://www.ssglanders.com/main" target="_blank">          <img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
         <a href="https://www.ncdinos.com/" target="_blank">                 <img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
@@ -209,13 +210,19 @@
 <!-- 소모임 부분 자스 (윤경)-->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 <script src="/js/meeting/main-meeting.js"></script>
-<script>
-    window.onload = function() {
-        if (localStorage.getItem('showLoginSuccess') === 'true') {
-            alert("로그인 성공하셨습니다!");
-            localStorage.removeItem('showLoginSuccess');
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var kakaoLoginSuccess = /*[[${kakaoLoginSuccess}]]*/ false;
+        if (kakaoLoginSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: '카카오 로그인 성공!',
+                text: '환영합니다.',
+                timer: 1500,
+                showConfirmButton: false
+            });
         }
-    };
+    });
 </script>
 
 </body>

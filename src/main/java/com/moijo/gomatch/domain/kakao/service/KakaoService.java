@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -34,7 +34,7 @@ public class KakaoService {
     private String clientId;
 
     @Value("${kakao.redirect_uri}")
-    private String redirect_uri;
+    private String redirectUri;
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -92,7 +92,8 @@ public class KakaoService {
 
         return KakaoLoginDto.builder()
                 .accessToken(jwtToken)
-                .refreshToken(accessToken) // Kakao access token을 refresh token으로 사용
+                .refreshToken(accessToken)
+                .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                 .build();
     }
 
@@ -147,10 +148,26 @@ public class KakaoService {
     public String getKakaoLoginUrl() {
         return KAUTH_TOKEN_URL_HOST + "/oauth/authorize"
                 + "?client_id=" + clientId
-                + "&redirect_uri=" + redirect_uri
+                + "&redirect_uri=" + redirectUri
                 + "&response_type=code";
     }
 
+    public boolean unlinkKakaoAccount(String accessToken) {
+        String unlinkUrl = "https://kapi.kakao.com/v1/user/unlink";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
 
-//    {"loginSuccess":true,"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJla3N0bnNna2VrcmgxQGdtYWlsLmNvbSIsImlhdCI6MTcyOTIxNzAxNSwiZXhwIjoxNzI5MzAzNDE1LCJuYW1lIjoi7J207Jqp7J6sIiwibmlja25hbWUiOiLsnbTsmqnsnqwiLCJpZCI6Mzc1NDI0MjkxOH0.uyPIXbF9_adTMMDc5wM2muCgQAKprVuUsojKoEjwdxs","refreshToken":"XJPSjLiDF6KMPruwe3No3Umr6uvnbvPgAAAAAQoqJZEAAAGSnV2ukP6hmr4nKm-b"}
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(unlinkUrl, HttpMethod.POST, entity, String.class);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            log.error("Error unlinking Kakao account", e);
+            return false;
+        }
+    }
+
+
 }

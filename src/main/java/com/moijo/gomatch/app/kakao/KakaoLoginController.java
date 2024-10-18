@@ -9,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,39 +23,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/kakao")
+@RequestMapping("")
 public class KakaoLoginController {
 
     private final KakaoService kakaoService;
 
-//    @GetMapping("/login")
-//    public ResponseEntity<Map<String, String>> getKakaoLoginPage() {
-//        String kakaoLoginUrl = kakaoService.getKakaoLoginUrl();
-//        Map<String, String> response = new HashMap<>();
-//        response.put("loginUrl", kakaoLoginUrl);
-//        return ResponseEntity.ok(response);
+//    @GetMapping("/callback")
+//    public ResponseEntity<?> callback(@RequestParam("code") String code, HttpSession session) {
+//        try {
+//            KakaoLoginDto loginResult = kakaoService.processKakaoLogin(code);
+//            session.setAttribute("kakaoLoginSuccess", true);
+//            session.setAttribute("kakaoAccessToken", loginResult.getAccessToken());
+//            session.setAttribute("kakaoRefreshToken", loginResult.getRefreshToken());
+//
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("success", true);
+//            response.put("message", "카카오 로그인 성공");
+//            response.put("redirectUrl", "/");
+//
+//            log.info("Kakao login successful. Returning success response.");
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            log.error("Error during Kakao login process", e);
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("success", false);
+//            response.put("message", "카카오 로그인 처리 중 오류가 발생했습니다.");
+//            return ResponseEntity.badRequest().body(response);
+//        }
 //    }
-    @GetMapping("/login")
-    public String loginPage(Model model) {
-    String kakaoLoginUrl = kakaoService.getKakaoLoginUrl();
-    model.addAttribute("kakaoLoginUrl", kakaoLoginUrl);
-    return "member/loginpage";  // Thymeleaf 템플릿 이름
-}
 
-    // redirect URI code 가져오기
     @GetMapping("/callback")
-    public ResponseEntity<?> callback(@RequestParam("code") String code) throws IOException {
-        KakaoLoginDto loginResult = kakaoService.processKakaoLogin(code);
+    public String callback(@RequestParam("code") String code, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            KakaoLoginDto loginResult = kakaoService.processKakaoLogin(code);
+            session.setAttribute("loggedIn", true);
+            session.setAttribute("memberNickName", loginResult.getNickname());
+            session.setAttribute("kakaoAccessToken", loginResult.getAccessToken());
+            session.setAttribute("kakaoRefreshToken", loginResult.getRefreshToken());
+            session.setAttribute("jwtToken", loginResult.getAccessToken());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/index"));
-        headers.add("Set-Cookie", "access_token=" + loginResult.getAccessToken() + "; HttpOnly; Secure; SameSite=Strict");
-        headers.add("Set-Cookie", "refresh_token=" + loginResult.getRefreshToken() + "; HttpOnly; Secure; SameSite=Strict");
-
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            return "redirect:/";
+        } catch (Exception e) {
+            log.error("Error during Kakao login process", e);
+            redirectAttributes.addFlashAttribute("error", "카카오 로그인 처리 중 오류가 발생했습니다.");
+            return "redirect:/member/loginpage";
+        }
     }
-
-
 }

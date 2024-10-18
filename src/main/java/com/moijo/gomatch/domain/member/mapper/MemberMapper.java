@@ -104,5 +104,7 @@ public interface MemberMapper {
     void deleteMemberRank(String memberId);
 
 
+    MemberVO getMemberByEmail(String email);
+
 }
 

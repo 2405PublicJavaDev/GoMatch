@@ -12,7 +12,7 @@
 <body>
 
 <!-- 헤더 부분 -->
-<div th:insert="~{header-footer :: header}"></div>
+<th:block th:replace="fragments/header.html"></th:block>
 <main>
     <div class="container">
         <div class="image-container">
@@ -20,12 +20,13 @@
         </div>
         <div class="login-container">
             <h2>로그인</h2>
-            <form th:action="@{/member/loginpage}" id="loginform" method="post">
+            <form id="loginForm" action="/member/loginpage" method="post">
                 <label for="memberId">아이디 입력</label>
                 <input type="text" id="memberId" name="memberId" class="userid-pw" placeholder="아이디를 입력해주세요." required>
 
                 <label for="memberPw">비밀번호 입력</label>
                 <input type="password" id="memberPw" name="memberPw" class="userid-pw" placeholder="비밀번호를 입력해주세요." required>
+
                 <button type="submit" class="login-btn">로그인</button>
             </form>
             <div class="find-member">
@@ -45,57 +46,51 @@
         </div>
     </div>
 </main>
-
 <!-- 메인태그 닫고 로고 푸터 시작  -->
-<div th:insert="~{header-footer :: footer}"></div>
-
-<script>
+<th:block th:replace="fragments/footer.html"></th:block>
+<script th:inline="javascript">
     $(document).ready(function() {
-        // 기존 로그인 폼 제출 처리 코드는 그대로 유지
-
-        // 카카오 로그인 콜백 처리
-        function handleKakaoCallback() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-                $.ajax({
-                    url: '/callback',
-                    type: 'GET',
-                    data: { code: code },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '카카오 로그인 성공!',
-                                text: '메인 페이지로 이동합니다.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                window.location.href = response.redirectUrl;
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: '로그인 실패',
-                                text: response.message
-                            });
-                        }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '오류',
-                            text: '카카오 로그인 처리 중 오류가 발생했습니다.'
-                        });
-                    }
-                });
-            }
+        var kakaoLoginSuccess = /*[[${session.kakaoLoginSuccess}]]*/ false;
+        if (kakaoLoginSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: '카카오 로그인 성공!',
+                text: '메인 페이지로 이동합니다.',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                window.location.href = '/';
+            });
         }
 
-        // 페이지 로드 시 카카오 로그인 콜백 처리
-        handleKakaoCallback();
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirect;
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '로그인 실패',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류',
+                        text: '로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.'
+                    });
+                }
+            });
+        });
     });
 </script>
 </body>

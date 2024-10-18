@@ -1,5 +1,6 @@
 package com.moijo.gomatch.app.member;
 
+import com.moijo.gomatch.domain.kakao.service.KakaoService;
 import com.moijo.gomatch.domain.member.service.ImageService;
 import com.moijo.gomatch.domain.member.service.MemberService;
 import com.moijo.gomatch.domain.member.vo.MemberVO;
@@ -8,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,9 +35,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MemberContoroller {
 
+    @Autowired
+    private KakaoService kakaoService;
     private final MemberService mService;
     private final ImageService imageService;
+    @Value("${kakao.client_id}")
+    private String clientId;
 
+    @Value("${kakao.redirect_uri}")
+    private String redirectUri;
 
 
     /**
@@ -42,18 +51,21 @@ public class MemberContoroller {
      * @param model
      * @return
      */
-    @GetMapping("member/loginpage")
+    @GetMapping("/member/loginpage")
     public String showLoginPage(Model model) {
+        String kakaoLoginUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="
+                + clientId + "&redirect_uri=" + redirectUri;
+        model.addAttribute("kakaoLoginUrl", kakaoLoginUrl);
         return "member/loginpage";
     }
 
+
     // 로그인 기능
-    @PostMapping("member/loginpage")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> loginpage(@RequestParam("memberId") String memberId,
-                                                         @RequestParam("memberPw") String memberPw,
-                                                         HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
+    @PostMapping("/member/loginpage")
+    public String loginpage(@RequestParam("memberId") String memberId,
+                            @RequestParam("memberPw") String memberPw,
+                            HttpSession session,
+                            RedirectAttributes redirectAttributes) {
         MemberVO member = new MemberVO();
         member.setMemberId(memberId);
         member.setMemberPw(memberPw);
@@ -65,21 +77,22 @@ public class MemberContoroller {
             session.setAttribute("memberNickName", member.getMemberNickName());
             session.setAttribute("preferenceClub", member.getPreferenceClub());
             session.setAttribute("matchPredictExp", member.getMatchPredictExp());
+            session.setAttribute("loggedIn", true);
             System.out.println("로그인 성공: " + member.getMemberNickName());
-            response.put("success", true);
 
             // 관리자 계정 확인 및 리다이렉트
             if (member.getMemberId().startsWith("admin")) {
-                response.put("redirect", "/admin/admin-mainpage");
+                return "redirect:/admin/admin-mainpage";
             } else {
-                response.put("redirect", "/");
+                return "redirect:/";
             }
         } else {
-            response.put("success", false);
-            response.put("message", "회원 정보를 잘못 입력하셨습니다.");
+            redirectAttributes.addFlashAttribute("error", "회원 정보를 잘못 입력하셨습니다.");
+            return "redirect:/member/loginpage";
         }
-        return ResponseEntity.ok(response);
     }
+
+
     // 회원가입 폼
     @GetMapping("member/joinmember")
     public String showJoinForm(Model model) {
@@ -136,18 +149,21 @@ public class MemberContoroller {
     // 로그아웃 페이지
     @GetMapping("/member/logout")
     public String logout(HttpSession session) {
+        session.removeAttribute("loggedIn");
+        session.removeAttribute("memberNickName");
+        session.removeAttribute("kakaoAccessToken");
+        session.removeAttribute("kakaoRefreshToken");
+        session.removeAttribute("jwtToken");
         session.invalidate();
         return "redirect:/";
     }
     // 메인페이지로 리다이렉트
     @GetMapping("/")
     public String mainPage(Model model, HttpSession session) {
-        MemberVO member = (MemberVO) session.getAttribute("member");
-        if (member != null) {
-            model.addAttribute("loggedIn", true);
-            model.addAttribute("memberNickName", member.getMemberNickName());
-        } else {
-            model.addAttribute("loggedIn", false);
+        boolean loggedIn = session.getAttribute("loggedIn") != null && (Boolean) session.getAttribute("loggedIn");
+        model.addAttribute("loggedIn", loggedIn);
+        if (loggedIn) {
+            model.addAttribute("memberNickName", session.getAttribute("memberNickName"));
         }
         return "index";
     }
@@ -215,10 +231,28 @@ public class MemberContoroller {
     // 마이페이지 폼
     @GetMapping("/member/mypage")
     public String showMyPageForm(HttpSession session, Model model) {
-        MemberVO member = (MemberVO) session.getAttribute("member");
+        // 로그인 체크
+        Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
+        if (loggedIn == null || !loggedIn) {
+            return "redirect:/member/loginpage";
+        }
+
+        String memberNickName = (String) session.getAttribute("memberNickName");
+        MemberVO member;
+
+        // 카카오 로그인 사용자 처리
+        if (session.getAttribute("kakaoAccessToken") != null) {
+            // 카카오 사용자 정보로 MemberVO 생성 또는 조회
+            member = createOrGetKakaoMember(session);
+        } else {
+            // 일반 로그인 사용자
+            member = (MemberVO) session.getAttribute("member");
+        }
+
         if (member == null) {
             return "redirect:/member/loginpage";
         }
+
         model.addAttribute("memberVO", member);
         model.addAttribute("memberName", member.getMemberName());
         model.addAttribute("memberNickName", member.getMemberNickName());
@@ -233,6 +267,35 @@ public class MemberContoroller {
         return "member/mypage";
     }
 
+    private MemberVO createOrGetKakaoMember(HttpSession session) {
+        String kakaoNickname = (String) session.getAttribute("memberNickName");
+        String kakaoEmail = (String) session.getAttribute("kakaoEmail"); // 세션에 저장된 카카오 이메일
+
+        // 이메일로 회원 조회
+        MemberVO member = mService.getMemberByEmail(kakaoEmail);
+
+        if (member == null) {
+            // 새 회원 생성
+            member = new MemberVO();
+            member.setMemberNickName(kakaoNickname);
+            member.setMemberEmail(kakaoEmail);
+            member.setKakaoLoginYn("Y");
+            // 기타 필요한 정보 설정
+
+            // 회원 저장 (실제 구현 필요)
+            // memberService.registerMember(member);
+        }
+
+        // 카카오 프로필 이미지 URL 설정 (있다면)
+        String kakaoProfileImageUrl = (String) session.getAttribute("kakaoProfileImageUrl");
+        if (kakaoProfileImageUrl != null && !kakaoProfileImageUrl.isEmpty()) {
+            member.setProfileImageUrl(kakaoProfileImageUrl);
+        }
+
+        return member;
+    }
+
+
 // 메서드들에 nickname 세션 저장 (헤더부분)
 @ModelAttribute
 public void addAttributes(Model model, HttpSession session) {
@@ -244,6 +307,16 @@ public void addAttributes(Model model, HttpSession session) {
         model.addAttribute("loggedIn", false);
     }
 }
+//    // 메서드들에 nickname 세션 저장 (헤더부분)
+//    @GetMapping("/game/checkLogin")
+//    @ResponseBody
+//    public Map<String, Boolean> checkLogin(HttpSession session) {
+//        Map<String, Boolean> response = new HashMap<>();
+//        String memberId = (String) session.getAttribute("memberId");
+//        response.put("loggedIn", memberId != null);
+//        return response;
+//    }
+
 
 // 회원정보 수정
     @GetMapping("/member/modifymember")
@@ -375,7 +448,28 @@ public void addAttributes(Model model, HttpSession session) {
         }
     }
 
+    @PostMapping("/member/unlink-kakao")
+    @ResponseBody
+    public Map<String, Boolean> unlinkKakao(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String kakaoAccessToken = (String) session.getAttribute("kakaoAccessToken");
+        MemberVO member = (MemberVO) session.getAttribute("member");
 
+        if (kakaoAccessToken == null || member == null) {
+            response.put("success", false);
+            return response;
+        }
+
+        boolean unlinked = kakaoService.unlinkKakaoAccount(kakaoAccessToken);
+        if (unlinked) {
+            member.setKakaoLoginYn("N");
+            mService.modifyMember(member);
+            session.removeAttribute("kakaoAccessToken");
+        }
+
+        response.put("success", unlinked);
+        return response;
+    }
 
 
 }

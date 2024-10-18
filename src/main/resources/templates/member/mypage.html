@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- 헤더 부분 -->
-<th:block th:replace="fragments/header.html"></th:block>
+<div th:insert="~{header-footer :: header}"></div>
 <main>
     <div class="mypage-container">
         <div class="profile-img">
@@ -53,7 +53,7 @@
                 <p class="content-name">구매 내역</p>
                 <div class="section-line"></div>
                 <div class="button-container2">
-                    <a href="#"><button>구매내역 확인하기</button></a>
+                    <a href="/wishlist/list"><button>구매내역 확인하기</button></a>
                 </div>
             </div>
         </div>
@@ -69,7 +69,8 @@
         </div>
     </div>
 </main>
+
 <!-- 메인태그 닫고 로고 푸터 시작  -->
-<th:block th:replace="fragments/footer.html"></th:block>
+<div th:insert="~{header-footer :: footer}"></div>
 </body>
 </html>
