@@ -5,6 +5,7 @@
 <!-- 헤더 fragment 포함 -->
 <div th:insert="~{header-footer :: header}"></div>
 <link rel="stylesheet" href="/css/meeting/meeting-register.css">
+
 <main>
   <aside>
     <div id="aside-main">
@@ -20,115 +21,115 @@
   </aside>
   <div class="main-container">
 
-  <h1>소모임 개설하기</h1>
-  <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="return handleSubmitForm()">
-    <input type="hidden" value="{memberId}">
+    <h1>소모임 개설하기</h1>
+    <form action="/meeting/register" method="post" enctype="multipart/form-data" onsubmit="return handleSubmitForm()">
+      <input type="hidden" value="{memberId}">
 
-    <!-- 경기 날짜 선택 -->
-    <div class="form-group">
-      <label for="gameDate">경기 날짜</label>
-      <input type="date" id="gameDate" name="gameDate" required>
-      <input type="hidden" id="meetingDate" name="meetingDate">
-    </div>
+      <!-- 경기 날짜 선택 -->
+      <div class="form-group">
+        <label for="gameDate">경기 날짜</label>
+        <input type="date" id="gameDate" name="gameDate" required>
+        <input type="hidden" id="meetingDate" name="meetingDate">
+      </div>
 
-    <!-- 경기 정보 선택 -->
-    <div class="form-group">
-      <label for="gameNo">경기 정보</label>
-      <select id="gameNo" name="gameNo" required>
-        <option value="">경기를 선택하세요</option>
-        <!-- 서버에서 받은 경기 리스트가 이곳에 추가됩니다 -->
-      </select>
-    </div>
+      <!-- 경기 정보 선택 -->
+      <div class="form-group">
+        <label for="gameNo">경기 정보</label>
+        <select id="gameNo" name="gameNo" required>
+          <option value="">경기를 선택하세요</option>
+          <!-- 서버에서 받은 경기 리스트가 이곳에 추가됩니다 -->
+        </select>
+      </div>
 
-    <!-- 응원하는 팀 선택 -->
-    <div class="form-group">
-      <label for="meetingTeamName">응원하는 팀명</label>
-      <select id="meetingTeamName" name="meetingTeamName" required>
-        <option value="">선택하세요</option>
-        <option value="두산">두산 베어스</option>
-        <option value="삼성">삼성 라이온즈</option>
-        <option value="키움">키움 히어로즈</option>
-        <option value="KT">KT 위즈</option>
-        <option value="LG">LG 트윈스</option>
-        <option value="NC">NC 다이노스</option>
-        <option value="SSG">SSG 랜더스</option>
-        <option value="롯데">롯데 자이언츠</option>
-        <option value="KIA">KIA 타이거즈</option>
-        <option value="한화">한화 이글스</option>
-      </select>
-    </div>
+      <!-- 응원하는 팀 선택 -->
+      <div class="form-group">
+        <label for="meetingTeamName">응원하는 팀명</label>
+        <select id="meetingTeamName" name="meetingTeamName" required>
+          <option value="">선택하세요</option>
+          <option value="두산">두산 베어스</option>
+          <option value="삼성">삼성 라이온즈</option>
+          <option value="키움">키움 히어로즈</option>
+          <option value="KT">KT 위즈</option>
+          <option value="LG">LG 트윈스</option>
+          <option value="NC">NC 다이노스</option>
+          <option value="SSG">SSG 랜더스</option>
+          <option value="롯데">롯데 자이언츠</option>
+          <option value="KIA">KIA 타이거즈</option>
+          <option value="한화">한화 이글스</option>
+        </select>
+      </div>
 
 
-    <!-- 모임 시간 선택 -->
-    <div class="form-group">
-      <label for="meetingTime">모임 시간</label>
-      <!-- 시, 분 선택 드롭다운 -->
-      <select id="hourSelect">
-        <option value="">--시--</option>
+      <!-- 모임 시간 선택 -->
+      <div class="form-group">
+        <label for="meetingTime">모임 시간</label>
+        <!-- 시, 분 선택 드롭다운 -->
+        <select id="hourSelect">
+          <option value="">--시--</option>
 
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-      </select>
-      <select id="minuteSelect">
-        <option value="">--분--</option>
-        <option value="00">00</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-        <option value="40">40</option>
-        <option value="50">50</option>
-      </select>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+        </select>
+        <select id="minuteSelect">
+          <option value="">--분--</option>
+          <option value="00">00</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
 
-      <!-- hidden 필드에 최종 시간 저장 -->
-      <input type="hidden" id="meetingTime" name="meetingTime" required>
-    </div>
+        <!-- hidden 필드에 최종 시간 저장 -->
+        <input type="hidden" id="meetingTime" name="meetingTime" required>
+      </div>
 
-    <!-- 모임 위치 검색 및 상세 주소 입력 -->
-    <div class="form-group">
-      <label for="meetingPlace">모임 위치</label>
-      <input type="text" id="meetingPlace" name="meetingPlace" placeholder="주소를 검색하세요" required readonly>
-      <input type="text" id="meetingPlaceDetail" name="meetingPlaceDetail" placeholder="상세 주소를 입력하세요">
-      <button type="button" class="search-btn" onclick="searchAddress();">검색</button>
-    </div>
+      <!-- 모임 위치 검색 및 상세 주소 입력 -->
+      <div class="form-group">
+        <label for="meetingPlace">모임 위치</label>
+        <input type="text" id="meetingPlace" name="meetingPlace" placeholder="주소를 검색하세요" required readonly>
+        <input type="text" id="meetingPlaceDetail" name="meetingPlaceDetail" placeholder="상세 주소를 입력하세요">
+        <button type="button" class="search-btn" onclick="searchAddress();">검색</button>
+      </div>
 
-    <!-- 최대 참석 인원 -->
-    <div class="form-group">
-      <label for="meetingMaxPeople">최대 참석 인원</label>
-      <input type="number" id="meetingMaxPeople" name="meetingMaxPeople" min="1" max="20" placeholder="최대 20명" required>
-    </div>
+      <!-- 최대 참석 인원 -->
+      <div class="form-group">
+        <label for="meetingMaxPeople">최대 참석 인원</label>
+        <input type="number" id="meetingMaxPeople" name="meetingMaxPeople" min="1" max="20" placeholder="최대 20명" required>
+      </div>
 
-    <!-- 모임 제목 -->
-    <div class="form-group">
-      <label for="meetingTitle">모임 제목</label>
-      <input type="text" id="meetingTitle" name="meetingTitle" placeholder="모임의 제목을 입력해주세요" required>
-    </div>
+      <!-- 모임 제목 -->
+      <div class="form-group">
+        <label for="meetingTitle">모임 제목</label>
+        <input type="text" id="meetingTitle" name="meetingTitle" placeholder="모임의 제목을 입력해주세요" required>
+      </div>
 
-    <!-- 모임 내용 -->
-    <div class="form-group">
-      <label for="meetingContent">모임 내용</label>
-      <textarea id="meetingContent" name="meetingContent" placeholder="모임의 내용을 입력해주세요" required></textarea>
-    </div>
+      <!-- 모임 내용 -->
+      <div class="form-group">
+        <label for="meetingContent">모임 내용</label>
+        <textarea id="meetingContent" name="meetingContent" placeholder="모임의 내용을 입력해주세요" required></textarea>
+      </div>
 
-    <!-- 파일 업로드 필드 -->
-    <div class="form-group">
-      <label for="groupImage">사진 첨부</label>
-      <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple onchange="previewImages()" />
-      <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 사진만 선택할 수 있습니다.</p>
-    </div>
+      <!-- 파일 업로드 필드 -->
+      <div class="form-group">
+        <label for="groupImage">사진 첨부</label>
+        <input type="file" id="groupImage" name="groupImage" accept="image/*" multiple onchange="previewImages()" />
+        <p id="fileLimitMessage" style="color: red; display: none;">최대 5개의 사진만 선택할 수 있습니다.</p>
+      </div>
 
-    <!-- 썸네일이 보여질 영역 -->
-    <div id="thumbnailContainer"></div>
+      <!-- 썸네일이 보여질 영역 -->
+      <div id="thumbnailContainer"></div>
 
-    <div class="buttons">
-      <button type="submit" class="submit">등록</button>
-      <button type="button" class="cancel" onclick="history.back()">취소</button>
-    </div>
-  </form>
+      <div class="buttons">
+        <button type="submit" class="submit">등록</button>
+        <button type="button" class="cancel" onclick="history.back()">취소</button>
+      </div>
+    </form>
   </div>
 </main>
 

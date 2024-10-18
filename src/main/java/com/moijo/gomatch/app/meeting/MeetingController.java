@@ -34,6 +34,11 @@ public class MeetingController {
     private final MeetingService meetingService;
     private final MeetingFileUtil fileUtil;
 
+    /**
+     * 담당자: 김윤경
+     * 관련 기능: [Login Check] 로그인 여부 확인
+     * 설명: 현재 세션에 저장된 멤버 아이디를 확인하여 로그인 여부를 JSON으로 반환
+     */
     @GetMapping("/meeting/checkLogin")
     @ResponseBody
     public Map<String, Boolean> checkLogin(HttpSession session) {
@@ -44,9 +49,9 @@ public class MeetingController {
     }
 
     /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [페이지 폼] 소모임 개설하기
-     * 설명 : 소모임 개설 페이지 보여주기
+     * 담당자: 김윤경
+     * 관련 기능: [Show] 소모임 개설하기
+     * 설명: 소모임 개설 페이지 보여주기
      */
     @GetMapping("/meeting/register")
     public String showAddMeetingPage(HttpSession session, Model model) {
@@ -63,9 +68,9 @@ public class MeetingController {
     }
 
     /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [AJAX 페이지 폼] 소모임 개설하기
-     * 설명 : 경기 날짜 선택 시 해당 경기 정보 반환
+     * 담당자: 김윤경
+     * 관련 기능: [Show - AJAX] 소모임 개설하기
+     * 설명: 경기 날짜 선택 시 해당 경기 정보 반환
      */
     @GetMapping("/meeting/games")
     @ResponseBody
@@ -75,10 +80,11 @@ public class MeetingController {
         return games; // JSON 형식으로 게임 데이터를 반환
     }
 
+
     /**
-     * 담당자 : 김윤경
-     * 관련 기능 : [Register] 소모임 개설하기
-     * 설명 : 세션에 있는 멤버 아이디 불러와서 소모임 등록하기
+     * 담당자: 김윤경
+     * 관련 기능: [Register] 소모임 개설하기
+     * 설명: 세션에 있는 멤버 아이디 불러와서 소모임 등록하기
      */
     @PostMapping("/meeting/register")
     public String addMeeting(MeetingVO meetingVO,
@@ -134,7 +140,11 @@ public class MeetingController {
         return "meeting/meeting-list";
     }
 
-
+    /**
+     * 담당자 : 김윤경
+     * 관련 기능 : [Show] 경기 날짜 리스트 반환
+     * 설명 : 모든 경기 날짜를 리스트로 반환
+     */
     @GetMapping("/meeting/gameDates")
     @ResponseBody
     public List<String> getAllGameDates() {
@@ -143,8 +153,8 @@ public class MeetingController {
 
     /**
      * 담당자 : 김윤경
-     * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
-     * 설명 : 날짜별, 팀별 필터 적용
+     * 관련 기능 : [Show] 날짜별, 팀별 소모임 리스트 필터링
+     * 설명 : 선택한 날짜와 팀에 따라 소모임 리스트를 반환
      */
     @GetMapping("/meeting/listByDateAndTeam")
     @ResponseBody
@@ -165,8 +175,8 @@ public class MeetingController {
 
     /**
      * 담당자 : 김윤경
-     * 관련 기능 : [Show] 날짜별 소모임 리스트 출력
-     * 설명 : gameNo에 따른 경기 정보 불러오기
+     * 관련 기능 : [Show] 경기 정보 반환
+     * 설명 : 특정 gameNo에 대한 경기 정보를 반환
      */
     @GetMapping("/meeting/gameInfo")
     @ResponseBody
@@ -208,12 +218,15 @@ public class MeetingController {
         }
 
         boolean isPastMeeting = meetingDate.isBefore(today);
+        boolean isAttending = meetingService.checkAlreadyAttended(meetingNo, memberId);
+
 
         model.addAttribute("meeting", meetingDetail);
         model.addAttribute("isPastMeeting", isPastMeeting);
         model.addAttribute("meetingFile", meetingFile);
         model.addAttribute("meetingAttendee", meetingAttendee);
         model.addAttribute("currentAttendeesCount", currentAttendeesCount);
+        model.addAttribute("isAttending", isAttending);
 
         return "meeting/meeting-detail";
     }
@@ -267,7 +280,7 @@ public class MeetingController {
             return "common/oops";
         }
         meetingVO.setMemberId(memberId);
-        meetingService.updateMeeting(meetingVO);
+        meetingService.modifyMeeting(meetingVO);
         // 삭제할 파일 확인
         if (fileDeleteIds != null && !fileDeleteIds.isEmpty()) {
             log.info("삭제할 파일 ID 목록: " + fileDeleteIds);

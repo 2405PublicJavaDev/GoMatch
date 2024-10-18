@@ -298,6 +298,15 @@ aside {
     cursor: pointer;
 
 }
+.button-chatting {
+    padding: 5px 10px;
+    margin-left: 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #efc700;
+}
 .button-join {
     background-color: #16215f;
     color: white;
