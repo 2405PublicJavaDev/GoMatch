@@ -122,7 +122,7 @@
         const calendar = document.getElementById('calendar');
 
         // 사용자의 선호 팀 정보
-        const userPreferredTeam = /*[[${userPreferredTeam}]]*/ null;
+        const preferenceClub = /*[[${preferenceClub}]]*/ null;
 
         listViewBtn.addEventListener('click', showListView);
         calendarViewBtn.addEventListener('click', showCalendarView);
@@ -188,6 +188,8 @@
                 }
 
                 return event;
+            }).filter(event => {
+                return event.extendedProps.teamA === preferenceClub || event.extendedProps.teamB === preferenceClub;
             });
 
             const calendarEl = document.getElementById('calendar');
@@ -200,8 +202,8 @@
                     return arg.date.getDate().toString();
                 },
                 eventContent: function(arg) {
-                    const teamAIsPreferred = arg.event.extendedProps.teamA === userPreferredTeam;
-                    const teamBIsPreferred = arg.event.extendedProps.teamB === userPreferredTeam;
+                    const teamAIsPreferred = arg.event.extendedProps.teamA === preferenceClub;
+                    const teamBIsPreferred = arg.event.extendedProps.teamB === preferenceClub;
 
                     let classNames = [];
                     if (teamAIsPreferred || teamBIsPreferred) {

@@ -54,7 +54,6 @@ public class GameController {
         List<GameVO> gameList = gameBatchComponent.scrapeSchedule(dateParam);
         model.addAttribute("games", gameList);  // gameList를 games라는 이름으로 페이지에 저장
         model.addAttribute("selectedMonth", month);
-        //model.addAttribute("memberId", memberId);
         model.addAttribute("preferenceClub", preferenceClub);
         return "game/listPage";
     }
