@@ -1,5 +1,6 @@
 package com.moijo.gomatch.domain.member.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,7 +17,8 @@ import java.util.UUID;
 @Service
 public class ImageService {
 
-    private final String UPLOAD_DIR = "static/img/member-img/";
+    @Value("${upload.path}")
+    private String uploadPath;
 
     public String saveProfileImage(MultipartFile file, String oldImageUrl) throws IOException {
         // 기존 이미지 삭제
@@ -26,14 +28,13 @@ public class ImageService {
 
         // 새 이미지 저장
         String fileName = UUID.randomUUID().toString() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
-        ClassPathResource resource = new ClassPathResource(UPLOAD_DIR);
-        Path uploadPath = Paths.get(resource.getURI());
+        Path uploadDir = Paths.get(uploadPath);
 
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+        if (!Files.exists(uploadDir)) {
+            Files.createDirectories(uploadDir);
         }
 
-        Path filePath = uploadPath.resolve(fileName);
+        Path filePath = uploadDir.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return "/img/member-img/" + fileName;
@@ -43,11 +44,8 @@ public class ImageService {
         if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
             try {
                 String oldFileName = oldImageUrl.substring(oldImageUrl.lastIndexOf("/") + 1);
-                ClassPathResource resource = new ClassPathResource(UPLOAD_DIR + oldFileName);
-                File oldFile = resource.getFile();
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
+                Path oldFilePath = Paths.get(uploadPath, oldFileName);
+                Files.deleteIfExists(oldFilePath);
             } catch (IOException e) {
                 // 로그 처리
             }

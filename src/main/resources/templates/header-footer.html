@@ -37,9 +37,29 @@
     </nav>
     <script>
         function confirmLogout() {
-            if (confirm("로그아웃 하시겠습니까?")) {
-                window.location.href = "/member/logout";
-            }
+            Swal.fire({
+                title: '로그아웃',
+                text: "로그아웃 하시겠습니까?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '예',
+                cancelButtonText: '아니오'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: '로그아웃 완료',
+                        text: '성공적으로 로그아웃되었습니다.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "/member/logout";
+                    });
+                }
+                // '아니오'를 선택하거나 창을 닫았을 때는 아무 동작도 하지 않음
+            });
         }
     </script>
 </header>

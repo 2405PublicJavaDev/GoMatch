@@ -6,6 +6,7 @@
     <title>관리자 페이지</title>
     <link rel="stylesheet" href="/css/admin-mainpage.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="sidebar">
@@ -106,91 +107,6 @@
         </tr>
     </table>
 </div>
-<script>
-
-
-    function suspendMember(memberId) {
-        if (confirm('이 회원을 정지하시겠습니까?')) {
-            $.ajax({
-                url: '/admin/suspend-member',
-                type: 'POST',
-                data: JSON.stringify({ memberId: memberId }),
-                contentType: 'application/json',
-                success: function(response) {
-                    if (response.success) {
-                        alert('회원이 정지되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('회원 정지에 실패했습니다: ' + response.message);
-                    }
-                },
-                error: function() {
-                    alert('서버 오류가 발생했습니다.');
-                }
-            });
-        }
-    }
-
-    function activateMember(memberId) {
-        if (confirm('이 회원을 활성화하시겠습니까?')) {
-            $.ajax({
-                url: '/admin/activate-member',
-                type: 'POST',
-                data: JSON.stringify({ memberId: memberId }),
-                contentType: 'application/json',
-                success: function(response) {
-                    if (response.success) {
-                        alert('회원이 활성화되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('회원 활성화에 실패했습니다: ' + response.message);
-                    }
-                },
-                error: function() {
-                    alert('서버 오류가 발생했습니다.');
-                }
-            });
-        }
-    }
-
-    function deleteMember(memberId) {
-        if (confirm('이 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-            $.ajax({
-                url: '/admin/delete-member',
-                type: 'POST',
-                data: JSON.stringify({memberId: memberId}),
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response.success) {
-                        alert('회원이 삭제되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('회원 삭제에 실패했습니다: ' + response.message);
-                    }
-                },
-                error: function () {
-                    alert('서버 오류가 발생했습니다.');
-                }
-            });
-        }
-            }
-</script>
-<script th:inline="javascript">
-    $(document).ready(function () {
-        $('.delete-button').on('click', function () {
-            const meetingNo = $(this).data('meeting-no');
-            if (confirm('이 소모임을 삭제하시겠습니까?')) {
-                $('#meeting-' + meetingNo).hide();
-            }
-        });
-    });
-        function logout() {
-        if (confirm('로그아웃하시겠습니까?')) {
-        window.location.href = '/admin/logout';
-    }
-    }
-</script>
-
-</script>
+<script src="/js/admin/admin-main.js"></script>
 </body>
 </html>

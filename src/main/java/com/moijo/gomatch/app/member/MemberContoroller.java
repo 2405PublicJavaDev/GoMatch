@@ -62,33 +62,42 @@ public class MemberContoroller {
 
     // 로그인 기능
     @PostMapping("/member/loginpage")
-    public String loginpage(@RequestParam("memberId") String memberId,
-                            @RequestParam("memberPw") String memberPw,
-                            HttpSession session,
-                            RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public ResponseEntity<?> loginpage(@RequestParam("memberId") String memberId,
+                                       @RequestParam("memberPw") String memberPw,
+                                       HttpSession session) {
         MemberVO member = new MemberVO();
         member.setMemberId(memberId);
         member.setMemberPw(memberPw);
 
         member = mService.checkLogin(member);
         if (member != null) {
+            // 세션에 사용자 정보 저장
             session.setAttribute("member", member);
             session.setAttribute("memberId", member.getMemberId());
             session.setAttribute("memberNickName", member.getMemberNickName());
             session.setAttribute("preferenceClub", member.getPreferenceClub());
             session.setAttribute("matchPredictExp", member.getMatchPredictExp());
             session.setAttribute("loggedIn", true);
+
             System.out.println("로그인 성공: " + member.getMemberNickName());
 
-            // 관리자 계정 확인 및 리다이렉트
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+
+            // 관리자 계정 확인 및 리다이렉트 URL 설정
             if (member.getMemberId().startsWith("admin")) {
-                return "redirect:/admin/admin-mainpage";
+                response.put("redirectUrl", "/admin/admin-mainpage");
             } else {
-                return "redirect:/";
+                response.put("redirectUrl", "/");
             }
+
+            return ResponseEntity.ok(response);
         } else {
-            redirectAttributes.addFlashAttribute("error", "회원 정보를 잘못 입력하셨습니다.");
-            return "redirect:/member/loginpage";
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "회원 정보를 잘못 입력하셨습니다.");
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -324,6 +333,7 @@ public void addAttributes(Model model, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("member");
         if (member == null) {
             return "redirect:/member/loginpage";
+
         }
         model.addAttribute("memberVO", member);
         model.addAttribute("memberName", member.getMemberName());
