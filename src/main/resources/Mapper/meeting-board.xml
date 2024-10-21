@@ -3,7 +3,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingBoardMapper">
 
+    <!-- ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ -->
 
+    <!-- 내가 작성한 게시글 리스트 조회 -->
     <select id="selectBoardsByMemberId" parameterType="string" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
         SELECT *
         FROM MEETING_BOARD
@@ -11,6 +13,7 @@
         ORDER BY REG_DATE DESC
     </select>
 
+    <!-- 내가 작성한 댓글 리스트 조회 -->
     <select id="selectBoardRepliesByMemberId" parameterType="string" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO">
         SELECT r.*, b.MEETING_BOARD_TITLE
         FROM MEETING_BOARD_REPLY r
@@ -19,6 +22,7 @@
         ORDER BY r.REG_DATE DESC
     </select>
 
+    <!-- 내가 좋아요 한 게시글 리스트 조회 -->
     <select id="selectBoardLikesByMemberId" parameterType="string" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardLikeVO">
         SELECT l.*, b.MEETING_BOARD_TITLE
         FROM MEETING_BOARD_LIKE l
@@ -27,6 +31,117 @@
         ORDER BY l.REG_DATE DESC
     </select>
 
+    <!-- ■■■■■■■■■■■■■■■■■■■ 게시글 조회 및 검색 ■■■■■■■■■■■■■■■■■■■■ -->
+
+    <!-- 게시글 상세 조회 -->
+    <select id="selectBoardDetail" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
+        SELECT *
+        FROM MEETING_BOARD
+        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
+    </select>
+
+    <!-- 게시글에 포함된 파일 목록 조회 -->
+    <select id="getFilesByMeetingBoardNo" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO">
+        SELECT MEETING_BOARD_FILE_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH, FILE_ORDER, REG_DATE, UPDATE_DATE
+        FROM MEETING_BOARD_FILE
+        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
+        ORDER BY FILE_ORDER ASC
+    </select>
+
+    <!-- 게시글 수 조회 -->
+    <select id="selectBoardCount" resultType="int">
+        SELECT COUNT(*)
+        FROM MEETING_BOARD
+        <where>
+            <if test="filterType != 'all'">
+                MEETING_BOARD_CATEGORY = #{filterType}
+            </if>
+            <if test="searchType != null and keyword != null">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND MEETING_BOARD_TITLE LIKE '%' || #{keyword} || '%'
+                    </when>
+                    <when test="searchType == 'content'">
+                        AND MEETING_BOARD_CONTENT LIKE '%' || #{keyword} || '%'
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+    <!-- 게시글 리스트 조회 -->
+    <select id="selectBoardList" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
+        SELECT * FROM (
+        SELECT a.*, ROWNUM rnum FROM (
+        SELECT *
+        FROM MEETING_BOARD
+        <where>
+            <if test="filterType != 'all'">
+                MEETING_BOARD_CATEGORY = #{filterType}
+            </if>
+            <if test="searchType != null and keyword != null">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND MEETING_BOARD_TITLE LIKE '%' || #{keyword} || '%'
+                    </when>
+                    <when test="searchType == 'content'">
+                        AND MEETING_BOARD_CONTENT LIKE '%' || #{keyword} || '%'
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY REG_DATE DESC
+        ) a
+        WHERE ROWNUM &lt;= #{offset} + #{pageSize}
+        )
+        WHERE rnum &gt; #{offset}
+    </select>
+
+    <!-- 모든 게시글 리스트 조회 -->
+    <select id="selectAllBoards" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
+        SELECT *
+        FROM MEETING_BOARD
+        ORDER BY REG_DATE DESC
+    </select>
+
+    <!-- 이전 게시글 번호 조회 -->
+    <select id="selectPreviousPostId" parameterType="long" resultType="long">
+        SELECT MAX(MEETING_BOARD_NO)
+        FROM MEETING_BOARD
+        WHERE MEETING_BOARD_NO &lt; #{meetingBoardNo}
+    </select>
+
+    <!-- 다음 게시글 번호 조회 -->
+    <select id="selectNextPostId" parameterType="long" resultType="long">
+        SELECT MIN(MEETING_BOARD_NO)
+        FROM MEETING_BOARD
+        WHERE MEETING_BOARD_NO &gt; #{meetingBoardNo}
+    </select>
+
+    <!-- 게시글 좋아요 수 조회 -->
+    <select id="selectLikeCount" resultType="int">
+        SELECT COUNT(*)
+        FROM MEETING_BOARD_LIKE
+        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
+    </select>
+
+    <!-- 댓글 목록 조회 -->
+    <select id="selectRepliesByBoardId" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO">
+        SELECT
+            r.MEETING_REPLY_NO,
+            r.MEETING_REPLY_CONTENT,
+            r.MEETING_BOARD_NO,
+            r.MEMBER_ID,
+            m.MEMBER_NICKNAME AS memberNickName,
+            r.REG_DATE,
+            r.UPDATE_DATE
+        FROM MEETING_BOARD_REPLY r
+                 JOIN MEMBER m ON r.MEMBER_ID = m.MEMBER_ID
+        WHERE r.MEETING_BOARD_NO = #{meetingBoardNo}
+        ORDER BY r.REG_DATE ASC
+    </select>
+
+    <!-- ■■■■■■■■■■■■■■■■■■■ 게시글 등록/수정/삭제 (CRUD) ■■■■■■■■■■■■■■■■■■■■ -->
 
     <!-- 게시글 등록 -->
     <insert id="insertBoard" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
@@ -80,95 +195,39 @@
         )
     </insert>
 
-    <!-- 게시글 수 조회 -->
-    <select id="selectBoardCount" resultType="int">
-        SELECT COUNT(*)
-        FROM MEETING_BOARD
-        <where>
-            <if test="filterType != 'all'">
-                MEETING_BOARD_CATEGORY = #{filterType}
-            </if>
-            <if test="searchType != null and keyword != null">
-                <choose>
-                    <when test="searchType == 'title'">
-                        AND MEETING_BOARD_TITLE LIKE '%' || #{keyword} || '%'
-                    </when>
-                    <when test="searchType == 'content'">
-                        AND MEETING_BOARD_CONTENT LIKE '%' || #{keyword} || '%'
-                    </when>
-                </choose>
-            </if>
-        </where>
-    </select>
-    <!-- 게시글 리스트 조회 -->
-    <select id="selectBoardList" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
-        SELECT * FROM (
-        SELECT a.*, ROWNUM rnum FROM (
-        SELECT *
-        FROM MEETING_BOARD
-        <where>
-            <if test="filterType != 'all'">
-                MEETING_BOARD_CATEGORY = #{filterType}
-            </if>
-            <if test="searchType != null and keyword != null">
-                <choose>
-                    <when test="searchType == 'title'">
-                        AND MEETING_BOARD_TITLE LIKE '%' || #{keyword} || '%'
-                    </when>
-                    <when test="searchType == 'content'">
-                        AND MEETING_BOARD_CONTENT LIKE '%' || #{keyword} || '%'
-                    </when>
-                </choose>
-            </if>
-        </where>
-        ORDER BY REG_DATE DESC
-        ) a
-        WHERE ROWNUM &lt;= #{offset} + #{pageSize}
-        )
-        WHERE rnum &gt; #{offset}
-    </select>
-
-    <!-- 모든 게시글을 가져오는 SQL -->
-    <select id="selectAllBoards" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
-        SELECT *
-        FROM MEETING_BOARD
-        ORDER BY REG_DATE DESC
-    </select>
-
-    <!-- 게시글 상세 조회 -->
-    <select id="selectBoardDetail" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
-        SELECT *
-        FROM MEETING_BOARD
+    <!-- 게시글 삭제 -->
+    <delete id="deleteBoard">
+        DELETE FROM MEETING_BOARD
         WHERE MEETING_BOARD_NO = #{meetingBoardNo}
-    </select>
+    </delete>
 
-    <!-- 특정 게시글의 파일 목록 조회 -->
-    <select id="getFilesByMeetingBoardNo" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO">
-        SELECT MEETING_BOARD_FILE_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH, FILE_ORDER, REG_DATE, UPDATE_DATE
-        FROM MEETING_BOARD_FILE
+    <!-- 게시글 수정 -->
+    <update id="updateBoard" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
+        UPDATE MEETING_BOARD
+        SET MEETING_BOARD_TITLE = #{meetingBoardTitle},
+            MEETING_BOARD_CONTENT = #{meetingBoardContent},
+            MEETING_BOARD_CATEGORY = #{meetingBoardCategory},
+            UPDATE_DATE = default
         WHERE MEETING_BOARD_NO = #{meetingBoardNo}
-        ORDER BY FILE_ORDER ASC
-    </select>
+    </update>
 
-    <!-- 댓글 목록 조회 (닉네임 포함) -->
-    <select id="selectRepliesByBoardId" parameterType="long" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO">
-        SELECT
-        r.MEETING_REPLY_NO,
-        r.MEETING_REPLY_CONTENT,
-        r.MEETING_BOARD_NO,
-        r.MEMBER_ID,
-        m.MEMBER_NICKNAME AS memberNickName,  <!-- 닉네임 필드 추가 -->
-        r.REG_DATE,
-        r.UPDATE_DATE
-        FROM
-        MEETING_BOARD_REPLY r
-        JOIN
-        MEMBER m ON r.MEMBER_ID = m.MEMBER_ID
-        WHERE
-        r.MEETING_BOARD_NO = #{meetingBoardNo}
-        ORDER BY
-        r.REG_DATE ASC
-    </select>
+    <!-- 게시글 조회수 증가 -->
+    <update id="updateMeetingBoardViewCount" parameterType="long">
+        UPDATE MEETING_BOARD
+        SET MEETING_BOARD_VIEW_COUNT = MEETING_BOARD_VIEW_COUNT + 1
+        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
+    </update>
+
+    <!-- 첨부파일 삭제 -->
+    <delete id="deleteBoardFiles">
+        DELETE FROM MEETING_FILE
+        WHERE MEETING_BOARD_FILE_NO IN
+        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+    <!-- ■■■■■■■■■■■■■■■■■■■ 게시글 좋아요 ■■■■■■■■■■■■■■■■■■■■ -->
 
     <!-- 좋아요 상태 확인 -->
     <select id="checkLikeStatus" resultType="int">
@@ -177,21 +236,26 @@
         WHERE MEETING_BOARD_NO = #{meetingBoardNo} AND MEMBER_ID = #{memberId}
     </select>
 
-
-    <!-- 좋아요 수 조회 -->
-    <select id="selectLikeCount" resultType="int">
-        SELECT COUNT(*)
-        FROM MEETING_BOARD_LIKE
-        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
-    </select>
-
     <!-- 좋아요 추가 -->
     <insert id="insertLike" parameterType="map">
         <selectKey resultType="long" keyProperty="meetingBoardLikeNo" order="BEFORE">
             SELECT SEQ_MEETING_BOARD_LIKE_NO.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO MEETING_BOARD_LIKE (MEETING_BOARD_LIKE_NO, MEETING_BOARD_LIKE_YN, MEETING_BOARD_NO, MEMBER_ID, REG_DATE, UPDATE_DATE)
-        VALUES (#{meetingBoardLikeNo}, 'yes', #{meetingBoardNo}, #{memberId}, SYSDATE, SYSDATE)
+        INSERT INTO MEETING_BOARD_LIKE (
+        MEETING_BOARD_LIKE_NO,
+        MEETING_BOARD_LIKE_YN,
+        MEETING_BOARD_NO,
+        MEMBER_ID,
+        REG_DATE,
+        UPDATE_DATE
+        ) VALUES (
+        #{meetingBoardLikeNo},
+        'yes',
+        #{meetingBoardNo},
+        #{memberId},
+        SYSDATE,
+        SYSDATE
+        )
     </insert>
 
     <!-- 좋아요 취소 -->
@@ -200,62 +264,35 @@
         WHERE MEETING_BOARD_NO = #{meetingBoardNo}
           AND MEMBER_ID = #{memberId}
     </delete>
-    <!--게시글 삭제-->
-    <delete id="deleteBoard">
-        DELETE FROM MEETING_BOARD
-        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
-    </delete>
+
+    <!-- ■■■■■■■■■■■■■■■■■■■ 게시글 댓글 ■■■■■■■■■■■■■■■■■■■■ -->
+
     <!-- 댓글 등록 -->
     <insert id="insertReply" parameterType="map">
         <selectKey resultType="int" keyProperty="meetingReplyNo" order="BEFORE">
             SELECT SEQ_MEETING_BOARD_REPLY_NO.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO MEETING_BOARD_REPLY (
-        MEETING_REPLY_NO, MEETING_REPLY_CONTENT, MEETING_BOARD_NO, MEMBER_ID, REG_DATE, UPDATE_DATE
+        MEETING_REPLY_NO,
+        MEETING_REPLY_CONTENT,
+        MEETING_BOARD_NO,
+        MEMBER_ID,
+        REG_DATE,
+        UPDATE_DATE
         ) VALUES (
-        #{meetingReplyNo}, #{meetingReplyContent}, #{boardNo}, #{memberId}, default, default
+        #{meetingReplyNo},
+        #{meetingReplyContent},
+        #{boardNo},
+        #{memberId},
+        default,
+        default
         )
     </insert>
 
+    <!-- 댓글 삭제 -->
     <delete id="deleteReply" parameterType="long">
         DELETE FROM MEETING_BOARD_REPLY
         WHERE MEETING_REPLY_NO = #{meetingReplyNo}
     </delete>
-    <!-- 이전 게시글 ID 조회 -->
-    <select id="selectPreviousPostId" parameterType="long" resultType="long">
-        SELECT MAX(MEETING_BOARD_NO)
-        FROM MEETING_BOARD
-        WHERE MEETING_BOARD_NO &lt; #{meetingBoardNo}
-    </select>
 
-    <!-- 다음 게시글 ID 조회 -->
-    <select id="selectNextPostId" parameterType="long" resultType="long">
-        SELECT MIN(MEETING_BOARD_NO)
-        FROM MEETING_BOARD
-        WHERE MEETING_BOARD_NO &gt; #{meetingBoardNo}
-    </select>
-
-    <!-- 조회수 증가 -->
-    <update id="updateMeetingBoardViewCount" parameterType="long">
-        UPDATE MEETING_BOARD
-        SET MEETING_BOARD_VIEW_COUNT = MEETING_BOARD_VIEW_COUNT + 1
-        WHERE MEETING_BOARD_NO = #{meetingBoardNo}
-    </update>
-
-    <update id="updateBoard" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO">
-        UPDATE MEETING_BOARD
-        SET MEETING_BOARD_TITLE = #{meetingBoardTitle},
-            MEETING_BOARD_CONTENT = #{meetingBoardContent},
-            MEETING_BOARD_CATEGORY = #{meetingBoardCategory},
-            UPDATE_DATE = default
-        WHERE MEETING_BOARD_NO =#{meetingBoardNo}
-    </update>
-
-    <delete id="deleteBoardFiles">
-        DELETE FROM MEETING_FILE
-        WHERE MEETING_BOARD_FILE_NO IN
-        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
-            #{id, jdbcType=BIGINT}
-        </foreach>
-    </delete>
 </mapper>
