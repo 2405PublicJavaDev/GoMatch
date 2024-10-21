@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container chat-container">
-    <h2 class="mb-4">채팅방</h2>
+    <h2 class="mb-4" th:text="${room.name}"></h2>
     <div class="chat-messages mb-3" id="chatMessages">
         <!-- 메시지들이 여기에 추가됩니다 -->
     </div>
@@ -24,6 +24,7 @@
     let memberNickName = /*[[${session.memberNickName}]]*/ '알 수 없음';
     let profileUrl = /*[[${profileUrl}]]*/ '/img/기본프로필.png';
     let socket = new WebSocket("ws://127.0.0.1:8888/ws/chat");
+    let meetingNo = [[${room.meetingNo}]]; // room 객체에서 meetingNo 가져오기
 
     function enterRoom(socket) {
         var enterMsg = {
@@ -101,7 +102,8 @@
         };
         socket.send(JSON.stringify(quitMsg));
         socket.close();
-        location.href = "/chat/chatList";
+        console.log("Meeting no: ", meetingNo);
+        location.href = "/chat/chatList/"  + meetingNo;
     }
 
     // Enter 키로 메시지 전송

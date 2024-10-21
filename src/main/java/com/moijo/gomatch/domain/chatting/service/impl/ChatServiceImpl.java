@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,9 +25,12 @@ public class ChatServiceImpl implements ChatService {
         chatRooms = new LinkedHashMap<>();
     }
 
+    // 해당 소모임의 채팅방들만 뜨게 하기
     @Override
-    public List<ChatRoom> findAllRoom() {
-        return new ArrayList<>(chatRooms.values());
+    public List<ChatRoom> findAllRoom(long meetingNo) {
+        return chatRooms.values().stream()
+                .filter(room -> room.getMeetingNo() == meetingNo)  // meetingNo가 일치하는 채팅방만 필터링
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -35,11 +39,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatRoom createRoom(String name) {
+    public ChatRoom createRoom(String name, long meetingNo) {
         String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
                 .roomId(randomId)
                 .name(name)
+                .meetingNo(meetingNo)
                 .build();
         chatRooms.put(randomId, chatRoom);
         return chatRoom;
