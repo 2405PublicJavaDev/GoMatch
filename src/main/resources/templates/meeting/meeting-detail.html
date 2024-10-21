@@ -114,7 +114,7 @@
 
     <hr>
     <h3>🙌함께해요🙌
-      <button type="button" class="button-chatting" th:if="${isAttending && !isPastMeeting}" onclick="window.location.href='/meeting/url'">채팅하기</button>
+      <button type="button" class="button-chatting" th:if="${isAttending}" onclick="window.location.href='/chat/chatList/'+meetingNo">채팅하기</button>
     </h3>
     <div class="participant-list" th:if="${meetingAttendee.size() > 0}">
       <div class="participant"
