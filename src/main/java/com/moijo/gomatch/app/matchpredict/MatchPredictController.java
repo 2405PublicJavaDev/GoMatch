@@ -191,7 +191,7 @@ public class MatchPredictController {
 //        return
 //    }
 
-    @GetMapping("/game/checkLogin")
+    @GetMapping("/matchPredict/memberId")
     @ResponseBody
     public Map<String, Boolean> checkLogin(HttpSession session) {
         Map<String, Boolean> response = new HashMap<>();

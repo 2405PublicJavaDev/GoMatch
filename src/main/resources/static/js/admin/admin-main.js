@@ -135,4 +135,15 @@ function deleteMember(memberId) {
             window.location.href = '/admin/logout';
         }
     });
+        // dlcoals
+        // 페이지 로드 후 이벤트 리스너를 설정합니다.
+        document.addEventListener('DOMContentLoaded', function () {
+            const productToggle = document.getElementById('productToggle');
+            const submenu = document.getElementById('submenu');
+
+            // 상품 관리 버튼 클릭 시 하위 메뉴를 토글합니다.
+            productToggle.addEventListener('click', function () {
+                submenu.classList.toggle('show'); // 'show' 클래스를 토글합니다.
+            });
+        });
 }
