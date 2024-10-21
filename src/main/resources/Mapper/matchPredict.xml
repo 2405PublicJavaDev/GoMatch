@@ -29,11 +29,42 @@
             P.MEMBER_ID,
             P.MATCH_PREDICT_STATUS,
             G.GAME_DATE,
-            G.REG_DATE
+            G.REG_DATE,
+            CASE WHEN P.MEMBER_ID = #{memberId} THEN 'Y' ELSE 'N' END AS HAS_PREDICTION
         FROM GAME G
-                 left JOIN MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO
+                 LEFT JOIN MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO AND P.MEMBER_ID = #{memberId}
         WHERE G.GAME_DATE = #{gameDate}
     </select>
+
+    <select id="selectMemberInfo" resultType="MemberDTO">
+        SELECT
+            U.MEMBER_ID,
+            M.MEMBER_NICKNAME,
+            M.MEMBER_NAME,
+            U.RANK_POSITION,
+            U.EXPERIENCE_POINTS
+        FROM (
+                 SELECT
+                     U.MEMBER_ID,
+                     ROW_NUMBER() OVER (ORDER BY U.EXPERIENCE_POINTS DESC) AS RANK_POSITION,
+                         U.EXPERIENCE_POINTS
+                 FROM USER_RANK U
+             ) U
+                 JOIN MEMBER M ON M.MEMBER_ID = U.MEMBER_ID
+        WHERE M.MEMBER_ID = #{memberId}
+    </select>
+
+<!--    <select id="selectMemberInfo" resultType="MemberDTO">-->
+<!--        SELECT-->
+<!--            U.MEMBER_ID,-->
+<!--            M.MEMBER_NICKNAME,-->
+<!--            M.MEMBER_NAME,-->
+<!--            U.RANK_POSITION,-->
+<!--            U.EXPERIENCE_POINTS-->
+<!--        FROM USER_RANK U-->
+<!--                 JOIN MEMBER M ON M.MEMBER_ID = U.MEMBER_ID-->
+<!--        WHERE M.MEMBER_ID = #{memberId}-->
+<!--    </select>-->
 
 <!--    <select id="selectPredictByDate2" resultType="MatchPredict">-->
 <!--        SELECT-->
@@ -85,17 +116,7 @@
         WHERE M.MEMBER_ID = #{memberId}
     </select>
 
-    <select id="selectMemberInfo" resultType="MemberDTO">
-        SELECT
-            U.MEMBER_ID,
-            M.MEMBER_NICKNAME,
-            M.MEMBER_NAME,
-            U.RANK_POSITION,
-            U.EXPERIENCE_POINTS
-        FROM USER_RANK U
-                 JOIN MEMBER M ON M.MEMBER_ID = U.MEMBER_ID
-        WHERE M.MEMBER_ID = #{memberId}
-    </select>
+
 
     <select id="countPredictionsByMemberId" resultType="Integer">
         SELECT COUNT(*) FROM MATCH_PREDICT WHERE GAME_NO = #{gameNo} AND MEMBER_ID = #{memberId}

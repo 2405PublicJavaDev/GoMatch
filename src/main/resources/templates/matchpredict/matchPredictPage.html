@@ -72,7 +72,7 @@
                     <div>닉네임</div>
                     <div>경험치</div>
                 </div>
-                <li th:each="member : ${memberRank}" class="rank-item">
+                <li th:each="member, iterStat : ${memberRank}" th:class="${iterStat.index < 3 ? 'rank-item' : 'rank-item hidden'}">
                     <div class="rank-position">
                         <span th:text="${member.rankPosition}" class="rank"></span>
                     </div>
@@ -82,7 +82,7 @@
             </ol>
         </div>
         <div class="select-list">
-            <button class="load-more">10위 더보기 ></button>
+            <button class="load-more">더보기 ></button>
         </div>
     </aside>
 </main>
@@ -120,6 +120,7 @@
 
             const button = document.createElement('button');
             button.classList.add('date');
+            button.dataset.date = date.toISOString().split('T')[0];
 
             let dateString = date.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }).replace(/\./g, '');
 
@@ -134,9 +135,7 @@
             button.addEventListener('click', function () {
                 document.querySelectorAll('.date').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
-
-                const selectedDate = date.toISOString().split('T')[0];
-                fetchPredictionsByDate(selectedDate);
+                fetchPredictionsByDate(this.dataset.date);
             });
         }
 
@@ -160,26 +159,15 @@
                 })
                 .then(data => {
                     alert(data || "예측이 성공적으로 등록되었습니다.");
-                    updateUIAfterPrediction(gameNo, decision);
+                    const activeDate = document.querySelector('.date.active');
+                    if (activeDate) {
+                        fetchPredictionsByDate(activeDate.dataset.date);
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('오류: ' + (error.message || "예측 등록 중 문제가 발생했습니다."));
                 });
-        }
-
-        function updateUIAfterPrediction(gameNo, decision) {
-            const gameElement = document.querySelector(`[data-game-no="${gameNo}"]`);
-            if (gameElement) {
-                const buttons = gameElement.querySelectorAll('.team-a, .draw, .team-b');
-                buttons.forEach(button => {
-                    button.disabled = true;
-                    button.classList.remove('active'); // 모든 버튼에서 active 클래스 제거
-                    if (button.textContent.trim() === decision || (decision === '무' && button.classList.contains('draw'))) {
-                        button.classList.add('selected', 'active'); // 선택된 버튼에 selected와 active 클래스 추가
-                    }
-                });
-            }
         }
 
         function fetchPredictionsByDate(date) {
@@ -192,6 +180,7 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log('Received data:', data);
                     const gameList = document.querySelector('.game-list');
                     gameList.innerHTML = '';
 
@@ -199,88 +188,45 @@
                         const listItem = document.createElement('li');
                         listItem.className = 'game-item';
                         listItem.dataset.gameNo = predict.gameNo;
+
+                        const isTeamAActive = predict.matchPredictDecision === predict.teamA;
+                        const isDrawActive = predict.matchPredictDecision === '무';
+                        const isTeamBActive = predict.matchPredictDecision === predict.teamB;
+
                         listItem.innerHTML = `
-                    <span class="league">
-                        <img src="/img/고매치로고.png">
-                        GoMatch
-                    </span>
-                    <div class="upcoming-games">
-                          <div class="game-date">
-                            <p>경기 날짜</p>
-                            <span th:text="${predict.gameDate}" class="date">${predict.gameDate}</span>
-                          </div>
-                          <div class="game-time">
-                            <p th:text="${predict.gameTime}" class="time">${predict.gameTime}</p>
-                            <span>경기 예정</span>
-                          </div>
-                        </div>
-                    <div class="teams">
-                        <button type="button" class="team-a ${predict.matchPredictDecision === predict.teamA ? 'active' : ''}" ${predict.hasPrediction ? 'disabled' : ''}>
-                            <span>${predict.teamA}</span>
-                            <img class="teamA-img" src="/img/KT로고.png" alt="a팀 로고">
-                        </button>
-                        <button type="button" class="draw ${predict.matchPredictDecision === '무' ? 'active' : ''}" ${predict.hasPrediction ? 'disabled' : ''}>
-                            <span class="vs">무승부</span>
-                        </button>
-                        <button type="button" class="team-b ${predict.matchPredictDecision === predict.teamB ? 'active' : ''}" ${predict.hasPrediction ? 'disabled' : ''}>
-                            <img class="teamB-img" src="/img/LG로고.png" alt="b팀 로고">
-                            <span>${predict.teamB}</span>
-                        </button>
-                    </div>
-                `;
+                            <span class="league">
+                                <img src="/img/고매치로고.png">
+                                GoMatch
+                            </span>
+                            <div class="upcoming-games">
+                                <div class="game-date">
+                                    <p>경기 날짜</p>
+                                    <span class="date">${predict.gameDate}</span>
+                                </div>
+                                <div class="game-time">
+                                    <p class="time">${predict.gameTime}</p>
+                                    <span>경기 예정</span>
+                                </div>
+                            </div>
+                            <div class="teams">
+                                <button type="button" class="team-a ${isTeamAActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <span>${predict.teamA}</span>
+                                    <img class="teamA-img" src="/img/KT로고.png" alt="a팀 로고">
+                                </button>
+                                <button type="button" class="draw ${isDrawActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <span class="vs">무승부</span>
+                                </button>
+                                <button type="button" class="team-b ${isTeamBActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <img class="teamB-img" src="/img/LG로고.png" alt="b팀 로고">
+                                    <span>${predict.teamB}</span>
+                                </button>
+                            </div>
+                        `;
                         gameList.appendChild(listItem);
                     });
                 })
                 .catch(error => console.error('Error fetching predictions by date:', error));
         }
-
-        // function fetchPredictionsByDate(date) {
-        //     console.log(`Fetching predictions for date: ${date}`);
-        //     fetch(`/matchPredict/list/${date}`)
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! Status: ${response.status}`);
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             console.log(data);
-        //             const gameList = document.querySelector('.game-list');
-        //             gameList.innerHTML = '';
-        //
-        //             data.forEach(predict => {
-        //                 const listItem = document.createElement('li');
-        //                 listItem.className = 'game-item';
-        //                 listItem.dataset.gameNo = predict.gameNo;
-        //                 listItem.innerHTML = `
-        //                     <span class="league">
-        //                         <img src="/img/고매치로고.png">
-        //                         GoMatch
-        //                     </span>
-        //                     <div class="upcoming-games">
-        //                         <span class="time">${predict.gameTime}</span>
-        //                         <p>경기 예정</p>
-        //                         <span class="time-out">후 종료</span>
-        //                     </div>
-        //                     <div class="teams">
-        //                         <button type="button" class="team-a" ${predict.hasPrediction ? 'disabled' : ''}>
-        //                             <span>${predict.teamA}</span>
-        //                             <img class="teamA-img" src="/img/KT로고.png" alt="a팀 로고">
-        //                         </button>
-        //                         <button type="button" class="draw" ${predict.hasPrediction ? 'disabled' : ''}>
-        //                             <span class="vs">무승부</span>
-        //                         </button>
-        //                         <button type="button" class="team-b" ${predict.hasPrediction ? 'disabled' : ''}>
-        //                             <img class="teamB-img" src="/img/LG로고.png" alt="b팀 로고">
-        //                             <span>${predict.teamB}</span>
-        //                         </button>
-        //                     </div>
-        //                 `;
-        //                 gameList.appendChild(listItem);
-        //             });
-        //         })
-        //         .catch(error => console.error('Error fetching predictions by date:', error));
-        // }
 
         // 이벤트 위임을 사용한 예측 버튼 클릭 처리
         document.querySelector('.game-list').addEventListener('click', function(event) {
@@ -298,29 +244,19 @@
         // 랭킹 더보기 기능
         let loadMoreBtn = document.querySelector(".load-more");
         const allRankItems = document.querySelectorAll(".rank-item");
+        let isExpanded = false;
 
-        let initialDisplayCount = document.querySelector(".member-info") ? 3 : 3;
-
-        allRankItems.forEach((item, index) => {
-            if (index >= initialDisplayCount) {
-                item.style.display = "none";
-            }
-        });
-
-        loadMoreBtn.addEventListener("click", function() {
-            let shownCount = 0;
-            allRankItems.forEach(item => {
-                if (shownCount < 10 && item.style.display === "none") {
-                    item.style.display = "flex";
-                    shownCount++;
+        function toggleRankItems() {
+            isExpanded = !isExpanded;
+            allRankItems.forEach((item, index) => {
+                if (index >= 3) {
+                    item.style.display = isExpanded ? "flex" : "none";
                 }
             });
-            if (shownCount < 10) {
-                loadMoreBtn.style.display = "none";
-            }
-        });
+            loadMoreBtn.textContent = isExpanded ? "접기 <" : "더보기 >";
+        }
 
-        loadMoreBtn.textContent = isExpanded ? "더보기 >" : "접기 <";
+        loadMoreBtn.addEventListener("click", toggleRankItems);
     });
 </script>
 </body>

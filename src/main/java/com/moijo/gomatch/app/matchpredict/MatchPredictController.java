@@ -164,7 +164,7 @@ public class MatchPredictController {
         String memberId = (String) session.getAttribute("memberId");
 
         int result = matchPredictService.modifyMatchPredict(memberId, gameNo, matchPredictDecision);
-
+        matchPredictService.updateRank();
         // 예측 수정 후 gameResult를 통해 예측이 맞았는지 확인
         matchPredictService.increaseExperience(memberId, gameNo); // 경험치 증가 호출
 
