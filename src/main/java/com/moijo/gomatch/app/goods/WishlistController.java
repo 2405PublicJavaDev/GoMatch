@@ -1,13 +1,17 @@
 package com.moijo.gomatch.app.goods;
 
 import com.moijo.gomatch.domain.goods.service.WishlistService;
+import com.moijo.gomatch.domain.goods.vo.WishlistVO;
 import com.moijo.gomatch.domain.member.vo.MemberVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/wishlist")
@@ -37,4 +41,19 @@ public class WishlistController {
             return ResponseEntity.ok("찜하기 제거 성공");
         }
     }
+
+    @GetMapping("/list")
+    public String getWishlist(HttpSession session, Model model) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+
+        if (member == null) {
+            return "redirect:/member/loginpage"; // 로그인 필요 시 리다이렉트
+        }
+
+        List<WishlistVO> wishlist = wishlistService.getWishlistByMemberId(member.getMemberId());
+        model.addAttribute("wishlist", wishlist);
+
+        return "goods/wishlist"; // wishlist.html로 이동
+    }
+
 }

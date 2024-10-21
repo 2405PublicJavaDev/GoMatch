@@ -66,6 +66,15 @@ public class AdminServiceImpl1 implements AdminService1 {
         adminMapper1.insertGoodsOption(goodsNo, optionName);
     }
 
+    @Override
+    public List<GoodsVO> getAllGoodsWithImage() {
+        return adminMapper1.selectGoodsListWithImage();
+    }
+
+    @Override
+    public GoodsImageVO getRepresentativeImage(Long goodsNo) {
+        return adminMapper1.selectRepresentativeImageByGoodsNo(goodsNo);
+    }
 
 
 }

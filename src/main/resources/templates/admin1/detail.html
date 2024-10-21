@@ -1,27 +1,94 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 조회</title>
+    <link rel="stylesheet" href="/css/admin-detail.css">
 </head>
 <body>
-<h1 th:text="${goods.goodsProductName}"></h1>
-<p>상품 번호: <span th:text="${goods.goodsNo}"></span></p>
-<p>팀: <span th:text="${goods.goodsTeam}"></span></p>
-<p>가격: <span th:text="${goods.goodsPrice}"></span></p>
-<p>상품 코드: <span th:text="${goods.goodsProductCode}"></span></p>
-<p>제조일: <span th:text="${goods.goodsMakeDate}"></span></p>
-<p>출시일: <span th:text="${goods.goodsOutDate}"></span></p>
-<p>카테고리: <span th:text="${goods.goodsCategory}"></span></p> <!-- 카테고리 추가 -->
 
-<!-- 수정 버튼 추가 -->
-<a th:href="@{/admin1/edit/{goodsNo}(goodsNo=${goods.goodsNo})}"><button>수정</button></a>
+<div class="layout-container">
+    <aside class="sidebar">
+        <div class="sidebarmember"><a href="admin-member"><h3>회원 관리</h3></a></div>
+        <div class="sidebarmember2" id="productToggle">
+            <h3>상품 관리 ▾</h3>
+        </div>
+        <ul class="submenu" id="submenu">
+            <li><a href="/admin/insert">상품 등록</a></li>
+            <li><a href="/admin/list">상품 조회</a></li>
+        </ul>
+    </aside>
 
-<form th:action="@{/admin1/delete}" method="post">
-    <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}"/>
-    <button type="submit">삭제</button>
-</form>
+    <div class="content">
+        <header class="header-container">
+            <div>
+                <a href="admin-mainpage"><h1>관리자 페이지</h1></a>
+            </div>
+            <button onclick="logout()" class="logout-button">로그아웃</button>
+        </header>
 
-<button><a href="/admin1/list">목록</a></button>
+        <p>관리자 계정으로 로그인하였습니다.</p>
+
+        <main class="main-container">
+            <div class="container">
+                <div class="image-container">
+                    <img th:if="${representativeImage != null}"
+                         th:src="@{${representativeImage.goodsImageWebPath}}"
+                         alt="대표 이미지">
+                    <p th:if="${representativeImage == null}">대표 이미지가 없습니다.</p>
+                </div>
+
+                <div class="details-container">
+                    <h1 th:text="${goods.goodsProductName}">상품명</h1>
+                    <div class="product-info">
+                        <span class="label">상품 번호:</span><span th:text="${goods.goodsNo}"></span>
+                        <span class="label">팀:</span><span th:text="${goods.goodsTeam}"></span>
+                        <span class="label">가격:</span><span th:text="${goods.goodsPrice} + '원'"></span>
+                        <span class="label">상품 코드:</span><span th:text="${goods.goodsProductCode}"></span>
+                        <span class="label">제조일:</span><span th:text="${goods.goodsMakeDate}"></span>
+                        <span class="label">출시일:</span><span th:text="${goods.goodsOutDate}"></span>
+                        <span class="label">카테고리:</span><span th:text="${goods.goodsCategory}"></span>
+                    </div>
+
+                    <div class="button-group">
+                        <a th:href="@{/admin1/edit/{goodsNo}(goodsNo=${goods.goodsNo})}" class="btn">수정</a>
+                        <form th:action="@{/admin1/delete}" method="post" style="display:inline;">
+                            <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}"/>
+                            <button type="submit" class="btn">삭제</button>
+                        </form>
+                        <a href="/admin1/list" class="btn">목록</a>
+                    </div>
+                </div>
+            </div>
+
+            <h2>상세 이미지</h2>
+            <div class="detail-image-container">
+                <div class="detail-image-wrapper">
+                    <img th:each="image : ${detailImages}"
+                         th:src="@{${image.goodsImageWebPath}}"
+                         alt="상세 이미지">
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function logout() {
+        if (confirm('로그아웃하시겠습니까?')) {
+            window.location.href = '/admin/logout';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const productToggle = document.getElementById('productToggle');
+        const submenu = document.getElementById('submenu');
+        productToggle.addEventListener('click', function () {
+            submenu.classList.toggle('show');
+        });
+    });
+</script>
 
 </body>
 </html>

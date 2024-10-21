@@ -11,17 +11,17 @@
 <div class="sidebar">
     <div class="sidebarmember"><a href="admin-member"> <h3>회원 관리</h3> </a></div>
 <!--    <div class="sidebarmember2"><a href="admin-product"><h3>상품 관리</h3></a></div>-->
-    <div class="sidebarmember2">
-        <a href="admin-pList">
-            <h3>상품 관리 ▾</h3>
-        </a>
-        <ul class="submenu">
-            <li><a href="/admin/product/register">상품 등록</a></li>
-            <li><a href="/admin/product/list">상품 수정</a></li>
-        </ul>
-    </div>
 
+    <div class="sidebarmember2" id="productToggle">
+        <h3>상품 관리 ▾</h3>
+    </div>
+    <!-- 하위 메뉴 -->
+    <ul class="submenu" id="submenu">
+        <li><a href="/admin/insert">상품 등록</a></li>
+        <li><a href="/admin/list">상품 조회</a></li>
+    </ul>
 </div>
+
 <div class="content">
     <div class="header-container">
         <div style="display: flex; align-items: center;">
@@ -189,6 +189,20 @@
         window.location.href = '/admin/logout';
     }
     }
+
+    // dlcoals
+    // 페이지 로드 후 이벤트 리스너를 설정합니다.
+    document.addEventListener('DOMContentLoaded', function () {
+        const productToggle = document.getElementById('productToggle');
+        const submenu = document.getElementById('submenu');
+
+        // 상품 관리 버튼 클릭 시 하위 메뉴를 토글합니다.
+        productToggle.addEventListener('click', function () {
+            submenu.classList.toggle('show'); // 'show' 클래스를 토글합니다.
+        });
+    });
+
+
 </script>
 
 </script>

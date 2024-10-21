@@ -1,6 +1,9 @@
 package com.moijo.gomatch.domain.goods.mapper;
 
+import com.moijo.gomatch.domain.goods.vo.WishlistVO;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface WishlistMapper {
@@ -16,4 +19,16 @@ public interface WishlistMapper {
     // Wishlist에서 상품을 삭제하는 쿼리
     @Delete("DELETE FROM GOODS_WISHLIST WHERE MEMBER_ID = #{memberId} AND GOODS_NO = #{goodsNo}")
     void deleteFromWishlist(@Param("memberId") String memberId, @Param("goodsNo") Long goodsNo);
+
+    @Select("""
+    SELECT w.MEMBER_ID, w.GOODS_NO, g.GOODS_PRODUCT_NAME AS GOODS_NAME, g.GOODS_PRICE, 
+           gi.GOODS_IMAGE_WEB_PATH, w.REG_DATE
+    FROM GOODS_WISHLIST w
+    JOIN GOODS g ON w.GOODS_NO = g.GOODS_NO
+    LEFT JOIN GOODS_IMAGE gi ON g.GOODS_NO = gi.GOODS_NO AND gi.GOODS_IMAGE_REP_YN = 'Y'
+    WHERE w.MEMBER_ID = #{memberId}
+""")
+    List<WishlistVO> selectWishlistByMemberId(@Param("memberId") String memberId);
+
+
 }

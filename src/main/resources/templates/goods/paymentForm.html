@@ -2,8 +2,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{header-footer :: head}"></head>
 <body>
-<!-- 헤더 fragment 포함 -->
 <div th:insert="~{header-footer :: header}"></div>
+
 <link rel="stylesheet" href="/css/goods/paymentForm.css">
 <link rel="stylesheet" href="/css/goods/standard.css">
 
@@ -11,7 +11,7 @@
     <h1>결제 정보 입력</h1>
 
     <form id="paymentForm">
-        <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}" />
+        <input type="hidden" id="goodsNo" th:value="${goods.goodsNo}" />
         <input type="hidden" id="memberId" th:value="${member.memberId}" />
 
         <section class="form-section">
@@ -61,7 +61,7 @@
             <label for="agreement">(필수) 구매하실 상품의 결제 정보를 확인하였으며, 구매 진행에 동의합니다.</label>
         </div>
 
-        <button type="button" class="btn-submit" onclick="requestPay()" disabled>결제하기</button>
+        <button type="button" class="btn-submit" disabled>결제하기</button>
     </form>
 </main>
 
@@ -71,7 +71,7 @@
             <img src="/img/고매치로고.png" alt="GoMatch 로고">
         </div>
         <div class="footer-text">
-            <p>게인정보 처리방침</p>
+            <p>개인정보 처리방침</p>
             <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
             <p>Copyright © GoMatch</p>
         </div>
@@ -79,173 +79,92 @@
 </footer>
 
 <script>
-    const agreementCheckbox = document.getElementById('agreement');
-    const submitButton = document.querySelector('.btn-submit');
-    const requiredInputs = document.querySelectorAll('[required]');
+    document.addEventListener('DOMContentLoaded', () => {
+        const agreementCheckbox = document.getElementById('agreement');
+        const submitButton = document.querySelector('.btn-submit');
+        const requiredInputs = document.querySelectorAll('[required]');
 
-    // 입력 필드와 체크박스 상태에 따라 버튼 활성화
-    function validateForm() {
-        const allFilled = Array.from(requiredInputs).every(input => input.value.trim() !== '');
-        submitButton.disabled = !(agreementCheckbox.checked && allFilled);
-        console.log('버튼 활성화 상태:', !submitButton.disabled); // 디버깅 로그
-    }
+        function validateForm() {
+            const allFilled = Array.from(requiredInputs).every(input => input.value.trim() !== '');
+            submitButton.disabled = !(agreementCheckbox.checked && allFilled);
+        }
 
-    // 이벤트 리스너 추가
-    agreementCheckbox.addEventListener('change', validateForm);
-    requiredInputs.forEach(input => input.addEventListener('input', validateForm));
+        agreementCheckbox.addEventListener('change', validateForm);
+        requiredInputs.forEach(input => input.addEventListener('input', validateForm));
 
-    function requestPay() {
-        console.log('결제 버튼 클릭됨'); // 디버깅 로그
-        IMP.init('imp57882137'); // 가맹점 식별 코드
+        submitButton.addEventListener('click', requestPay);
 
-        const formData = new FormData(document.getElementById('paymentForm'));
+        async function requestPay() {
+            try {
+                const goodsNo = parseInt(document.getElementById('goodsNo').value);
+                const memberId = document.getElementById('memberId').value.trim();
+                const goodsPayArrival = document.querySelector('[name="goodsPayArrival"]').value.trim();
+                const goodsRequirement = document.querySelector('[name="goodsRequirement"]').value.trim();
+                const goodsPayAddressCode = document.querySelector('[name="goodsPayAddressCode"]').value.trim();
+                const goodsPayPhone = document.querySelector('[name="goodsPayPhone"]').value.trim();
+                const goodsPayReturnAccount = document.querySelector('[name="goodsPayReturnAccount"]').value.trim();
+                const goodsPrice = parseInt(document.getElementById('goodsPrice').textContent);
 
-        // goodsNo는 숫자로 변환, memberId는 문자열로 유지
-        const goodsNo = parseInt(formData.get('goodsNo').trim());  // 숫자 변환
-        const memberId = document.getElementById('memberId').value.trim();  // 문자열 그대로
+                if (isNaN(goodsNo) || isNaN(goodsPrice)) {
+                    alert("상품 번호나 가격이 올바르지 않습니다.");
+                    return;
+                }
 
-        const goodsPayArrival = formData.get('goodsPayArrival');
-        const goodsRequirement = formData.get('goodsRequirement');
-        const goodsPayAddressCode = formData.get('goodsPayAddressCode');
-        const goodsPayPhone = formData.get('goodsPayPhone');
-        const goodsPayReturnAccount = formData.get('goodsPayReturnAccount');
-        const goodsPrice = parseInt(document.getElementById('goodsPrice').textContent);
+                submitButton.disabled = true;
 
-        // 전달되는 데이터 디버깅 로그
-        console.log('결제 데이터:', {
-            goodsNo,
-            memberId,
-            goodsPayArrival,
-            goodsRequirement,
-            goodsPayAddressCode,
-            goodsPayPhone,
-            goodsPayReturnAccount,
-            goodsPrice
-        });
+                const merchantUid = `order_${goodsNo}_${new Date().getTime()}`;
 
-        IMP.request_pay({
-            pg: 'html5_inicis',
-            pay_method: 'card',
-            merchant_uid: 'order_' + new Date().getTime(),
-            name: '상품 결제',
-            amount: goodsPrice,
-            buyer_tel: goodsPayPhone,
-            buyer_addr: goodsPayArrival,
-            buyer_postcode: goodsPayAddressCode,
-        }, function (rsp) {
-            if (rsp.success) {
-                console.log('결제 성공 응답:', rsp); // 디버깅 로그
-                fetch('/payment/complete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        imp_uid: rsp.imp_uid,
-                        merchant_uid: rsp.merchant_uid,
-                        goodsNo: goodsNo,
-                        memberId: memberId,
-                        goodsPayArrival: goodsPayArrival,
-                        goodsRequirement: goodsRequirement,
-                        goodsPayAddressCode: goodsPayAddressCode,
-                        goodsPayPhone: goodsPayPhone,
-                        goodsPayReturnAccount: goodsPayReturnAccount
-                    })
-                })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert('결제 성공: 성공!'); // 디버깅 로그로 대체 가능
-                        location.href = '/goods/main';
-                    })
-                    .catch(error => {
-                        console.error('결제 오류:', error); // 디버깅 로그
-                        alert('결제 처리 중 오류가 발생했습니다.');
-                    });
-            } else {
-                console.error('결제 실패 응답:', rsp); // 결제 실패 로그
-                alert('결제가 취소되었습니다.');
+                console.log('결제 데이터:', {
+                    goodsNo, memberId, goodsPayArrival, goodsRequirement,
+                    goodsPayAddressCode, goodsPayPhone, goodsPayReturnAccount, goodsPrice, merchantUid
+                });
+
+                IMP.init('imp57882137');
+
+                IMP.request_pay({
+                    pg: 'html5_inicis',
+                    pay_method: 'card',
+                    merchant_uid: merchantUid,
+                    name: '상품 결제',
+                    amount: goodsPrice,
+                    buyer_tel: goodsPayPhone,
+                    buyer_addr: goodsPayArrival,
+                    buyer_postcode: goodsPayAddressCode,
+                }, async function (rsp) {
+                    if (rsp.success) {
+                        try {
+                            const response = await fetch('/payment/complete', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    imp_uid: rsp.imp_uid,
+                                    merchant_uid: merchantUid,
+                                    goodsNo, memberId, goodsPayArrival, goodsRequirement,
+                                    goodsPayAddressCode, goodsPayPhone, goodsPayReturnAccount
+                                })
+                            });
+
+                            const data = await response.text();
+                            alert('결제 성공!');
+                            location.href = '/goods/main';
+                        } catch (error) {
+                            console.error('결제 처리 오류:', error);
+                            alert('결제 처리 중 오류가 발생했습니다.');
+                        }
+                    } else {
+                        console.error('결제 실패 응답:', rsp);
+                        alert('결제가 취소되었습니다.');
+                        submitButton.disabled = false;
+                    }
+                });
+            } catch (error) {
+                console.error('결제 처리 중 예외 발생:', error);
+                alert('결제 처리 중 오류가 발생했습니다.');
+                submitButton.disabled = false;
             }
-        });
-    }
-
-    // 결제 버튼 클릭 이벤트 리스너 추가
-    submitButton.addEventListener('click', requestPay);
+        }
+    });
 </script>
 
-
-
-<!--<script>-->
-<!--    const agreementCheckbox = document.getElementById('agreement');-->
-<!--    const submitButton = document.querySelector('.btn-submit');-->
-<!--    const requiredInputs = document.querySelectorAll('[required]');-->
-
-<!--    // 입력 필드와 체크박스 상태에 따라 버튼 활성화-->
-<!--    function validateForm() {-->
-<!--        const allFilled = Array.from(requiredInputs).every(input => input.value.trim() !== '');-->
-<!--        submitButton.disabled = !(agreementCheckbox.checked && allFilled);-->
-<!--    }-->
-
-<!--    // 이벤트 리스너 추가-->
-<!--    agreementCheckbox.addEventListener('change', validateForm);-->
-<!--    requiredInputs.forEach(input => input.addEventListener('input', validateForm));-->
-
-<!--    function requestPay() {-->
-<!--        IMP.init('imp57882137'); // 가맹점 식별 코드-->
-
-<!--        const formData = new FormData(document.getElementById('paymentForm'));-->
-
-<!--        const goodsNo = formData.get('goodsNo');-->
-<!--        const memberId = document.getElementById('memberId').value;-->
-<!--        const goodsPayArrival = formData.get('goodsPayArrival');-->
-<!--        const goodsRequirement = formData.get('goodsRequirement');-->
-<!--        const goodsPayAddressCode = formData.get('goodsPayAddressCode');-->
-<!--        const goodsPayPhone = formData.get('goodsPayPhone');-->
-<!--        const goodsPayReturnAccount = formData.get('goodsPayReturnAccount');-->
-<!--        const goodsPrice = parseInt(document.getElementById('goodsPrice').textContent);-->
-
-<!--        IMP.request_pay({-->
-<!--            pg: 'html5_inicis',-->
-<!--            pay_method: 'card',-->
-<!--            merchant_uid: 'order_' + new Date().getTime(),-->
-<!--            name: '상품 결제',-->
-<!--            amount: goodsPrice,-->
-<!--            buyer_tel: goodsPayPhone,-->
-<!--            buyer_addr: goodsPayArrival,-->
-<!--            buyer_postcode: goodsPayAddressCode,-->
-<!--        }, function (rsp) {-->
-<!--            if (rsp.success) {-->
-<!--                fetch('/payment/complete', {-->
-<!--                    method: 'POST',-->
-<!--                    headers: {-->
-<!--                        'Content-Type': 'application/json'-->
-<!--                    },-->
-<!--                    body: JSON.stringify({-->
-<!--                        imp_uid: rsp.imp_uid,-->
-<!--                        merchant_uid: rsp.merchant_uid,-->
-<!--                        goodsNo: goodsNo,-->
-<!--                        memberId: memberId,-->
-<!--                        goodsPayArrival: goodsPayArrival,-->
-<!--                        goodsRequirement: goodsRequirement,-->
-<!--                        goodsPayAddressCode: goodsPayAddressCode,-->
-<!--                        goodsPayPhone: goodsPayPhone,-->
-<!--                        goodsPayReturnAccount: goodsPayReturnAccount-->
-<!--                    })-->
-<!--                })-->
-<!--                    .then(response => response.text())-->
-<!--                    .then(data => {-->
-<!--                        alert('결제 성공: ' + "성공!");  // 열 받아서 걍 박아버림-->
-<!--                        location.href = '/goods/main';-->
-<!--                    })-->
-<!--                    .catch(error => {-->
-<!--                        console.error('결제 오류:', error);-->
-<!--                        alert('결제 처리 중 오류가 발생했습니다.');-->
-<!--                    });-->
-<!--            } else {-->
-<!--                alert('결제가 취소되었습니다.');-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-<!--</script>-->
 </body>
 </html>
-

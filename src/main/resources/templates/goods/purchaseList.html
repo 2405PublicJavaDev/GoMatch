@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body>
+<div th:insert="~{header-footer :: header}"></div>
+<link rel="stylesheet" href="/css/goods/purchaseList.css">
+
+<main>
+    <h1 style="text-align: center;">구매 목록</h1>
+
+    <aside>
+        <div id="aside-main">
+            <div id="aside-content">
+                <span>스토어</span>
+                <hr  class="aside-header">
+                <ul>
+                    <li><a href="/wishlist/list">찜 목록</a></li>
+                    <li><a href="/payment/list" class="active">구매 목록</a></li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+
+    <div th:if="${purchaseList.empty}">
+        <p>구매한 상품이 없습니다.</p> <!-- 구매 내역이 없을 때 표시 -->
+    </div>
+
+    <table th:if="${not purchaseList.empty}">
+        <thead>
+        <tr>
+            <th>상품 번호</th>
+            <th>배송지</th>
+            <th>요청 사항</th>
+            <th>구매일</th>
+            <th>전화번호</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="purchase : ${purchaseList}">
+            <td th:text="${purchase.goodsNo}"></td>
+            <td th:text="${purchase.goodsPayArrival}"></td>
+            <td th:text="${purchase.goodsRequirement}"></td>
+            <td th:text="${#temporals.format(purchase.regDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${purchase.goodsPayPhone}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:insert="~{header-footer :: footer}"></footer>
+</body>
+</html>

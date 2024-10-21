@@ -2,6 +2,7 @@ package com.moijo.gomatch.domain.goods.service.impl;
 
 import com.moijo.gomatch.domain.goods.mapper.WishlistMapper;
 import com.moijo.gomatch.domain.goods.service.WishlistService;
+import com.moijo.gomatch.domain.goods.vo.WishlistVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +37,10 @@ public class WishlistServiceImpl implements WishlistService {
     @Override
     public boolean isWishlisted(String memberId, Long goodsNo) {
         return wishlistMapper.existsInWishlist(memberId, goodsNo); // 찜하기 상태 반환
+    }
+
+    @Override
+    public List<WishlistVO> getWishlistByMemberId(String memberId) {
+        return wishlistMapper.selectWishlistByMemberId(memberId);
     }
 }

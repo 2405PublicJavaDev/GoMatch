@@ -39,4 +39,9 @@ public interface AdminMapper1 {
             "VALUES (GOODS_OPTION_SEQ.NEXTVAL, #{goodsNo}, #{optionName})")
     void insertGoodsOption(@Param("goodsNo") Long goodsNo, @Param("optionName") String optionName);
 
+    List<GoodsVO> selectGoodsListWithImage();
+
+    @Select("SELECT * FROM GOODS_IMAGE WHERE GOODS_NO = #{goodsNo} AND GOODS_IMAGE_REP_YN = 'Y'")
+    GoodsImageVO selectRepresentativeImageByGoodsNo(@Param("goodsNo") Long goodsNo);
+
 }

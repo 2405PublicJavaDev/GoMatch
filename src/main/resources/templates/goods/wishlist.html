@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body>
+<div th:insert="~{header-footer :: header}"></div>
+<link rel="stylesheet" href="/css/goods/wishlist.css">
+
+<main>
+
+  <aside>
+    <div id="aside-main">
+      <div id="aside-content">
+        <span>스토어</span>
+        <hr  class="aside-header">
+        <ul>
+          <li><a href="/wishlist/list" class="active">찜 목록</a></li>
+          <li><a href="/payment/list">구매 목록</a></li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <h1 style="text-align: center;">찜 목록</h1>
+
+  <div th:if="${wishlist.empty}">
+    <p>위시리스트에 담긴 상품이 없습니다.</p>
+  </div>
+
+  <table th:if="${not wishlist.empty}">
+    <thead>
+    <tr>
+      <th>상품명</th>
+      <th>가격</th>
+      <th>등록일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${wishlist}">
+      <td th:text="${item.goodsName}"></td>
+      <td th:text="${item.goodsPrice} + '원'"></td>
+      <td th:text="${#dates.format(item.regDate, 'yyyy-MM-dd')}"></td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+
+<footer th:insert="~{header-footer :: footer}"></footer>
+
+</body>
+</html>
