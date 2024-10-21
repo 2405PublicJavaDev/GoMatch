@@ -34,8 +34,11 @@ public class MatchPredictServiceImpl implements MatchPredictService {
      * @return
      */
     @Override
-    public List<MatchPredict> getPredictionsByDate(String gameDate) {
-        return matchPredictMapper.selectPredictByDate(gameDate);
+    public List<MatchPredict> getPredictionsByDate(String gameDate,String memberId) {
+        List<MatchPredict> predictions = matchPredictMapper.selectPredictByDate(gameDate);
+
+
+        return predictions;
     }
 
     /**
