@@ -21,7 +21,7 @@ public class BoardFileUtil {
 
     public int uploadFiles(List<MultipartFile> files, Long meetingBoardId, String moduleName) throws IOException {
         int result = 0;
-        long order = 1;
+        int fileOrder = 1;
 
         String folderPath = BoardFileConfig.getModuleUploadPath(moduleName);  // 모듈별 경로 설정
         File folder = new File(folderPath);
@@ -44,8 +44,8 @@ public class BoardFileUtil {
 
                 if (targetFile.exists()) {
                     String webPath = "/uploads/" + moduleName + "/" + fileRename;
-                    result += insertFileData(meetingBoardId, fileName, fileRename, filePath, webPath, order);
-                    order++;
+                    result += insertFileData(meetingBoardId, fileName, fileRename, filePath, webPath, fileOrder);
+                    fileOrder++;
                 } else {
                     throw new IOException("파일이 저장되지 않았습니다: " + targetFile.getAbsolutePath());
                 }
@@ -54,14 +54,16 @@ public class BoardFileUtil {
         return result;
     }
 
-    private int insertFileData(Long meetingBoardId, String fileName, String fileRename, String filePath, String webPath, Long order) {
+    private int insertFileData(Long meetingBoardId, String fileName, String fileRename, String filePath, String webPath, int fileOrder) {
         MeetingBoardFileVO meetingBoardFileVO = new MeetingBoardFileVO();
         meetingBoardFileVO.setMeetingBoardNo(meetingBoardId.intValue());
         meetingBoardFileVO.setFileName(fileName);
         meetingBoardFileVO.setFileRename(fileRename);
         meetingBoardFileVO.setFilePath(filePath);
         meetingBoardFileVO.setWebPath(webPath);
-        meetingBoardFileVO.setMeetingBoardFileNo((long) order.intValue());
+        meetingBoardFileVO.setFileOrder(fileOrder); // fileOrder 값을 제대로 설정
+
+        log.info("파일 순서: {}", fileOrder); // 파일 순서가 제대로 설정되었는지 확인
 
         return meetingBoardMapper.insertBoardFile(meetingBoardFileVO);
     }

@@ -18,9 +18,19 @@ import java.util.List;
 public class MeetingServiceImpl implements MeetingService {
 
     private final MeetingMapper meetingMapper;
+    // ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ //
+    // 내가 개설한 소모임 리스트 불러오기
+    @Override
+    public List<MeetingVO> getMeetingsByMemberId(String memberId) {
+        return meetingMapper.getMeetingsByMemberId(memberId);
+    }
+    // 내가 참석한 소모임 리스트 불러오기
+    @Override
+    public List<MeetingAttendVO> getMeetingAttendsByMemberId(String memberId) {
+        return meetingMapper.getMeetingAttendsByMemberId(memberId);
+    }
 
     // ■■■■■■■■■■■■■■■■■■■ 소모임 조회 (getMeeting) ■■■■■■■■■■■■■■■■■■■■ //
-
     // 날짜에 따른 게임 정보 리스트 불러오기
     @Override
     public List<GameVO> getGamesByDate(String date) {

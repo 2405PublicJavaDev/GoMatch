@@ -18,4 +18,5 @@ public class MeetingBoardReplyVO {
     private Timestamp regDate;
     private Timestamp updateDate;
     private String memberNickName;
+    private String meetingBoardTitle;
 }

@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.meeting.service;
 
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO;
+import com.moijo.gomatch.domain.meeting.vo.MeetingBoardLikeVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO;
 import org.commonmark.node.Node;
@@ -10,6 +11,14 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import java.util.List;
 
 public interface MeetingBoardService {
+
+    // ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ //
+    // 내가 작성한 게시글 리스트 불러오기
+    List<MeetingBoardVO> getBoardsByMemberId(String meetingId);
+    // 내가 작성한 댓글 리스트 불러오기
+    List<MeetingBoardReplyVO> getBoardRepliesByMemberId(String meetingId);
+    // 내가 좋아요 한 게시글 리스트 불러오기
+    List<MeetingBoardLikeVO> getBoardLikesByMemberId(String meetingId);
 
     void addBoard(MeetingBoardVO meetingBoardVO);
     void removeBoard(long meetingBoardNo);

@@ -3,6 +3,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingMapper">
 
+    <!-- 내가 개설한 소모임 리스트 조회 -->
+    <select id="getMeetingsByMemberId" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+               MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, REG_DATE, MEETING_DATE
+        FROM MEETING
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY MEETING_DATE DESC
+    </select>
+
+    <!-- 내가 참석한 소모임 리스트 조회 -->
+    <select id="getMeetingAttendsByMemberId" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
+        SELECT a.MEETING_ATTEND_NO, a.MEETING_NO, a.MEMBER_ID, a.MEETING_ATTEND_YN, a.REG_DATE,
+               m.MEETING_TITLE, m.MEETING_DATE, m.MEETING_TEAM_NAME
+        FROM MEETING_ATTEND a
+                 JOIN MEETING m ON a.MEETING_NO = m.MEETING_NO
+        WHERE a.MEMBER_ID = #{memberId}
+        ORDER BY m.MEETING_DATE DESC
+    </select>
+
     <!-- 전체 소모임 수 조회 -->
     <select id="getTotalMeetingsCount" resultType="int">
         SELECT COUNT(*) FROM MEETING
@@ -164,5 +183,7 @@
             #{id, jdbcType=BIGINT}
         </foreach>
     </delete>
+
+
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.moijo.gomatch.domain.meeting.mapper;
 
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO;
+import com.moijo.gomatch.domain.meeting.vo.MeetingBoardLikeVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,6 +11,10 @@ import java.util.List;
 
 @Mapper
 public interface MeetingBoardMapper {
+
+    List<MeetingBoardVO> selectBoardsByMemberId(String memberId);
+    List<MeetingBoardReplyVO> selectBoardRepliesByMemberId(String memberId);
+    List<MeetingBoardLikeVO> selectBoardLikesByMemberId(String memberId);
 
     // 게시글 등록 메서드
     void insertBoard(MeetingBoardVO meetingBoardVO);

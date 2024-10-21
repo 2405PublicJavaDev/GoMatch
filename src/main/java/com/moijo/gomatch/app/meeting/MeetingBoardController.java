@@ -49,7 +49,7 @@ public class MeetingBoardController {
         String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
         if (memberId == null) {
-            return "로그인이 필요한 서비스입니다.";
+            return "common/oops";
         }else {
             model.addAttribute("loggedIn", true);
             model.addAttribute("memberNickName", memberNickName);
@@ -368,6 +368,7 @@ public class MeetingBoardController {
 
         return ResponseEntity.ok(response);
     }
+
 
 }
 

@@ -15,4 +15,7 @@ public class MeetingAttendVO {
     private String meetingAttendYn; // 참석 여부 (Y/N)
     private Timestamp regDate;      // 참석 등록일
     private Timestamp updateDate;   // 참석 수정일
+    private String meetingTitle;
+    private String meetingTeamName;
+    private String meetingDate;
 }

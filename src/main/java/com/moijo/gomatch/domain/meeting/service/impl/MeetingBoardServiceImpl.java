@@ -3,6 +3,7 @@ package com.moijo.gomatch.domain.meeting.service.impl;
 import com.moijo.gomatch.domain.meeting.mapper.MeetingBoardMapper;
 import com.moijo.gomatch.domain.meeting.service.MeetingBoardService;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardFileVO;
+import com.moijo.gomatch.domain.meeting.vo.MeetingBoardLikeVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardReplyVO;
 import com.moijo.gomatch.domain.meeting.vo.MeetingBoardVO;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,21 @@ import java.util.List;
 public class MeetingBoardServiceImpl implements MeetingBoardService {
 
     private final MeetingBoardMapper meetingBoardMapper;
+
+    @Override
+    public List<MeetingBoardVO> getBoardsByMemberId(String memberId) {
+        return meetingBoardMapper.selectBoardsByMemberId(memberId);
+    }
+
+    @Override
+    public List<MeetingBoardReplyVO> getBoardRepliesByMemberId(String memberId) {
+        return meetingBoardMapper.selectBoardRepliesByMemberId(memberId);
+    }
+
+    @Override
+    public List<MeetingBoardLikeVO> getBoardLikesByMemberId(String memberId) {
+        return meetingBoardMapper.selectBoardLikesByMemberId(memberId);
+    }
 
     @Override
     public void addBoard(MeetingBoardVO meetingBoardVO) {
