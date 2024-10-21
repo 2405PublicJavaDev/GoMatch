@@ -2,6 +2,7 @@ package com.moijo.gomatch.app.goods;
 
 import com.moijo.gomatch.domain.goods.service.PaymentService;
 import com.moijo.gomatch.domain.goods.vo.GoodsPayVO;
+import com.moijo.gomatch.domain.member.vo.MemberVO;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.servlet.http.HttpSession;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,26 @@ public class PaymentController {
     @Autowired
     public PaymentController(PaymentService paymentService) {
         this.paymentService = paymentService;
+    }
+
+    @GetMapping("/goods/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", member.getMemberNickName());
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
     }
 
     // 마이페이지에서 세션에 저장된 memberId로 구매 목록 조회

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/wishlist")
@@ -19,6 +21,26 @@ public class WishlistController {
 
     @Autowired
     private WishlistService wishlistService;
+
+    @GetMapping("/goods/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", member.getMemberNickName());
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
+    }
 
     @PostMapping("/toggle")
     @ResponseBody // AJAX 요청에 대한 응답을 JSON 형태로 반환
