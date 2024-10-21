@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.goods.mapper.PaymentMapper">
 
     <insert id="insertPaymentInfo" parameterType="com.moijo.gomatch.domain.goods.vo.GoodsPayVO">
@@ -9,10 +10,23 @@
             GOODS_REQUIREMENT, GOODS_PAY_ADDRESS_CODE,
             GOODS_PAY_PHONE, GOODS_PAY_RETURN_ACCOUNT, REG_DATE, UPDATE_DATE
         ) VALUES (
-                     GOODS_PAY_SEQ.NEXTVAL, #{goodsNo}, #{memberId}, #{goodsPayArrival},
-                     #{goodsRequirement}, #{goodsPayAddressCode},
-                     #{goodsPayPhone}, #{goodsPayReturnAccount}, SYSDATE, SYSDATE
+                     GOODS_PAY_SEQ.NEXTVAL,
+                     #{goodsNo, jdbcType=NUMERIC},
+                     #{memberId, jdbcType=VARCHAR},
+                     #{goodsPayArrival, jdbcType=VARCHAR},
+                     #{goodsRequirement, jdbcType=VARCHAR},
+                     #{goodsPayAddressCode, jdbcType=VARCHAR},
+                     #{goodsPayPhone, jdbcType=VARCHAR},
+                     #{goodsPayReturnAccount, jdbcType=VARCHAR},
+                     SYSDATE,
+                     SYSDATE
                  )
     </insert>
+
+    <select id="selectPaymentsByMemberId" parameterType="String" resultType="com.moijo.gomatch.domain.goods.vo.GoodsPayVO">
+        SELECT *
+        FROM GOODS_PAY
+        WHERE MEMBER_ID = #{memberId}
+    </select>
 
 </mapper>

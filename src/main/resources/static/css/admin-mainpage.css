@@ -130,3 +130,33 @@ th {
 .logout-button:hover{
     background-color: #ddd;
 }
+
+/* 기본적으로 하위 메뉴 숨기기 */
+.submenu {
+    display: none;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.submenu li {
+    margin: 10px 0;
+}
+
+.submenu a {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    display: block;
+}
+
+.submenu a:hover {
+    background-color: #ddd;
+}
+
+/* 애니메이션으로 메뉴가 부드럽게 열리도록 처리 */
+.show {
+    display: block;
+}
+
+

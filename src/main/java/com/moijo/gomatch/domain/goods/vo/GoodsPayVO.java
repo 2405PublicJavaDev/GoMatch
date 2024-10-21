@@ -18,4 +18,7 @@ public class GoodsPayVO {
     private String goodsPayReturnAccount;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
+
+    // 포맷된 날짜를 저장할 필드
+    private String formattedRegDate;
 }

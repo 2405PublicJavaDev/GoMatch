@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin1")
+@RequestMapping("/admin")
 public class AdminController1 {
 
     private AdminService1 adminService1;
@@ -178,17 +178,42 @@ public class AdminController1 {
 
     @GetMapping("/list")
     public String getGoodsList(Model model) {
-        List<GoodsVO> goodsList = adminService1.getAllGoods(); // 서비스 메소드를 호출하여 상품 목록을 가져옴
-        model.addAttribute("goodsList", goodsList); // 모델에 추가
-        return "admin1/list"; // Thymeleaf 템플릿 경로 반환
+        List<GoodsVO> goodsList = adminService1.getAllGoodsWithImage();
+        model.addAttribute("goodsList", goodsList);
+        return "admin1/list"; // 상품 목록 페이지로 이동
     }
+
+//    @GetMapping("/list")
+//    public String getGoodsList(Model model) {
+//        List<GoodsVO> goodsList = adminService1.getAllGoods(); // 서비스 메소드를 호출하여 상품 목록을 가져옴
+//        model.addAttribute("goodsList", goodsList); // 모델에 추가
+//        return "admin1/list"; // Thymeleaf 템플릿 경로 반환
+//    }
 
     @GetMapping("/detail/{goodsNo}")
     public String getGoodsDetail(@PathVariable Long goodsNo, Model model) {
-        AdminVO1 goods = adminService1.getGoodsById(goodsNo); // 상품 ID로 상품 조회
-        model.addAttribute("goods", goods); // 모델에 추가
+        // 상품 정보 조회
+        AdminVO1 goods = adminService1.getGoodsById(goodsNo);
+        model.addAttribute("goods", goods);
+
+        // 대표 이미지 조회
+        GoodsImageVO representativeImage = adminService1.getRepresentativeImage(goodsNo);
+        model.addAttribute("representativeImage", representativeImage);
+
+        // 상세 이미지 목록 조회
+        List<GoodsImageVO> detailImages = adminService1.getGoodsImagesByGoodsNo(goodsNo);
+        model.addAttribute("detailImages", detailImages);
+
         return "admin1/detail"; // 상세 조회 템플릿 경로 반환
     }
+
+
+//    @GetMapping("/detail/{goodsNo}")
+//    public String getGoodsDetail(@PathVariable Long goodsNo, Model model) {
+//        AdminVO1 goods = adminService1.getGoodsById(goodsNo); // 상품 ID로 상품 조회
+//        model.addAttribute("goods", goods); // 모델에 추가
+//        return "admin1/detail"; // 상세 조회 템플릿 경로 반환
+//    }
 
     // 수정 폼을 보여주는 메소드 (상세 페이지에서 수정)
     @GetMapping("/edit/{goodsNo}")

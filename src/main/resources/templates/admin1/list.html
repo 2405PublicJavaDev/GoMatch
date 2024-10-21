@@ -1,55 +1,95 @@
-<form action="/goods/search" method="get">
-  <select name="searchType">
-    <option value="all" selected>전체</option>
-    <option value="name">상품 이름</option>
-    <option value="code">상품 코드</option>
-  </select>
-  <input type="text" name="searchValue" placeholder="검색어를 입력하세요">
-  <button type="submit">검색</button>
-</form>
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품 상세 조회</title>
+  <link rel="stylesheet" href="/css/admin-list.css">
+</head>
+<body>
 
-<div>
-  <form action="/goods/team/list" method="get"> <!-- 수정된 부분 -->
-    <button type="submit" name="team" value="LG">LG</button>
-    <button type="submit" name="team" value="KT 위즈">KT 위즈</button>
-    <button type="submit" name="team" value="SSG 랜더스">SSG 랜더스</button>
-    <button type="submit" name="team" value="NC 다이노스">NC 다이노스</button>
-    <button type="submit" name="team" value="두산 베어스">두산 베어스</button>
-    <button type="submit" name="team" value="KIA 타이거즈">KIA 타이거즈</button>
-    <button type="submit" name="team" value="롯데 자이언츠">롯데 자이언츠</button>
-    <button type="submit" name="team" value="삼성 라이온즈">삼성 라이온즈</button>
-    <button type="submit" name="team" value="한화 이글스">한화 이글스</button>
-    <button type="submit" name="team" value="키움 히어로즈">키움 히어로즈</button>
-  </form>
+<div class="layout-container">
+  <aside class="sidebar">
+    <div class="sidebarmember"><a href="admin-member"><h3>회원 관리</h3></a></div>
+    <div class="sidebarmember2" id="productToggle">
+      <h3>상품 관리 ▾</h3>
+    </div>
+    <ul class="submenu" id="submenu">
+      <li><a href="/admin/insert">상품 등록</a></li>
+      <li><a href="/admin/list">상품 조회</a></li>
+    </ul>
+  </aside>
+
+  <div class="content">
+    <header class="header-container">
+      <div>
+        <a href="admin-mainpage"><h1>관리자 페이지</h1></a>
+      </div>
+      <button onclick="logout()" class="logout-button">로그아웃</button>
+    </header>
+    <p>관리자 계정으로 로그인하였습니다.</p>
+
+    <main>
+      <h1>상품 목록</h1>
+      <div class="team-select">
+        <form action="/goods/team/list" method="get">
+          <select name="team" onchange="this.form.submit()">
+            <option value="">팀 선택</option>
+            <option value="LG">LG</option>
+            <option value="KT 위즈">KT 위즈</option>
+            <option value="SSG 랜더스">SSG 랜더스</option>
+            <option value="NC 다이노스">NC 다이노스</option>
+            <option value="두산 베어스">두산 베어스</option>
+            <option value="KIA 타이거즈">KIA 타이거즈</option>
+            <option value="롯데 자이언츠">롯데 자이언츠</option>
+            <option value="삼성 라이온즈">삼성 라이온즈</option>
+            <option value="한화 이글스">한화 이글스</option>
+            <option value="키움 히어로즈">키움 히어로즈</option>
+          </select>
+        </form>
+      </div>
+
+      <table class="product-table">
+        <thead>
+        <tr>
+          <th>대표 이미지</th>
+          <th>상품 번호</th>
+          <th>팀</th>
+          <th>상품 이름</th>
+          <th>가격</th>
+          <th>상세 보기</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="goods : ${goodsList}">
+          <td><img th:src="@{${goods.goodsImageWebPath}}" alt="대표 이미지" class="thumbnail"></td>
+          <td th:text="${goods.goodsNo}"></td>
+          <td th:text="${goods.goodsTeam}"></td>
+          <td th:text="${goods.goodsProductName}"></td>
+          <td th:text="${goods.goodsPrice} + '원'"></td>
+          <td><a th:href="@{/admin1/detail/{goodsNo}(goodsNo=${goods.goodsNo})}" class="detail-link">상세 보기</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
 </div>
 
-<div>
-  <form action="/goods/category/list" method="get"> <!-- 수정된 부분 -->
-    <button type="submit" name="category" value="유니폼">유니폼</button>
-    <button type="submit" name="category" value="모자">모자</button>
-    <button type="submit" name="category" value="잡화">잡화</button>
-    <button type="submit" name="category" value="응원용품">응원용품</button>
-    <button type="submit" name="category" value="야구용품">야구용품</button>
-  </form>
-</div>
+<script>
+  function logout() {
+    if (confirm('로그아웃하시겠습니까?')) {
+      window.location.href = '/admin/logout';
+    }
+  }
 
-<table border="1">
-  <thead>
-  <tr>
-    <th>상품 번호</th>
-    <th>팀</th>
-    <th>상품 이름</th>
-    <th>가격</th>
-    <th>상세 보기</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="goods : ${goodsList}">
-    <td th:text="${goods.goodsNo}"></td>
-    <td th:text="${goods.goodsTeam}"></td>
-    <td th:text="${goods.goodsProductName}"></td>
-    <td th:text="${goods.goodsPrice}"></td>
-    <td><a th:href="@{/admin1/detail/{goodsNo}(goodsNo=${goods.goodsNo})}">상세 보기</a></td>
-  </tr>
-  </tbody>
-</table>
+  document.addEventListener('DOMContentLoaded', function () {
+    const productToggle = document.getElementById('productToggle');
+    const submenu = document.getElementById('submenu');
+    productToggle.addEventListener('click', function () {
+      submenu.classList.toggle('show');
+    });
+  });
+</script>
+
+</body>
+</html>

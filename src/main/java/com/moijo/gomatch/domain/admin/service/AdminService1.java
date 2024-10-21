@@ -29,5 +29,7 @@ public interface AdminService1 {
 
     void insertGoodsOption(Long goodsNo, String optionName);
 
+    List<GoodsVO> getAllGoodsWithImage(); // 대표 이미지 포함 상품 목록 조회
 
+    GoodsImageVO getRepresentativeImage(Long goodsNo); // 대표 이미지 조회 메서드 추가
 }

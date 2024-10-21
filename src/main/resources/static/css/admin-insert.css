@@ -1,0 +1,73 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: 'KBO Dia Gothic', sans-serif;
+    display: flex;
+    justify-content: center;
+}
+
+.layout-container {
+    display: flex;
+    width: 100%;  /* 전체 화면을 가득 채움 */
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #f0f0f0;
+    text-align: center;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #000;
+}
+
+.sidebarmember, .sidebarmember2 {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.sidebarmember:hover, .sidebarmember2:hover {
+    background-color: #e7e6e6;
+}
+
+/* Content 영역 조정 */
+.content {
+    flex-grow: 1;
+    max-width: 1200px; /* 최대 너비를 더 확장 */
+    width: 95%;  /* 가로 여백을 최소화 */
+    margin: 0 auto;  /* 중앙 정렬 */
+    padding: 40px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form 내부 필드 조정 */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+input, select, button {
+    width: 100%;
+    max-width: 1100px;  /* 입력 필드 최대 너비 확장 */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

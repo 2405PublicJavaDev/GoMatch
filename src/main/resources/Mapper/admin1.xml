@@ -24,6 +24,12 @@
                )
     </insert>
 
+    <select id="selectGoodsListWithImage" resultType="com.moijo.gomatch.domain.goods.vo.GoodsVO">
+        SELECT g.GOODS_NO, g.GOODS_TEAM, g.GOODS_PRODUCT_NAME, g.GOODS_PRICE, gi.GOODS_IMAGE_WEB_PATH
+        FROM GOODS g
+                 LEFT JOIN GOODS_IMAGE gi ON g.GOODS_NO = gi.GOODS_NO AND gi.GOODS_IMAGE_REP_YN = 'Y'
+    </select>
+
     <!-- 이미지 삭제 -->
 <!--    <delete id="deleteGoodsImage" parameterType="Long">-->
 <!--        DELETE FROM GOODS_IMAGE WHERE GOODS_IMAGE_NO = #{goodsImageNo}-->
