@@ -29,6 +29,7 @@
 
         </div>
         <ul class="game-list">
+
             <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
@@ -48,8 +49,9 @@
 <!--                    <input type="date" name="gameDate" required>-->
                     <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
                     <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
-                    <input type="hidden" name="matchPredictNo" th:value="1">
-                    <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
+                    <input type="hidden" name="matchPredictNo" th:value="${predict.matchPredictNo}">
+                    <input type="hidden" name="matchPredictStatus" th:value="${predict.matchPredictStatus}">
+                    <input type="hidden" name="matchPredictDecision" id="matchPredictDecision" th:value="${predict.matchPredictDecision}"/>
                     <div class="teams">
                         <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]],[[${predict.gameNo}]])">
                             <span th:text="${predict.teamA}"></span>
@@ -81,11 +83,6 @@
                 <span>현재 경험치는</span>
                 <span th:text="${memberInfo.experiencePoints}"></span>
                 <span>입니다.</span>
-            </div>
-            <div class="user-rank">
-                <span>현재 순위는</span>
-                <span th:text="${memberInfo.rankPosition}">-위 </span>
-                <span>위 입니다.</span>
             </div>
             <div class="user-points">
                 <span>전체 예측에서 </span>
@@ -165,34 +162,11 @@
         if (form) {
             form.submit();
         }
-
-        // 팀 버튼 활성화
-        const parentGameItem = teamButton.closest(".game-item");
-        const siblingButtons = parentGameItem.querySelectorAll(".team-a, .draw, .team-b");
-        siblingButtons.forEach(function (btn) {
-            btn.classList.remove("active");
-        });
-        teamButton.classList.add("active");
     }
 
+
     document.addEventListener("DOMContentLoaded", function () {
-        const buttons = document.querySelectorAll('.teams button');
 
-        // 모든 버튼에서 active 클래스 제거
-        buttons.forEach(button => {
-            button.classList.remove('active');
-        });
-
-        // 선택된 팀의 버튼에 active 클래스 추가
-        buttons.forEach(button => {
-            if (button.classList.contains('team-a') && button.querySelector('span').innerText === selectedTeam) {
-                button.classList.add('active');
-            } else if (button.classList.contains('draw') && selectedTeam === '무') {
-                button.classList.add('active');
-            } else if (button.classList.contains('team-b') && button.querySelector('span').innerText === selectedTeam) {
-                button.classList.add('active');
-            }
-        })
         const today = new Date();
         const currentYear = today.getFullYear();
         const currentMonth = today.getMonth();
@@ -282,22 +256,30 @@
 
                     data.forEach(predict => {
                         const listItem = document.createElement('li');
+
                         listItem.className = 'game-item';
+
                         listItem.innerHTML = `
                             <span class="league">
                                 <img src="/img/고매치로고.png">
                                 GoMatch
                             </span>
                             <div class="upcoming-games">
-                                <span class="time">${predict.gameTime}</span>
-                                <p>경기 예정</p>
-                                <span class="time-out">후 종료</span>
-                            </div>
+                                  <div class="game-date">
+                                    <p>경기 날짜</p>
+                                    <span class="date">${predict.gameDate}</span>
+                                  </div>
+                                  <div class="game-time">
+                                    <p class="time">${predict.gameTime}</p>
+                                    <span>경기 예정</span>
+                                  </div>
+                                </div>
                             <form name="add-form" action="/addPredict" method="post">
                                 <input type="hidden" name="memberId" value="${predict.memberId}"/>
                                 <input type="hidden" name="gameNo" value="${predict.gameNo}"/>
-                                <input type="hidden" name="matchPredictNo" value="1"/>
-                                <input type="hidden" name="matchPredictDecision" id="matchPredictDecision"/>
+                                <input type="hidden" name="matchPredictNo" value="${predict.matchPredictNo}">
+                                <input type="hidden" name="matchPredictStatus" value="${predict.matchPredictStatus}">
+                                <input type="hidden" name="matchPredictDecision" id="matchPredictDecision" value="${predict.matchPredictDecision}"/>
                                 <div class="teams">
                                     <button type="button" class="team-a" onclick="setPrediction('${predict.teamA}', '${predict.gameNo}')">
                                         <span>${predict.teamA}</span>
@@ -391,60 +373,6 @@
                 this.classList.add("active");
             });
         });
-
-        const weekButtons = document.querySelectorAll(".week-date");
-        weekButtons.forEach(function (weekButton) {
-            weekButton.addEventListener("click", function () {
-                weekButtons.forEach(function (btn) {
-                    btn.classList.remove("active");
-                });
-                this.classList.add("active");
-
-
-            });
-        });
-
-        // 랭킹 리스트 조회 함수
-        function fetchRankingList() {
-            fetch(`/rankingList`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Http error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    updateRankingList(data); // 랭킹 리스트 업데이트
-                })
-                .catch(error => console.error(`Error fetching ranking list:`, error));
-        }
-
-        function updateRankingList(ranking) {
-            const rankingList = document.querySelector(".top-predictors ol");
-            rankingList.innerHTML = ''; // 기존 리스트 초기화
-
-            // 랭킹 정보를 순회하며 리스트에 추가
-            ranking.forEach((member, index) => {
-                const listItem = document.createElement("li"); // li 요소 생성
-                listItem.className = "rank-item";
-                listItem.innerHTML = `
-            <div class="rank-position">
-                <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
-                <span class="rank">${index + 1}</span> <!-- 순위 -->
-            </div>
-            <span class="name">${member.memberNickname}</span> <!-- 회원 닉네임 -->
-            <span class="points">${member.experiencePoints}</span> <!-- 경험치 -->
-        `;
-                rankingList.appendChild(listItem); // 리스트에 추가
-            });
-        }
-        const initialWeekButton = document.querySelector(".week-date.active");
-        if (initialWeekButton) {
-            const startDate = initialWeekButton.dataset.startDate;
-            const endDate = initialWeekButton.dataset.endDate;
-            fetchRankingList(startDate, endDate);
-        }
-    window.onload = fetchRankingList;
     });
 </script>
 </body>

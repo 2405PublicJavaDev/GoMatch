@@ -19,7 +19,7 @@ public interface MatchPredictService {
      * 날짜 별 승부예측 리스트
      *
      * @param gameDate
-     * @param gameNo
+     * @param
      * @return
      */
     List<MatchPredict> getPredictionsByDate(String gameDate);
