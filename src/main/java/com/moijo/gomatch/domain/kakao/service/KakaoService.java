@@ -52,12 +52,17 @@ public class KakaoService {
         KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
     }
 
-    //Webclient로 HTTP 요청을 구현했다.
-    //각 서비스마다 Custom Exception이 있다면 onStatus 메서드에 지정하면 되겠다.
+    //Webclient로 HTTP 요청을 구현했음
+    //각 서비스마다 Custom Exception이 있다면 onStatus 메서드에 지정하면 된다
     //HTTP 요청을 받아오면 .retrieve() 메서드 부터, Request Body 내용이
     //미리 지정해둔 KakaoTokenResponseDto에 json이 직렬화되어 들어가게 된다.
 
-    // 액세스 토큰 받기
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 인증 서버에 액세스 토큰 요청
+     * 설명: 카카오 인증 서버에 액세스 토큰을 요청하고
+     *       인증 코드를 사용해서 액세스 토큰, 리프레시 토큰을 받아오는 역할을 함
+     */
     public String getAccessTokenFromKakao(String code) {
         KakaoTokenResponseDto kakaoTokenResponseDto = WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
@@ -84,6 +89,13 @@ public class KakaoService {
 
         return kakaoTokenResponseDto.getAccessToken();
     }
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 로그인 프로세스 처리
+     * 설명: 로그인 프로세스 처리
+     *       액세스 토큰을 얻고, 사용자 정보를 가져온 후 ,JWT 토큰을 생성함
+     */
     public KakaoLoginDto processKakaoLogin(String code) {
         String accessToken = getAccessTokenFromKakao(code);
         KakaoUserInfoResponseDto userInfo = getUserInfo(accessToken);
@@ -97,7 +109,12 @@ public class KakaoService {
                 .build();
     }
 
-    // 사용자 정보
+    /**
+     * 담당자: 이용재
+     * 관련 기능:  카카오 로그인 정보 조회
+     * 설명: 카카오 API를 통해 사용자 정보 조회
+     *       액세스 토큰을 사용해서 사용자 프로필, 이메일 등 정보를 가져옴
+     */
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
 
         KakaoUserInfoResponseDto userInfo = WebClient.create(KAUTH_USER_URL_HOST)
@@ -126,6 +143,13 @@ public class KakaoService {
 
         return userInfo;
     }
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 사용자 정보 바탕으로 JWT 토큰 생성
+     * 설명: 카카오 사용자 정보를 바탕으로 JWT토큰을 생성하고
+     *       토큰으로 사용자 이메일,ID, 닉네임, 이름 등의 정보가 포함됩니다
+     */
     private String generateJwtToken(KakaoUserInfoResponseDto userInfo) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -145,6 +169,11 @@ public class KakaoService {
                 .compact();
     }
 
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 로그인 URL를 생성
+     * 설명: 클라이언트 ID와 리다이렉트 URI를 포함한 카카오 인증 URL로 반환함
+     */
     public String getKakaoLoginUrl() {
         return KAUTH_TOKEN_URL_HOST + "/oauth/authorize"
                 + "?client_id=" + clientId
@@ -152,6 +181,11 @@ public class KakaoService {
                 + "&response_type=code";
     }
 
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 연동 해제
+     * 설명: 액세스 토큰을 사용하여 카카오 API연동 해제 함
+     */
     public boolean unlinkKakaoAccount(String accessToken) {
         String unlinkUrl = "https://kapi.kakao.com/v1/user/unlink";
         HttpHeaders headers = new HttpHeaders();

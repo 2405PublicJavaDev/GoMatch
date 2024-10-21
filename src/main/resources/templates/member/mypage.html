@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>프로필 페이지</title>
+<head th:insert="~{header-footer :: head}"></head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
+    <div th:insert="~{header-footer :: header}"></div>
     <link rel="stylesheet" href="/css/member/mypage.css">
     <link rel="stylesheet" href="/css/header-footer.css">
-</head>
-<body>
-<!-- 헤더 부분 -->
-<div th:insert="~{header-footer :: header}"></div>
+
 <main>
     <div class="mypage-container">
         <div class="profile-img">
@@ -43,7 +40,7 @@
                 <p class="content-name">소모임</p>
                 <div class="section-line"></div>
                 <div class="button-container2">
-                    <a href="/meeting/list"><button>가입한 소모임 확인하기</button></a>
+                    <a href="/my/myMeeting"><button>가입한 소모임 확인하기</button></a>
                 </div>
             </div>
         </div>
@@ -63,7 +60,7 @@
                 <p class="content-name">승부예측 내역</p>
                 <div class="section-line"></div>
                 <div class="button-container2">
-                    <a href="/matchPredict"><button>승부예측 내역 확인하기</button></a>
+                    <a href="/myMatchPredict"><button>승부예측 내역 확인하기</button></a>
                 </div>
             </div>
         </div>

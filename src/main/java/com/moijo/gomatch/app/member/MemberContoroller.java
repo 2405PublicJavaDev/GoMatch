@@ -47,9 +47,9 @@ public class MemberContoroller {
 
 
     /**
-     * 로그인 페이지
-     * @param model
-     * @return
+     * 담당자: 이용재
+     * 관련 기능: 로그인 페이지 표시
+     * 설명: 로그인 페이지 표시, 카카오 로그인 URL을 모델로 추가
      */
     @GetMapping("/member/loginpage")
     public String showLoginPage(Model model) {
@@ -59,8 +59,11 @@ public class MemberContoroller {
         return "member/loginpage";
     }
 
-
-    // 로그인 기능
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 사용자 로그인 기능
+     * 설명: 로그인 성공시 세션 저장, 관리자/일반 사용자 다른페이지 리다이렉트함
+     */
     @PostMapping("/member/loginpage")
     @ResponseBody
     public ResponseEntity<?> loginpage(@RequestParam("memberId") String memberId,
@@ -101,30 +104,38 @@ public class MemberContoroller {
         }
     }
 
-
-    // 회원가입 폼
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원가입 페이지 표시
+     * 설명: 회원가입 페이지 표시
+     */
     @GetMapping("member/joinmember")
     public String showJoinForm(Model model) {
         model.addAttribute("memberVO", new MemberVO());
         return "member/joinmember";
     }
-    // 회원가입 기능
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원가입 기능
+     * 설명: 회원가입 처리를 하고 데이터 유효성 검사, 중복체크를 수행
+     */
     @PostMapping("member/joinmember")
     public String processJoinForm(@Valid MemberVO memberVO, BindingResult result) {
         if (result.hasErrors()) {
             return "member/joinmember";
         }
-
+        // 아이디 중복체크
         if (mService.isIdDuplicate(memberVO.getMemberId())) {
             result.rejectValue("memberId", "error.memberId", "이미 사용 중인 아이디입니다.");
             return "member/joinmember";
         }
-
+        // 이메일 중복체크
         if (mService.isEmailDuplicate(memberVO.getMemberEmail())) {
             result.rejectValue("memberEmail", "error.memberEmail", "이미 사용 중인 이메일입니다.");
             return "member/joinmember";
         }
-
+        // 닉네임 중복체크
         if (mService.isNicknameDuplicate(memberVO.getMemberNickName())) {
             result.rejectValue("memberNickName", "error.memberNickName", "이미 사용 중인 닉네임입니다.");
             return "member/joinmember";
@@ -132,7 +143,12 @@ public class MemberContoroller {
         mService.registerMember(memberVO);
         return "redirect:/";
     }
-    // 회원가입 중복체크
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 중복 여부 확인
+     * 설명: 아이디, 닉네임, 이메일의 중복 여부 확인
+     */
     @GetMapping("member/checkDuplicate")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> checkDuplicate(@RequestParam String field, @RequestParam String value) {
@@ -153,20 +169,30 @@ public class MemberContoroller {
         return ResponseEntity.ok(response);
     }
 
-
-
-    // 로그아웃 페이지
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 로그아웃 기능 처리
+     * 설명: 로그아웃 처리 후 세션 무효화
+     */
     @GetMapping("/member/logout")
     public String logout(HttpSession session) {
+        // 세션 속성 제거
         session.removeAttribute("loggedIn");
         session.removeAttribute("memberNickName");
         session.removeAttribute("kakaoAccessToken");
         session.removeAttribute("kakaoRefreshToken");
         session.removeAttribute("jwtToken");
+        // 세션 무효화
         session.invalidate();
         return "redirect:/";
     }
-    // 메인페이지로 리다이렉트
+
+    // ========================================================= 헤더 세션 ========================================================= //
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 메인 페이지 표시
+     * 설명: 로그인한 상태에 따라 모델 정보를 추가함 (로그인 했을때 아닐때)
+     */
     @GetMapping("/")
     public String mainPage(Model model, HttpSession session) {
         boolean loggedIn = session.getAttribute("loggedIn") != null && (Boolean) session.getAttribute("loggedIn");
@@ -176,13 +202,38 @@ public class MemberContoroller {
         }
         return "index";
     }
-    // 아이디찾기 페이지
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 닉네임 세션 추가
+     * 설명: 모든 요청에 로긍니 상태와 닉네임 모델을 추가 함
+     */
+    @ModelAttribute
+    public void addAttributes(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", member.getMemberNickName());
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
+    }
+    // =========================================================================================================================== //
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 아이디 찾기 페이지 표시
+     * 설명: 아이디 찾기 페이지 표시
+     */
     @GetMapping("/member/findid")
     public String showFindIdForm() {
         return "member/findid";
     }
 
-    // 아이디 찾기 기능
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 아이디 찾기 기능
+     * 설명: 이름과 생년월일을 이용해 아이디를 찾기
+     */
     @PostMapping("/member/findid")
     public String findId(@RequestParam String name,
                          @RequestParam String birthDate,
@@ -208,18 +259,32 @@ public class MemberContoroller {
         return "member/findid";
     }
 
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 아이디를 마스킹(lee****) 하는 역할
+     * 설명: 컨트롤러 내부에 사용 되는 헬퍼 메서드 현재 단순히 아이디만 반환 중
+     *       마스킹 하려면 코드 추가
+     */
     private String maskId(String id) {
-
         return id;
     }
-// 비밀번호 찾기 페이지
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 비밀번호 찾기 페이지 표시
+     * 설명: 비밀번호 찾기 페이지 표시
+     */
     @GetMapping("/member/findpw")
     public String showFindPwdForm() {
-
         return "member/findpw";
     }
 
-// 비밀번호 찾기( 임시비밀번호 전송) 기능
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 비밀번호 찾기(임시 비밀번호 전송) 기능
+     * 설명: 비밀번호 찾기 시 아이디, 이메일로 찾고 입력된 이메일로 임시 비밀번호 전송
+     *       데이터베이스에 임시비밀번호로 변경됨
+     */
     @PostMapping("/member/findpw")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> resetPassword(@RequestParam String memberId, @RequestParam String email) {
@@ -237,7 +302,11 @@ public class MemberContoroller {
         return ResponseEntity.ok(response);
     }
 
-    // 마이페이지 폼
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 마이페이지 표시
+     * 설명: 마이페이지 표시, 일반/카카오 구분해서 정보 처리함
+     */
     @GetMapping("/member/mypage")
     public String showMyPageForm(HttpSession session, Model model) {
         // 로그인 체크
@@ -276,6 +345,14 @@ public class MemberContoroller {
         return "member/mypage";
     }
 
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 로그인 사용자 정보 처리
+     * 설명: 헬퍼 메서드 이메일을 사용해서 기존 회원인지 확인
+     *       세션에서 카카오 닉네임 이메일 가져옴
+     *       기존 회원이 아니면 MemberVO에 객체를 생성하고 카카오 정보로 초기화함
+     *       프로필 이미지가 있다면 URL 회원정보에 설정됨
+     */
     private MemberVO createOrGetKakaoMember(HttpSession session) {
         String kakaoNickname = (String) session.getAttribute("memberNickName");
         String kakaoEmail = (String) session.getAttribute("kakaoEmail"); // 세션에 저장된 카카오 이메일
@@ -304,44 +381,11 @@ public class MemberContoroller {
         return member;
     }
 
-
-// 메서드들에 nickname 세션 저장 (헤더부분)
-@ModelAttribute
-public void addAttributes(Model model, HttpSession session) {
-    MemberVO member = (MemberVO) session.getAttribute("member");
-    if (member != null) {
-        model.addAttribute("loggedIn", true);
-        model.addAttribute("memberNickName", member.getMemberNickName());
-    } else {
-        model.addAttribute("loggedIn", false);
-    }
-}
-//    // 메서드들에 nickname 세션 저장 (헤더부분)
-//    @GetMapping("/game/checkLogin")
-//    @ResponseBody
-//    public Map<String, Boolean> checkLogin(HttpSession session) {
-//        Map<String, Boolean> response = new HashMap<>();
-//        String memberId = (String) session.getAttribute("memberId");
-//        response.put("loggedIn", memberId != null);
-//        return response;
-//    }
-
-
-// 회원정보 수정
-    @GetMapping("/member/modifymember")
-    public String showModifyMemberForm(Model model, HttpSession session) {
-        MemberVO member = (MemberVO) session.getAttribute("member");
-        if (member == null) {
-            return "redirect:/member/loginpage";
-
-        }
-        model.addAttribute("memberVO", member);
-        model.addAttribute("memberName", member.getMemberName());
-        model.addAttribute("memberNickName", member.getMemberNickName());
-        return "member/modifymember";
-    }
-
-    // 비밀번호 중복확인
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 현재 비밀번호 유효성 검사
+     * 설명: 현재 페이지 유효성 검사
+     */
     @PostMapping("/member/checkCurrentPassword")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> checkCurrentPassword(@RequestParam String currentPassword,
@@ -359,7 +403,29 @@ public void addAttributes(Model model, HttpSession session) {
         return ResponseEntity.ok(response);
     }
 
-    // 회원정보 수정 기능
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원정보 수정 페이지 표시
+     * 설명: 회원 정보 수정 페이지 표시
+     */
+    @GetMapping("/member/modifymember")
+    public String showModifyMemberForm(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/member/loginpage";
+
+        }
+        model.addAttribute("memberVO", member);
+        model.addAttribute("memberName", member.getMemberName());
+        model.addAttribute("memberNickName", member.getMemberNickName());
+        return "member/modifymember";
+    }
+
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원정보 수정 처리 기능
+     * 설명: 회원정보 수정 처리(비밀번호 변경, 프로필 이미지 업로드 포함)
+     */
     @PostMapping("/member/modifymember")
     public ResponseEntity<?> modifyMember(@ModelAttribute @Valid MemberVO memberVO,
                                           BindingResult bindingResult,
@@ -418,7 +484,11 @@ public void addAttributes(Model model, HttpSession session) {
         }
     }
 
-    // 회원탈퇴 페이지
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원탈퇴 페이지 표시
+     * 설명: 회원탈퇴 페이지 표시
+     */
     @GetMapping("/member/deletemember")
     public String deleteMemberForm(HttpSession session, Model model) {
         log.info("Accessing deleteMemberForm");
@@ -432,8 +502,11 @@ public void addAttributes(Model model, HttpSession session) {
         return "member/deletemember";
     }
 
-
-    // 회원탈퇴 기능
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 회원탈퇴 기능
+     * 설명: 회원 탈퇴 처리, 비밀번호 확인후 계정 삭제 디비에서도 삭제 됨
+     */
     @PostMapping("/member/delete")
     public ResponseEntity<?> deleteMember(@RequestParam String password, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("member");
@@ -457,7 +530,11 @@ public void addAttributes(Model model, HttpSession session) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         }
     }
-
+    /**
+     * 담당자: 이용재
+     * 관련 기능: 카카오 연동 해제
+     * 설명: 카카오 로그인 계정 연동 해제
+     */
     @PostMapping("/member/unlink-kakao")
     @ResponseBody
     public Map<String, Boolean> unlinkKakao(HttpSession session) {

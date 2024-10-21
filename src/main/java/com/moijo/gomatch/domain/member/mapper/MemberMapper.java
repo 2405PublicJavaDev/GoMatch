@@ -10,19 +10,10 @@ import java.util.List;
 @Mapper
 public interface MemberMapper {
 
-
-    /**
-     * 로그인
-     * @param member
-     * @return
-     */
+    // 사용자 로그인을 확인
     MemberVO checkLogin(MemberVO member);
 
-
-    /**
-     * 회원가입 mapper
-     * @param memberVO
-     */
+    // 새로운 회원 등록
     void insertMember(MemberVO memberVO);
 
     /**

@@ -9,89 +9,43 @@ import java.util.List;
 
 public interface MemberService {
 
-    /**
-     * 로그인 serivce
-     * @author yoojung
-     */
-     MemberVO checkLogin(MemberVO member);
+    // 사용자 로그인을 확인
+    MemberVO checkLogin(MemberVO member);
 
-    /**
-     * 회원가입 service
-     *
-     */
+    // 새로운 회원 등록
     void registerMember(MemberVO memberVO);
 
-    /**
-     * 아이디 중복검사
-     * @param memberId
-     * @return
-     */
+    // 아이디 중복 검사
     boolean isIdDuplicate(String memberId);
 
-    /**
-     * 이메일 중복검사
-     * @param memberEmail
-     * @return
-     */
+    // 이메일 중복 검사
     boolean isEmailDuplicate(String memberEmail);
 
-    /**
-     * 닉네임 중복검사
-     * @param memberNickname
-     * @return
-     */
+    // 닉네임 중복 검사
     boolean isNicknameDuplicate(String memberNickname);
 
-    /**
-     * 아이디 찾기(이름, 생년월일) service
-     * @param name
-     * @param birthDate
-     * @return
-     */
+    // 이름과 생년월일로 아이디 찾기
     String findIdByNameAndBirthDate(String name, String birthDate);
 
-    /**
-     * 비밀번호 찾기(임시 비밀번호 발급) service
-     * @param memberId
-     * @param email
-     */
+    // 임시 비밀번호 방금하여 비밀번호 재설정
     boolean resetPassword(String memberId, String email);
 
-    /**
-     * 비밀번호 인증 Service
-     * @param memberId
-     * @param password
-     * @return
-     */
-
+    // 사용자 비밀번호 확인
     boolean checkPassword(String memberId, String password);
-    /**
-     * 프로필 이미지 업로드 service
-     * @param file
-     * @return
-     */
+
+    // 프로필 이미지 업로드
     String uploadProfileImage(MultipartFile file);
-    /**
-     * 회원 정보 조회(특정아이디 정보) service
-     * @param memberId
-     * @return
-     */
+
+    // 특정 아이디 회원 정보 조회
     MemberVO getMemberById(String memberId);
-    /**
-     * 회원 정보 수정 service
-     * @param memberVO
-     * @return
-     */
+
+    // 회원 정보수정
     boolean modifyMember(MemberVO memberVO);
 
-    /**
-     * 회원 탈퇴 service
-     * @param memberId
-     * @param password
-     * @return
-     */
+    // 회원 탈퇴 처리
     boolean deleteMember(String memberId, String password);
 
+    // 이메일로 회원 정보 조회
     MemberVO getMemberByEmail(String email);
 
 

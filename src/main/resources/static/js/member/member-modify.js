@@ -169,7 +169,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                swal({
+                Swal.fire({
                     title: "성공!",
                     text: "회원정보가 성공적으로 수정되었습니다.",
                     icon: "success",
@@ -179,7 +179,7 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error('Error response:', xhr.responseText);
-                swal("오류", "회원정보 수정 중 오류가 발생했습니다: " + xhr.responseText, "error");
+                Swal.fire("오류", "회원정보 수정 중 오류가 발생했습니다: " + xhr.responseText, "error");
             }
         });
     });
