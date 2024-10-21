@@ -12,9 +12,10 @@
             <h2 class="mb-0">채팅방 목록</h2>
         </div>
         <div class="card-body">
-            <form action="/chat/createRoom" method="post" class="mb-4">
+            <form th:action="@{/chat/createRoom/{meetingNo}(meetingNo=${meetingNo})}" method="post" class="mb-4">
+                <input type="hidden" name="meetingNo" th:value="${meetingNo}" />
                 <div class="input-group">
-                    <input type="text" class="form-control" name="roomName" placeholder="채팅방 이름" required>
+                    <input type="text" class="form-control" name="roomName" placeholder="이름을 입력하여 채팅방을 개설해주세요" required>
                     <button type="submit" class="btn btn-primary">방 만들기</button>
                 </div>
             </form>
@@ -22,20 +23,22 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>채팅방 이름</th>
+                    <th>⚾채팅방 리스트⚾</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="room : ${roomList}">
                     <td>
-                        <a th:href="@{chatRoom(roomId=${room.roomId})}"
+                        <a th:href="@{/chat/chatRoom/{meetingNo}/{roomId}(meetingNo=${meetingNo}, roomId=${room.roomId})}"
                            th:text="${room.name}"
                            class="text-decoration-none"></a>
+
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+    <a href="javascript:history.back()" class="btn btn-secondary mb-3">뒤로가기</a>
     </div>
 </div>
 </main>

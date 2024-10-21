@@ -3,15 +3,20 @@ package com.moijo.gomatch.app.game;
 import com.moijo.gomatch.domain.game.service.GameService;
 import com.moijo.gomatch.domain.game.vo.GameVO;
 import com.moijo.gomatch.domain.game.vo.StadiumVO;
+import com.moijo.gomatch.domain.member.vo.MemberVO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class GameController {
@@ -21,6 +26,26 @@ public class GameController {
 
     @Autowired
     private GameService gameService;
+
+    @GetMapping("/game/checkLogin")
+    @ResponseBody
+    public Map<String, Boolean> checkLogin(HttpSession session) {
+        Map<String, Boolean> response = new HashMap<>();
+        String memberId = (String) session.getAttribute("memberId");
+        response.put("loggedIn", memberId != null);
+        return response;
+    }
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("loggedIn", true);
+            model.addAttribute("memberNickName", member.getMemberNickName());
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
+    }
 
     // 팀 순위 보여주는 메소드
     @GetMapping("/game/teamrank")

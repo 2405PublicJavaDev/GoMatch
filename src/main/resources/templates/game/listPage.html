@@ -31,6 +31,7 @@
                 <div id="calendarViewBtn">달력</div>
             </div>
             <div class="select-div">
+            <!-- 경기의 월 선택하기 -->
             <select id="monthSelect" onchange="fetchGames()">
                 <option value="03" th:selected="${selectedMonth == '03'}">3월</option>
                 <option value="04" th:selected="${selectedMonth == '04'}">4월</option>
@@ -145,6 +146,9 @@
 
         // 달력 초기화 (생성)
         function initializeCalendar() {
+            const month = document.getElementById("monthSelect").value; // option에서 선택한 월
+            const year = new Date().getFullYear();
+            const initialDate = `${year}-${month}-01`;  // 선택된 월의 첫날
             const games = /*[[${games}]]*/ [];
 
             const today = new Date(); // 현재날짜
@@ -188,13 +192,13 @@
                 }
 
                 return event;
-            }).filter(event => {
-                return event.extendedProps.teamA === preferenceClub || event.extendedProps.teamB === preferenceClub;
             });
 
+            // calendarId
             const calendarEl = document.getElementById('calendar');
             const calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                initialDate: initialDate,
                 locale : "ko",
                 events: events,
                 dayCellContent: function(arg) {
@@ -219,10 +223,9 @@
             calendar.fullCalendar = calendarInstance;
         }
 
-        // 기존의 fetchGames 함수
         window.fetchGames = function() {
-            const month = document.getElementById("monthSelect").value;
-            if(month) {
+            const month = document.getElementById("monthSelect").value;    // 해당월의 값
+            if (month) {
                 window.location.href = `/game/list?month=${month}`;
             }
         }

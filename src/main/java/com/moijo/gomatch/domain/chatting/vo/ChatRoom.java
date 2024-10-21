@@ -7,8 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@Setter
 public class ChatRoom {
-    private String roomId;
+    private String roomId; // 방 번호
     private String name;
     private Set<WebSocketSession> sessions = new HashSet<>();
     private long meetingNo; // 소모임 번호

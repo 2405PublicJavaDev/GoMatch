@@ -220,8 +220,8 @@ public class GameBatchComponent {
         return 0; // 기본값은 0으로 설정
     }
 
-     // @Scheduled 어노테이션을 통해 매일 9:30에 실행
-     @Scheduled(cron = "0 30 09 * * ?")
+    // @Scheduled 어노테이션을 통해 매일 9:30에 실행
+    @Scheduled(cron = "0 30 09 * * ?")
     public void updateGameSchedule() {
         String dateParam = "202410";    // 10월의 경기를 스케줄러로 자동 저장
         List<GameVO> gameList = scrapeSchedule(dateParam);
