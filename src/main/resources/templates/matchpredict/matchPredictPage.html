@@ -29,6 +29,7 @@
 
         </div>
         <ul class="game-list">
+
             <li th:each="predict : ${matchPredictions}" class="game-item">
                 <span class="league">
                     <img src="/img/고매치로고.png">
@@ -163,6 +164,7 @@
         }
     }
 
+
     document.addEventListener("DOMContentLoaded", function () {
 
         const today = new Date();
@@ -254,17 +256,24 @@
 
                     data.forEach(predict => {
                         const listItem = document.createElement('li');
+
                         listItem.className = 'game-item';
+
                         listItem.innerHTML = `
                             <span class="league">
                                 <img src="/img/고매치로고.png">
                                 GoMatch
                             </span>
                             <div class="upcoming-games">
-                                <span class="time">${predict.gameTime}</span>
-                                <p>경기 예정</p>
-                                <span class="time-out">후 종료</span>
-                            </div>
+                                  <div class="game-date">
+                                    <p>경기 날짜</p>
+                                    <span class="date">${predict.gameDate}</span>
+                                  </div>
+                                  <div class="game-time">
+                                    <p class="time">${predict.gameTime}</p>
+                                    <span>경기 예정</span>
+                                  </div>
+                                </div>
                             <form name="add-form" action="/addPredict" method="post">
                                 <input type="hidden" name="memberId" value="${predict.memberId}"/>
                                 <input type="hidden" name="gameNo" value="${predict.gameNo}"/>

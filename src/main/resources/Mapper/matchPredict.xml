@@ -13,7 +13,7 @@
                G.GAME_DATE,
                G.REG_DATE
         FROM GAME G
-        JOIN MATCH_PREDICT P
+        left JOIN MATCH_PREDICT P
         ON G.GAME_NO = P.GAME_NO
         WHERE G.GAME_NO = #{gameNo}
     </select>

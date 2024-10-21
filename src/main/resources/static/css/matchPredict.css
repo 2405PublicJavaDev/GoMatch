@@ -107,6 +107,11 @@ button {
     padding: 0;
 }
 
+.game-list h1 {
+    display: flex;
+    justify-content: center;
+}
+
 .game-item {
     border-bottom: 1px solid #e5e5e5;
     padding: 16px 0;
