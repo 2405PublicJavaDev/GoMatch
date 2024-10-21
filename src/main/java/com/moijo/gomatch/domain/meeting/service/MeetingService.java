@@ -8,6 +8,11 @@ import com.moijo.gomatch.domain.meeting.vo.MeetingVO;
 import java.util.List;
 
 public interface MeetingService {
+    // ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ //
+    // 내가 개설한 소모임 리스트 불러오기
+    List<MeetingVO> getMeetingsByMemberId(String memberId);
+    // 내가 참석한 소모임 리스트 불러오기
+    List<MeetingAttendVO> getMeetingAttendsByMemberId(String meetingId);
 
     // ■■■■■■■■■■■■■■■■■■■ 소모임 조회 (getMeeting) ■■■■■■■■■■■■■■■■■■■■ //
     // 날짜에 따른 게임 정보 리스트 불러오기

@@ -12,6 +12,21 @@ import java.util.List;
 @Mapper
 public interface MeetingMapper {
 
+    // ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ //
+    /**
+     * 내가 개설한 소모임 리스트 조회
+     * @param memberId 회원 ID
+     * @return 소모임 리스트
+     */
+    List<MeetingVO> getMeetingsByMemberId(@Param("memberId") String memberId);
+
+    /**
+     * 내가 참석한 소모임 리스트 조회
+     * @param memberId 회원 ID
+     * @return 참석한 소모임 리스트
+     */
+    List<MeetingAttendVO> getMeetingAttendsByMemberId(@Param("memberId") String memberId);
+
     // ■■■■■■■■■■■■■■■■■■■ 소모임 조회 (getMeeting) ■■■■■■■■■■■■■■■■■■■■ //
 
     /**

@@ -17,4 +17,5 @@ public class MeetingBoardLikeVO {
     private String memberId;
     private Timestamp regDate;
     private Timestamp updateDate;
+    private String meetingBoardTitle;
 }

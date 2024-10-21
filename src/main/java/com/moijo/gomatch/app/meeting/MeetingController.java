@@ -59,7 +59,7 @@ public class MeetingController {
         String memberNickName = (String) session.getAttribute("memberNickName");
         model.addAttribute("games", List.of());  // 경기 정보가 없을 때 빈 리스트
         if (memberId == null) {
-            return "meeting/meeting-list";
+            return "common/oops";
         } else {
             model.addAttribute("loggedIn", true);
             model.addAttribute("memberNickName", memberNickName);
@@ -367,5 +367,6 @@ public class MeetingController {
         return "참석이 취소되었습니다.";
     }
 
+    
 
 }

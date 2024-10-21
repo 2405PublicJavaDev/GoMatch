@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<body>
+<!-- 헤더 fragment 포함 -->
+<div th:insert="~{header-footer :: header}"></div>
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+<!-- 개별 CSS 붙여 넣기 할 영역 -->
+<!-- (ex) 이 페이지css, 각자 적용한 api/라이브러리 css링크 등-->
+<link rel="stylesheet" href="/css/member/mypage.css">
+
+<link rel="stylesheet" href="/css/meeting/my-meeting.css">
+<!-- ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■-->
+
+<main>
+    <div class="main-meeting">
+        <div class="mypage-container">
+            <div class="profile-img">
+                <img id="profileImagePreview"
+                     th:src="${memberVO.profileImageUrl != null ? memberVO.profileImageUrl : '/img/기본프로필.png'}"
+                     alt="프로필 이미지">
+            </div>
+            <div class="profile-info">
+                <h1 th:text="${memberName}">이름</h1>
+                <h5 th:text="${memberNickName}">닉네임</h5>
+                <p>개인정보 수정과 열람 내역을 확인 할 수 있습니다.</p>
+            </div>
+        </div>
+        <div class="all-my-meeting">
+
+            <!-- 필터 버튼들 -->
+            <div class="filter-buttons">
+                <button class="filter-btn" onclick="showTable('myMeetingsTable', this)">개설한 소모임</button>
+                <button class="filter-btn" onclick="showTable('attendMeetingsTable', this)">참석한 소모임</button>
+                <button class="filter-btn" onclick="showTable('myBoardsTable', this)">작성한 게시글</button>
+                <button class="filter-btn" onclick="showTable('myRepliesTable', this)">작성한 댓글</button>
+                <button class="filter-btn" onclick="showTable('myLikesTable', this)">좋아요한 게시글</button>
+            </div>
+
+            <!-- 내가 개설한 소모임 테이블 -->
+            <table id="myMeetingsTable" class="styled-table">
+                <thead>
+                <tr>
+                    <th>팀명</th>
+                    <th>제목</th>
+                    <th>모임 날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${meetings == null || #lists.isEmpty(meetings)}">
+                    <td colspan="3">참여한 소모임이 없습니다.</td>
+                </tr>
+                <tr th:each="meeting : ${meetings}">
+                    <td th:text="${meeting.meetingTeamName}">팀명</td>
+                    <td>
+                        <a th:href="@{'/meeting/detail/' + ${meeting.meetingNo}}"
+                           th:text="${meeting.meetingTitle}">소모임 제목</a>
+                    </td>
+                    <td th:text="${#dates.format(meeting.meetingDate, 'yyyy년 MM월 dd일')}">모임 날짜</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 내가 참석한 소모임 테이블 -->
+            <table id="attendMeetingsTable" class="styled-table" style="display: none;">
+                <thead>
+                <tr>
+                    <th>팀명</th>
+                    <th>제목</th>
+                    <th>모임 날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${attends == null || #lists.isEmpty(attends)}">
+                    <td colspan="3">참석한 소모임이 없습니다.</td>
+                </tr>
+                <tr th:each="attend : ${attends}">
+                    <td th:text="${attend.meetingTeamName}">팀명</td>
+                    <td>
+                        <a th:href="@{'/meeting/detail/' + ${attend.meetingNo}}"
+                           th:text="${attend.meetingTitle}">소모임 제목</a>
+                    </td>
+                    <td th:text="${#dates.format(attend.meetingDate, 'yyyy년 MM월 dd일')}">모임 날짜</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 내가 작성한 게시글 테이블 -->
+            <table id="myBoardsTable" class="styled-table" style="display: none;">
+                <thead>
+                <tr>
+                    <th>카테고리</th>
+                    <th>제목</th>
+                    <th>조회수</th>
+                    <th>등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${boards == null || #lists.isEmpty(boards)}">
+                    <td colspan="4">작성한 게시글이 없습니다.</td>
+                </tr>
+                <tr th:each="board : ${boards}">
+                    <td th:text="${board.meetingBoardCategory}">카테고리</td>
+                    <td>
+                        <a th:href="@{'/board/detail/' + ${board.meetingBoardNo}}"
+                           th:text="${board.meetingBoardTitle}">게시글 제목</a>
+                    </td>
+                    <td th:text="${board.meetingBoardViewCount}">조회수</td>
+                    <td th:text="${board.regDate}">등록일</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 내가 작성한 댓글 테이블 -->
+            <table id="myRepliesTable" class="styled-table" style="display: none;">
+                <thead>
+                <tr>
+                    <th>게시글 제목</th>
+                    <th>댓글 내용</th>
+                    <th>등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${replies == null || #lists.isEmpty(replies)}">
+                    <td colspan="3">작성한 댓글이 없습니다.</td>
+                </tr>
+                <tr th:each="reply : ${replies}">
+                    <td>
+                        <a th:href="@{'/board/detail/' + ${reply.meetingBoardNo}}"
+                           th:text="${reply.meetingBoardTitle}">게시글 제목</a>
+                    </td>
+                    <td th:text="${reply.meetingReplyContent}">댓글 내용</td>
+                    <td th:text="${reply.regDate}">등록일</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 내가 좋아요한 게시글 테이블 -->
+            <table id="myLikesTable" class="styled-table" style="display: none;">
+                <thead>
+                <tr>
+                    <th>게시글 제목</th>
+                    <th>좋아요 여부</th>
+                    <th>등록일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${likes == null || #lists.isEmpty(likes)}">
+                    <td colspan="3">좋아요한 게시글이 없습니다.</td>
+                </tr>
+                <tr th:each="like : ${likes}">
+                    <td>
+                        <a th:href="@{'/board/detail/' + ${like.meetingBoardNo}}"
+                           th:text="${like.meetingBoardTitle}">게시글 제목</a>
+                    </td>
+                    <td th:text="${like.meetingBoardLikeYn}">좋아요 여부</td>
+                    <td th:text="${like.regDate}">등록일</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- 자바스크립트로 필터링 기능 추가 -->
+<script>
+    function showTable(tableId, button) {
+        // 모든 테이블 숨기기
+        const tables = document.querySelectorAll('.styled-table');
+        tables.forEach(table => table.style.display = 'none');
+
+        // 선택된 테이블만 표시
+        const selectedTable = document.getElementById(tableId);
+        if (selectedTable) {
+            selectedTable.style.display = 'table';
+        }
+
+        // 모든 버튼에서 active 클래스 제거
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // 선택된 버튼에 active 클래스 추가
+        button.classList.add('active');
+    }
+</script>
+
+<!-- 메인태그 닫고 로고 푸터 시작  -->
+<div th:insert="~{header-footer :: footer}"></div>
+</body>
+</html>
+

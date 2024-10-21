@@ -3,55 +3,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.moijo.gomatch.domain.meeting.mapper.MeetingMapper">
 
-    <!-- 전체 소모임 수 조회 -->
-    <select id="getTotalMeetingsCount" resultType="int">
-        SELECT COUNT(*) FROM MEETING
+    <!-- ■■■■■■■■■■■■■■■■■■■ 나의 소모임 (MyMeeting) ■■■■■■■■■■■■■■■■■■■■ -->
+
+    <!-- 내가 개설한 소모임 리스트 조회 -->
+    <select id="getMeetingsByMemberId" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+               MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, REG_DATE, MEETING_DATE
+        FROM MEETING
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY MEETING_DATE DESC
     </select>
+
+    <!-- 내가 참석한 소모임 리스트 조회 -->
+    <select id="getMeetingAttendsByMemberId" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
+        SELECT a.MEETING_ATTEND_NO, a.MEETING_NO, a.MEMBER_ID, a.MEETING_ATTEND_YN, a.REG_DATE,
+               m.MEETING_TITLE, m.MEETING_DATE, m.MEETING_TEAM_NAME
+        FROM MEETING_ATTEND a
+                 JOIN MEETING m ON a.MEETING_NO = m.MEETING_NO
+        WHERE a.MEMBER_ID = #{memberId}
+        ORDER BY m.MEETING_DATE DESC
+    </select>
+
+    <!-- ■■■■■■■■■■■■■■■■■■■ 소모임 조회 (getMeeting) ■■■■■■■■■■■■■■■■■■■■ -->
 
     <!-- 날짜로 경기 정보를 가져오는 쿼리 -->
     <select id="getGamesByDate" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
-        CAST(GAME_NO AS INT) AS GAME_NO,
-        TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
-        GAME_TIME,
-        TEAM_A,
-        TEAM_B,
-        GAME_FIELD
+            CAST(GAME_NO AS INT) AS GAME_NO,
+            TO_CHAR(GAME_DATE, 'YYYY-MM-DD') AS GAME_DATE,
+            GAME_TIME,
+            TEAM_A,
+            TEAM_B,
+            GAME_FIELD
         FROM GAME
         WHERE TO_CHAR(GAME_DATE, 'YYYY-MM-DD') = #{date}
     </select>
 
-    <!-- 소모임 등록 -->
-    <insert id="insertMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
-        <selectKey resultType="long" keyProperty="meetingNo" order="BEFORE">
-            SELECT SEQ_MEETING_NO.NEXTVAL FROM DUAL
-        </selectKey>
-        INSERT INTO MEETING (
-        MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
-        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEETING_DATE,MEMBER_ID, REG_DATE, UPDATE_DATE
-        )
-        VALUES (
-        #{meetingNo}, #{gameNo}, #{meetingTitle}, #{meetingTeamName}, #{meetingMaxPeople},
-        #{meetingTime}, #{meetingPlace}, #{meetingContent}, #{meetingDate},#{memberId}, SYSDATE, SYSDATE
-        )
-    </insert>
-
-    <!-- 첨부파일 -->
-    <insert id="insertMeetingFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
-        <selectKey resultType="long" keyProperty="meetingFileNo" order="BEFORE">
-            SELECT SEQ_MEETING_FILE_NO.NEXTVAL FROM DUAL
-        </selectKey>
-        INSERT INTO MEETING_FILE (
-        MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH,
-        FILE_ORDER, REG_DATE, UPDATE_DATE
-        )
-        VALUES (
-        #{meetingFileNo}, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath},
-        #{webPath}, #{fileOrder}, SYSDATE, SYSDATE
-        )
-    </insert>
-
-    <!--날짜별 개설된 소모임 확인-->
+    <!-- 날짜별 개설된 소모임 확인 -->
     <select id="getMeetingsByDate" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
         SELECT M.MEETING_NO, M.GAME_NO, M.MEETING_TITLE, M.MEETING_TEAM_NAME, M.MEETING_MAX_PEOPLE,
                M.MEETING_TIME, M.MEETING_PLACE, M.MEETING_CONTENT, M.MEMBER_ID, M.REG_DATE
@@ -60,7 +48,7 @@
         WHERE G.GAME_DATE = #{date}
     </select>
 
-    <!--(필터) 날짜별/팀별 개설된 소모임 확인-->
+    <!-- (필터) 날짜별/팀별 개설된 소모임 확인 -->
     <select id="getMeetingsByDateAndTeam" resultType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
         SELECT MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
         MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEMBER_ID, MEETING_DATE, REG_DATE
@@ -71,6 +59,7 @@
         </if>
     </select>
 
+    <!-- gameNo로 경기 정보 조회 -->
     <select id="getGameByNo" resultType="com.moijo.gomatch.domain.game.vo.GameVO">
         SELECT
             GAME_NO,
@@ -115,6 +104,64 @@
         ORDER BY a.reg_date ASC
     </select>
 
+    <!-- ■■■■■■■■■■■■■■■■■■■ 소모임 기능 (Meeting) ■■■■■■■■■■■■■■■■■■■■ -->
+
+    <!-- 소모임 등록 -->
+    <insert id="insertMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        <selectKey resultType="long" keyProperty="meetingNo" order="BEFORE">
+            SELECT SEQ_MEETING_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING (
+        MEETING_NO, GAME_NO, MEETING_TITLE, MEETING_TEAM_NAME, MEETING_MAX_PEOPLE,
+        MEETING_TIME, MEETING_PLACE, MEETING_CONTENT, MEETING_DATE,MEMBER_ID, REG_DATE, UPDATE_DATE
+        )
+        VALUES (
+        #{meetingNo}, #{gameNo}, #{meetingTitle}, #{meetingTeamName}, #{meetingMaxPeople},
+        #{meetingTime}, #{meetingPlace}, #{meetingContent}, #{meetingDate},#{memberId}, SYSDATE, SYSDATE
+        )
+    </insert>
+
+    <!-- 첨부파일 등록 -->
+    <insert id="insertMeetingFile" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingFileVO">
+        <selectKey resultType="long" keyProperty="meetingFileNo" order="BEFORE">
+            SELECT SEQ_MEETING_FILE_NO.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO MEETING_FILE (
+        MEETING_FILE_NO, MEETING_NO, FILE_NAME, FILE_RENAME, FILE_PATH, WEB_PATH,
+        FILE_ORDER, REG_DATE, UPDATE_DATE
+        )
+        VALUES (
+        #{meetingFileNo}, #{meetingNo}, #{fileName}, #{fileRename}, #{filePath},
+        #{webPath}, #{fileOrder}, SYSDATE, SYSDATE
+        )
+    </insert>
+
+    <!-- 소모임 수정 -->
+    <update id="updateMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
+        UPDATE MEETING
+        SET MEETING_TITLE = #{meetingTitle},
+            MEETING_TIME = #{meetingTime},
+            MEETING_PLACE = #{meetingPlace},
+            MEETING_CONTENT = #{meetingContent},
+            UPDATE_DATE = default
+        WHERE MEETING_NO = #{meetingNo}
+    </update>
+
+    <!-- 소모임 삭제 -->
+    <delete id="deleteMeeting">
+        DELETE FROM MEETING WHERE MEETING_NO = #{meetingNo}
+    </delete>
+
+    <!-- 소모임 파일 삭제 -->
+    <delete id="deleteMeetingFiles">
+        DELETE FROM MEETING_FILE
+        WHERE MEETING_FILE_NO IN
+        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
+            #{id, jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+    <!-- ■■■■■■■■■■■■■■■ 소모임 참석/취소 (MeetingAttend) ■■■■■■■■■■■■■■ -->
 
     <!-- 소모임 참석 정보 삽입 -->
     <insert id="insertMeetingAttend" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingAttendVO">
@@ -139,30 +186,6 @@
     <delete id="deleteMeetingAttend">
         DELETE FROM MEETING_ATTEND
         WHERE MEETING_NO = #{meetingNo} AND MEMBER_ID = #{memberId}
-    </delete>
-
-
-    <delete id="deleteMeeting">
-        DELETE FROM MEETING WHERE MEETING_NO = #{meetingNo}
-    </delete>
-
-    <update id="updateMeeting" parameterType="com.moijo.gomatch.domain.meeting.vo.MeetingVO">
-        UPDATE MEETING
-        SET MEETING_TITLE = #{meetingTitle},
-            MEETING_TIME = #{meetingTime},
-            MEETING_PLACE = #{meetingPlace},
-            MEETING_CONTENT = #{meetingContent},
-            UPDATE_DATE = default
-        WHERE MEETING_NO = #{meetingNo}
-    </update>
-
-    <!-- 파일 삭제 쿼리 -->
-    <delete id="deleteMeetingFiles">
-        DELETE FROM MEETING_FILE
-        WHERE MEETING_FILE_NO IN
-        <foreach item="id" collection="fileDeleteIds" open="(" separator="," close=")">
-            #{id, jdbcType=BIGINT}
-        </foreach>
     </delete>
 
 </mapper>

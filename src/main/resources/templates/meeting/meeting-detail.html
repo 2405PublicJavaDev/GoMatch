@@ -26,7 +26,7 @@
     </div>
 
     <div class="meeting-header">
-      <div class="team-logo">
+      <div class="favorite-team-logo">
         <!-- 팀 로고 이미지 -->
         <img th:src="@{/img/{teamName}로고.png(teamName=${meeting.meetingTeamName})}" alt="팀 로고">
       </div>
@@ -114,10 +114,12 @@
 
     <hr>
     <h3>🙌함께해요🙌
-      <button type="button" class="button-chatting" th:if="${isAttending}" onclick="window.location.href='/meeting/url'">채팅하기</button>
+      <button type="button" class="button-chatting" th:if="${isAttending}" onclick="window.location.href='/chat/chatList/'+meetingNo">채팅하기</button>
     </h3>
     <div class="participant-list" th:if="${meetingAttendee.size() > 0}">
-      <div class="participant" th:each="attendee : ${meetingAttendee}">
+      <div class="participant"
+           th:each="attendee : ${meetingAttendee}"
+           th:classappend="${session.memberId == attendee.memberId} ? 'my-participant' : ''">
         <img th:src="${attendee.memberId == meeting.memberId ? '/img/host.png' : '/img/bat.png'}" alt="아이콘" class="icon">
         <span th:text="${attendee.memberNickname}">닉네임</span>
       </div>
@@ -127,10 +129,11 @@
       제일 먼저 참여하기를 눌러주세요👍
     </div>
   </div>
+  <div th:insert="~{header-footer :: footer}"></div>
+
 </main>
 
 <!-- 푸터 fragment 포함 -->
-<div th:insert="~{header-footer :: footer}"></div>
 
 <script th:inline="javascript">
   var gameNo = /*[[${meeting.gameNo}]]*/ '';  // 서버에서 전달된 gameNo

@@ -143,10 +143,10 @@ aside {
 .meeting-header {
     position: relative;
     padding: 20px;
-    background-color: white;
+    /*background-color: white;*/
     margin-top: 10px;
 }
-.team-logo {
+.favorite-team-logo {
     position: absolute;
     top: -40px;
     left: 45%;
@@ -156,7 +156,7 @@ aside {
     overflow: hidden;
     margin: 0 auto; /* 중앙 배치 */
 }
-.team-logo img {
+.favorite-team-logo img {
     width: 71px;
     height: auto;
 }
@@ -365,7 +365,9 @@ aside {
     font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
 
 }
-
+.my-participant {
+    background-color: #ffcc00; /* 내가 참여한 경우의 배경색 */
+}
 .participant img.icon {
     height: 16px;
     width: auto;
@@ -387,3 +389,9 @@ aside {
     margin-top: 10px;
     margin-bottom: 20px;
 }
+
+
+
+
+
+

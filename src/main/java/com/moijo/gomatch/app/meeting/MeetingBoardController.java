@@ -39,6 +39,7 @@ public class MeetingBoardController {
         }
         return memberId;
     }
+
     /**
      * 담당자: 김윤경
      * 관련 기능: [Show] 게시글 등록 페이지 보여주기
@@ -49,62 +50,12 @@ public class MeetingBoardController {
         String memberId = (String) session.getAttribute("memberId");
         String memberNickName = (String) session.getAttribute("memberNickName");
         if (memberId == null) {
-            return "로그인이 필요한 서비스입니다.";
+            return "common/oops";
         }else {
             model.addAttribute("loggedIn", true);
             model.addAttribute("memberNickName", memberNickName);
         }
         return "board/board-register";
-    }
-
-    /**
-     * 담당자: 김윤경
-     * 관련 기능: [Register] 게시글 등록하기
-     * 설명: 세션에서 memberId를 불러와 게시글을 등록하고, 파일 업로드 처리
-     */
-    @PostMapping("/board/register")
-    public String addBoard(MeetingBoardVO mBoardVO,
-                           @RequestParam(value = "groupImage", required = false) List<MultipartFile> groupImages,
-                           HttpSession session) throws IOException {
-        String memberId = checkLogin(session); // 로그인 체크
-        mBoardVO.setMemberId(memberId);
-        // 게시글 등록
-        mBoardService.addBoard(mBoardVO);
-        // 파일 업로드 처리
-        if (!groupImages.isEmpty()) {
-            boardFileUtil.uploadFiles(groupImages, Long.valueOf(mBoardVO.getMeetingBoardNo()), "board");
-        }
-
-        return "redirect:/board/list";
-    }
-
-    /**
-     * 담당자: 김윤경
-     * 관련 기능: [Register] 토스트 에디터 이미지 등록
-     * 설명: 게시글 작성 시 에디터를 통해 이미지 파일을 업로드하고 URL 반환
-     */
-    @PostMapping("/upload/image")
-    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String uploadDir = "C:/gomatch/board/toast/";
-            File uploadFile = new File(uploadDir, fileName);
-
-            if (!uploadFile.getParentFile().exists()) {
-                uploadFile.getParentFile().mkdirs();
-            }
-
-            file.transferTo(uploadFile);
-
-            // /images/ 경로를 통해 이미지에 접근할 수 있도록 설정
-            String imageUrl = "/images/" + fileName;
-            Map<String, String> response = new HashMap<>();
-            response.put("url", imageUrl);
-
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
     }
 
     /**
@@ -144,7 +95,6 @@ public class MeetingBoardController {
 
         return "board/board-list";
     }
-
 
     /**
      * 담당자: 김윤경
@@ -205,9 +155,10 @@ public class MeetingBoardController {
 
         return "board/board-detail";
     }
+
     /**
      * 담당자: 김윤경
-     * 관련 기능: [Modify] 게시글 수정 페이지 보여주기
+     * 관련 기능: [Show] 게시글 수정 페이지 보여주기
      * 설명: 게시글 수정 폼 출력
      */
     @GetMapping("/board/modify/{meetingBoardNo}")
@@ -229,6 +180,57 @@ public class MeetingBoardController {
         model.addAttribute("boardFile", boardFiles);
         return "board/board-modify";
     }
+
+    /**
+     * 담당자: 김윤경
+     * 관련 기능: [Register] 게시글 등록하기
+     * 설명: 세션에서 memberId를 불러와 게시글을 등록하고, 파일 업로드 처리
+     */
+    @PostMapping("/board/register")
+    public String addBoard(MeetingBoardVO mBoardVO,
+                           @RequestParam(value = "groupImage", required = false) List<MultipartFile> groupImages,
+                           HttpSession session) throws IOException {
+        String memberId = checkLogin(session); // 로그인 체크
+        mBoardVO.setMemberId(memberId);
+        // 게시글 등록
+        mBoardService.addBoard(mBoardVO);
+        // 파일 업로드 처리
+        if (!groupImages.isEmpty()) {
+            boardFileUtil.uploadFiles(groupImages, Long.valueOf(mBoardVO.getMeetingBoardNo()), "board");
+        }
+
+        return "redirect:/board/list";
+    }
+
+    /**
+     * 담당자: 김윤경
+     * 관련 기능: [Register] 토스트 에디터 이미지 등록
+     * 설명: 게시글 작성 시 에디터를 통해 이미지 파일을 업로드하고 URL 반환
+     */
+    @PostMapping("/upload/image")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String uploadDir = "C:/gomatch/board/toast/";
+            File uploadFile = new File(uploadDir, fileName);
+
+            if (!uploadFile.getParentFile().exists()) {
+                uploadFile.getParentFile().mkdirs();
+            }
+
+            file.transferTo(uploadFile);
+
+            // /images/ 경로를 통해 이미지에 접근할 수 있도록 설정
+            String imageUrl = "/images/" + fileName;
+            Map<String, String> response = new HashMap<>();
+            response.put("url", imageUrl);
+
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     /**
      * 담당자: 김윤경
      * 관련 기능: [Modify] 게시글 수정 처리
@@ -368,6 +370,7 @@ public class MeetingBoardController {
 
         return ResponseEntity.ok(response);
     }
+
 
 }
 
