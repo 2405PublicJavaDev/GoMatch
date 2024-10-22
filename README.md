@@ -189,6 +189,13 @@
 ### 메인페이지
 ![메인페이지](https://github.com/user-attachments/assets/3461b633-377d-4090-b52a-f93e4543c1f4)
 
+### 회원 페이지 
+<details>
+<summary>회원 페이지 보기</summary>
+
+</details>
+
+
 ### 경기 관련 페이지
 <details>
 <summary>경기 페이지 보기</summary>
