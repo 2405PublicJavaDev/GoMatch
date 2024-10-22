@@ -181,7 +181,6 @@
 - 내가 예측한 경기를 수정 가능
 ***
 
-***
 
 
 ## 📱 구현 화면
@@ -231,7 +230,7 @@
   ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
 ### 회원 관련 페이지
 <details>
-<summary>회원 관리 페이지 보기</summary>
+<summary>회원 페이지 보기</summary>
 
 - **로그인**
   ![로그인](https://github.com/user-attachments/assets/1f46ff92-75e8-475e-8f25-60ba7384ac50)
