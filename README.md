@@ -189,6 +189,7 @@
 ![메인페이지](https://github.com/user-attachments/assets/3461b633-377d-4090-b52a-f93e4543c1f4)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### 회원 페이지 
 <details>
 <summary>회원 페이지 보기</summary>
@@ -236,6 +237,8 @@
 - **채팅하기**
   
   ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+=======
+>>>>>>> a82cbecdf8a32a70f26637c80aaf6c2d9a99ee1e
 =======
 >>>>>>> a82cbecdf8a32a70f26637c80aaf6c2d9a99ee1e
 ### 회원 관련 페이지
