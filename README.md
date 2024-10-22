@@ -80,5 +80,6 @@
 ![adminmainpage](https://github.com/user-attachments/assets/36deb6e9-8f4a-486a-83aa-43a1336b9c7f)
 
 ## 회원 관리 - 관리자
-![adminmemberpage](https://github.com/user-attachments/assets/88234cb7-fcd3-4a2e-8515-29f37b8e5b38)
+![adminmemberpage](https://github.com/user-attachments/assets/19366d68-0f15-4d84-bb96-b5bc1af02322)
+
 
