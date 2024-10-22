@@ -2,7 +2,9 @@ package com.moijo.gomatch.domain.goods.service;
 
 import com.moijo.gomatch.domain.admin.vo.GoodsImageVO;
 import com.moijo.gomatch.domain.goods.vo.GoodsVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface GoodsService {
@@ -10,8 +12,6 @@ public interface GoodsService {
     List<GoodsVO> getAllGoods(); // 모든 상품 목록을 가져오는 메소드;
 
     GoodsVO getGoodsById(Long goodsNo); // 상품 조회 메소드 추가
-
-//    List<GoodsVO> getGoodsByCategory(String category); // 카테고리로 상품 조회 메소드 추가
 
     List<GoodsVO> getGoodsByTeamAndCategory(String team, String category);  // 팀 + 카테고리 조회 추가
 
@@ -33,6 +33,9 @@ public interface GoodsService {
 
     List<String> getGoodsOptions(Long goodsNo);  // 옵션 조회 메서드
 
+    // **추가: 원본 이미지와 옵션을 저장하는 메서드**
+    void saveGoodsWithImagesAndOptions(GoodsVO goods, MultipartFile goodsImage,
+                                       MultipartFile[] detailImages, List<String> options) throws IOException;
 
 
 }

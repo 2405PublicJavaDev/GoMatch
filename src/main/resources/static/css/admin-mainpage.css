@@ -14,30 +14,37 @@ body, html {
     display: flex;
     justify-content: center;
 }
+
 .sidebar {
     width: 200px;
     background-color: #f0f0f0;
     height: 200vh;
     text-align: center;
 }
+
 .sidebar a {
-    text-decoration-line:none ;
+    text-decoration: none;
     color: #000;
 }
+
 .sidebarmember {
     margin-top: 70px;
 }
+
 .sidebarmember:hover {
     background-color: #ffffff;
 }
+
 .sidebarmember, .sidebarmember2 {
     height: 50px;
     display: flex;
     justify-content: space-around;
 }
+
 .sidebarmember2:hover {
     background-color: #ffffff;
 }
+
 .content {
     margin: 30px auto;
     padding: 20px;
@@ -45,89 +52,100 @@ body, html {
     width: 1200px;
     margin-bottom: 200px;
 }
+
 .content a {
-    text-decoration-line: none;
+    text-decoration: none;
     color: black;
 }
+
 .content a:hover {
     color: #666;
 }
+
 h1 {
     margin-top: 30px;
 }
-.category{
-    margin :50px;
+
+.category {
+    margin: 50px;
 }
-p{
+
+p {
     font-size: 20px;
     margin-bottom: 50px;
 }
+
 .admin-info {
     display: flex;
     margin-left: 10px;
     gap: 400px;
     margin-bottom: 20px;
 }
+
 .admin-box {
     width: 200px;
     height: 200px;
     background-color: #e7e6e6;
     display: flex;
 }
+
 .admin-box img {
     width: 190px;
     height: 190px;
     border-radius: 50%;
     padding: 5px;
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
-
 }
+
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
-
 }
+
 th {
     background-color: #f2f2f2;
 }
+
 .status-suspended {
     color: red;
 }
 
-.statusbutton{
+.statusbutton {
     background-color: #f2f2f2;
     padding: 5px 10px;
-    border : 1px solid #ccc;
+    border: 1px solid #ccc;
     border-radius: 5px;
     margin-left: 10px;
     width: 65px;
-
 }
-.statusbutton:hover{
+
+.statusbutton:hover {
     background-color: #ddd;
 }
-.header-container{
+
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 .logout-button {
     margin-right: 120px;
     background-color: #f2f2f2;
     padding: 5px 10px;
-    border : 1px solid #ccc;
+    border: 1px solid #ccc;
     border-radius: 5px;
     margin-left: 10px;
     width: 80px;
     height: 40px;
 }
-.logout-button:hover{
+
+.logout-button:hover {
     background-color: #ddd;
 }
 
@@ -158,5 +176,3 @@ th {
 .show {
     display: block;
 }
-
-
