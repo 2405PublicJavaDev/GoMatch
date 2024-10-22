@@ -75,6 +75,24 @@
 - 해당 야구장의 시간대별 예보 날씨 정보 확인
 - 해당 야구장의 주간대별 예보 날씨 정보 확인
 
+### 3. 굿즈 게시판
+#### 게사판 메인
+- 구단, NEW ITEMS(최신 insert 순), WEEKLY BEST(찜하기 많은 순) 별로 조회 가능
+- 검색 기능(전체, 상품 이름, 상품 코드) 사용 가능  
+
+#### 구단별 목록 조회
+- 카테고리 별로 상품을 출력 가능
+
+#### 상세 보기
+- 상품의 정보 확인
+- 찜하기 기능
+- 포트원 API를 사용한 결제 기능 (KG이니시스)
+
+#### 관리자 기능
+- 상품 등록
+- 상품 수정
+- 상품 삭제
+
 ### 5. 채팅
 #### 채팅 조회
 - 채팅방의 생성시간을 기준으로 내림차순으로 출력
@@ -400,3 +418,50 @@
 
 
 </details>
+
+### 굿즈 페이지
+<details>
+<summary>[굿즈 게시판]</summary>
+
+- **메인 페이지**
+
+![GoMatch - Chrome 2024-10-22 19-06-58](https://github.com/user-attachments/assets/a2b232fb-379f-4c5e-bbc3-d580da698f6a)
+
+
+- **구단별 페이지**
+
+![GoMatch - Chrome 2024-10-22 19-18-46](https://github.com/user-attachments/assets/27686004-e32f-47e5-a8eb-e430c81aa6ff)
+
+
+- **카테고리별 페이지**
+
+![GoMatch - Chrome 2024-10-22 19-07-35](https://github.com/user-attachments/assets/cd0e2fa2-32f4-4f47-b3f1-d92004febb37)
+
+
+- **상세 페이지**
+
+![GoMatch - Chrome 2024-10-22 19-07-58](https://github.com/user-attachments/assets/1dac44fe-71e9-4b1c-a4c4-88fc72e9af18)
+
+
+- **결제 페이지**
+- 
+![GoMatch - Chrome 2024-10-22 19-08-23](https://github.com/user-attachments/assets/9f37b0c9-ee4f-432d-a708-3c49e948fb4d)
+
+
+### 관리자 페이지 - 굿즈
+
+- **상품 등록 페이지**
+
+![스크린샷(424)](https://github.com/user-attachments/assets/c095c23f-91fe-47cf-93bd-4989a943fc55)
+
+- **상품 목록 페이지**
+
+![스크린샷(425)](https://github.com/user-attachments/assets/5271aaf7-8aae-4daa-8f6f-9b1beea43d2f)
+
+- **상품 수정, 삭제 페이지**
+
+![스크린샷(427)](https://github.com/user-attachments/assets/e16329d6-2974-4c6d-8f3d-c60cc6485cbf)
+
+
+
+- </details>
