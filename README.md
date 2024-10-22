@@ -447,8 +447,10 @@
 - 
 ![GoMatch - Chrome 2024-10-22 19-08-23](https://github.com/user-attachments/assets/9f37b0c9-ee4f-432d-a708-3c49e948fb4d)
 
+- </details>
 
 ### 관리자 페이지 - 굿즈
+<details>
 
 - **상품 등록 페이지**
 
