@@ -273,6 +273,7 @@
 - **채팅하기**
   
   ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+  </details>
 =======
 ### 회원 관련 페이지
 <details>
@@ -337,19 +338,65 @@
   ![야구장 날씨](https://github.com/user-attachments/assets/e82649af-ee4b-4784-ab79-0af43153be11)
 </details>
 
-### 채팅 페이지
+### 소모임 페이지
 <details>
-<summary>채팅 페이지 보기</summary>
+<summary>[소모임]</summary>
 
-- **채팅방 조회**
+- **소모임 리스트 페이지**
   
-  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
+![01  소모임 리스트 페이지](https://github.com/user-attachments/assets/4d9c5fbc-65a2-4076-b4c8-f663fbfbb5c6)
 
-- **채팅방 생성**
+
+- **소모임 등록하기**
   
-  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
+![02  소모임 등록하기](https://github.com/user-attachments/assets/8b4ee2c8-09aa-4399-968b-018387409855)
+
   
-- **채팅하기**
+- **소모임 수정하기**
   
-  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+![03  소모임 수정하기](https://github.com/user-attachments/assets/bbd5fb91-8a22-4eb3-994e-05a9cd84df1c)
+
+- **소모임 삭제하기**
+  
+![04  소모임 삭제하기](https://github.com/user-attachments/assets/d3159522-29c8-4782-9b2a-d4dd1c94b91e)
+
+
+- **소모임 참여 및 취소하기**
+  
+![05  소모임 참여 및 취소하기](https://github.com/user-attachments/assets/4661c9d5-9d15-4b42-aa71-cb293f5ff310)
+
+</details>
+<details>
+<summary>[게시판]</summary>
+
+- **게시판 리스트 페이지**
+  
+![01  게시판 리스트](https://github.com/user-attachments/assets/8c67caf6-acff-487d-abe8-564ca24ccc69)
+
+
+
+- **게시글 등록하기**
+  
+![02  게시글 등록하기](https://github.com/user-attachments/assets/d33d5703-9a92-4c31-bdc3-2448c8f67c99)
+
+
+  
+- **게시글 상세보기(댓글, 좋아요)**
+  
+![03  게시글 상세보기 댓글 좋아요](https://github.com/user-attachments/assets/18dd474f-98d0-42b6-8af6-9574143e4dbd)
+
+
+- **게시글 수정하기**
+  
+![04  게시글 수정하기 페이지](https://github.com/user-attachments/assets/0e355d54-dad6-4f96-99b1-b0abbdee978e)
+
+
+
+- **게시글 삭제하기**
+  
+![05  게시글 삭제하기](https://github.com/user-attachments/assets/fc601867-3024-4873-905f-3b104e7160b5)
+
+
+
+
 </details>
