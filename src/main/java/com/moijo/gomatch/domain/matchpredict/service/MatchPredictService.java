@@ -22,7 +22,7 @@ public interface MatchPredictService {
      * @param
      * @return
      */
-    List<MatchPredict> getPredictionsByDate(String gameDate);
+    List<MatchPredict> getPredictionsByDate(String gameDate,String memberId);
 
     /**
      * 나의 예측 리스트

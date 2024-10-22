@@ -21,11 +21,12 @@ public interface MatchPredictMapper {
      * 날짜 별 승부예측 리스트
      *
      * @param
-     * @param gameDate
      * @param gameNo
+     * @param gameDate
+     * @param memberId
      * @return
      */
-    List<MatchPredict> selectPredictByDate(String gameDate);
+    List<MatchPredict> selectPredictByDate(String gameDate, String memberId);
     
 
     /**

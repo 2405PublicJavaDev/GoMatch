@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>승부예측</title>
     <link rel="stylesheet" href="/css/matchPredict.css">
     <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
@@ -13,9 +14,9 @@
     <section class="prediction-section">
         <div class="btn-container">
             <div class="match-predict">
-            <button class="match-predict-btn" type="button">
-                <h2>승부 예측</h2>
-            </button>
+                <button class="match-predict-btn active" type="button">
+                    <h2>승부 예측</h2>
+                </button>
             </div>
             <form action="/myMatchPredict" method="get">
                 <div class="myMatch-predict">
@@ -26,47 +27,10 @@
             </form>
         </div>
         <div class="date-selector">
-
+            <!-- 날짜 선택기는 JavaScript로 동적 생성됩니다 -->
         </div>
         <ul class="game-list">
-
-            <li th:each="predict : ${matchPredictions}" class="game-item">
-                <span class="league">
-                    <img src="/img/고매치로고.png">
-                    GoMatch
-                </span>
-                <div class="upcoming-games">
-                    <div class="game-date">
-                        <p>경기 날짜</p>
-                        <span th:text="${predict.gameDate}" class="date"></span>
-                    </div>
-                    <div class="game-time">
-                        <p th:text="${predict.gameTime}" class="time"></p>
-                        <span>경기 예정</span>
-                    </div>
-                </div>
-                <form name="add-form" action="/addPredict" method="post">
-<!--                    <input type="date" name="gameDate" required>-->
-                    <input type="hidden" name="memberId" th:value="${predict.memberId}"/>
-                    <input type="hidden" name="gameNo" th:value="${predict.gameNo}"/>
-                    <input type="hidden" name="matchPredictNo" th:value="${predict.matchPredictNo}">
-                    <input type="hidden" name="matchPredictStatus" th:value="${predict.matchPredictStatus}">
-                    <input type="hidden" name="matchPredictDecision" id="matchPredictDecision" th:value="${predict.matchPredictDecision}"/>
-                    <div class="teams">
-                        <button type="button" class="team-a" th:onclick="setPrediction([[${predict.teamA}]],[[${predict.gameNo}]])">
-                            <span th:text="${predict.teamA}"></span>
-                            <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                        </button>
-                        <button type="button" class="draw" th:onclick="setPrediction('무',[[${predict.gameNo}]]))">
-                            <span class="vs">무승부</span>
-                        </button>
-                        <button type="button" class="team-b" th:onclick="setPrediction([[${predict.teamB}]],[[${predict.gameNo}]])">
-                            <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                            <span th:text="${predict.teamB}"></span>
-                        </button>
-                    </div>
-                </form>
-            </li>
+            <!-- 게임 목록은 JavaScript로 동적 생성됩니다 -->
         </ul>
     </section>
 
@@ -86,8 +50,10 @@
             </div>
             <div class="user-points">
                 <span>전체 예측에서 </span>
-                <strong><span th:text="${memberInfo.rankPosition}"></span></strong>위 상위
-                <span th:text="${rankPercent}"></span>% 입니다.
+                <span th:text="${memberInfo.rankPosition}"></span>위
+                <strong>상위
+                    <span th:text="${rankPercent}"></span>% 입니다.
+                </strong>
                 <div class="progress-bar"></div>
             </div>
         </div>
@@ -102,76 +68,55 @@
         <div class="top-predictors">
             <ol>
                 <h4>랭킹</h4>
-                    <li th:if="${memberInfo != null}" class="rank-item">
-                        <div class="rank-position">
-                            <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
-                            <span th:text="${memberInfo.rankPosition}" class="rank"></span>
-                        </div>
-                        <span th:text="${memberInfo.memberNickname}" class="name"></span>
-                        <span>(나)</span>
-                        <span th:text="${memberInfo.experiencePoints}" class="points"></span>
-                    </li>
-
-                    <li th:each="member : ${memberRank}" class="rank-item">
-                        <div class="rank-position">
-                            <img class="profile-img" src="/img/LG로고.png" alt="profile-img">
-                            <span th:text="${member.rankPosition}" class="rank"></span>
-                        </div>
-                        <span th:text="${member.memberNickname}" class="name"></span>
-                        <span th:text="${member.experiencePoints}" class="points"></span>
-                    </li>
+                <div class="info">
+                    <div>순위</div>
+                    <div>닉네임</div>
+                    <div>경험치</div>
+                </div>
+                <li th:each="member, iterStat : ${memberRank}" th:class="${iterStat.index < 3 ? 'rank-item' : 'rank-item hidden'}">
+                    <div class="rank-position">
+                        <span th:text="${member.rankPosition}" class="rank"></span>
+                    </div>
+                    <span th:text="${member.memberNickname}" class="name"></span>
+                    <span th:text="${member.experiencePoints}" class="points"></span>
+                </li>
             </ol>
         </div>
         <div class="select-list">
-            <button class="load-more">10위 더보기 ></button>
+            <button class="load-more">더보기 ></button>
         </div>
     </aside>
 </main>
 <div class="team-logos">
     <div class="team-logos-container">
-        <a href="#"><img src="img/LG로고.png" alt="Twins" class="team-logo"></a>
-        <a href="#"><img src="img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-        <a href="#"><img src="img/SSG로고.png" alt="Landers" class="team-logo"></a>
-        <a href="#"><img src="img/NC로고.png" alt="Dinos" class="team-logo"></a>
-        <a href="#"><img src="img/두산로고.png" alt="Bears" class="team-logo"></a>
-        <a href="#"><img src="img/기아로고.png" alt="Tigers" class="team-logo"></a>
-        <a href="#"><img src="img/롯데로고.png" alt="Giants" class="team-logo"></a>
-        <a href="#"><img src="img/삼성로고.png" alt="Lions" class="team-logo"></a>
-        <a href="#"><img src="img/한화로고.png" alt="Wiz" class="team-logo"></a>
-        <a href="#"><img src="img/키움로고.png" alt="Heroes" class="team-logo"></a>
+        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
+        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
+        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
+        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
+        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
+        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
+        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
+        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
+        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
+        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
     </div>
 </div>
 
 <th:block th:replace="fragments/footer.html"></th:block>
+
 <script th:inline="javascript">
-    var errorMessage = /*[[${errorMessage}]]*/ null;
-    if (errorMessage) {
-        alert(errorMessage);
-    }
-
-    function setPrediction(decision, gameNo, teamButton) {
-        const decisionInput = document.querySelector("input[name='matchPredictDecision']");
-        if (decisionInput) {
-            decisionInput.value = decision;
-        }
-        const gameNoInput = document.querySelector("input[name='gameNo']");
-        if (gameNoInput) {
-            gameNoInput.value = gameNo;
-        }
-        const form = document.forms["add-form"];
-        if (form) {
-            form.submit();
-        }
-    }
-
-
     document.addEventListener("DOMContentLoaded", function () {
 
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const options = { month: '2-digit', day: '2-digit' };
+        var errorMessage = /*[[${errorMessage}]]*/ null;
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessage
+            });
+        }
 
+        const today = new Date();
         const dateSelector = document.querySelector('.date-selector');
 
         // 7일 간의 날짜 버튼 생성
@@ -181,8 +126,9 @@
 
             const button = document.createElement('button');
             button.classList.add('date');
+            button.dataset.date = date.toISOString().split('T')[0];
 
-            let dateString = date.toLocaleDateString('ko-KR', options).replace(/\./g, '');
+            let dateString = date.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }).replace(/\./g, '');
 
             if (i === 0) {
                 button.classList.add('active');
@@ -193,51 +139,49 @@
             dateSelector.appendChild(button);
 
             button.addEventListener('click', function () {
-                const allButtons = document.querySelectorAll('.date');
-                allButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.date').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
-
-                const selectedDate = date.toISOString().split('T')[0];
-                fetchPredictionsByDate(selectedDate);
+                fetchPredictionsByDate(this.dataset.date);
             });
         }
 
-        // 주차 계산 및 버튼 생성
-        const firstDay = new Date(currentYear, currentMonth, 1);
-        const lastDay = new Date(currentYear, currentMonth + 1, 0);
-
-        const calendarWeek = document.querySelector('.calendar-week');
-        calendarWeek.innerHTML = '';
-        let weekCount = 1;
-
-        for (let d = new Date(firstDay); d <= today; d.setDate(d.getDate() + 7)) {
-            const weekStart = new Date(d);
-            const weekEnd = new Date(d);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-
-            if (weekEnd > lastDay) {
-                weekEnd.setDate(lastDay.getDate());
-            }
-
-            const button = document.createElement('button');
-            button.className = 'week-date';
-            button.type = 'button';
-            button.textContent = `${currentMonth + 1}월 ${weekCount}주`;
-
-            // 각 버튼에 시작 날짜와 종료 날짜 데이터 추가
-            button.dataset.startDate = weekStart.toISOString().split('T')[0];
-            button.dataset.endDate = weekEnd.toISOString().split('T')[0];
-
-            if (today >= weekStart && today <= weekEnd) {
-                button.classList.add('active');
-            }
-
-            calendarWeek.appendChild(button);
-            weekCount++;
-
-            if (weekEnd >= today) {
-                break;
-            }
+        function setPrediction(decision, gameNo) {
+            fetch('/addPredict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    gameNo: gameNo,
+                    matchPredictNo: 1,
+                    matchPredictDecision: decision
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text || response.statusText) });
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공!',
+                        text: data || "예측이 성공적으로 등록되었습니다."
+                    });
+                    const activeDate = document.querySelector('.date.active');
+                    if (activeDate) {
+                        fetchPredictionsByDate(activeDate.dataset.date);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류',
+                        text: '예측 등록 중 문제가 발생했습니다.'
+                    });
+                });
         }
 
         function fetchPredictionsByDate(date) {
@@ -250,14 +194,18 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    console.log('Received data:', data);
                     const gameList = document.querySelector('.game-list');
                     gameList.innerHTML = '';
 
                     data.forEach(predict => {
                         const listItem = document.createElement('li');
-
                         listItem.className = 'game-item';
+                        listItem.dataset.gameNo = predict.gameNo;
+
+                        const isTeamAActive = predict.matchPredictDecision === predict.teamA;
+                        const isDrawActive = predict.matchPredictDecision === '무';
+                        const isTeamBActive = predict.matchPredictDecision === predict.teamB;
 
                         listItem.innerHTML = `
                             <span class="league">
@@ -265,114 +213,146 @@
                                 GoMatch
                             </span>
                             <div class="upcoming-games">
-                                  <div class="game-date">
+                                <div class="game-date">
                                     <p>경기 날짜</p>
                                     <span class="date">${predict.gameDate}</span>
-                                  </div>
-                                  <div class="game-time">
+                                </div>
+                                <div class="game-time">
                                     <p class="time">${predict.gameTime}</p>
                                     <span>경기 예정</span>
-                                  </div>
                                 </div>
-                            <form name="add-form" action="/addPredict" method="post">
-                                <input type="hidden" name="memberId" value="${predict.memberId}"/>
-                                <input type="hidden" name="gameNo" value="${predict.gameNo}"/>
-                                <input type="hidden" name="matchPredictNo" value="${predict.matchPredictNo}">
-                                <input type="hidden" name="matchPredictStatus" value="${predict.matchPredictStatus}">
-                                <input type="hidden" name="matchPredictDecision" id="matchPredictDecision" value="${predict.matchPredictDecision}"/>
-                                <div class="teams">
-                                    <button type="button" class="team-a" onclick="setPrediction('${predict.teamA}', '${predict.gameNo}')">
-                                        <span>${predict.teamA}</span>
-                                        <img class="teamA-img" src="/img/KT로고.png" alt="a팁 로고">
-                                    </button>
-                                    <button type="button" class="draw" onclick="setPrediction('무', '${predict.gameNo}')">
-                                        <span class="vs">무승부</span>
-                                    </button>
-                                    <button type="button" class="team-b" onclick="setPrediction('${predict.teamB}', '${predict.gameNo}')">
-                                        <img class="teamB-img" src="/img/LG로고.png" alt="b팁 로고">
-                                        <span>${predict.teamB}</span>
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
+                            <div class="teams">
+                                <button type="button" class="team-a ${isTeamAActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <span>${predict.teamA}</span>
+                                    <img class="teamA-img" alt="a팀 로고">
+                                </button>
+                                <button type="button" class="draw ${isDrawActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <span class="vs">무승부</span>
+                                </button>
+                                <button type="button" class="team-b ${isTeamBActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
+                                    <img class="teamB-img" alt="b팀 로고">
+                                    <span>${predict.teamB}</span>
+                                </button>
+                            </div>
                         `;
                         gameList.appendChild(listItem);
+
+                        loadTeamLogos(predict);
                     });
                 })
                 .catch(error => console.error('Error fetching predictions by date:', error));
         }
 
+        // 이벤트 위임을 사용한 예측 버튼 클릭 처리
+        document.querySelector('.game-list').addEventListener('click', function(event) {
+            const button = event.target.closest('button');
+            if (button && !button.disabled && (button.classList.contains('team-a') || button.classList.contains('draw') || button.classList.contains('team-b'))) {
+                const gameNo = button.closest('.game-item').dataset.gameNo;
+                const decision = button.classList.contains('draw') ? '무' : button.querySelector('span').textContent;
+                setPrediction(decision, gameNo);
+            }
+        });
+
         const todayISO = today.toISOString().split('T')[0];
         fetchPredictionsByDate(todayISO);
 
-        let loadMoreBtn = document.querySelector(".load-more");
-        const allRankItem = document.querySelectorAll(".rank-item");
+        // 랭킹 더보기 기능
+        const loadMoreBtn = document.querySelector(".load-more"); // 더보기 버튼 선택
+        const allRankItems = document.querySelectorAll(".rank-item"); // 모든 항목 선택
+        const initialDisplayCount = 3; // 초기 표시 항목 수
+        const itemsPerClick = 10; // 클릭 시 추가로 보여줄 항목 수
+        let shownCount = initialDisplayCount; // 현재 표시된 항목 수
 
-        let initialDisplayCount = document.querySelector(".member-info").value ? 4 : 3;
-
-        allRankItem.forEach((item, index) => {
+// 초기 상태 설정: 초기 3개 항목만 보이게 설정
+        allRankItems.forEach((item, index) => {
             if (index >= initialDisplayCount) {
-                item.style.display = "none";
+                item.style.display = "none"; // 초기에는 3개만 보이게
             }
         });
 
+// 더보기 버튼 클릭 시 처리
         loadMoreBtn.addEventListener("click", function() {
-            let shownCount = 0;
-            allRankItem.forEach(item => {
-                if (shownCount < 10 && item.style.display === "none") {
-                    item.style.display = "flex";
-                    shownCount++;
+            if (shownCount < allRankItems.length) {
+                // 항목 더 보기
+                let toShowCount = 0;
+                allRankItems.forEach(item => {
+                    if (toShowCount < itemsPerClick && item.style.display === "none") {
+                        item.style.display = "flex"; // 항목 보이게 설정
+                        toShowCount++;
+                    }
+                });
+                shownCount += toShowCount; // 표시된 항목 수 업데이트
+
+                // 모든 항목을 보여준 경우 "접기" 버튼으로 변경
+                if (shownCount >= allRankItems.length) {
+                    loadMoreBtn.innerText = "접기"; // 버튼 텍스트 변경
                 }
-            });
-            if (shownCount < 10) {
-                loadMoreBtn.style.display = "none";
-            }
-        });
-
-        const matchPredictBtn = document.querySelector(".match-predict-btn");
-        const myMatchPredictBtn = document.querySelector(".myMatch-predict-btn");
-
-        matchPredictBtn.classList.add("active");
-
-        matchPredictBtn.addEventListener("click", function () {
-            matchPredictBtn.classList.add("active");
-            myMatchPredictBtn.classList.remove("active");
-        });
-
-        myMatchPredictBtn.addEventListener("click", function () {
-            myMatchPredictBtn.classList.add("active");
-            matchPredictBtn.classList.remove("active");
-            const memberId = document.querySelector("#memberId");
-            if (memberId) {
-                location.href = "myMatchPredictPage.html?memberId=" + encodeURIComponent(memberId);
             } else {
-                console.error("유효하지 않은 memberId 입니다.");
+                // 접기 기능
+                allRankItems.forEach(item => {
+                    item.style.display = "none"; // 모든 항목 숨기기
+                });
+                shownCount = initialDisplayCount; // 초기 표시 수로 리셋
+                // 초기 상태로 돌아가기
+                allRankItems.forEach((item, index) => {
+                    if (index < initialDisplayCount) {
+                        item.style.display = "flex"; // 초기에는 3개 보이게
+                    }
+                });
+                loadMoreBtn.innerText = "더 보기"; // 버튼 텍스트 원래대로 변경
             }
         });
 
-        const todayButton = document.querySelector(".date.active");
-        todayButton.classList.add("active");
+// 초기 상태에 따라 버튼 숨김 설정
+        if (allRankItems.length <= initialDisplayCount) {
+            loadMoreBtn.style.display = "none"; // 초기 항목 수가 충분할 경우 버튼 숨기기
+        } else {
+            loadMoreBtn.style.display = "block"; // 보여줄 항목이 있을 경우 버튼 보이기
+        }
 
-        const dateButtons = document.querySelectorAll(".date");
-        dateButtons.forEach(function (dateButton) {
-            dateButton.addEventListener("click", function () {
-                dateButtons.forEach(function (btn) {
-                    btn.classList.remove("active");
-                });
-                this.classList.add("active");
-            });
-        });
+        const teams = [
+            { name: 'LG', logo: '/img/LG로고.png' },
+            { name: 'KT', logo: '/img/KT로고.png' },
+            { name: 'SSG', logo: '/img/SSG로고.png' },
+            { name: 'NC', logo: '/img/NC로고.png' },
+            { name: '두산', logo: '/img/두산로고.png' },
+            { name: 'KIA', logo: '/img/기아로고.png' },
+            { name: '롯데', logo: '/img/롯데로고.png' },
+            { name: '삼성', logo: '/img/삼성로고.png' },
+            { name: '한화', logo: '/img/한화로고.png' },
+            { name: '키움', logo: '/img/키움로고.png' }
+        ];
+        function loadTeamLogos(predict) {
+            if (!predict) {
+                console.error('predict 객체가 undefined입니다.');
+                return; // predict가 undefined인 경우 함수 종료
+            }
 
-        const teamsButtons = document.querySelectorAll(".team-a, .draw, .team-b");
-        teamsButtons.forEach(function (teamButton){
-            teamButton.addEventListener("click", function (){
-                const parentGameItem = this.closest(".game-item");
-                const siblingButtons = parentGameItem.querySelectorAll(".team-a, .draw, .team-b");
-                siblingButtons.forEach(function (btn){
-                    btn.classList.remove("active");
-                });
-                this.classList.add("active");
-            });
-        });
+            // 현재 경기 항목의 팀 A와 팀 B 버튼을 찾습니다.
+            const gameItem = document.querySelector(`.game-item[data-game-no='${predict.gameNo}']`);
+            if (!gameItem) {
+                console.error(`게임 항목을 찾을 수 없습니다. gameNo: ${predict.gameNo}`);
+                return; // 게임 항목을 찾지 못한 경우 함수 종료
+            }
+
+            const teamAButton = gameItem.querySelector('.team-a');
+            const teamBButton = gameItem.querySelector('.team-b');
+
+            // 팀 A 로고 삽입
+            const teamA = teams.find(team => team.name === predict.teamA);
+            if (teamA) {
+                teamAButton.querySelector('.teamA-img').src = teamA.logo;
+                teamAButton.querySelector('.teamA-img').alt = `${predict.teamA} 로고`;
+            }
+
+            // 팀 B 로고 삽입
+            const teamB = teams.find(team => team.name === predict.teamB);
+            if (teamB) {
+                teamBButton.querySelector('.teamB-img').src = teamB.logo;
+                teamBButton.querySelector('.teamB-img').alt = `${predict.teamB} 로고`;
+            }
+        }
     });
 </script>
 </body>
