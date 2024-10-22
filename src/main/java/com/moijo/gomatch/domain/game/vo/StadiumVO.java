@@ -14,8 +14,8 @@ import org.checkerframework.checker.units.qual.N;
 @AllArgsConstructor
 public class StadiumVO {
 
-    private int stadiumId;
-    private String stadiumName;
+    private int stadiumId; // 야구장 번호
+    private String stadiumName; // 야구장 이름
     private double latitude;    // 위도
     private double longitude;   // 경도
     private String stadiumAddress; // 주소
