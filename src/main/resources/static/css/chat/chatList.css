@@ -1,19 +1,18 @@
-
 *,
-*::before,
-*::after {
-    box-sizing: content-box !important;
+*::after,
+*::before {
+    box-sizing: content-box; /* 또는 원래 값을 설정 */
 }
-
 
 .container {
     max-width: 800px;
     margin-top: 80px;
-    height: 800px;
+    height: 900px;
 }
 .card {
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 800px;
 }
 .card-header {
     background-color: #007bff;
@@ -33,4 +32,10 @@
 }
 .table td {
     vertical-align: middle;
+}
+
+.btn-secondary {
+    margin: auto;
+    width: 20%;
+    background-color: black;
 }
