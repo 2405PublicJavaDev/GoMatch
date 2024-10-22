@@ -115,6 +115,7 @@
                  LEFT JOIN MEMBER M
                            ON P.MEMBER_ID = M.MEMBER_ID
         WHERE M.MEMBER_ID = #{memberId}
+        ORDER BY GAME_NO
     </select>
 
 

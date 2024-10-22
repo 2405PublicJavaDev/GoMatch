@@ -353,3 +353,36 @@
   
   ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
 </details>
+
+### 승부예측 페이지
+<details>
+<summary>승부예측 페이지 보기</summary>
+
+- **승부예측 리스트 조회**
+
+  ![승부예측 리스트 조회](https://github.com/user-attachments/assets/48821d40-6d8f-4df6-ad66-951c905bc8b0)
+
+- **날짜 별 승부예측 리스트 조회**
+
+  ![날짜 별 승부예측 리스트 조회](https://github.com/user-attachments/assets/e9f5313b-0383-4e0b-bacf-fd2e96ae027a)
+
+
+- **승부예측 등록**
+
+  ![승부예측 등록](https://github.com/user-attachments/assets/da75fc34-13d9-485a-94b1-2709d50c524f)
+
+- **나의예측 리스트 조회**
+
+  ![나의예측 리스트 조회](https://github.com/user-attachments/assets/7290aeb3-6a80-40d0-b01d-fe8600c0f0b9)
+
+- **승부예측 수정**
+
+  ![승부예측 수정](https://github.com/user-attachments/assets/60df0fdd-3e4f-4059-82ac-1fec6ba81a56)
+
+- **내 정보 조회**
+
+  ![내 정보 조회](https://github.com/user-attachments/assets/0fd51145-acd0-4883-8f83-8152421eef88)
+
+- **랭킹 리스트 조회**
+
+  ![랭킹 리스트 조회](https://github.com/user-attachments/assets/98acaab6-5bf1-44b9-8dfb-3443c2e36be3)

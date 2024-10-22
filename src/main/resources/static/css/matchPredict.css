@@ -260,6 +260,24 @@ button {
     font-size: 14px;
 }
 
+.no-predictions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    width: 100%;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.no-predictions h1 {
+    color: #6c757d;
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+}
+
 .rank-position {
     display: flex;
     align-items: center;

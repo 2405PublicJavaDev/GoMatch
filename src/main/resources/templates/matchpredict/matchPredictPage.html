@@ -179,7 +179,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: '오류',
-                        text: '예측 등록 중 문제가 발생했습니다.'
+                        text: '이미 등록 한 예측 입니다.'
                     });
                 });
         }
@@ -197,6 +197,15 @@
                     console.log('Received data:', data);
                     const gameList = document.querySelector('.game-list');
                     gameList.innerHTML = '';
+
+                    if (!data || data.length === 0) {
+                        // 데이터가 없을 때 메시지 표시
+                        const noDataMessage = document.createElement('li');
+                        noDataMessage.className = 'no-predictions';
+                        noDataMessage.innerHTML = '<h1>등록된 예측이 없습니다.</h1>';
+                        gameList.appendChild(noDataMessage);
+                        return;
+                    }
 
                     data.forEach(predict => {
                         const listItem = document.createElement('li');
