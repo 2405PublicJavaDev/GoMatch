@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.lang.reflect.Member;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +58,7 @@ public class ChatController {
             return "common/oops";
         }
         List<ChatRoom> roomList = chatService.findAllRoom(meetingNo);
+        roomList.sort(Comparator.comparing(ChatRoom::getCreatedDate).reversed());
         model.addAttribute("roomList",roomList);
         model.addAttribute("meetingNo", meetingNo);
         return "chat/chatList";

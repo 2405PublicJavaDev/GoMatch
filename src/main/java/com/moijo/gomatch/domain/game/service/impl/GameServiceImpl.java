@@ -43,12 +43,14 @@ public class GameServiceImpl implements GameService {
         this.teamLogoMap.put("한화", "/img/한화로고.png");
     }
 
-    // 팀 로고 저장
+    // ■■■■■■■■■■■■■■■■■■■ 팀 정보 (TEAM) ■■■■■■■■■■■■■■■■■■■■ //
+    // 팀 명과 로고 매핑
     public String getLogoUrl(String teamName) {
         return teamLogoMap.getOrDefault(teamName, "/img/고매치로고.png");
     }
-    
-    // 경기정보 DB에 저장
+
+    // ■■■■■■■■■■■■■■■■■■■ 경기정보 (GAME) ■■■■■■■■■■■■■■■■■■■■ //
+    // 경기정보 DB에 저장 및 수정
     @Override
     public void saveAllGames(List<GameVO> gameList) {
         for (GameVO game : gameList) {
@@ -75,8 +77,9 @@ public class GameServiceImpl implements GameService {
             }
         }
     }
-    
-    // 야구장 목록 출력
+
+    // ■■■■■■■■■■■■■■■■■■■ 야구장정보 (STADIUM) ■■■■■■■■■■■■■■■■■■■■ //
+    // 야구장 리스트 지도에 출력
     @Override
     public List<StadiumVO> getAllStadiums() {
         List<StadiumVO> stadiumList = gameMapper.selectAllStadiums();

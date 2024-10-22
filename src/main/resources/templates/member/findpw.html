@@ -1,15 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>비밀번호 찾기</title>
-    <link rel="stylesheet" href="/css/member/findpw.css">
-    <link rel="stylesheet" href="/css/header-footer.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}"></head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
+<link rel="stylesheet" href="/css/member/findpw.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- 헤더 부분 -->
 <div th:insert="~{header-footer :: header}"></div>
 <main>

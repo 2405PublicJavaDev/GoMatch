@@ -30,12 +30,21 @@ body, html {
     top: 0;
 }
 
+.sidebarmember a {
+    text-decoration: none;
+    color: black;
+}
+
 /* 하위 메뉴 */
 .submenu {
     display: none;
     list-style: none;
     padding: 0;
     margin: 0;
+}
+
+.submenu show a {
+    text-decoration: none;
 }
 
 .show {

@@ -16,85 +16,40 @@ public interface MemberMapper {
     // 새로운 회원 등록
     void insertMember(MemberVO memberVO);
 
-    /**
-     *  아이디 중복체크
-     * @param memberId
-     * @return
-     */
+    // 아이디 중복체크
     int countByMemberId(String memberId);
 
-    /**
-     * 이메일 중복체크
-     * @param memberEmail
-     * @return
-     */
+    // 이메일 중복체크
     int countByMemberEmail(String memberEmail);
 
-    /**
-     * 닉네임 중복체크
-     * @param memberNickname
-     * @return
-     */
+    // 닉네임 중복체크
     int countByMemberNickname(String memberNickname);
 
-    /**
-     * 아이디 찾기(이름,닉네임)
-     * @param name
-     * @param birthDate
-     * @return
-     */
+    // 아이디 찾기 (이름,생년월일)
     String findIdByNameAndBirthDate(@RequestParam ("name") String name, @RequestParam("birthDate") String birthDate);
 
-    /**
-     * 비밀번호 재설정 할 회원 아이디,이메일로 조회
-     * @param memberId
-     * @param email
-     * @return
-     */
+    // 비밀번호 찾기 (임시비밀번호 전송)
     MemberVO findByIdAndEmail(@RequestParam("memberId") String memberId, @RequestParam("email") String email);
 
-    /**
-     * 회원 비밀번호 DB업데이트
-     * @param memberId
-     * @param password
-     */
+    // 임시비밀번호 디비 저장
     void updatePassword(@RequestParam("memberId") String memberId, @RequestParam("password") String password);
 
-
-    /**
-     * 회원정보 수정
-     * @param memberVO
-     * @return
-     */
+    // 회원정보 수정
     int updateMember(MemberVO memberVO);
 
-    /**
-     * 특정 아이디 조회
-     * @param memberId
-     * @return
-     */
+    // 특정 아이디 조회
     MemberVO getMemberById(String memberId);
 
-    /**
-     * 회원 정보 수정
-     * @param memberVO
-     * @return
-     */
+    // 회원 정보 수정
     int modifyMember(MemberVO memberVO);
 
-    /**
-     * 회원 탈퇴
-     * @param memberId
-     */
+    // 회원 탈퇴 처리
     void deleteMember(String memberId);
 
-    /**
-     * 탈퇴시 랭크DB 정보도 삭제
-     * @param memberId
-     */
+    // 연관된 랭크 정보 삭제
     void deleteMemberRank(String memberId);
 
-
+    // 이메일로 회원 정보 조회
     MemberVO getMemberByEmail(String email);
 
 }

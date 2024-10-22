@@ -7,39 +7,28 @@ import java.util.List;
 
 public interface AdminMemberService {
 
-    /**
-     * 관리자 멤버 관리
-     * @return
-     */
+    // 전체 회원 목록 조회
     List<MemberVO> getAllMembers();
 
-    /**
-     *  관리자 멤버 삭제/정지
-     * @param memberId
-     * @return
-     */
+    // 회원 계정 정지 처리
     boolean suspendMember(String memberId);
+
+    // 회원 계정 활성화
     boolean activateMember(String memberId);
+
+    // 회원 삭제
     boolean deleteMemberByAdmin(String memberId);
 
-
-    /**
-     * 관리자 회원 검색
-     * @param searchKeyword
-     * @return
-     */
+    // 회원관리 페이지 id,email,name,전체 검색
     List<MemberVO> searchMembersById(String searchKeyword);
     List<MemberVO> searchMembersByEmail(String searchKeyword);
     List<MemberVO> searchMembersByName(String searchKeyword);
     List<MemberVO> searchMembersAll(String searchKeyword);
 
-
-    /**
-     * 최근 가입한 5명의 회원 조회
-     * @return 최근 가입한 5명의 회원 목록
-     */
+    // 최근 가입 5명 목록 조회
     List<MemberVO> getRecentMembers();
 
+    // 최근 소모임 5개 목록 조회
     List<AdminMeetingVO> getRecentMeetings();
 
 
