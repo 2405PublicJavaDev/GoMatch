@@ -6,6 +6,7 @@
     <title>승부예측</title>
     <link rel="stylesheet" href="/css/matchPredict.css">
     <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
@@ -49,7 +50,7 @@
             </div>
             <div class="user-points">
                 <span>전체 예측에서 </span>
-                <span th:text="${memberInfo.rankPosition}"></span>
+                <span th:text="${memberInfo.rankPosition}"></span>위
                 <strong>상위
                     <span th:text="${rankPercent}"></span>% 입니다.
                 </strong>
@@ -105,9 +106,14 @@
 
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
+
         var errorMessage = /*[[${errorMessage}]]*/ null;
         if (errorMessage) {
-            alert(errorMessage);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: errorMessage
+            });
         }
 
         const today = new Date();
@@ -158,7 +164,11 @@
                     return response.text();
                 })
                 .then(data => {
-                    alert(data || "예측이 성공적으로 등록되었습니다.");
+                    Swal.fire({
+                        icon: 'success',
+                        title: '성공!',
+                        text: data || "예측이 성공적으로 등록되었습니다."
+                    });
                     const activeDate = document.querySelector('.date.active');
                     if (activeDate) {
                         fetchPredictionsByDate(activeDate.dataset.date);
@@ -166,7 +176,11 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('오류: ' + (error.message || "예측 등록 중 문제가 발생했습니다."));
+                    Swal.fire({
+                        icon: 'error',
+                        title: '오류',
+                        text: '예측 등록 중 문제가 발생했습니다.'
+                    });
                 });
         }
 
@@ -211,18 +225,20 @@
                             <div class="teams">
                                 <button type="button" class="team-a ${isTeamAActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
                                     <span>${predict.teamA}</span>
-                                    <img class="teamA-img" src="/img/KT로고.png" alt="a팀 로고">
+                                    <img class="teamA-img" alt="a팀 로고">
                                 </button>
                                 <button type="button" class="draw ${isDrawActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
                                     <span class="vs">무승부</span>
                                 </button>
                                 <button type="button" class="team-b ${isTeamBActive ? 'active' : ''}" ${predict.hasPrediction === 'Y' ? 'disabled' : ''}>
-                                    <img class="teamB-img" src="/img/LG로고.png" alt="b팀 로고">
+                                    <img class="teamB-img" alt="b팀 로고">
                                     <span>${predict.teamB}</span>
                                 </button>
                             </div>
                         `;
                         gameList.appendChild(listItem);
+
+                        loadTeamLogos(predict);
                     });
                 })
                 .catch(error => console.error('Error fetching predictions by date:', error));
@@ -242,21 +258,101 @@
         fetchPredictionsByDate(todayISO);
 
         // 랭킹 더보기 기능
-        let loadMoreBtn = document.querySelector(".load-more");
-        const allRankItems = document.querySelectorAll(".rank-item");
-        let isExpanded = false;
+        const loadMoreBtn = document.querySelector(".load-more"); // 더보기 버튼 선택
+        const allRankItems = document.querySelectorAll(".rank-item"); // 모든 항목 선택
+        const initialDisplayCount = 3; // 초기 표시 항목 수
+        const itemsPerClick = 10; // 클릭 시 추가로 보여줄 항목 수
+        let shownCount = initialDisplayCount; // 현재 표시된 항목 수
 
-        function toggleRankItems() {
-            isExpanded = !isExpanded;
-            allRankItems.forEach((item, index) => {
-                if (index >= 3) {
-                    item.style.display = isExpanded ? "flex" : "none";
+// 초기 상태 설정: 초기 3개 항목만 보이게 설정
+        allRankItems.forEach((item, index) => {
+            if (index >= initialDisplayCount) {
+                item.style.display = "none"; // 초기에는 3개만 보이게
+            }
+        });
+
+// 더보기 버튼 클릭 시 처리
+        loadMoreBtn.addEventListener("click", function() {
+            if (shownCount < allRankItems.length) {
+                // 항목 더 보기
+                let toShowCount = 0;
+                allRankItems.forEach(item => {
+                    if (toShowCount < itemsPerClick && item.style.display === "none") {
+                        item.style.display = "flex"; // 항목 보이게 설정
+                        toShowCount++;
+                    }
+                });
+                shownCount += toShowCount; // 표시된 항목 수 업데이트
+
+                // 모든 항목을 보여준 경우 "접기" 버튼으로 변경
+                if (shownCount >= allRankItems.length) {
+                    loadMoreBtn.innerText = "접기"; // 버튼 텍스트 변경
                 }
-            });
-            loadMoreBtn.textContent = isExpanded ? "접기 <" : "더보기 >";
+            } else {
+                // 접기 기능
+                allRankItems.forEach(item => {
+                    item.style.display = "none"; // 모든 항목 숨기기
+                });
+                shownCount = initialDisplayCount; // 초기 표시 수로 리셋
+                // 초기 상태로 돌아가기
+                allRankItems.forEach((item, index) => {
+                    if (index < initialDisplayCount) {
+                        item.style.display = "flex"; // 초기에는 3개 보이게
+                    }
+                });
+                loadMoreBtn.innerText = "더 보기"; // 버튼 텍스트 원래대로 변경
+            }
+        });
+
+// 초기 상태에 따라 버튼 숨김 설정
+        if (allRankItems.length <= initialDisplayCount) {
+            loadMoreBtn.style.display = "none"; // 초기 항목 수가 충분할 경우 버튼 숨기기
+        } else {
+            loadMoreBtn.style.display = "block"; // 보여줄 항목이 있을 경우 버튼 보이기
         }
 
-        loadMoreBtn.addEventListener("click", toggleRankItems);
+        const teams = [
+            { name: 'LG', logo: '/img/LG로고.png' },
+            { name: 'KT', logo: '/img/KT로고.png' },
+            { name: 'SSG', logo: '/img/SSG로고.png' },
+            { name: 'NC', logo: '/img/NC로고.png' },
+            { name: '두산', logo: '/img/두산로고.png' },
+            { name: 'KIA', logo: '/img/기아로고.png' },
+            { name: '롯데', logo: '/img/롯데로고.png' },
+            { name: '삼성', logo: '/img/삼성로고.png' },
+            { name: '한화', logo: '/img/한화로고.png' },
+            { name: '키움', logo: '/img/키움로고.png' }
+        ];
+        function loadTeamLogos(predict) {
+            if (!predict) {
+                console.error('predict 객체가 undefined입니다.');
+                return; // predict가 undefined인 경우 함수 종료
+            }
+
+            // 현재 경기 항목의 팀 A와 팀 B 버튼을 찾습니다.
+            const gameItem = document.querySelector(`.game-item[data-game-no='${predict.gameNo}']`);
+            if (!gameItem) {
+                console.error(`게임 항목을 찾을 수 없습니다. gameNo: ${predict.gameNo}`);
+                return; // 게임 항목을 찾지 못한 경우 함수 종료
+            }
+
+            const teamAButton = gameItem.querySelector('.team-a');
+            const teamBButton = gameItem.querySelector('.team-b');
+
+            // 팀 A 로고 삽입
+            const teamA = teams.find(team => team.name === predict.teamA);
+            if (teamA) {
+                teamAButton.querySelector('.teamA-img').src = teamA.logo;
+                teamAButton.querySelector('.teamA-img').alt = `${predict.teamA} 로고`;
+            }
+
+            // 팀 B 로고 삽입
+            const teamB = teams.find(team => team.name === predict.teamB);
+            if (teamB) {
+                teamBButton.querySelector('.teamB-img').src = teamB.logo;
+                teamBButton.querySelector('.teamB-img').alt = `${predict.teamB} 로고`;
+            }
+        }
     });
 </script>
 </body>

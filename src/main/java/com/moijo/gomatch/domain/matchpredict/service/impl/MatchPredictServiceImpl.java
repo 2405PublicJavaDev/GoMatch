@@ -87,6 +87,11 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     @Override
     public int addMatchPredict(Long gameNo, Long matchPredictNo, String matchPredictDecision, String memberId) {
         int result = matchPredictMapper.insertMatchPredict(gameNo,matchPredictDecision,memberId,matchPredictNo);
+
+        if(result > 0) {
+            matchPredictMapper.addExperience(memberId, 50); // 50 경험치 증가
+        }
+
         return result;
     }
 
@@ -97,14 +102,15 @@ public class MatchPredictServiceImpl implements MatchPredictService {
      * @return
      */
     @Override
-    public int increaseExperience(String memberId,Long gameNo){
+    public int increaseExperience(String memberId, Long gameNo) {
         boolean isCorrect = matchPredictMapper.checkPredictionResult(memberId, gameNo);
 
-        if(isCorrect) {
+        if (isCorrect) {
             return matchPredictMapper.addExperience(memberId, 50); // 50 경험치 증가
         }
         return 0;
     }
+
 
     /**
      *

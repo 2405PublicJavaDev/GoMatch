@@ -118,8 +118,8 @@ public class MatchPredictController {
 
         try {
             int result = matchPredictService.addMatchPredict(request.getGameNo(), request.getMatchPredictNo(), request.getMatchPredictDecision(), memberId);
-            matchPredictService.updateRank();
             if (result > 0) {
+                matchPredictService.updateRank();
                 return ResponseEntity.ok("예측이 성공적으로 등록되었습니다.");
             } else {
                 return ResponseEntity.badRequest().body("예측 등록에 실패했습니다.");
@@ -144,14 +144,14 @@ public class MatchPredictController {
      * 경험치 추가
       */
 
-//    @PostMapping("/matchPedict")
-//    public int increaseExperience(HttpSession session, Model model
-//    , @RequestParam Long gameNo){
-//        String memberId = (String) session.getAttribute("memberId");
-//
-//        int result = matchPredictService.increaseExperience(memberId,gameNo);
-//        return result;
-//    }
+    @PostMapping("/matchPredict")
+    public int increaseExperience(HttpSession session, Model model
+    , @RequestParam Long gameNo){
+        String memberId = (String) session.getAttribute("memberId");
+
+        int result = matchPredictService.increaseExperience(memberId,gameNo);
+        return result;
+    }
 
     /**
      * 예측 수정(나의 예측리스트에서 가능)

@@ -34,6 +34,7 @@
         FROM GAME G
                  LEFT JOIN MATCH_PREDICT P ON G.GAME_NO = P.GAME_NO AND P.MEMBER_ID = #{memberId}
         WHERE G.GAME_DATE = #{gameDate}
+        ORDER BY GAME_NO
     </select>
 
     <select id="selectMemberInfo" resultType="MemberDTO">
@@ -132,44 +133,42 @@
     </select>
 
     <select id="checkPredictionResult" resultType="boolean">
-        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
-        FROM MATCH_PREDICT
-        WHERE MEMBER_ID = #{memberId}
-          AND GAME_NO = #{gameNo}
-          AND MATCH_PREDICT_DECISION = (
-            SELECT GAME_RESULT
-            FROM GAME
-            WHERE GAME_NO = #{gameNo}
-        )
-    </select>
-
-
-    <select id="getAllMemberRankUpdate" resultType="MemberRankDTO">
         SELECT
-            M.MEMBER_ID,
-            M.MEMBER_NICKNAME,
-            U.EXPERIENCE_POINTS AS experiencePoints,
-            U.RANK_POSITION
-        FROM
-            USER_RANK U
-                JOIN
-            MEMBER M ON U.MEMBER_ID = M.MEMBER_ID
-                JOIN
-            MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID
-                JOIN
-            GAME G ON G.GAME_NO = P.GAME_NO
-        GROUP BY
-            M.MEMBER_ID, M.MEMBER_NICKNAME, U.RANK_POSITION
-        ORDER BY
-            experiencePoints DESC;  -- 경험치 총합 기준으로 정렬
+            CASE WHEN P.MATCH_PREDICT_DECISION = G.GAME_RESULT THEN 1 ELSE 0 END
+        FROM MATCH_PREDICT P
+                 JOIN GAME G ON P.GAME_NO = G.GAME_NO
+        WHERE P.MEMBER_ID = #{memberId} AND G.GAME_NO = #{gameNo}
     </select>
+
+
+<!--    <select id="getAllMemberRankUpdate" resultType="MemberRankDTO">-->
+<!--        SELECT-->
+<!--            M.MEMBER_ID,-->
+<!--            M.MEMBER_NICKNAME,-->
+<!--            U.EXPERIENCE_POINTS AS experiencePoints,-->
+<!--            U.RANK_POSITION-->
+<!--        FROM-->
+<!--            USER_RANK U-->
+<!--                JOIN-->
+<!--            MEMBER M ON U.MEMBER_ID = M.MEMBER_ID-->
+<!--                JOIN-->
+<!--            MATCH_PREDICT P ON P.MEMBER_ID = M.MEMBER_ID-->
+<!--                JOIN-->
+<!--            GAME G ON G.GAME_NO = P.GAME_NO-->
+<!--        ORDER BY-->
+<!--            experiencePoints DESC;  &#45;&#45; 경험치 총합 기준으로 정렬-->
+<!--    </select>-->
 
     <insert id="insertMatchPredict">
         INSERT INTO MATCH_PREDICT (MATCH_PREDICT_NO,GAME_NO,MATCH_PREDICT_DECISION,MEMBER_ID,MATCH_PREDICT_STATUS,REG_DATE)
         VALUES (SEQ_MATCH_PREDICT.NEXTVAL,#{gameNo},#{matchPredictDecision},#{memberId} ,DEFAULT,SYSDATE)
     </insert>
 
-
+    <update id="addExperience">
+        UPDATE USER_RANK
+        SET EXPERIENCE_POINTS = EXPERIENCE_POINTS + #{experience}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
 
 <!--    <insert id="insertMemberRanking">-->
 <!--        INSERT INTO USER_RANK (RANK_NO,MEMBER_ID,EXPERIENCE_POINTS,RANK_POSITION,REG_DATE,UPDATE_DATE)-->
