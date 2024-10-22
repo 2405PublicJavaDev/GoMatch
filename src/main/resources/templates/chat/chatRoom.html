@@ -23,7 +23,7 @@
 <script th:inline="javascript">
     let memberNickName = /*[[${session.memberNickName}]]*/ '알 수 없음';
     let profileUrl = /*[[${profileUrl}]]*/ '/img/기본프로필.png';
-    let socket = new WebSocket("ws://127.0.0.1:8888/ws/chat");
+    let socket = new WebSocket("ws://192.168.60.224:8888/ws/chat");
     let meetingNo = [[${room.meetingNo}]]; // room 객체에서 meetingNo 가져오기
 
     function enterRoom(socket) {
