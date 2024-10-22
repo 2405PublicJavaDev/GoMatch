@@ -172,7 +172,7 @@ public interface MeetingBoardMapper {
 
     /**
      * 게시글에 댓글을 등록하는 메서드
-     * @param boardNo 게시글 번호
+     * @param meetingBoardNo 게시글 번호
      * @param memberId 회원 ID
      * @param meetingReplyContent 댓글 내용
      * @return 등록된 댓글 수
