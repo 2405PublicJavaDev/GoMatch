@@ -14,25 +14,24 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameVO {
-    private int gameNo;
-    private Date gameDate;
-    private String gameTime;
-    private String teamA;
-    private String teamB;
-    private String regDate;
-    private String gameField;
-    private String memberId;
-    private String gameResult;
-    private int scoreA;
-    private int scoreB;
+    private int gameNo; // 경기번호
+    private Date gameDate; // 경기날짜
+    private String gameTime; // 경기시간
+    private String teamA; // 홈 팀
+    private String teamB; // 원정 팀
+    private String regDate; // 생성날짜
+    private String gameField; // 경기장소
+    private String gameResult; // 경기결과
+    private int scoreA; // 홈 팀 점수
+    private int scoreB; // 원정 팀 점수
     private String gameStatus;  // 경기비고
 
     public GameVO(Date sqlDate, String gameTime, String homeTeamName, String awayTeamName, String gameLocation, int homeScore, int awayScore) {
-        this.gameDate = sqlDate;
-        this.gameTime = gameTime;
-        this.teamA = homeTeamName; // 홈 팀
-        this.teamB = awayTeamName; // 원정 팀
-        this.gameField = gameLocation;
+        this.gameDate = sqlDate; 
+        this.gameTime = gameTime; 
+        this.teamA = homeTeamName; 
+        this.teamB = awayTeamName; 
+        this.gameField = gameLocation; 
         this.scoreA = homeScore;
         this.scoreB = awayScore;
     }
@@ -47,7 +46,6 @@ public class GameVO {
                 ", teamB='" + teamB + '\'' +
                 ", regDate='" + regDate + '\'' +
                 ", gameField='" + gameField + '\'' +
-                ", memberId='" + memberId + '\'' +
                 ", gameResult='" + gameResult + '\'' +
                 ", scoreA=" + scoreA +
                 ", scoreB=" + scoreB +

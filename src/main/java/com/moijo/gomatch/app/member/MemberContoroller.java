@@ -1,5 +1,7 @@
 package com.moijo.gomatch.app.member;
 
+import com.moijo.gomatch.app.game.GameBatchComponent;
+import com.moijo.gomatch.domain.game.service.GameService;
 import com.moijo.gomatch.domain.kakao.service.KakaoService;
 import com.moijo.gomatch.domain.member.service.ImageService;
 import com.moijo.gomatch.domain.member.service.MemberService;
@@ -26,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +47,9 @@ public class MemberContoroller {
 
     @Value("${kakao.redirect_uri}")
     private String redirectUri;
+
+    @Autowired
+    private GameBatchComponent gameBatchComponent;
 
 
     /**
@@ -176,14 +182,15 @@ public class MemberContoroller {
      */
     @GetMapping("/member/logout")
     public String logout(HttpSession session) {
-        // 세션 속성 제거
-        session.removeAttribute("loggedIn");
-        session.removeAttribute("memberNickName");
-        session.removeAttribute("kakaoAccessToken");
-        session.removeAttribute("kakaoRefreshToken");
-        session.removeAttribute("jwtToken");
+        // 모든 세션 속성을 명시적으로 제거
+        Enumeration<String> sessionAttributes = session.getAttributeNames();
+        while (sessionAttributes.hasMoreElements()) {
+            session.removeAttribute(sessionAttributes.nextElement());
+        }
+
         // 세션 무효화
         session.invalidate();
+
         return "redirect:/";
     }
 
@@ -200,6 +207,8 @@ public class MemberContoroller {
         if (loggedIn) {
             model.addAttribute("memberNickName", session.getAttribute("memberNickName"));
         }
+        List<String[]> teamList_2024 = gameBatchComponent.scrapeTeamRank("2024"); // 2024년도 팀 순위 
+        session.setAttribute("2024_Rank", teamList_2024); // 세션에 저장
         return "index";
     }
     /**
@@ -320,10 +329,8 @@ public class MemberContoroller {
 
         // 카카오 로그인 사용자 처리
         if (session.getAttribute("kakaoAccessToken") != null) {
-            // 카카오 사용자 정보로 MemberVO 생성 또는 조회
             member = createOrGetKakaoMember(session);
         } else {
-            // 일반 로그인 사용자
             member = (MemberVO) session.getAttribute("member");
         }
 
@@ -339,6 +346,9 @@ public class MemberContoroller {
         String profileImageUrl = member.getProfileImageUrl();
         if (profileImageUrl == null || profileImageUrl.isEmpty()) {
             profileImageUrl = "/img/default-profile.png"; // 기본 이미지 경로
+        } else if (!profileImageUrl.startsWith("/img/member-img/")) {
+            // 카카오 프로필이 아닌 경우에만 경로 수정
+            profileImageUrl = "/img/member-img/" + profileImageUrl.substring(profileImageUrl.lastIndexOf("/") + 1);
         }
         model.addAttribute("profileImageUrl", profileImageUrl);
 

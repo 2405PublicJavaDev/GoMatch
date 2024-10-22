@@ -166,14 +166,13 @@ button {
 }
 
 .team-a.active, .team-b.active, .draw.active {
-    background-color: #03c75a;
+    background-color: #178bff;
     color: white;
-    border-color: #03c75a;
 }
 
 .team-a img, .team-b img {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
     margin: 0 8px;
 }
 
@@ -238,6 +237,11 @@ button {
     overflow: hidden;
     margin-top: 8px;
 }
+.top-predictors .info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 .top-predictors {
     margin-bottom: 16px;
@@ -264,6 +268,13 @@ button {
 .rank {
     margin-right: 8px;
     font-weight: bold;
+}
+
+.rank-item.hidden {
+    display: none;
+}
+.rank-item.top-3 {
+    display: flex;
 }
 
 .select-list {

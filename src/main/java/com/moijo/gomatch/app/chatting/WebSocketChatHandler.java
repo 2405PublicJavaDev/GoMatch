@@ -18,25 +18,26 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class WebSockChatHandler extends TextWebSocketHandler {
+public class WebSocketChatHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
 
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
-    }
-
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Handle] 클라이언트로부터 전달받은 메시지를 처리
+     * 설명:
+     * - 사용자가 입장 시: 해당 사용자를 세션에 추가하고 입장 메시지 전달
+     * - 사용자가 퇴장 시: 세션에서 제거하고 퇴장 메시지 전달
+     * - 일반 메시지: 전달받은 메시지를 그대로 방의 모든 사용자에게 전송
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
         ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
-        Set<WebSocketSession> sessions=room.getSessions();   //방에 있는 현재 사용자 한명이 WebsocketSession
+        Set<WebSocketSession> sessions=room.getSessions();   // 해당 방에 있는 사용자들의 WebSocket 세션
         if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
-            //사용자가 방에 입장하면  Enter메세지를 보내도록 해놓음.  이건 새로운사용자가 socket 연결한 것이랑은 다름.
-            //socket연결은 이 메세지 보내기전에 이미 되어있는 상태
+            // 사용자가 방에 입장하면 세션에 추가하고 입장 메시지 전달
             sessions.add(session);
             chatMessage.setMessage(chatMessage.getSender() + "님이 입장했습니다.");  //TALK일 경우 msg가 있을 거고, ENTER일 경우 메세지 없으니까 message set
             sendToEachSocket(sessions,new TextMessage(objectMapper.writeValueAsString(chatMessage)) );
@@ -45,23 +46,23 @@ public class WebSockChatHandler extends TextWebSocketHandler {
             chatMessage.setMessage(chatMessage.getSender() + "님이 퇴장했습니다..");
             sendToEachSocket(sessions,new TextMessage(objectMapper.writeValueAsString(chatMessage)) );
         }else {
-            sendToEachSocket(sessions,message ); //입장,퇴장 아닐 때는 클라이언트로부터 온 메세지 그대로 전달.
+            // 입장/퇴장이 아닐 경우, 전달받은 메시지를 그대로 모든 사용자에게 전송
+            sendToEachSocket(sessions,message );
         }
     }
+
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Send] 해당 채팅방에 있는 모든 사용자에게 메시지 전송
+     * 설명: 전달받은 메시지를 각 WebSocket 세션에 병렬로 전송
+     */
     private  void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
         sessions.parallelStream().forEach( roomSession -> {
             try {
-                roomSession.sendMessage(message);
+                roomSession.sendMessage(message); // 메시지 전송
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-    }
-
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        //javascript에서  session.close해서 연결 끊음. 그리고 이 메소드 실행.
-        //session은 연결 끊긴 session을 매개변수로 이거갖고 뭐 하세요.... 하고 제공해주는 것 뿐
     }
 }

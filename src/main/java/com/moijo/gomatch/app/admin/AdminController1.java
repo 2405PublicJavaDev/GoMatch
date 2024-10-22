@@ -28,7 +28,7 @@ public class AdminController1 {
     // 굿즈 등록 폼을 보여주는 메소드
     @GetMapping("/insert")
     public String showRegisterForm() {
-        return "admin1/insert"; // 등록 폼의 템플릿 경로
+        return "admin/admin-insert"; // 등록 폼의 템플릿 경로
     }
 
     @PostMapping("/insert")
@@ -98,7 +98,7 @@ public class AdminController1 {
         }
 
         model.addAttribute("message", "상품과 옵션이 성공적으로 등록되었습니다.");
-        return "redirect:/admin1/insert";
+        return "redirect:/admin/insert";
     }
 
 
@@ -180,7 +180,7 @@ public class AdminController1 {
     public String getGoodsList(Model model) {
         List<GoodsVO> goodsList = adminService1.getAllGoodsWithImage();
         model.addAttribute("goodsList", goodsList);
-        return "admin1/list"; // 상품 목록 페이지로 이동
+        return "admin/admin-list"; // 상품 목록 페이지로 이동
     }
 
 //    @GetMapping("/list")
@@ -204,7 +204,7 @@ public class AdminController1 {
         List<GoodsImageVO> detailImages = adminService1.getGoodsImagesByGoodsNo(goodsNo);
         model.addAttribute("detailImages", detailImages);
 
-        return "admin1/detail"; // 상세 조회 템플릿 경로 반환
+        return "admin/admin-detail"; // 상세 조회 템플릿 경로 반환
     }
 
 
@@ -224,7 +224,7 @@ public class AdminController1 {
         model.addAttribute("goods", admin); // 상품 정보 모델에 추가
         model.addAttribute("goodsImages", goodsImages); // 이미지 정보 모델에 추가
 
-        return "admin1/edit"; // 수정 폼 템플릿 경로 반환
+        return "admin/admin-edit"; // 수정 폼 템플릿 경로 반환
     }
 
     @PostMapping("/edit")
@@ -305,13 +305,13 @@ public class AdminController1 {
         }
 
         model.addAttribute("message", "상품이 성공적으로 수정되었습니다.");
-        return "redirect:/admin1/list";
+        return "redirect:/admin/list";
     }
 
     @PostMapping("/delete") // 삭제 요청을 처리하는 메소드
     public String deleteGoods(@RequestParam("goodsNo") Long goodsNo, Model model) {
         adminService1.deleteGoods(goodsNo); // 서비스 메소드를 호출하여 상품 삭제
         model.addAttribute("message", "상품이 성공적으로 삭제되었습니다.");
-        return "redirect:/admin1/list"; // 삭제 후 상품 목록으로 리다이렉트
+        return "redirect:/admin/list"; // 삭제 후 상품 목록으로 리다이렉트
     }
 }

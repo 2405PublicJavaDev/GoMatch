@@ -32,19 +32,23 @@ h2{
 /* 사진 케러셀 */
 .carousel {
     width: 48%;
+    height: 560px;
     position: relative;
     overflow: hidden;
+    margin-top: 65px;
 }
 
 .carousel-inner {
     display: flex;
     transition: transform 0.5s ease-in-out;
+    height: 100%;
 }
 
 .carousel-item {
     min-width: 100%;
     box-sizing: border-box;
     width: 48%;
+    height: 100%;
     margin-top: 65px;
 }
 
@@ -52,7 +56,7 @@ h2{
 .carousel-item img {
     width: 100%;
     height: auto;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .carousel-control {

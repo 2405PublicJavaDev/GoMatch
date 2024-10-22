@@ -9,7 +9,9 @@
 
 <div class="layout-container">
   <div class="sidebar">
-    <div class="sidebarmember"><a href="admin-member"><h3>회원 관리</h3></a></div>
+    <div class="sidebarmember">
+      <a href="/admin-mainpage"><h3>회원관리</h3></a>
+    </div>
     <div class="sidebarmember2" id="productToggle">
       <h3>상품 관리 ▾</h3>
     </div>
@@ -24,7 +26,6 @@
       <div style="display: flex; align-items: center;">
         <a href="admin-mainpage"><h1>관리자 페이지</h1></a>
       </div>
-      <button onclick="logout()" class="logout-button">로그아웃</button>
     </div>
 
     <form action="/admin/insert" method="post" enctype="multipart/form-data">
@@ -68,7 +69,7 @@
       <label for="goodsMakeDate">제조일:</label>
       <input type="date" id="goodsMakeDate" name="goodsMakeDate" required>
 
-      <label for="goodsOutDate">유통기한:</label>
+      <label for="goodsOutDate">출시일:</label>
       <input type="date" id="goodsOutDate" name="goodsOutDate" required>
 
       <label for="goodsCategory">카테고리:</label>
@@ -82,6 +83,14 @@
         <option value="야구용품">야구용품</option>
       </select>
 
+      <div id="optionContainer">
+        <label>옵션:</label>
+        <div class="option-input">
+          <input type="text" name="options" placeholder="옵션 입력">
+          <button type="button" onclick="addOption()">+</button>
+        </div>
+      </div>
+
       <div class="buttons">
         <button type="reset">초기화</button>
         <button type="submit">등록</button>
@@ -91,10 +100,19 @@
 </div>
 
 <script>
-  function logout() {
-    if (confirm('로그아웃하시겠습니까?')) {
-      window.location.href = '/admin/logout';
-    }
+  function addOption() {
+    const container = document.getElementById('optionContainer');
+    const optionInput = document.createElement('div');
+    optionInput.classList.add('option-input');
+    optionInput.innerHTML = `
+      <input type="text" name="options" placeholder="옵션 입력">
+      <button type="button" onclick="removeOption(this)">-</button>
+    `;
+    container.appendChild(optionInput);
+  }
+
+  function removeOption(button) {
+    button.parentElement.remove();
   }
 
   document.addEventListener('DOMContentLoaded', () => {

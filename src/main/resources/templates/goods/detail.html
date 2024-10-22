@@ -27,7 +27,7 @@
   <div class="container">
     <!-- 이미지 섹션 -->
     <div class="image-container">
-      <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" />
+      <img th:src="@{${representativeImage.goodsImageWebPath}}" alt="대표 이미지" class="original-image"/>
     </div>
 
     <!-- 상품 정보 섹션 -->
@@ -123,9 +123,10 @@
         </p>
 
         <!-- 상세 이미지 표시 (세로 정렬 및 크기 600x600) -->
+        <!-- 상세 이미지들 -->
         <div class="detail-images" th:if="${detailImages != null}">
-          <div th:each="image : ${detailImages}">
-            <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" />
+          <div th:each="image : ${detailImages}" class="detail-image-wrapper">
+            <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" class="detail-image" />
           </div>
         </div>
       </div>

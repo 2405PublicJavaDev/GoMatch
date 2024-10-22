@@ -17,8 +17,6 @@ public interface GoodsMapper {
     @Select("SELECT * FROM GOODS WHERE GOODS_NO = #{goodsNo}")
     GoodsVO selectGoodsById(Long goodsNo); // 상품 조회 메소드 추가
 
-//    List<GoodsVO> selectGoodsByCategory(String category); // 카테고리로 상품 조회 메소드 추가
-
     List<GoodsVO> selectGoodsByTeam(String team); // 팀으로 상품 조회 메소드 추가
 
     // 팀별 + 카테고리별 조회 메소드 추가
@@ -69,4 +67,12 @@ public interface GoodsMapper {
     List<String> selectGoodsOptions(Long goodsNo);  // 옵션 조회 SQL
 
 
+    // 옵션 저장 메서드
+    void insertGoodsOption(@Param("goodsNo") Long goodsNo, @Param("option") String option);
+
+    // 이미지 저장 메서드
+    void insertGoodsImage(GoodsImageVO goodsImageVO);
+
+    // 상품 정보 저장 메서드
+    void insertGoods(GoodsVO goodsVO);
 }

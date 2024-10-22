@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{header-footer :: head}">
+  <link rel="stylesheet" href="/css/goods/store.css">
+</head>
+<body>
+
+<div th:insert="~{header-footer :: header}"></div>
+
+<main>
+  <h1>스토어 목록</h1>
+
+  <!-- 필터 버튼 -->
+  <div class="filter-buttons">
+    <button class="filter-btn" onclick="window.location.href='@{/wishlist/list}'">찜 목록</button>
+    <button class="filter-btn" onclick="window.location.href='@{/payment/list}'">구매 목록</button>
+  </div>
+
+  <!-- 찜 목록 테이블 -->
+  <div class="table-container" id="wishlistTable">
+    <div th:if="${wishlist.empty}">
+      <p>위시리스트에 담긴 상품이 없습니다.</p>
+    </div>
+    <table th:if="${not wishlist.empty}" class="styled-table">
+      <thead>
+      <tr>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>등록일</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${wishlist}">
+        <td th:text="${item.goodsName}"></td>
+        <td th:text="${item.goodsPrice} + '원'"></td>
+        <td th:text="${#dates.format(item.regDate, 'yyyy-MM-dd')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 구매 목록 테이블 -->
+  <div class="table-container" id="purchaseTable" style="display: none;">
+    <div th:if="${purchaseList.empty}">
+      <p>구매한 상품이 없습니다.</p>
+    </div>
+    <table th:if="${not purchaseList.empty}" class="styled-table">
+      <thead>
+      <tr>
+        <th>상품 번호</th>
+        <th>배송지</th>
+        <th>요청 사항</th>
+        <th>구매일</th>
+        <th>전화번호</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="purchase : ${purchaseList}">
+        <td th:text="${purchase.goodsNo}"></td>
+        <td th:text="${purchase.goodsPayArrival}"></td>
+        <td th:text="${purchase.goodsRequirement}"></td>
+        <td th:text="${#temporals.format(purchase.regDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${purchase.goodsPayPhone}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer th:insert="~{header-footer :: footer}"></footer>
+
+</body>
+</html>

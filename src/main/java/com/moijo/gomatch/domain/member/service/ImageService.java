@@ -20,6 +20,7 @@ public class ImageService {
     @Value("${upload.path}")
     private String uploadPath;
 
+    // 새로운 프로필 이미지 저장하고 기존 이미지 있으면 삭제
     public String saveProfileImage(MultipartFile file, String oldImageUrl) throws IOException {
         // 기존 이미지 삭제
         if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
@@ -32,7 +33,7 @@ public class ImageService {
 
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
-        }
+         }
 
         Path filePath = uploadDir.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -40,6 +41,7 @@ public class ImageService {
         return "/img/member-img/" + fileName;
     }
 
+    // 기존 프로필 이미지 삭제하는 헬퍼 메서드
     private void deleteOldImage(String oldImageUrl) {
         if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
             try {

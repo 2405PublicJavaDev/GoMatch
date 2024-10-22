@@ -67,7 +67,7 @@
           <td th:text="${goods.goodsTeam}"></td>
           <td th:text="${goods.goodsProductName}"></td>
           <td th:text="${goods.goodsPrice} + '원'"></td>
-          <td><a th:href="@{/admin1/detail/{goodsNo}(goodsNo=${goods.goodsNo})}" class="detail-link">상세 보기</a></td>
+          <td><a th:href="@{/admin/detail/{goodsNo}(goodsNo=${goods.goodsNo})}" class="detail-link">상세 보기</a></td>
         </tr>
         </tbody>
       </table>
