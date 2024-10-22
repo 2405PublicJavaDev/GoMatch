@@ -181,7 +181,6 @@
 - 내가 예측한 경기를 수정 가능
 ***
 
-***
 
 
 ## 📱 구현 화면
@@ -189,6 +188,7 @@
 ### 메인페이지
 ![메인페이지](https://github.com/user-attachments/assets/3461b633-377d-4090-b52a-f93e4543c1f4)
 
+<<<<<<< HEAD
 ### 회원 페이지 
 <details>
 <summary>회원 페이지 보기</summary>
@@ -236,9 +236,11 @@
 - **채팅하기**
   
   ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+=======
+>>>>>>> a82cbecdf8a32a70f26637c80aaf6c2d9a99ee1e
 ### 회원 관련 페이지
 <details>
-<summary>회원 관리 페이지 보기</summary>
+<summary>회원 페이지 보기</summary>
 
 - **로그인**
   ![로그인](https://github.com/user-attachments/assets/1f46ff92-75e8-475e-8f25-60ba7384ac50)
@@ -261,6 +263,24 @@
 - **회원 탈퇴**
   ![회원탈퇴](https://github.com/user-attachments/assets/d908e41f-8d45-49d1-8678-c21ccf08f399)
 </details>
+
+### 채팅 페이지
+<details>
+<summary>채팅 페이지 보기</summary>
+
+- **채팅방 조회**
+  
+  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
+
+- **채팅방 생성**
+  
+  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
+  
+- **채팅하기**
+  
+  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+  </details>
+  
 
 ### 관리자 페이지
 <details>
@@ -298,19 +318,4 @@
   ![야구장 날씨](https://github.com/user-attachments/assets/e82649af-ee4b-4784-ab79-0af43153be11)
 </details>
 
-### 채팅 페이지
-<details>
-<summary>채팅 페이지 보기</summary>
 
-- **채팅방 조회**
-  
-  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
-
-- **채팅방 생성**
-  
-  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
-  
-- **채팅하기**
-  
-  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
-</details>
