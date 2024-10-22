@@ -17,8 +17,43 @@
 
 # 개발 환경
 
-![image](https://github.com/user-attachments/assets/690a95eb-4a93-4407-a144-ed929ba72e92)
-
+<div style="display: flex; flex-wrap: wrap; gap: 5px;">
+  <!-- Languages -->
+  <img src="https://img.shields.io/badge/Java_17-007396?style=for-the-badge&logo=java&logoColor=white">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
+  
+  <!-- Framework & Library -->
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white">
+  <img src="https://img.shields.io/badge/Spring_Security-00A591?style=for-the-badge&logo=spring-security&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Spring_Batch-4CAF50?style=for-the-badge&logo=spring&logoColor=white">
+  <img src="https://img.shields.io/badge/Jsoup-43853D?style=for-the-badge&logo=jsoup&logoColor=white">
+  <img src="https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=websocket&logoColor=white">
+  <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
+  <img src="https://img.shields.io/badge/FullCalendar-4285F4?style=for-the-badge&logo=google-calendar&logoColor=white"> 
+  <img src="https://img.shields.io/badge/Toast_UI_Editor-181717?style=for-the-badge&logo=tui&logoColor=white">
+  <img src="https://img.shields.io/badge/SweetAlert2-3085D6?style=for-the-badge&logo=SweetAlert&logoColor=white"> 
+  
+  <!-- Payment & Map Services -->
+  <img src="https://img.shields.io/badge/Kakao_Login-FFCD00?style=for-the-badge&logo=kakao&logoColor=black">
+  <img src="https://img.shields.io/badge/Inicis_Payment-003F87?style=for-the-badge&logo=payment&logoColor=white">
+  
+  <!-- WAS -->
+  <img src="https://img.shields.io/badge/Tomcat-F8DC75?style=for-the-badge&logo=apache-tomcat&logoColor=black"> 
+  
+  <!-- DB -->
+  <img src="https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">
+  
+  <!-- IDE -->
+  <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white"> 
+  
+  <!-- Version Control & Collaboration -->
+  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white">
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
+  <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
+  <img src="https://img.shields.io/badge/Google_Drive-4285F4?style=for-the-badge&logo=google-drive&logoColor=white">
+</div>
 
 # 팀 소개 및 팀원 소개
 
