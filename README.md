@@ -188,46 +188,6 @@
 ### 메인페이지
 ![메인페이지](https://github.com/user-attachments/assets/3461b633-377d-4090-b52a-f93e4543c1f4)
 
-### 경기 관련 페이지
-<details>
-<summary>경기 페이지 보기</summary>
-
-- **경기 일정 - 리스트**
-  
-  ![경기 일정 - 리스트 ](https://github.com/user-attachments/assets/8480d302-db9d-4cb7-b8ee-9433c8ab43cd)
-
-- **경기 일정 - 달력**
-  
-  ![경기 일정 - 달력](https://github.com/user-attachments/assets/6eba1a32-509c-470d-bfd2-68f3708a5abd)
-
-- **팀 순위**
-  
-  ![팀 순위](https://github.com/user-attachments/assets/f10ff7e0-be58-4281-8254-f265d74032ad)
-
-- **선수 순위**
-  
-  ![선수 순위](https://github.com/user-attachments/assets/5ff701e6-513b-48b6-ac87-f27e108a9592)
-
-- **야구장 날씨**
-  
-  ![야구장 날씨](https://github.com/user-attachments/assets/e82649af-ee4b-4784-ab79-0af43153be11)
-</details>
-
-### 채팅 페이지
-<details>
-<summary>채팅 페이지 보기</summary>
-
-- **채팅방 조회**
-  
-  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
-
-- **채팅방 생성**
-  
-  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
-  
-- **채팅하기**
-  
-  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
 ### 회원 관련 페이지
 <details>
 <summary>회원 페이지 보기</summary>
@@ -253,6 +213,24 @@
 - **회원 탈퇴**
   ![회원탈퇴](https://github.com/user-attachments/assets/d908e41f-8d45-49d1-8678-c21ccf08f399)
 </details>
+
+### 채팅 페이지
+<details>
+<summary>채팅 페이지 보기</summary>
+
+- **채팅방 조회**
+  
+  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
+
+- **채팅방 생성**
+  
+  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
+  
+- **채팅하기**
+  
+  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
+  </details>
+  
 
 ### 관리자 페이지
 <details>
@@ -290,19 +268,4 @@
   ![야구장 날씨](https://github.com/user-attachments/assets/e82649af-ee4b-4784-ab79-0af43153be11)
 </details>
 
-### 채팅 페이지
-<details>
-<summary>채팅 페이지 보기</summary>
 
-- **채팅방 조회**
-  
-  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
-
-- **채팅방 생성**
-  
-  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
-  
-- **채팅하기**
-  
-  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
-</details>
