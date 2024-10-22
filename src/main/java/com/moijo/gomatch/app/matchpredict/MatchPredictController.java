@@ -43,13 +43,11 @@ public class MatchPredictController {
             , @RequestParam(value = "gameNo", required = false) Long gameNo) {
         String memberId = (String)session.getAttribute("memberId");
         boolean hasPrediction = false; // 예측 상태 변수 초기화
-        log.info("Session memberId: {}", memberId);
 //        List<MatchPredict> matchPredictions = matchPredictService.getAllMatchByMember();
         List<MemberRankDTO> memberRank = matchPredictService.getAllMemberRank(); // 멤버 랭킹 리스트 조회
         if (memberId != null) {
 
             MemberDTO memberInfo = matchPredictService.getMemberInfo(memberId);
-            log.info("MemberInfo: {}", memberInfo);
             if (memberInfo != null) {
                 model.addAttribute("memberInfo", memberInfo);
                 double rankPercent = matchPredictService.calculatorRankPercent(memberId);
@@ -133,7 +131,6 @@ public class MatchPredictController {
         try{
         int result = matchPredictService.updateRank();
         } catch (Exception e) {
-            log.error("Error updating member rank: {}", e.getMessage());
             model.addAttribute("errorMessage", "랭킹 업데이트 오류 발생");
         }
         return "redirect:/matchPredict";

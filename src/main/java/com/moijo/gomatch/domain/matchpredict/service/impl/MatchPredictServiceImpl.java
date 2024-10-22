@@ -71,7 +71,6 @@ public class MatchPredictServiceImpl implements MatchPredictService {
     @Override
     public MemberDTO getMemberInfo(String memberId) {
         MemberDTO memberDTO = matchPredictMapper.selectMemberInfo(memberId);
-        log.info("serviceInpl:" , memberDTO);
         return memberDTO;
     }
 

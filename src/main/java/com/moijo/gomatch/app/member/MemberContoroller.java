@@ -318,26 +318,10 @@ public class MemberContoroller {
      */
     @GetMapping("/member/mypage")
     public String showMyPageForm(HttpSession session, Model model) {
-        // 로그인 체크
-        Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
-        if (loggedIn == null || !loggedIn) {
-            return "redirect:/member/loginpage";
-        }
-
-        String memberNickName = (String) session.getAttribute("memberNickName");
-        MemberVO member;
-
-        // 카카오 로그인 사용자 처리
-        if (session.getAttribute("kakaoAccessToken") != null) {
-            member = createOrGetKakaoMember(session);
-        } else {
-            member = (MemberVO) session.getAttribute("member");
-        }
-
+        MemberVO member = (MemberVO) session.getAttribute("member");
         if (member == null) {
             return "redirect:/member/loginpage";
         }
-
         model.addAttribute("memberVO", member);
         model.addAttribute("memberName", member.getMemberName());
         model.addAttribute("memberNickName", member.getMemberNickName());
@@ -346,9 +330,6 @@ public class MemberContoroller {
         String profileImageUrl = member.getProfileImageUrl();
         if (profileImageUrl == null || profileImageUrl.isEmpty()) {
             profileImageUrl = "/img/default-profile.png"; // 기본 이미지 경로
-        } else if (!profileImageUrl.startsWith("/img/member-img/")) {
-            // 카카오 프로필이 아닌 경우에만 경로 수정
-            profileImageUrl = "/img/member-img/" + profileImageUrl.substring(profileImageUrl.lastIndexOf("/") + 1);
         }
         model.addAttribute("profileImageUrl", profileImageUrl);
 

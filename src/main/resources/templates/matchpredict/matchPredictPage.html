@@ -185,7 +185,6 @@
         }
 
         function fetchPredictionsByDate(date) {
-            console.log(`Fetching predictions for date: ${date}`);
             fetch(`/matchPredict/list/${date}`)
                 .then(response => {
                     if (!response.ok) {
@@ -194,7 +193,6 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Received data:', data);
                     const gameList = document.querySelector('.game-list');
                     gameList.innerHTML = '';
 

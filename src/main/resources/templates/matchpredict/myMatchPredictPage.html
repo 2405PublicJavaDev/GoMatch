@@ -277,42 +277,7 @@
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
 
-    // 주차 계산 및 버튼 생성
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
 
-    const calendarWeek = document.querySelector('.calendar-week');
-    calendarWeek.innerHTML = '';
-    let weekCount = 1;
-
-    for (let d = new Date(firstDay); d <= today; d.setDate(d.getDate() + 7)) {
-      const weekStart = new Date(d);
-      const weekEnd = new Date(d);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-
-      if (weekEnd > lastDay) {
-        weekEnd.setDate(lastDay.getDate());
-      }
-
-      const button = document.createElement('button');
-      button.className = 'week-date';
-      button.type = 'button';
-      button.textContent = `${currentMonth + 1}월 ${weekCount}주`;
-
-      button.dataset.startDate = weekStart.toISOString().split('T')[0];
-      button.dataset.endDate = weekEnd.toISOString().split('T')[0];
-
-      if (today >= weekStart && today <= weekEnd) {
-        button.classList.add('active');
-      }
-
-      calendarWeek.appendChild(button);
-      weekCount++;
-
-      if (weekEnd >= today) {
-        break;
-      }
-    }
 
 
     const teamsButtons = document.querySelectorAll(".team-a, .draw, .team-b");
