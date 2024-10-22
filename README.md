@@ -92,7 +92,7 @@
 
 ### 회원 관련 페이지
 <details>
-<summary>회원 관련 스크린샷 보기</summary>
+<summary>회원 관리 페이지 보기</summary>
 
 - **로그인**
   ![로그인](https://github.com/user-attachments/assets/1f46ff92-75e8-475e-8f25-60ba7384ac50)
@@ -118,7 +118,7 @@
 
 ### 관리자 페이지
 <details>
-<summary>관리자 페이지 스크린샷 보기</summary>
+<summary>관리자 페이지 보기</summary>
 
 - **관리자 메인**
   ![관리자메인](https://github.com/user-attachments/assets/36deb6e9-8f4a-486a-83aa-43a1336b9c7f)
