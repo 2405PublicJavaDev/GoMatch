@@ -447,6 +447,10 @@
   
 ![GoMatch - Chrome 2024-10-22 19-08-23](https://github.com/user-attachments/assets/9f37b0c9-ee4f-432d-a708-3c49e948fb4d)
 
+- **결제 완료 페이지**
+
+![스크린샷(428)](https://github.com/user-attachments/assets/27f03160-dbb1-4d2b-a364-ee633fe1d1f3)
+
 </details>
 
 ### 관리자 페이지 - 굿즈
