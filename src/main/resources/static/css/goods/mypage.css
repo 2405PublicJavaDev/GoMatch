@@ -1,0 +1,88 @@
+/* 공통 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 필터 버튼 스타일 */
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    flex: 1;
+    padding: 10px;
+    background-color: #699ed6;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.filter-btn:hover {
+    background-color: #979bb6;
+}
+
+.filter-btn.active {
+    background-color: #16215F;
+    color: white;
+}
+
+/* 테이블 스타일 */
+.table-container {
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.styled-table thead tr {
+    background-color: #f2f2f2;
+    border-bottom: 2px solid #ddd;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #f0f8ff;
+}
+
+.styled-table a {
+    text-decoration: none;
+    color: #0056b3;
+}
+
+.styled-table a:hover {
+    text-decoration: underline;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .styled-table {
+        width: 100%;
+    }
+
+    .styled-table th, .styled-table td {
+        font-size: 14px;
+    }
+}

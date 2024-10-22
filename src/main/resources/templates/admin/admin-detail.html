@@ -15,15 +15,15 @@
             <h3>상품 관리 ▾</h3>
         </div>
         <ul class="submenu" id="submenu">
-            <li><a href="/admin/insert">상품 등록</a></li>
-            <li><a href="/admin/list">상품 조회</a></li>
+            <li><a href="/admin/admin-insert">상품 등록</a></li>
+            <li><a href="/admin/admin-list">상품 조회</a></li>
         </ul>
     </aside>
 
     <div class="content">
         <header class="header-container">
             <div>
-                <a href="admin-mainpage"><h1>관리자 페이지</h1></a>
+                <a href="/admin-mainpage"><h1>관리자 페이지</h1></a>
             </div>
             <button onclick="logout()" class="logout-button">로그아웃</button>
         </header>
@@ -52,12 +52,12 @@
                     </div>
 
                     <div class="button-group">
-                        <a th:href="@{/admin1/edit/{goodsNo}(goodsNo=${goods.goodsNo})}" class="btn">수정</a>
-                        <form th:action="@{/admin1/delete}" method="post" style="display:inline;">
+                        <a th:href="@{/admin/edit/{goodsNo}(goodsNo=${goods.goodsNo})}" class="btn">수정</a>
+                        <form th:action="@{/admin/delete}" method="post" style="display:inline;">
                             <input type="hidden" name="goodsNo" th:value="${goods.goodsNo}"/>
                             <button type="submit" class="btn">삭제</button>
                         </form>
-                        <a href="/admin1/list" class="btn">목록</a>
+                        <a href="/admin/list" class="btn">목록</a>
                     </div>
                 </div>
             </div>

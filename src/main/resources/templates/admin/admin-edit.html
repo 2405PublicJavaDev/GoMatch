@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>굿즈 수정</title>
+    <link rel="stylesheet" href="/css/admin-edit.css">
+</head>
+<body>
+
+<div class="layout-container">
+    <div class="sidebar">
+        <div class="sidebarmember">
+            <a href="/admin-mainpage"><h3>관리자 페이지</h3></a>
+        </div>
+        <div class="sidebarmember2" id="productToggle">
+            <h3>상품 관리 ▾</h3>
+        </div>
+        <ul class="submenu" id="submenu">
+            <li><a href="/admin/admin-insert">상품 등록</a></li>
+            <li><a href="/admin/admin-list">상품 조회</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>굿즈 수정</h1>
+        <form action="/admin/edit" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:value="${goods.goodsNo}" name="goodsNo">
+
+            <div class="form-group">
+                <label for="goodsTeam">구단:</label>
+                <select id="goodsTeam" name="goodsTeam" th:value="${goods.goodsTeam}" required>
+                    <option value="" disabled>구단 선택</option>
+                    <option value="LG" th:selected="${goods.goodsTeam == 'LG'}">LG</option>
+                    <option value="KT 위즈" th:selected="${goods.goodsTeam == 'KT 위즈'}">KT 위즈</option>
+                    <option value="SSG 랜더스" th:selected="${goods.goodsTeam == 'SSG 랜더스'}">SSG 랜더스</option>
+                    <option value="NC 다이노스" th:selected="${goods.goodsTeam == 'NC 다이노스'}">NC 다이노스</option>
+                    <option value="두산 베어스" th:selected="${goods.goodsTeam == '두산 베어스'}">두산 베어스</option>
+                    <option value="KIA 타이거즈" th:selected="${goods.goodsTeam == 'KIA 타이거즈'}">KIA 타이거즈</option>
+                    <option value="롯데 자이언츠" th:selected="${goods.goodsTeam == '롯데 자이언츠'}">롯데 자이언츠</option>
+                    <option value="삼성 라이온즈" th:selected="${goods.goodsTeam == '삼성 라이온즈'}">삼성 라이온즈</option>
+                    <option value="한화 이글스" th:selected="${goods.goodsTeam == '한화 이글스'}">한화 이글스</option>
+                    <option value="키움 히어로즈" th:selected="${goods.goodsTeam == '키움 히어로즈'}">키움 히어로즈</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsProductName">상품 이름:</label>
+                <input type="text" id="goodsProductName" name="goodsProductName" th:value="${goods.goodsProductName}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsPrice">가격:</label>
+                <input type="number" id="goodsPrice" name="goodsPrice" th:value="${goods.goodsPrice}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsProductCode">상품 코드:</label>
+                <input type="text" id="goodsProductCode" name="goodsProductCode" th:value="${goods.goodsProductCode}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsFrom">출처:</label>
+                <input type="text" id="goodsFrom" name="goodsFrom" th:value="${goods.goodsFrom}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsMakeDate">제조일:</label>
+                <input type="date" id="goodsMakeDate" name="goodsMakeDate" th:value="${goods.goodsMakeDate}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsOutDate">유통기한:</label>
+                <input type="date" id="goodsOutDate" name="goodsOutDate" th:value="${goods.goodsOutDate}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="goodsCategory">카테고리:</label>
+                <select id="goodsCategory" name="goodsCategory" th:value="${goods.goodsCategory}" required>
+                    <option value="" disabled>카테고리 선택</option>
+                    <option value="유니폼" th:selected="${goods.goodsCategory == '유니폼'}">유니폼</option>
+                    <option value="의류" th:selected="${goods.goodsCategory == '의류'}">의류</option>
+                    <option value="모자" th:selected="${goods.goodsCategory == '모자'}">모자</option>
+                    <option value="잡화" th:selected="${goods.goodsCategory == '잡화'}">잡화</option>
+                    <option value="응원용품" th:selected="${goods.goodsCategory == '응원용품'}">응원용품</option>
+                    <option value="야구용품" th:selected="${goods.goodsCategory == '야구용품'}">야구용품</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>기존 대표 이미지:</label>
+                <img th:src="@{${goodsImages[0].goodsImageWebPath}}" alt="대표 이미지" class="preview-img">
+            </div>
+
+            <div class="form-group">
+                <label for="goodsImage">새로운 대표 이미지:</label>
+                <input type="file" id="goodsImage" name="goodsImage" accept="image/*" onchange="previewImage(event, 'newImagePreview')">
+                <img id="newImagePreview" class="preview-img" style="display:none;">
+            </div>
+
+            <div class="form-group">
+                <label>기존 상세 이미지:</label>
+                <div th:each="image : ${goodsImages}" class="image-container">
+                    <img th:src="@{${image.goodsImageWebPath}}" alt="상세 이미지" class="preview-img">
+                    <div class="checkbox-container">
+                        <input type="checkbox" th:value="${image.goodsImageNo}" name="removeImages">
+                        <label>삭제</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="detailImages">새로운 상세 이미지:</label>
+                <input type="file" id="detailImages" name="detailImages" accept="image/*" multiple
+                       onchange="previewMultipleImages(event, 'detailImageContainer')">
+                <div id="detailImageContainer" style="display: flex; gap: 10px; margin-top: 10px;"></div>
+            </div>
+
+            <button type="submit">수정</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event, previewId) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById(previewId);
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function previewMultipleImages(event, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        Array.from(event.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-img';
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+
+</body>
+</html>

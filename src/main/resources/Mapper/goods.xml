@@ -39,5 +39,15 @@
         WHERE GOODS_PRODUCT_CODE = #{goodsProductCode}
     </select>
 
+    <insert id="insertGoodsOption" parameterType="map">
+        INSERT INTO GOODS_OPTION (goods_no, option_value)
+        VALUES (#{goodsNo}, #{option});
+    </insert>
+
+    <insert id="insertGoodsImage" parameterType="GoodsImageVO">
+        INSERT INTO GOODS_IMAGE (goods_no, image_type, image_path, real_path)
+        VALUES (#{goodsNo}, #{goodsImageType}, #{goodsImageWebPath}, #{goodsImageRealPath});
+    </insert>
+
 
 </mapper>

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{header-footer :: head}"></head>
+<head th:insert="~{header-footer :: head}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
 <body>
 <div th:insert="~{header-footer :: header}"></div>
 
@@ -106,7 +110,7 @@
                 const goodsPrice = parseInt(document.getElementById('goodsPrice').textContent);
 
                 if (isNaN(goodsNo) || isNaN(goodsPrice)) {
-                    alert("상품 번호나 가격이 올바르지 않습니다.");
+                    Swal.fire('오류', '상품 번호나 가격이 올바르지 않습니다.', 'error');
                     return;
                 }
 
@@ -145,25 +149,32 @@
                             });
 
                             const data = await response.text();
-                            alert('결제 성공!');
-                            location.href = '/goods/main';
+                            Swal.fire({
+                                icon: 'success',
+                                title: '결제 성공!',
+                                text: '결제가 성공적으로 완료되었습니다.',
+                            }).then(() => {
+                                location.href = '/goods/main';
+                            });
                         } catch (error) {
                             console.error('결제 처리 오류:', error);
-                            alert('결제 처리 중 오류가 발생했습니다.');
+                            Swal.fire('오류', '결제 처리 중 오류가 발생했습니다.', 'error');
+                            submitButton.disabled = false;
                         }
                     } else {
                         console.error('결제 실패 응답:', rsp);
-                        alert('결제가 취소되었습니다.');
+                        Swal.fire('결제 취소', '결제가 취소되었습니다.', 'warning');
                         submitButton.disabled = false;
                     }
                 });
             } catch (error) {
                 console.error('결제 처리 중 예외 발생:', error);
-                alert('결제 처리 중 오류가 발생했습니다.');
+                Swal.fire('오류', '결제 처리 중 오류가 발생했습니다.', 'error');
                 submitButton.disabled = false;
             }
         }
     });
+
 </script>
 
 </body>

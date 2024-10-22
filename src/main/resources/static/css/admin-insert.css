@@ -1,16 +1,23 @@
+@font-face {
+    font-family: 'KBO Dia Gothic';
+    src: url('../font/KBO\ Dia\ Gothic_medium.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body, html {
     margin: 0;
     padding: 0;
+    height: 100vh;
     background-color: #ffffff;
     font-family: 'KBO Dia Gothic', sans-serif;
-    display: flex;
-    justify-content: center;
 }
 
 .layout-container {
     display: flex;
-    width: 100%;  /* 전체 화면을 가득 채움 */
-    min-height: 100vh;
+    width: 1440px;
+    height: 100vh;
+    margin: 0 auto;
 }
 
 .sidebar {
@@ -18,39 +25,37 @@ body, html {
     background-color: #f0f0f0;
     text-align: center;
     overflow-y: auto;
-    padding-bottom: 20px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
 }
 
-.sidebar a {
-    text-decoration: none;
-    color: #000;
+/* 하위 메뉴 */
+.submenu {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.sidebarmember, .sidebarmember2 {
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
+.show {
+    display: block;
 }
 
-.sidebarmember:hover, .sidebarmember2:hover {
-    background-color: #e7e6e6;
+.submenu li {
+    padding: 10px 20px; /* 하위 메뉴 간격 조절 */
 }
 
-/* Content 영역 조정 */
+
 .content {
     flex-grow: 1;
-    max-width: 1200px; /* 최대 너비를 더 확장 */
-    width: 95%;  /* 가로 여백을 최소화 */
-    margin: 0 auto;  /* 중앙 정렬 */
     padding: 40px;
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
-/* Form 내부 필드 조정 */
 form {
     display: flex;
     flex-direction: column;
@@ -59,11 +64,17 @@ form {
 
 input, select, button {
     width: 100%;
-    max-width: 1100px;  /* 입력 필드 최대 너비 확장 */
+    max-width: 1100px;
     padding: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+}
+
+.option-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .buttons {

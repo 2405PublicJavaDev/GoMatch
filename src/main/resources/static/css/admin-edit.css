@@ -1,81 +1,63 @@
-/* 공통 스타일 */
-body {
+body, html {
     margin: 0;
+    padding: 0;
+    height: 100vh;
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
-}
-
-/* 컨테이너 레이아웃 */
-.container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
 }
 
-/* 콘텐츠 카드 */
+.layout-container {
+    display: flex;
+    width: 1240px;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #f0f0f0;
+    text-align: center;
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
 .content {
-    background-color: white;
+    flex-grow: 1;
     padding: 30px;
+    background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    overflow-y: auto;
 }
 
-/* 제목 스타일 */
-.content h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #343a40;
+.form-group {
+    margin-bottom: 15px;
 }
 
-/* 폼 요소 정렬 */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-/* 입력 필드 및 버튼 */
 input, select, button {
+    width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
 }
 
-/* 이미지 미리보기 스타일 */
 .preview-img {
-    width: 100%;
     max-width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    height: auto;
     margin-top: 10px;
 }
 
-/* 이미지와 삭제 옵션 정렬 */
 .image-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: 10px;
-}
-
-/* 체크박스와 '삭제' 텍스트를 가로로 정렬 */
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    /* 가로 정렬 문제 해결 */
-    writing-mode: horizontal-tb;  /* 수평 글쓰기 모드 강제 적용 */
-    transform: none;              /* 회전된 텍스트 초기화 */
 }
