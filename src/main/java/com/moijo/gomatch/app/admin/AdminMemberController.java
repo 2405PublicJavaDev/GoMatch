@@ -26,7 +26,7 @@ public class AdminMemberController {
 
     private final AdminMemberService adminService;
 
-
+    // 관리자 메인 페이지 표시
     @GetMapping("/admin/admin-mainpage")
     public String showAdminMainPage(Model model) {
         List<MemberVO> recentMembers = adminService.getRecentMembers();
@@ -36,6 +36,7 @@ public class AdminMemberController {
         return "admin/admin-mainpage";
     }
 
+    // 관리자 회원관리 페이지 표시
     @GetMapping("/admin/admin-member")
     public String showAdminMemberPage(Model model) {
         List<MemberVO> members = adminService.getAllMembers();
@@ -61,6 +62,7 @@ public class AdminMemberController {
         return ResponseEntity.ok(response);
     }
 
+    // 정지된 회원 계정 활성화
     @PostMapping("/admin/activate-member")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> activateMember(@RequestBody Map<String, String> payload) {
@@ -77,6 +79,7 @@ public class AdminMemberController {
         return ResponseEntity.ok(response);
     }
 
+    // 회원 정보 삭제
     @PostMapping("/admin/delete-member")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteMember(@RequestBody Map<String, String> payload) {
@@ -125,7 +128,7 @@ public class AdminMemberController {
 
         return "admin/admin-member";
     }
-// 로그아웃
+    // 관리자 로그아웃
     @GetMapping("/admin/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
