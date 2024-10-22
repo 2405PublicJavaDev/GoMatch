@@ -82,6 +82,44 @@
 - 회원 계정 삭제
 - 회원 목록 관리
 
+### 2. 경기
+#### 경기일정
+- **Jsoup, Selenium** 통해 크롤링 하여 연도별 KBO 경기 일정/ 결과 확인
+- 경기일정을 리스트 혹은 달력으로 확인 가능
+- 사용자가 선호하는 팀의 경기는 하이라이트 칠하여 구분
+- **Scheduled 어노테이션**을 통해 매일 9:30에 경기 정보 DB에 업데이트
+
+#### 팀 순위
+- Jsoup 통해 크롤링 하여 연도별 KBO 리그 순위 확인
+- 순위, 팀명, 경기수, 승, 패 , 무, 승률, 연승, 최근 10경기 등 해당 팀의 정보 확인
+
+#### 선수 순위
+- Jsoup, Selenium 통해 크롤링 하여 연도별 KBO 선수 순위 확인
+- 투수 혹은 타자를 선택하여 해당 타입의 선수 순위 확인 가능
+
+#### 야구장 정보
+- 네이버 지도 API를 이용하여 야구장의 위치 확인
+- OPEN WEATHER API 를 이용하여 **해당 야구장의 현재 날씨 정보(온도/상태/강수량/습도/풍속)** 확인
+- 공공데이터 이용하여 미세먼지 정보 확인
+- 해당 야구장의 시간대별 예보 날씨 정보 확인
+- 해당 야구장의 주간대별 예보 날씨 정보 확인
+
+### 5. 채팅
+#### 채팅 조회
+- 채팅방의 생성시간을 기준으로 내림차순으로 출력
+- 해당 소모임 별 채팅 리스트들을 출력하게 함
+
+#### 채팅방 생성
+- **WebSocket** 이용하여 채팅방 생성
+- 채팅방 이름을 입력하여 채팅방 생성
+- 채팅방 생성하면 바로 입장 가능
+
+#### 채팅하기
+- 소모임 가입 시 해당 소모임에서 채팅 가능
+- 1:다수로 여러 사람들과 채팅 가능
+- 채팅방 입장 혹은 퇴장 시 안내 메시지로 확인 가능
+- 닉네임과 프로필 사진으로 대화상대 구성
+
 ## 📱 구현 화면
 
 ### 메인페이지
@@ -122,4 +160,46 @@
 
 - **회원 관리**
   ![회원관리](https://github.com/user-attachments/assets/19366d68-0f15-4d84-bb96-b5bc1af02322)
+</details>
+
+### 경기 관련 페이지
+<details>
+<summary>경기 페이지 보기</summary>
+
+- **경기 일정 - 리스트**
+  
+  ![경기 일정 - 리스트 ](https://github.com/user-attachments/assets/8480d302-db9d-4cb7-b8ee-9433c8ab43cd)
+
+- **경기 일정 - 달력**
+  
+  ![경기 일정 - 달력](https://github.com/user-attachments/assets/6eba1a32-509c-470d-bfd2-68f3708a5abd)
+
+- **팀 순위**
+  
+  ![팀 순위](https://github.com/user-attachments/assets/f10ff7e0-be58-4281-8254-f265d74032ad)
+
+- **선수 순위**
+  
+  ![선수 순위](https://github.com/user-attachments/assets/5ff701e6-513b-48b6-ac87-f27e108a9592)
+
+- **야구장 날씨**
+  
+  ![야구장 날씨](https://github.com/user-attachments/assets/e82649af-ee4b-4784-ab79-0af43153be11)
+</details>
+
+### 채팅 페이지
+<details>
+<summary>채팅 페이지 보기</summary>
+
+- **채팅방 조회**
+  
+  ![채팅방 조회](https://github.com/user-attachments/assets/fddb79d3-8aab-4a34-9f64-e5a8b5e79811)
+
+- **채팅방 생성**
+  
+  ![채팅방 생성](https://github.com/user-attachments/assets/694a9739-670f-4de8-a841-d7bdc034429c)
+  
+- **채팅하기**
+  
+  ![채팅하기](https://github.com/user-attachments/assets/502a9330-ec71-4edf-8e01-b3de0b35e160)
 </details>
