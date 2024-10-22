@@ -195,18 +195,22 @@ button {
 /* 파일 업로드 및 썸네일 미리보기 */
 #fileThumbnails {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
+    flex-wrap: wrap; /* wrap으로 설정하여 썸네일이 여러 줄에 걸쳐 가로로 나열되도록 함 */
+    gap: 10px; /* 썸네일 사이의 간격 */
     margin-top: 10px;
-    overflow-x: auto;
-    padding-bottom: 10px; /* 스크롤바를 위한 여백 */
+    overflow-x: hidden; /* 가로 스크롤 제거 */
+    justify-content: flex-start; /* 썸네일을 왼쪽 정렬 */
+    align-items: flex-start; /* 세로 정렬 시 상단에 맞춤 */
 }
 
 .file-thumbnail-wrapper {
     position: relative;
     height: 140px;
     width: 140px;
-    flex: 0 0 auto;
+    flex: 0 0 auto; /* 크기를 고정하여 일정한 가로 배치 보장 */
+    margin-right: 10px;
+    margin-bottom: 10px; /* 썸네일 사이의 아래쪽 간격 추가 */
+    display: inline-block; /* 썸네일을 인라인 블록으로 설정하여 가로 배치 */
 }
 
 .thumbnail {
