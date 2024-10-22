@@ -12,24 +12,31 @@
     font-style: normal;
 }
 
-*{
-    font-family: 'KBO Dia Gothic Medium', Arial, sans-serif;
+*,
+*::after,
+*::before {
+    box-sizing: content-box; /* 또는 원래 값을 설정 */
 }
 
-body {
-    background-color: #f8f9fa;
-}
 .chat-container {
     max-width: 800px;
-    margin: 30px auto;
+    margin: 50px auto;
+}
+
+.chat-room-title {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.8em;
+    background-color: #16215F;
+    padding: 4px;
 }
 .chat-messages {
-    height: 400px;
+    height: 500px;
     overflow-y: auto;
-    background-color: white;
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
     padding: 15px;
+    background-color: #e0eaf3;
 }
 .message {
     margin-bottom: 10px;
@@ -48,15 +55,15 @@ body {
     border-radius: 15px;
 }
 .sent .message-content {
-    background-color: #007bff;
+    background-color: #39538f;;
     color: white;
 }
 .received .message-content {
-    background-color: #f1f3f5;
+    background-color: #ffffff;
     color: black;
 }
 .sender {
-    font-size: 0.8em;
+    font-size: 1em;
     margin-bottom: 2px;
 }
 .system-message {
@@ -67,12 +74,13 @@ body {
 }
 
 .profile {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
 }
 
 .profile-img {
     object-fit: cover;
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
+    border-radius: 100px;
 }

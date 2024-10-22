@@ -27,6 +27,11 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Login Check] 로그인 여부 확인
+     * 설명: 현재 세션에 저장된 멤버 아이디를 확인하여 로그인 여부를 JSON으로 반환
+     */
     @GetMapping("/game/checkLogin")
     @ResponseBody
     public Map<String, Boolean> checkLogin(HttpSession session) {
@@ -47,31 +52,48 @@ public class GameController {
         }
     }
 
-    // 팀 순위 보여주는 메소드
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Show] 연도별 KBO 팀 리그 순위 출력
+     * 설명: 크롤링 한 KBO 팀 리그 순위 출력
+     */
     @GetMapping("/game/teamrank")
     public String showTeamRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model, HttpSession session) {
         List<String[]> teamList = gameBatchComponent.scrapeTeamRank(year);
-        if ("2024".equals(year)) {
-            session.setAttribute("2024_Rank", teamList);
-        }
         model.addAttribute("teams", teamList);
         model.addAttribute("selectedYear", year);
         return "game/teamRankPage";
     }
 
-    // 선수 순위 보여주는 메소드
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Show] 연도별 KBO 선수 순위 출력
+     * 설명: 크롤링 한 KBO 선수 순위 (투수, 타자) 출력
+     */
     @GetMapping("/game/playerrank")
-    public String showPlayerRankPage(@RequestParam(value = "year", required = false, defaultValue = "2024") String year, Model model) {
+    public String showPlayerRankPage(
+            @RequestParam(value = "year", required = false, defaultValue = "2024") String year,
+            @RequestParam(value = "type", required = false, defaultValue = "pitcher") String type,
+            Model model) {
+
         List<String[]> pitcherList = gameBatchComponent.scrapePitcherRank(year);
+        List<String[]> batterList = gameBatchComponent.scrapeBatterRank(year);
+
         model.addAttribute("pitchers", pitcherList);
+        model.addAttribute("batters", batterList);
+        model.addAttribute("selectedType", type);
         model.addAttribute("selectedYear", year);
+
         return "game/playerRankPage";
     }
 
-    // 경기 일정 보여주는 메소드
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Show] 2024년 KBO 경기 일정 출력
+     * 설명: 크롤링 한 KBO 월 별 경기 일정 출력
+     */
     @GetMapping("/game/list")
     public String showGameListPage(HttpSession session, @RequestParam(value = "month", required = false, defaultValue = "10") String month, Model model) {
-        //String memberId = (String) session.getAttribute("memberId");
         String preferenceClub = (String) session.getAttribute("preferenceClub");
         String year = "2024";
         String dateParam = year + month;
@@ -83,7 +105,11 @@ public class GameController {
         return "game/listPage";
     }
 
-    // 야구장 날씨 보여주는 메소드
+    /**
+     * 담당자: 홍예은
+     * 관련 기능: [Show] 야구장 별 날씨 출력
+     * 설명: 야구장의 날씨정보(실시간, 시간대별, 주간대별) 출력
+     */
     @GetMapping("/game/weather")
     public String getStadiums(Model model) {
         List<StadiumVO> stadiumList = gameService.getAllStadiums();

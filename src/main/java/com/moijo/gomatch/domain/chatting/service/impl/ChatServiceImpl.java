@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    private final ObjectMapper objectMapper;
     private Map<String, ChatRoom> chatRooms;
 
     @PostConstruct
@@ -25,7 +24,8 @@ public class ChatServiceImpl implements ChatService {
         chatRooms = new LinkedHashMap<>();
     }
 
-    // 해당 소모임의 채팅방들만 뜨게 하기
+    // ■■■■■■■■■■■■■■■■■■■ 채팅방 정보 (CHATTING) ■■■■■■■■■■■■■■■■■■■■ //
+    // 소모임 별 채팅방 리스트 출력
     @Override
     public List<ChatRoom> findAllRoom(long meetingNo) {
         return chatRooms.values().stream()
@@ -33,11 +33,13 @@ public class ChatServiceImpl implements ChatService {
                 .collect(Collectors.toList());
     }
 
+    // 채팅방 입장
     @Override
     public ChatRoom findRoomById(String roomId) {
         return chatRooms.get(roomId);
     }
 
+    // 채팅방 생성
     @Override
     public ChatRoom createRoom(String name, long meetingNo) {
         String randomId = UUID.randomUUID().toString();

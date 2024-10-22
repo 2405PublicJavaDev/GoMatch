@@ -1,5 +1,7 @@
 package com.moijo.gomatch.app.member;
 
+import com.moijo.gomatch.app.game.GameBatchComponent;
+import com.moijo.gomatch.domain.game.service.GameService;
 import com.moijo.gomatch.domain.kakao.service.KakaoService;
 import com.moijo.gomatch.domain.member.service.ImageService;
 import com.moijo.gomatch.domain.member.service.MemberService;
@@ -45,6 +47,9 @@ public class MemberContoroller {
 
     @Value("${kakao.redirect_uri}")
     private String redirectUri;
+
+    @Autowired
+    private GameBatchComponent gameBatchComponent;
 
 
     /**
@@ -202,6 +207,8 @@ public class MemberContoroller {
         if (loggedIn) {
             model.addAttribute("memberNickName", session.getAttribute("memberNickName"));
         }
+        List<String[]> teamList_2024 = gameBatchComponent.scrapeTeamRank("2024"); // 2024년도 팀 순위 
+        session.setAttribute("2024_Rank", teamList_2024); // 세션에 저장
         return "index";
     }
     /**

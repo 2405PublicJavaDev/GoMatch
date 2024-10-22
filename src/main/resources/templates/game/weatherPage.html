@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/css/game/weather.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3226jlqzjr&submodules=geocoder"></script>
-<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=3226jlqzjr"></script>
 <main>
   <aside>
     <div id="aside-main">
@@ -29,7 +29,7 @@
       <h1>야구장 날씨</h1>
       <div id="map" style="width:60%;height:431px;float:left"></div>
       <div id="stadium-info">
-          <div id="info-title">해당 야구장의 정보를 확인하세요</div>
+          <div id="info-title">마크를 눌러 해당 야구장의 날씨를 확인하세요</div>
           <div id="info-image">
             <img src="/img/야구마루.png" class="default-img">
           </div>
@@ -42,33 +42,7 @@
     </div>
   </section>
 </main>
-<div class="team-logos">
-  <div class="team-logos-container">
-    <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
-    <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-    <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
-    <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
-    <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
-    <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
-    <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
-    <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
-    <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
-    <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
-  </div>
-</div>
-</div>
-<footer class="footer-page">
-  <div class="footer-content">
-    <div class="logo">
-      <img src="/img/고매치로고.png" alt="GoMatch 로고">
-    </div>
-    <div class="footer-text">
-      <p>게인정보 처리방침</p>
-      <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-      <p>Copyright © GoMatch</p>
-    </div>
-  </div>
-</footer>
+<div th:insert="~{header-footer :: footer}"></div>
 <script th:inline="javascript">
   // Thymeleaf에서 stadiums 데이터를 JSON 형식으로 변환하여 자바스크립트에 전달
   var stadiums = /*[[${stadiums}]]*/ [];

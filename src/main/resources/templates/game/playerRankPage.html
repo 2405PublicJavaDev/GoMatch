@@ -23,7 +23,7 @@
     </aside>
     <section class="playerRank-section">
         <div class="playerRank-container">
-            <h1>KBO 리그 순위</h1>
+            <h1>KBO 리그 선수 순위</h1>
             <select id="yearSelect" onchange="fetchRank()">
                 <option value="2024" th:selected="${selectedYear == '2024'}">2024</option>
                 <option value="2023" th:selected="${selectedYear == '2023'}">2023</option>
@@ -38,8 +38,12 @@
                 <option value="2014" th:selected="${selectedYear == '2014'}">2014</option>
                 <option value="2013" th:selected="${selectedYear == '2013'}">2013</option>
             </select>
+            <div class="player-type-selector">
+                <button onclick="changePlayerType('pitcher')" class="bookmark-btn active" id="pitcherBtn">투수</button>
+                <button onclick="changePlayerType('batter')" class="bookmark-btn" id="batterBtn">타자</button>
+            </div>
             <div class="playerRank-main">
-                <table class="playerRank-table">
+                <table class="playerRank-table" id="pitcherTable">
                     <thead>
                     <tr>
                         <th>순위</th>
@@ -90,43 +94,94 @@
                     </tr>
                     </tbody>
                 </table>
+                <table class="playerRank-table" id="batterTable" style="display: none;">
+                    <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>선수</th>
+                        <th>팀</th>
+                        <th>경기</th>
+                        <th>타석</th>
+                        <th>타수</th>
+                        <th>안타</th>
+                        <th>2타</th>
+                        <th>3타</th>
+                        <th>홈런</th>
+                        <th>타점</th>
+                        <th>득점</th>
+                        <th>도루</th>
+                        <th>사사구</th>
+                        <th>삼진</th>
+                        <th>타율</th>
+                        <th>출루율</th>
+                        <th>장타율</th>
+                        <th>OPS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="batter : ${batters}">
+                        <td th:text="${batter[0]}"></td>
+                        <td th:text="${batter[1]}"></td>
+                        <td th:text="${batter[2]}"></td>
+                        <td th:text="${batter[3]}"></td>
+                        <td th:text="${batter[4]}"></td>
+                        <td th:text="${batter[5]}"></td>
+                        <td th:text="${batter[6]}"></td>
+                        <td th:text="${batter[7]}"></td>
+                        <td th:text="${batter[8]}"></td>
+                        <td th:text="${batter[9]}"></td>
+                        <td th:text="${batter[10]}"></td>
+                        <td th:text="${batter[11]}"></td>
+                        <td th:text="${batter[12]}"></td>
+                        <td th:text="${batter[13]}"></td>
+                        <td th:text="${batter[14]}"></td>
+                        <td th:text="${batter[15]}"></td>
+                        <td th:text="${batter[16]}"></td>
+                        <td th:text="${batter[17]}"></td>
+                        <td th:text="${batter[18]}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(batters)}">
+                        <td colspan="19">순위 정보가 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
 </main>
-<div class="team-logos">
-    <div class="team-logos-container">
-        <a href="#"><img src="/img/LG로고.png" alt="Twins" class="team-logo"></a>
-        <a href="#"><img src="/img/KT로고.png" alt="Kiwiz" class="team-logo"></a>
-        <a href="#"><img src="/img/SSG로고.png" alt="Landers" class="team-logo"></a>
-        <a href="#"><img src="/img/NC로고.png" alt="Dinos" class="team-logo"></a>
-        <a href="#"><img src="/img/두산로고.png" alt="Bears" class="team-logo"></a>
-        <a href="#"><img src="/img/기아로고.png" alt="Tigers" class="team-logo"></a>
-        <a href="#"><img src="/img/롯데로고.png" alt="Giants" class="team-logo"></a>
-        <a href="#"><img src="/img/삼성로고.png" alt="Lions" class="team-logo"></a>
-        <a href="#"><img src="/img/한화로고.png" alt="Wiz" class="team-logo"></a>
-        <a href="#"><img src="/img/키움로고.png" alt="Heroes" class="team-logo"></a>
-    </div>
-</div>
-</div>
-<footer class="footer-page">
-    <div class="footer-content">
-        <div class="logo">
-            <img src="/img/고매치로고.png" alt="GoMatch 로고">
-        </div>
-        <div class="footer-text">
-            <p>게인정보 처리방침</p>
-            <p>(사)GoMatch｜서울 종구 남대문로 120 대경빌딩 3층｜02)1544-1515</p>
-            <p>Copyright © GoMatch</p>
-        </div>
-    </div>
-</footer>
+<div th:insert="~{header-footer :: footer}"></div>
 <script>
     function fetchRank(){
         const year = document.getElementById("yearSelect").value;
+        const type = document.querySelector('.player-type-selector button.active').id === 'pitcherBtn' ? 'pitcher' : 'batter';
         if(year) {
             window.location.href = `/game/playerrank?year=${year}`;
         }
+    }
+
+    function changePlayerType(type) {
+        const pitcherTable = document.getElementById('pitcherTable');
+        const batterTable = document.getElementById('batterTable');
+        const pitcherBtn = document.getElementById('pitcherBtn');
+        const batterBtn = document.getElementById('batterBtn');
+
+        if (type === 'pitcher') {
+            pitcherTable.style.display = 'table';
+            batterTable.style.display = 'none';
+            pitcherBtn.classList.add('active');
+            batterBtn.classList.remove('active');
+        } else {
+            pitcherTable.style.display = 'none';
+            batterTable.style.display = 'table';
+            pitcherBtn.classList.remove('active');
+            batterBtn.classList.add('active');
+        }
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type') || 'pitcher';
+        changePlayerType(type);
     }
 </script>
 </body>
