@@ -194,16 +194,13 @@ public class MeetingBoardController {
         mBoardVO.setMemberId(memberId);
         // 게시글 등록
         mBoardService.addBoard(mBoardVO);
-
         // 파일 업로드 처리
         if (!groupImages.isEmpty()) {
             boardFileUtil.uploadFiles(groupImages, Long.valueOf(mBoardVO.getMeetingBoardNo()), "board");
         }
 
-        // 등록된 게시글의 번호를 사용하여 해당 게시글의 상세보기 페이지로 리다이렉트
-        return "redirect:/board/detail/" + mBoardVO.getMeetingBoardNo();
+        return "redirect:/board/list";
     }
-
 
     /**
      * 담당자: 김윤경
